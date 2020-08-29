@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "EarthMC",
+  "id": "emc",
   "version": "${version}",
 
   "name": "EarthMC Mod",
@@ -15,7 +15,7 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/EarthMC/icon.png",
+  "icon": "assets/emc/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -24,7 +24,7 @@
     ]
   },
   "mixins": [
-    "EarthMC.mixins.json"
+    "emc.mixins.json"
   ],
 
   "depends": {
