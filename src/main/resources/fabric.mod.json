@@ -3,14 +3,15 @@
   "id": "modid",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "EarthMC Mod",
+  "description": "A mod providing info on the EarthMC Minecraft server.",
   "authors": [
-    "Me!"
+    "Owen77Stubbs",
+    "Warriorrr"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://earthmc.net/",
+    "sources": "https://github.com/Warriorrrr/EarthMC-Mod"
   },
 
   "license": "CC0-1.0",
@@ -29,7 +30,7 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.15.x"
   },
   "suggests": {
     "flamingo": "*"
