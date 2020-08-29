@@ -1,6 +1,6 @@
 .classpath
 .project
-.settings
+.settings/
 
 # Ignore Gradle GUI config
 gradle-app.setting
