@@ -1,0 +1,4 @@
+net/fabricmc/example/mixin/ExampleMixin.java
+ net.fabricmc.example.mixin.ExampleMixin
+net/fabricmc/example/ExampleMod.java
+ net.fabricmc.example.ExampleMod
