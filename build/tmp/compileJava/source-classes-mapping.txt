@@ -1,4 +1,4 @@
-net/fabricmc/example/mixin/ExampleMixin.java
- net.fabricmc.example.mixin.ExampleMixin
-net/fabricmc/example/ExampleMod.java
- net.fabricmc.example.ExampleMod
+net/earthmc/example/mixin/ExampleMixin.java
+ net.earthmc.example.mixin.ExampleMixin
+net/earthmc/example/ExampleMod.java
+ net.earthmc.example.ExampleMod

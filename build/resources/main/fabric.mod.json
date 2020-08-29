@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "EarthMC",
   "version": "1.0.0",
 
   "name": "EarthMC Mod",
@@ -15,16 +15,16 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/EarthMC/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "net.earthmc.example.ExampleMod"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "EarthMC.mixins.json"
   ],
 
   "depends": {
