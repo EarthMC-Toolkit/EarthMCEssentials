@@ -23,9 +23,9 @@ public class EMCMod implements ModInitializer
             TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 
 			// Draw each player with offset from player before (will use for loop in future)
-            renderer.draw("TownlessPlayer1", 0, 20, 0xffffff);
-			renderer.draw("TownlessPlayer2", 0, 40, 0xffffff);
-			renderer.draw("TownlessPlayer2", 0, 60, 0xffffff);
+            renderer.draw("TownlessPlayer1", 1, 5, 0xffffff);
+			renderer.draw("TownlessPlayer2", 1, 15, 0xffffff);
+			renderer.draw("TownlessPlayer3", 1, 25, 0xffffff);
         });
 	}
 }
