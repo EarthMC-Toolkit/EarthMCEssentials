@@ -4,22 +4,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 
-import org.json.simple.parser.JSONParser;
-import org.json.simple.*;
-
-public class EMCMod implements ModInitializer 
-{
-	@Override
-	public void onInitialize() // Called when Minecraft starts.
-	{
+public class EMCMod implements ModInitializer {
+    @Override
+    public void onInitialize() // Called when Minecraft starts.
+    {
         System.out.println("EarthMC Mod Initialized!");
-        
+
         try 
         {
             final URL url = new URL("http://earthmc-api.herokuapp.com/townlessplayers");
@@ -34,7 +33,7 @@ public class EMCMod implements ModInitializer
             if (responsecode != 200) 
             {
                 throw new RuntimeException("HttpResponseCode: " + responsecode);
-            }
+            } 
             else 
             {
                 String inline = "";
@@ -50,8 +49,8 @@ public class EMCMod implements ModInitializer
                 scanner.close();
 
                 // Using the JSON simple library parse the string into a json object
-                final JSONParser parse = new JSONParser();
-                final JSONObject data_obj = (JSONObject) parse.parse(inline);
+                final JsonParser parse = new JsonParser();
+                final JsonObject data_obj = (JsonObject) parse.parse(inline);
 
                 System.out.println("Townless data: " + data_obj);
 
