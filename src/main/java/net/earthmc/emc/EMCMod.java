@@ -19,10 +19,13 @@ public class EMCMod implements ModInitializer
 
 		HudRenderCallback.EVENT.register(e -> 
 		{
+			// Create renderer
             TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-            renderer.draw("TownlessPlayer1", 0, 0, 0xffffff);
-			renderer.draw("TownlessPlayer2", 0, 10, 0xffffff);
-			renderer.draw("TownlessPlayer2", 0, 20, 0xffffff);
+
+			// Draw each player with offset from player before (will use for loop in future)
+            renderer.draw("TownlessPlayer1", 0, 20, 0xffffff);
+			renderer.draw("TownlessPlayer2", 0, 40, 0xffffff);
+			renderer.draw("TownlessPlayer2", 0, 60, 0xffffff);
         });
 	}
 }
