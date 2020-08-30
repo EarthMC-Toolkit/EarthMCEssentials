@@ -25,72 +25,73 @@ public class EMCMod implements ModInitializer {
 
         Timer timer = new Timer();
 
-		HudRenderCallback.EVENT.register(e -> 
-		{
-            timer.scheduleAtFixedRate(new TimerTask() 
+        timer.scheduleAtFixedRate(new TimerTask() 
+        {
+            @Override
+            public void run() 
             {
-                @Override
-                public void run() 
-                {
-                    drawTownless();
-                }
-            }, 0, 2*60*1000);
-        });
+                drawTownless();
+            }
+        }, 0, 2*60*1000);
     }
 
     static void drawTownless()
     {
-        try
-        {
-            final URL url = new URL("http://earthmc-api.herokuapp.com/townlessplayers");
-
-            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            // Getting the response code
-            final int responsecode = conn.getResponseCode();
-
-            if (responsecode != 200) 
+        HudRenderCallback.EVENT.register(e -> 
+        {          
+            try
             {
-                throw new RuntimeException("HttpResponseCode: " + responsecode);
-            }
-            else 
-            {
-                String inline = "";
-                final Scanner scanner = new Scanner(url.openStream());
+                final URL url = new URL("http://earthmc-api.herokuapp.com/townlessplayers");
 
-                // Write all the JSON data into a string using a scanner
-                while (scanner.hasNext()) 
+                final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                // Getting the response code
+                final int responsecode = conn.getResponseCode();
+
+                if (responsecode != 200) 
                 {
-                    inline += scanner.nextLine();
+                    throw new RuntimeException("HttpResponseCode: " + responsecode);
                 }
+                else 
+                {
+                    String inline = "";
+                    final Scanner scanner = new Scanner(url.openStream());
 
-                // Close the scanner
-                scanner.close();
+                    // Write all the JSON data into a string using a scanner
+                    while (scanner.hasNext()) 
+                    {
+                        inline += scanner.nextLine();
+                    }
 
-                // Using the JSON simple library parse the string into a json object
-                final JsonParser parse = new JsonParser();
-                final JsonArray townlessArray = (JsonArray) parse.parse(inline);
+                    // Close the scanner
+                    scanner.close();
 
-                // Create client
-                final MinecraftClient client = MinecraftClient.getInstance();
+                    // Using the JSON simple library parse the string into a json object
+                    final JsonParser parse = new JsonParser();
+                    final JsonArray townlessArray = (JsonArray) parse.parse(inline);
 
-                // Create renderer
-                final TextRenderer renderer = client.textRenderer;
+                    // Create client
+                    final MinecraftClient client = MinecraftClient.getInstance();
 
-                // Draw each player with offset from player before (will use for loop in future)
-                renderer.draw(townlessArray.toString(), 1, 5, 0xffffff);
+                    // Create renderer
+                    final TextRenderer renderer = client.textRenderer;
 
-                // for (int i = 0; i < townlessArray.size(); i++) 
-                // {
-                //     JsonObject currentPlayer = (JsonObject) townlessArray.get(i);
-                // }
+                    // Draw each player with offset from player before (will use for loop in future)
+                    renderer.draw(townlessArray.toString(), 1, 5, 0xffffff);
+
+                    // for (int i = 0; i < townlessArray.size(); i++) 
+                    // {
+                    //     JsonObject currentPlayer = (JsonObject) townlessArray.get(i);
+                    // }
+                }
             }
-        }
-        catch (final Exception exc) 
-        {
-            exc.printStackTrace();
-        }
+            catch (final Exception exc) 
+            {
+                exc.printStackTrace();
+            }
+        });
+
     }
 }
