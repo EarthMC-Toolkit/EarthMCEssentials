@@ -46,7 +46,7 @@ public class EMCMod implements ModInitializer
             final TextRenderer renderer = client.textRenderer;
 
             // Draw each player with offset from player before (will use for loop in future)
-            renderer.draw(townless.get(0).toString(), 1, 5, 0xffffff);
+            renderer.draw(townless.toString(), 1, 5, 0xffffff);
         });
     }
 
@@ -54,7 +54,7 @@ public class EMCMod implements ModInitializer
     {
         try
         {
-                final URL url = new URL("http://earthmc-api.herokuapp.com/onlineplayers");
+                final URL url = new URL("http://earthmc-api.herokuapp.com/townlessplayers");
 
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
