@@ -1,10 +1,7 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "net.earthmc.emc.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
   "client": [
     "MixinInGameHud"
   ],
