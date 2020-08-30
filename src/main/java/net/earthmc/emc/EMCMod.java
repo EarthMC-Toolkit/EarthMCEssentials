@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.Scanner;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.fabricmc.api.ModInitializer;
@@ -17,7 +16,10 @@ import net.minecraft.client.font.TextRenderer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class EMCMod implements ModInitializer {
+public class EMCMod implements ModInitializer 
+{
+    boolean canDraw = true;
+
     @Override
     public void onInitialize() // Called when Minecraft starts.
     {
@@ -25,22 +27,27 @@ public class EMCMod implements ModInitializer {
 
         Timer timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() 
-        {
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run() 
-            {
-                drawTownless();
+            public void run() {
+                canDraw = true;
             }
         }, 0, 2*60*1000);
+
+        HudRenderCallback.EVENT.register(e -> 
+        {            
+            if (canDraw) 
+            {
+                drawTownless();
+                canDraw = false;
+            }
+        });
     }
 
     static void drawTownless()
     {
-        HudRenderCallback.EVENT.register(e -> 
-        {          
-            try
-            {
+        try
+        {
                 final URL url = new URL("http://earthmc-api.herokuapp.com/townlessplayers");
 
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -86,12 +93,10 @@ public class EMCMod implements ModInitializer {
                     //     JsonObject currentPlayer = (JsonObject) townlessArray.get(i);
                     // }
                 }
-            }
-            catch (final Exception exc) 
-            {
-                exc.printStackTrace();
-            }
-        });
-
+        }
+        catch (final Exception exc) 
+        {
+            exc.printStackTrace();
+        }
     }
 }
