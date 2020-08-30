@@ -18,7 +18,7 @@ import java.util.TimerTask;
 
 public class EMCMod implements ModInitializer 
 {
-    boolean canDraw = true;
+    JsonArray townless = new JsonArray();
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
@@ -29,22 +29,26 @@ public class EMCMod implements ModInitializer
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run() {
-                canDraw = true;
+            public void run() 
+            {
+                townless = getTownless();
             }
         }, 0, 2*60*1000);
 
         HudRenderCallback.EVENT.register(e -> 
-        {            
-            if (canDraw) 
-            {
-                drawTownless();
-                canDraw = false;
-            }
+        {           
+            // Create client
+            final MinecraftClient client = MinecraftClient.getInstance();
+
+            // Create renderer
+            final TextRenderer renderer = client.textRenderer;
+
+            // Draw each player with offset from player before (will use for loop in future)
+            renderer.draw(townless.toString(), 1, 5, 0xffffff);
         });
     }
 
-    static void drawTownless()
+    static JsonArray getTownless()
     {
         try
         {
@@ -57,11 +61,7 @@ public class EMCMod implements ModInitializer
                 // Getting the response code
                 final int responsecode = conn.getResponseCode();
 
-                if (responsecode != 200) 
-                {
-                    throw new RuntimeException("HttpResponseCode: " + responsecode);
-                }
-                else 
+                if (responsecode == 200) 
                 {
                     String inline = "";
                     final Scanner scanner = new Scanner(url.openStream());
@@ -78,15 +78,8 @@ public class EMCMod implements ModInitializer
                     // Using the JSON simple library parse the string into a json object
                     final JsonParser parse = new JsonParser();
                     final JsonArray townlessArray = (JsonArray) parse.parse(inline);
-
-                    // Create client
-                    final MinecraftClient client = MinecraftClient.getInstance();
-
-                    // Create renderer
-                    final TextRenderer renderer = client.textRenderer;
-
-                    // Draw each player with offset from player before (will use for loop in future)
-                    renderer.draw(townlessArray.toString(), 1, 5, 0xffffff);
+                    
+                    return townlessArray;
 
                     // for (int i = 0; i < townlessArray.size(); i++) 
                     // {
@@ -96,7 +89,9 @@ public class EMCMod implements ModInitializer
         }
         catch (final Exception exc) 
         {
-            exc.printStackTrace();
+            return new JsonArray();
         }
+
+        return new JsonArray();
     }
 }
