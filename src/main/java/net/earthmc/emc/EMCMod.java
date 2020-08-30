@@ -1,10 +1,12 @@
 package net.earthmc.emc;
 
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -20,7 +22,16 @@ public class EMCMod implements ModInitializer {
     {
         System.out.println("EarthMC Mod Initialized!");
 
-        try 
+		HudRenderCallback.EVENT.register(e -> 
+		{
+            // Add timer then uncomment drawTownless
+            // drawTownless();
+        });
+    }
+
+    static void drawTownless()
+    {
+        try
         {
             final URL url = new URL("http://earthmc-api.herokuapp.com/townlessplayers");
 
@@ -34,8 +45,8 @@ public class EMCMod implements ModInitializer {
             if (responsecode != 200) 
             {
                 throw new RuntimeException("HttpResponseCode: " + responsecode);
-            } 
-            else
+            }
+            else 
             {
                 String inline = "";
                 final Scanner scanner = new Scanner(url.openStream());
@@ -51,19 +62,20 @@ public class EMCMod implements ModInitializer {
 
                 // Using the JSON simple library parse the string into a json object
                 final JsonParser parse = new JsonParser();
-                final JsonArray playerArray = (JsonArray) parse.parse(inline);
+                final JsonObject townlessArray = (JsonObject) parse.parse(inline);
 
-                System.out.println("Townless data: " + playerArray);
+                // Create client
+                final MinecraftClient client = MinecraftClient.getInstance();
 
-                // for (int i = 0; i < arr.size(); i++) 
+                // Create renderer
+                final TextRenderer renderer = client.textRenderer;
+
+                // Draw each player with offset from player before (will use for loop in future)
+                renderer.draw(townlessArray.toString(), 1, 5, 0xffffff);
+
+                // for (int i = 0; i < townlessArray.size(); i++) 
                 // {
-                //     JSONObject new_obj = (JSONObject) arr.get(i);
-
-                //     if (new_obj.get("Slug").equals("albania")) 
-                // 	{
-                //         System.out.println("Total Recovered: " + new_obj.get("TotalRecovered"));
-                //         break;
-                //     }
+                //     JsonObject currentPlayer = (JsonObject) Array.get(townlessArray, i);
                 // }
             }
         } 
@@ -71,19 +83,5 @@ public class EMCMod implements ModInitializer {
         {
             exc.printStackTrace();
         }
-
-		HudRenderCallback.EVENT.register(e -> 
-		{
-            // Create client
-            final MinecraftClient client = MinecraftClient.getInstance();
-
-			// Create renderer
-            final TextRenderer renderer = client.textRenderer;
-
-			// Draw each player with offset from player before (will use for loop in future)
-            renderer.draw("TownlessPlayer1", 1, 5, 0xffffff);
-			renderer.draw("TownlessPlayer2", 1, 15, 0xffffff);
-			renderer.draw("TownlessPlayer3", 1, 25, 0xffffff);
-        });
     }
 }
