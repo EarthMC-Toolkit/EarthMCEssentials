@@ -20,7 +20,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.earthmc.example.ExampleMod"
+      "net.earthmc.EMCMod"
     ]
   },
   "mixins": [
