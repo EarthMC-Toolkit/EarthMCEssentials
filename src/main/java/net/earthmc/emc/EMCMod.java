@@ -18,12 +18,14 @@ import java.util.TimerTask;
 
 public class EMCMod implements ModInitializer 
 {
-    JsonArray townless = new JsonArray();
+    JsonArray townless;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
     {
         System.out.println("EarthMC Mod Initialized!");
+
+        townless = getTownless();
 
         Timer timer = new Timer();
 
