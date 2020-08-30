@@ -20,8 +20,9 @@ public class EMCMod implements ModInitializer
 		HudRenderCallback.EVENT.register(e -> 
 		{
             TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-            renderer.draw("Working!", 0, 0, 0xffffff);
-            renderer.draw("This is red", 0, 100, 0xff0000);
+            renderer.draw("TownlessPlayer1", 0, 0, 0xffffff);
+			renderer.draw("TownlessPlayer2", 0, 10, 0xffffff);
+			renderer.draw("TownlessPlayer2", 0, 20, 0xffffff);
         });
 	}
 }
