@@ -1,4 +1,4 @@
-package net.earthmc;
+package net.earthmc.emc;
 
 import net.fabricmc.api.ModInitializer;
 

@@ -17,10 +17,10 @@
   "license": "CC0-1.0",
   "icon": "assets/emc/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
-      "net.earthmc.EMCMod"
+      "net.earthmc.emc.EMCMod"
     ]
   },
   "mixins": [
