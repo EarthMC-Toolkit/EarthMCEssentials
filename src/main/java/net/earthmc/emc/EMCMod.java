@@ -4,6 +4,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -34,7 +35,7 @@ public class EMCMod implements ModInitializer {
             {
                 throw new RuntimeException("HttpResponseCode: " + responsecode);
             } 
-            else 
+            else
             {
                 String inline = "";
                 final Scanner scanner = new Scanner(url.openStream());
@@ -50,9 +51,9 @@ public class EMCMod implements ModInitializer {
 
                 // Using the JSON simple library parse the string into a json object
                 final JsonParser parse = new JsonParser();
-                final JsonObject data_obj = (JsonObject) parse.parse(inline);
+                final JsonArray playerArray = (JsonArray) parse.parse(inline);
 
-                System.out.println("Townless data: " + data_obj);
+                System.out.println("Townless data: " + playerArray);
 
                 // for (int i = 0; i < arr.size(); i++) 
                 // {
