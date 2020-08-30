@@ -3,7 +3,6 @@
   "package": "net.earthmc.emc.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "MixinInGameHud"
   ],
   "injectors": {
     "defaultRequire": 1
