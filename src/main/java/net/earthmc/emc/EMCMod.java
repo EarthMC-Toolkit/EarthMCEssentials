@@ -1,12 +1,10 @@
 package net.earthmc.emc;
 
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -16,16 +14,27 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class EMCMod implements ModInitializer {
     @Override
     public void onInitialize() // Called when Minecraft starts.
     {
         System.out.println("EarthMC Mod Initialized!");
 
+        Timer timer = new Timer();
+
 		HudRenderCallback.EVENT.register(e -> 
 		{
-            // Add timer then uncomment drawTownless
-            // drawTownless();
+            timer.scheduleAtFixedRate(new TimerTask() 
+            {
+                @Override
+                public void run() 
+                {
+                    drawTownless();
+                }
+            }, 0, 2*60*1000);
         });
     }
 
@@ -62,7 +71,7 @@ public class EMCMod implements ModInitializer {
 
                 // Using the JSON simple library parse the string into a json object
                 final JsonParser parse = new JsonParser();
-                final JsonObject townlessArray = (JsonObject) parse.parse(inline);
+                final JsonArray townlessArray = (JsonArray) parse.parse(inline);
 
                 // Create client
                 final MinecraftClient client = MinecraftClient.getInstance();
@@ -75,10 +84,10 @@ public class EMCMod implements ModInitializer {
 
                 // for (int i = 0; i < townlessArray.size(); i++) 
                 // {
-                //     JsonObject currentPlayer = (JsonObject) Array.get(townlessArray, i);
+                //     JsonObject currentPlayer = (JsonObject) townlessArray.get(i);
                 // }
             }
-        } 
+        }
         catch (final Exception exc) 
         {
             exc.printStackTrace();
