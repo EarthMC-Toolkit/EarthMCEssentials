@@ -117,7 +117,7 @@ public class EMCMod implements ModInitializer {
             final TextRenderer renderer = client.textRenderer;
 
             String townlessText = new LiteralText("Townless Players").formatted(Formatting.LIGHT_PURPLE).asFormattedString();
-            renderer.draw(townlessText, config.townlessTextXOffset, config.townlessTextYOffset, 0xffffff);
+            renderer.draw(townlessText, config.townlessTextXOffset, config.townlessTextYOffset, Formatting.WHITE.getColorValue());
 
             if (townless.size() >= 1)
             {            
@@ -134,11 +134,11 @@ public class EMCMod implements ModInitializer {
                     // If underground, display "Underground" instead of their position
                     if (playerX == 0 && playerZ == 0)
                     {
-                        renderer.draw(playerName + " Underground", config.townlessTextXOffset, currentYOffset, 0xffffff);
+                        renderer.draw(playerName + " Underground", config.townlessListXOffset, currentYOffset, Formatting.WHITE.getColorValue());
                     }
                     else 
                     {                   
-                        renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townlessListXOffset, currentYOffset, 0xffffff);
+                        renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townlessListXOffset, currentYOffset, Formatting.WHITE.getColorValue());
                     }
 
                     // Add offset for the next player.
