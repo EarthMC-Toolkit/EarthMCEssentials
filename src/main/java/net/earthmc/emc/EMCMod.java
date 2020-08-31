@@ -15,10 +15,13 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+
 import net.fabricmc.api.ModInitializer;
+
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -61,17 +64,40 @@ public class EMCMod implements ModInitializer {
         KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Townless Players", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
         ClientTickCallback.EVENT.register(client -> 
-        { 
-            if (f4.isPressed()) 
+        {
+            if (f4.isPressed())
             {
-                ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMCEssentials Config");
+                ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Essentials Config");
                 ConfigCategory general = builder.getOrCreateCategory("category.emc-essentials.general");
     
                 ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+
+                // Townless List Y Offset
                 general.addEntry(entryBuilder.startIntField("Townless List Y Offset", config.townlessListYOffset)
-                .setDefaultValue(20) // Recommended: Used when user click "Reset"
-                .setTooltip("The vertical offset (in pixels) of the townless list.") // Optional: Shown when the user hover over this option
-                .setSaveConsumer(newValue -> config.townlessListYOffset = newValue) // Recommended: Called when user save the config
+                .setDefaultValue(20)
+                .setTooltip("The vertical offset (in pixels) of the townless list.")
+                .setSaveConsumer(newValue -> config.townlessListYOffset = newValue)
+                .build());
+
+                // Townless List X Offset
+                general.addEntry(entryBuilder.startIntField("Townless List X Offset", config.townlessListXOffset)
+                .setDefaultValue(5)
+                .setTooltip("The horizontal offset (in pixels) of the townless list.")
+                .setSaveConsumer(newValue -> config.townlessListXOffset = newValue)
+                .build());
+
+                // Townless Text Y Offset
+                general.addEntry(entryBuilder.startIntField("Townless Text Y Offset", config.townlessTextYOffset)
+                .setDefaultValue(5)
+                .setTooltip("The vertical offset (in pixels) of the 'Townless Players' text.")
+                .setSaveConsumer(newValue -> config.townlessTextYOffset = newValue)
+                .build());
+
+                // Townless Text X Offset
+                general.addEntry(entryBuilder.startIntField("Townless Text X Offset", config.townlessTextXOffset)
+                .setDefaultValue(5) 
+                .setTooltip("The horizontal offset (in pixels) of the 'Townless Players' text.")
+                .setSaveConsumer(newValue -> config.townlessTextXOffset = newValue)
                 .build());
     
                 Screen screen = builder.build();
