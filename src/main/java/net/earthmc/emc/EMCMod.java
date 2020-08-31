@@ -28,6 +28,7 @@ public class EMCMod implements ModInitializer
         System.out.println("EarthMC Mod Initialized!");
 
         townless = getTownless();
+        currentYOffset = 0;
 
         Timer timer = new Timer();
 
@@ -38,8 +39,6 @@ public class EMCMod implements ModInitializer
                 townless = getTownless();
             }
         }, 0, 2*60*1000);
-
-        currentYOffset = 0;
 
         HudRenderCallback.EVENT.register(e -> 
         {           
@@ -52,11 +51,12 @@ public class EMCMod implements ModInitializer
             for (int i = 0; i < townless.size(); i++) 
             {
                 JsonObject currentPlayer = (JsonObject) townless.get(i);
+                String playerName = currentPlayer.get("name").getAsString();
 
                 currentYOffset += 5;
 
                 // Draw each player with offset from player before (will use for loop in future)
-                renderer.draw(currentPlayer.get("name").getAsString(), 1, currentYOffset, 0xffffff);
+                renderer.draw(playerName, 1, currentYOffset, 0xffffff);
             }
         });
     }
