@@ -3,9 +3,9 @@ package net.earthmc.emc;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
 
-@Config(name = "earthmcessentials")
+@Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
-{ 
+{
     @ConfigEntry.Gui.CollapsibleObject
     int townlessTextXOffset = 5;
     int townlessTextYOffset = 5;

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "emcessentials",
+  "id": "emc-essentials",
   "version": "${version}",
 
   "name": "EarthMCEssentials",
