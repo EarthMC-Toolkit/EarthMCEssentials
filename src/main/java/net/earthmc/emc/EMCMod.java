@@ -68,8 +68,15 @@ public class EMCMod implements ModInitializer
                     final Integer playerY = currentPlayer.get("y").getAsInt();
                     final Integer playerZ = currentPlayer.get("z").getAsInt();
 
-                    // Draw each player with offset
-                    renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, 5, currentYOffset, 0xffffff);
+                    // If underground, display "Underground" instead of their position
+                    if (playerX == 0 && playerZ == 0)
+                    {
+                        renderer.draw(playerName + " Underground", 5, currentYOffset, 0xffffff);
+                    }
+                    else 
+                    {                   
+                        renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, 5, currentYOffset, 0xffffff);
+                    }
 
                     // Add offset for the next player.
                     currentYOffset += 10;
