@@ -39,7 +39,7 @@ public class EMCMod implements ModInitializer
             }
         }, 0, 2*60*1000);
 
-        currentYOffset = 5;
+        currentYOffset = 0;
 
         HudRenderCallback.EVENT.register(e -> 
         {           
