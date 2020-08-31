@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.fabricmc.api.ModInitializer;
@@ -19,6 +20,7 @@ import java.util.TimerTask;
 public class EMCMod implements ModInitializer 
 {
     JsonArray townless;
+    int currentYOffset;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
@@ -37,6 +39,8 @@ public class EMCMod implements ModInitializer
             }
         }, 0, 2*60*1000);
 
+        currentYOffset = 5;
+
         HudRenderCallback.EVENT.register(e -> 
         {           
             // Create client
@@ -44,9 +48,16 @@ public class EMCMod implements ModInitializer
 
             // Create renderer
             final TextRenderer renderer = client.textRenderer;
+       
+            for (int i = 0; i < townless.size(); i++) 
+            {
+                JsonObject currentPlayer = (JsonObject) townless.get(i);
 
-            // Draw each player with offset from player before (will use for loop in future)
-            renderer.draw(townless.toString(), 1, 5, 0xffffff);
+                currentYOffset += 5;
+
+                // Draw each player with offset from player before (will use for loop in future)
+                renderer.draw(currentPlayer.get("name").getAsString(), 1, currentYOffset, 0xffffff);
+            }
         });
     }
 
@@ -82,11 +93,6 @@ public class EMCMod implements ModInitializer
                     final JsonArray townlessArray = (JsonArray) parse.parse(inline);
                     
                     return townlessArray;
-
-                    // for (int i = 0; i < townlessArray.size(); i++) 
-                    // {
-                    //     JsonObject currentPlayer = (JsonObject) townlessArray.get(i);
-                    // }
                 }
         }
         catch (final Exception exc) 
