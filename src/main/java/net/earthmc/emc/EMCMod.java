@@ -8,6 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -44,6 +45,7 @@ public class EMCMod implements ModInitializer
 
         HudRenderCallback.EVENT.register(e -> 
         {           
+            
             // This is where the first player will be, who determines where the list will be.
             currentYOffset = 20;
 
@@ -52,6 +54,8 @@ public class EMCMod implements ModInitializer
 
             // Create renderer
             final TextRenderer renderer = client.textRenderer;
+
+            ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
             String townlessText = new LiteralText("Townless Players").formatted(Formatting.LIGHT_PURPLE).asFormattedString();
             renderer.draw(townlessText, 5, 5, 0xffffff);
