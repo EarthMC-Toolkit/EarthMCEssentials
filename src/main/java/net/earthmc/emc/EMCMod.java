@@ -41,7 +41,8 @@ public class EMCMod implements ModInitializer
 
         HudRenderCallback.EVENT.register(e -> 
         {           
-            currentYOffset = 8;
+            // This is the offset of the first player
+            currentYOffset = 16;
 
             // Create client
             final MinecraftClient client = MinecraftClient.getInstance();
