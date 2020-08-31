@@ -54,7 +54,7 @@ public class EMCMod implements ModInitializer
                 JsonObject currentPlayer = (JsonObject) townless.get(i);
                 String playerName = currentPlayer.get("name").getAsString();
 
-                currentYOffset += 5;
+                currentYOffset += 10;
 
                 // Draw each player with offset from player before (will use for loop in future)
                 renderer.draw(playerName, 1, currentYOffset, 0xffffff);
