@@ -29,9 +29,10 @@ public class EMCMod implements ModInitializer
 
         townless = getTownless();
 
-        Timer timer = new Timer();
+        final Timer timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() 
+        {
             @Override
             public void run() 
             {
@@ -41,8 +42,8 @@ public class EMCMod implements ModInitializer
 
         HudRenderCallback.EVENT.register(e -> 
         {           
-            // This is the offset of the first player
-            currentYOffset = 16;
+            // This is where the first player will be, who determines where the list will be.
+            currentYOffset = 20;
 
             // Create client
             final MinecraftClient client = MinecraftClient.getInstance();
@@ -51,16 +52,25 @@ public class EMCMod implements ModInitializer
             final TextRenderer renderer = client.textRenderer;
 
             renderer.draw("Townless Players", 1, 5, 0xffffff);
-       
-            for (int i = 0; i < townless.size(); i++) 
-            {
-                JsonObject currentPlayer = (JsonObject) townless.get(i);
-                String playerName = currentPlayer.get("name").getAsString();
 
-                // Draw each player with offset from player before (will use for loop in future)
-                renderer.draw(playerName, 1, currentYOffset, 0xffffff);
+            if (townless.size() >= 1)
+            {            
+                for (int i = 0; i < townless.size(); i++) 
+                {
+                    final JsonObject currentPlayer = (JsonObject) townless.get(i);
 
-                currentYOffset += 8;
+                    final String playerName = currentPlayer.get("name").getAsString();
+
+                    final Integer playerX = currentPlayer.get("x").getAsInt();
+                    final Integer playerY = currentPlayer.get("y").getAsInt();
+                    final Integer playerZ = currentPlayer.get("z").getAsInt();
+
+                    // Draw each player with offset
+                    renderer.draw(playerName + " - " + playerX + ", " + playerY + ", " + playerZ, 5, currentYOffset, 0xffffff);
+
+                    // Add offset for the next player.
+                    currentYOffset += 10;
+                }
             }
         });
     }
