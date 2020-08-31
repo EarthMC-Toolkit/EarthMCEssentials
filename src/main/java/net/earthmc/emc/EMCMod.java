@@ -41,23 +41,25 @@ public class EMCMod implements ModInitializer
 
         HudRenderCallback.EVENT.register(e -> 
         {           
-            currentYOffset = 0;
+            currentYOffset = 8;
 
             // Create client
             final MinecraftClient client = MinecraftClient.getInstance();
 
             // Create renderer
             final TextRenderer renderer = client.textRenderer;
+
+            renderer.draw("Townless Players", 1, 5, 0xffffff);
        
             for (int i = 0; i < townless.size(); i++) 
             {
                 JsonObject currentPlayer = (JsonObject) townless.get(i);
                 String playerName = currentPlayer.get("name").getAsString();
 
-                currentYOffset += 10;
-
                 // Draw each player with offset from player before (will use for loop in future)
                 renderer.draw(playerName, 1, currentYOffset, 0xffffff);
+
+                currentYOffset += 8;
             }
         });
     }
