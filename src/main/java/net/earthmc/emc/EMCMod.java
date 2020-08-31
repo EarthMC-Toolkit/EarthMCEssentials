@@ -57,7 +57,7 @@ public class EMCMod implements ModInitializer {
             {
                 townless = getTownless();
             }
-        }, 0, 2*60*1000);
+        }, 0, 2*60*1000);   
 
         KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Townless Players", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
@@ -79,32 +79,39 @@ public class EMCMod implements ModInitializer {
                 .setSaveConsumer(newValue -> config.general.enableMod = newValue)
                 .build());
 
+                // Enable Townless
+                townless.addEntry(entryBuilder.startBooleanToggle("Enable Townless", config.townless.enableTownless)
+                .setDefaultValue(true)
+                .setTooltip("Toggles Townless on or off.")
+                .setSaveConsumer(newValue -> config.townless.enableTownless = newValue)
+                .build());
+
                 // Townless List Y Offset
-                townless.addEntry(entryBuilder.startIntField("Townless List Y Offset", config.townlessList.townlessListYOffset)
+                townless.addEntry(entryBuilder.startIntField("Townless List Y Offset", config.townless.townlessListYOffset)
                 .setDefaultValue(20)
                 .setTooltip("The vertical offset (in pixels) of the townless list.")
-                .setSaveConsumer(newValue -> config.townlessList.townlessListYOffset = newValue)
+                .setSaveConsumer(newValue -> config.townless.townlessListYOffset = newValue)
                 .build());
 
                 // Townless List X Offset
-                townless.addEntry(entryBuilder.startIntField("Townless List X Offset", config.townlessList.townlessListXOffset)
+                townless.addEntry(entryBuilder.startIntField("Townless List X Offset", config.townless.townlessListXOffset)
                 .setDefaultValue(5)
                 .setTooltip("The horizontal offset (in pixels) of the townless list.")
-                .setSaveConsumer(newValue -> config.townlessList.townlessListXOffset = newValue)
+                .setSaveConsumer(newValue -> config.townless.townlessListXOffset = newValue)
                 .build());
 
                 // Townless Text Y Offset
-                townless.addEntry(entryBuilder.startIntField("Townless Text Y Offset", config.townlessText.townlessTextYOffset)
+                townless.addEntry(entryBuilder.startIntField("Townless Text Y Offset", config.townless.townlessTextYOffset)
                 .setDefaultValue(5)
                 .setTooltip("The vertical offset (in pixels) of the 'Townless Players' text.")
-                .setSaveConsumer(newValue -> config.townlessText.townlessTextYOffset = newValue)
+                .setSaveConsumer(newValue -> config.townless.townlessTextYOffset = newValue)
                 .build());
 
                 // Townless Text X Offset
-                townless.addEntry(entryBuilder.startIntField("Townless Text X Offset", config.townlessText.townlessTextXOffset)
+                townless.addEntry(entryBuilder.startIntField("Townless Text X Offset", config.townless.townlessTextXOffset)
                 .setDefaultValue(5) 
                 .setTooltip("The horizontal offset (in pixels) of the 'Townless Players' text.")
-                .setSaveConsumer(newValue -> config.townlessText.townlessTextXOffset = newValue)
+                .setSaveConsumer(newValue -> config.townless.townlessTextXOffset = newValue)
                 .build());
 
                 // builder.setSavingRunnable(() -> 
@@ -118,9 +125,10 @@ public class EMCMod implements ModInitializer {
         });
 
         HudRenderCallback.EVENT.register(e -> 
-        {               
+        {     
+            if (config.general.enableMod == false || config.townless.enableTownless == false) return;          
             // This is where the first player will be, who determines where the list will be.
-            currentYOffset = config.townlessList.townlessListYOffset;
+            currentYOffset = config.townless.townlessListYOffset;
 
             // Create client
             final MinecraftClient client = MinecraftClient.getInstance();
@@ -129,7 +137,7 @@ public class EMCMod implements ModInitializer {
             final TextRenderer renderer = client.textRenderer;
 
             String townlessText = new LiteralText("Townless Players").formatted(Formatting.LIGHT_PURPLE).asFormattedString();
-            renderer.draw(townlessText, config.townlessText.townlessTextXOffset, config.townlessText.townlessTextYOffset, Formatting.WHITE.getColorValue());
+            renderer.draw(townlessText, config.townless.townlessTextXOffset, config.townless.townlessTextYOffset, Formatting.WHITE.getColorValue());
 
             if (townless.size() >= 1)
             {            
@@ -146,11 +154,11 @@ public class EMCMod implements ModInitializer {
                     // If underground, display "Underground" instead of their position
                     if (playerX == 0 && playerZ == 0)
                     {
-                        renderer.draw(playerName + " Underground", config.townlessList.townlessListXOffset, currentYOffset, Formatting.WHITE.getColorValue());
+                        renderer.draw(playerName + " Underground", config.townless.townlessListXOffset, currentYOffset, Formatting.WHITE.getColorValue());
                     }
                     else 
                     {                   
-                        renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townlessList.townlessListXOffset, currentYOffset, Formatting.WHITE.getColorValue());
+                        renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.townlessListXOffset, currentYOffset, Formatting.WHITE.getColorValue());
                     }
 
                     // Add offset for the next player.
