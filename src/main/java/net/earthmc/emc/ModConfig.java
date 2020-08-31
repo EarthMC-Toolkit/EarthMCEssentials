@@ -1,23 +1,16 @@
 package net.earthmc.emc;
 
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
 
 @Config(name = "emc")
 public class ModConfig implements ConfigData
-{
-    boolean toggleA = true;
-    boolean toggleB = false;
-        
+{ 
     @ConfigEntry.Gui.CollapsibleObject
-    InnerStuff stuff = new InnerStuff();
-        
-    @ConfigEntry.Gui.Excluded
-    InnerStuff invisibleStuff = new InnerStuff();
-        
-    static class InnerStuff
-    {
-        int a = 0;
-        int b = 1;
-    }
+    int townlessTextXOffset = 5;
+    int townlessTextYOffset = 5;
+
+    @ConfigEntry.Gui.CollapsibleObject
+    int townlessListXOffset = 5;
+    int townlessListYOffset = 20;
 }

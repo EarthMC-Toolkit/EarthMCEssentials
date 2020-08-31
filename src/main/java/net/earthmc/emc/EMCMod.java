@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -29,6 +30,7 @@ public class EMCMod implements ModInitializer
     public void onInitialize() // Called when Minecraft starts.
     {
         System.out.println("EarthMC Mod Initialized!");
+        AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
 
         townless = getTownless();
 
@@ -45,9 +47,10 @@ public class EMCMod implements ModInitializer
 
         HudRenderCallback.EVENT.register(e -> 
         {           
-            
+            ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+
             // This is where the first player will be, who determines where the list will be.
-            currentYOffset = 20;
+            currentYOffset = config.townlessListYOffset;
 
             // Create client
             final MinecraftClient client = MinecraftClient.getInstance();
@@ -55,10 +58,8 @@ public class EMCMod implements ModInitializer
             // Create renderer
             final TextRenderer renderer = client.textRenderer;
 
-            ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-
             String townlessText = new LiteralText("Townless Players").formatted(Formatting.LIGHT_PURPLE).asFormattedString();
-            renderer.draw(townlessText, 5, 5, 0xffffff);
+            renderer.draw(townlessText, config.townlessTextXOffset, config.townlessTextYOffset, 0xffffff);
 
             if (townless.size() >= 1)
             {            
@@ -75,11 +76,11 @@ public class EMCMod implements ModInitializer
                     // If underground, display "Underground" instead of their position
                     if (playerX == 0 && playerZ == 0)
                     {
-                        renderer.draw(playerName + " Underground", 5, currentYOffset, 0xffffff);
+                        renderer.draw(playerName + " Underground", config.townlessTextXOffset, currentYOffset, 0xffffff);
                     }
                     else 
                     {                   
-                        renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, 5, currentYOffset, 0xffffff);
+                        renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townlessListXOffset, currentYOffset, 0xffffff);
                     }
 
                     // Add offset for the next player.
