@@ -51,7 +51,7 @@ public class EMCMod implements ModInitializer
             // Create renderer
             final TextRenderer renderer = client.textRenderer;
 
-            renderer.draw("Townless Players", 1, 5, 0xffffff);
+            renderer.draw("Townless Players", 5, 5, 0xffffff);
 
             if (townless.size() >= 1)
             {            
@@ -66,7 +66,7 @@ public class EMCMod implements ModInitializer
                     final Integer playerZ = currentPlayer.get("z").getAsInt();
 
                     // Draw each player with offset
-                    renderer.draw(playerName + " - " + playerX + ", " + playerY + ", " + playerZ, 5, currentYOffset, 0xffffff);
+                    renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, 5, currentYOffset, 0xffffff);
 
                     // Add offset for the next player.
                     currentYOffset += 10;
