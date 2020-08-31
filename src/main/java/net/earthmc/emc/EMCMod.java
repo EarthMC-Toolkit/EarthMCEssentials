@@ -67,12 +67,12 @@ public class EMCMod implements ModInitializer {
             {
                 ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Essentials Config");
 
-                ConfigCategory general = builder.getOrCreateCategory("category.emc-essentials.general");
-                ConfigCategory townless = builder.getOrCreateCategory("category.emc-essentials.townless");
+                ConfigCategory general = builder.getOrCreateCategory("General");
+                ConfigCategory townless = builder.getOrCreateCategory("Townless");
     
                 ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-                // Townless List Y Offset
+                // Enable Mod
                 general.addEntry(entryBuilder.startBooleanToggle("Enable Mod", config.general.enableMod)
                 .setDefaultValue(true)
                 .setTooltip("Toggles the mod on or off.")
