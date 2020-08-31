@@ -10,27 +10,35 @@ import com.google.gson.JsonParser;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class EMCMod implements ModInitializer 
-{
+public class EMCMod implements ModInitializer {
     JsonArray townless;
     int currentYOffset;
+
+    ModConfig config;
+    ModMenuIntegration modMenu;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
     {
         System.out.println("EarthMC Mod Initialized!");
+
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
+        config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
         townless = getTownless();
 
@@ -46,9 +54,7 @@ public class EMCMod implements ModInitializer
         }, 0, 2*60*1000);
 
         HudRenderCallback.EVENT.register(e -> 
-        {           
-            ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-
+        {               
             // This is where the first player will be, who determines where the list will be.
             currentYOffset = config.townlessListYOffset;
 
@@ -57,6 +63,19 @@ public class EMCMod implements ModInitializer
 
             // Create renderer
             final TextRenderer renderer = client.textRenderer;
+
+            ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Config");
+            ConfigCategory general = builder.getOrCreateCategory("category.emc-essentials.general");
+
+            ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+            general.addEntry(entryBuilder.startIntField("Townless List Y Offset", config.townlessListYOffset)
+            .setDefaultValue(20) // Recommended: Used when user click "Reset"
+            .setTooltip("The vertical offset (in pixels) of the townless list.") // Optional: Shown when the user hover over this option
+            .setSaveConsumer(newValue -> config.townlessListYOffset = newValue) // Recommended: Called when user save the config
+            .build());
+
+            Screen screen = builder.build();
+            client.openScreen(screen);
 
             String townlessText = new LiteralText("Townless Players").formatted(Formatting.LIGHT_PURPLE).asFormattedString();
             renderer.draw(townlessText, config.townlessTextXOffset, config.townlessTextYOffset, 0xffffff);
