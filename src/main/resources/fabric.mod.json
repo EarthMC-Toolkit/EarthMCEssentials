@@ -3,15 +3,15 @@
   "id": "emc",
   "version": "${version}",
 
-  "name": "EarthMC Mod",
+  "name": "EarthMCEssentials",
   "description": "A mod providing info on the EarthMC Minecraft server.",
   "authors": [
     "Owen77Stubbs",
     "Warriorrr"
   ],
   "contact": {
-    "homepage": "https://github.com/Warriorrrr/EarthMC-Mod",
-    "issues": "https://github.com/Warriorrrr/EarthMC-Mod/issues"
+    "homepage": "https://github.com/Warriorrrr/EarthMCEssentials",
+    "issues": "https://github.com/Warriorrrr/EarthMCEssentials/issues"
   },
 
   "license": "CC0-1.0",
