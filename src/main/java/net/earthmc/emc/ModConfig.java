@@ -9,11 +9,7 @@ public class ModConfig implements ConfigData
 {
     @ConfigEntry.Gui.CollapsibleObject
     General general = new General();
-
-    @ConfigEntry.Gui.CollapsibleObject
     TownlessText townlessText = new TownlessText();
-
-    @ConfigEntry.Gui.CollapsibleObject
     TownlessList townlessList = new TownlessList();
 
     static class General 
