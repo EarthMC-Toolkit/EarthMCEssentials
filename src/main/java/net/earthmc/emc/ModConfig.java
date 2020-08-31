@@ -1,7 +1,8 @@
 package net.earthmc.emc;
 
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 
 @Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
