@@ -8,10 +8,28 @@ import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 public class ModConfig implements ConfigData
 {
     @ConfigEntry.Gui.CollapsibleObject
-    int townlessTextXOffset = 5;
-    int townlessTextYOffset = 5;
+    General general = new General();
 
     @ConfigEntry.Gui.CollapsibleObject
-    int townlessListXOffset = 5;
-    int townlessListYOffset = 20;
+    TownlessText townlessText = new TownlessText();
+
+    @ConfigEntry.Gui.CollapsibleObject
+    TownlessList townlessList = new TownlessList();
+
+    static class General 
+    {
+        boolean enableMod = true;
+    }
+
+    static class TownlessText 
+    {
+        int townlessTextXOffset = 5;
+        int townlessTextYOffset = 5;
+    }
+
+    static class TownlessList 
+    {
+        int townlessListXOffset = 5;
+        int townlessListYOffset = 20;
+    }
 }
