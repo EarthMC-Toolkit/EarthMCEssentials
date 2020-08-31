@@ -3,7 +3,7 @@ package net.earthmc.emc;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.*;
 
-@Config(name = "emc")
+@Config(name = "earthmcessentials")
 public class ModConfig implements ConfigData
 { 
     @ConfigEntry.Gui.CollapsibleObject
