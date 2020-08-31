@@ -8,17 +8,22 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.lwjgl.glfw.GLFW;
+
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.api.ModInitializer;
-
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
@@ -53,6 +58,27 @@ public class EMCMod implements ModInitializer {
             }
         }, 0, 2*60*1000);
 
+        KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Townless Players", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
+
+        ClientTickCallback.EVENT.register(client -> 
+        { 
+            if (f4.isPressed()) 
+            {
+                ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMCEssentials Config");
+                ConfigCategory general = builder.getOrCreateCategory("category.emc-essentials.general");
+    
+                ConfigEntryBuilder entryBuilder = builder.entryBuilder();
+                general.addEntry(entryBuilder.startIntField("Townless List Y Offset", config.townlessListYOffset)
+                .setDefaultValue(20) // Recommended: Used when user click "Reset"
+                .setTooltip("The vertical offset (in pixels) of the townless list.") // Optional: Shown when the user hover over this option
+                .setSaveConsumer(newValue -> config.townlessListYOffset = newValue) // Recommended: Called when user save the config
+                .build());
+    
+                Screen screen = builder.build();
+                MinecraftClient.getInstance().openScreen(screen);
+			}
+        });
+
         HudRenderCallback.EVENT.register(e -> 
         {               
             // This is where the first player will be, who determines where the list will be.
@@ -63,19 +89,6 @@ public class EMCMod implements ModInitializer {
 
             // Create renderer
             final TextRenderer renderer = client.textRenderer;
-
-            ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMCEssentials Config");
-            ConfigCategory general = builder.getOrCreateCategory("category.emc-essentials.general");
-
-            ConfigEntryBuilder entryBuilder = builder.entryBuilder();
-            general.addEntry(entryBuilder.startIntField("Townless List Y Offset", config.townlessListYOffset)
-            .setDefaultValue(20) // Recommended: Used when user click "Reset"
-            .setTooltip("The vertical offset (in pixels) of the townless list.") // Optional: Shown when the user hover over this option
-            .setSaveConsumer(newValue -> config.townlessListYOffset = newValue) // Recommended: Called when user save the config
-            .build());
-
-            Screen screen = builder.build();
-            client.openScreen(screen);
 
             String townlessText = new LiteralText("Townless Players").formatted(Formatting.LIGHT_PURPLE).asFormattedString();
             renderer.draw(townlessText, config.townlessTextXOffset, config.townlessTextYOffset, 0xffffff);
