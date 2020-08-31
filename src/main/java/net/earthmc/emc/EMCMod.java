@@ -13,6 +13,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Formatting;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,7 +53,8 @@ public class EMCMod implements ModInitializer
             // Create renderer
             final TextRenderer renderer = client.textRenderer;
 
-            renderer.draw("Townless Players", 5, 5, 0xffffff);
+            String townlessText = new LiteralText("Townless Players").formatted(Formatting.LIGHT_PURPLE).asFormattedString();
+            renderer.draw(townlessText, 5, 5, 0xffffff);
 
             if (townless.size() >= 1)
             {            
@@ -59,7 +62,7 @@ public class EMCMod implements ModInitializer
                 {
                     final JsonObject currentPlayer = (JsonObject) townless.get(i);
 
-                    final String playerName = currentPlayer.get("name").getAsString();
+                    String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(Formatting.LIGHT_PURPLE).asFormattedString();
 
                     final Integer playerX = currentPlayer.get("x").getAsInt();
                     final Integer playerY = currentPlayer.get("y").getAsInt();
