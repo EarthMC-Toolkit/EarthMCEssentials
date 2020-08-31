@@ -75,7 +75,7 @@ public class EMCMod implements ModInitializer {
                 // Townless List Y Offset
                 general.addEntry(entryBuilder.startBooleanToggle("Enable Mod", config.general.enableMod)
                 .setDefaultValue(true)
-                .setTooltip("The vertical offset (in pixels) of the townless list.")
+                .setTooltip("Toggles the mod on or off.")
                 .setSaveConsumer(newValue -> config.general.enableMod = newValue)
                 .build());
 
