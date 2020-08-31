@@ -28,7 +28,6 @@ public class EMCMod implements ModInitializer
         System.out.println("EarthMC Mod Initialized!");
 
         townless = getTownless();
-        currentYOffset = 0;
 
         Timer timer = new Timer();
 
@@ -42,6 +41,8 @@ public class EMCMod implements ModInitializer
 
         HudRenderCallback.EVENT.register(e -> 
         {           
+            currentYOffset = 0;
+
             // Create client
             final MinecraftClient client = MinecraftClient.getInstance();
 
