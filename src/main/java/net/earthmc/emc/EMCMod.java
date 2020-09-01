@@ -84,10 +84,17 @@ public class EMCMod implements ModInitializer {
                 .build());
 
                 // Enable Townless
-                townless.addEntry(entryBuilder.startBooleanToggle("Enable Townless", config.townless.enableTownless)
+                general.addEntry(entryBuilder.startBooleanToggle("Enable Townless", config.general.enableTownless)
                 .setDefaultValue(true)
                 .setTooltip("Toggles Townless on or off.")
-                .setSaveConsumer(newValue -> config.townless.enableTownless = newValue)
+                .setSaveConsumer(newValue -> config.general.enableTownless = newValue)
+                .build());
+
+                // Enable Near To
+                general.addEntry(entryBuilder.startBooleanToggle("Enable Near To", config.general.enableNearTo)
+                .setDefaultValue(true)
+                .setTooltip("Toggles Near To on or off. NOT YET IMPLEMENTED.")
+                .setSaveConsumer(newValue -> config.general.enableNearTo = newValue)
                 .build());
 
                 // Townless List Y Offset
@@ -117,6 +124,28 @@ public class EMCMod implements ModInitializer {
                 .setTooltip("The horizontal offset (in pixels) of the 'Townless Players' text.")
                 .setSaveConsumer(newValue -> config.townless.townlessTextXOffset = newValue)
                 .build());
+
+                // Townless Text Color
+                townless.addEntry(entryBuilder.startStrField("Townless Text Color", config.townless.townlessTextColor)
+                .setDefaultValue("LIGHT_PURPLE")
+                .setTooltip("The color of the 'Townless Players' text. Color names can be found at https://minecraft.gamepedia.com/Formatting_codes")
+                .setSaveConsumer(newValue -> 
+                {
+                    Formatting ttf = Formatting.byName(newValue);
+
+                    if (ttf != null) config.townless.townlessTextColor = newValue;
+                }).build());
+
+                // Townless Player Color
+                townless.addEntry(entryBuilder.startStrField("Townless Player Color", config.townless.townlessPlayerColor)
+                .setDefaultValue("LIGHT_PURPLE")
+                .setTooltip("The color of the townless player names. Color names can be found at https://minecraft.gamepedia.com/Formatting_codes")
+                .setSaveConsumer(newValue -> 
+                {
+                    Formatting tpf = Formatting.byName(newValue);
+
+                    if (tpf != null) config.townless.townlessPlayerColor = newValue;
+                }).build());
                 //#endregion
     
                 Screen screen = builder.build();
@@ -132,18 +161,19 @@ public class EMCMod implements ModInitializer {
         //#region HUDRendderCallback
         HudRenderCallback.EVENT.register(e -> 
         {     
-            if (!config.general.enableMod || !config.townless.enableTownless) return;
+            if (!config.general.enableMod || !config.general.enableTownless) return;
 
             // This is where the first player will be, who determines where the list will be.
             currentYOffset = config.townless.townlessListYOffset;
 
-            // Create client
+            // Create client & renderer
             final MinecraftClient client = MinecraftClient.getInstance();
-
-            // Create renderer
             final TextRenderer renderer = client.textRenderer;
+            
+            Formatting townlessTextFormatting = Formatting.byName(config.townless.townlessTextColor);
+            String townlessText = new LiteralText("Townless Players").formatted(townlessTextFormatting).asFormattedString();
 
-            String townlessText = new LiteralText("Townless Players").formatted(Formatting.LIGHT_PURPLE).asFormattedString();
+            // Draw 'Townless Players' text.
             renderer.draw(townlessText, config.townless.townlessTextXOffset, config.townless.townlessTextYOffset, Formatting.WHITE.getColorValue());
 
             if (townless.size() >= 1)
@@ -152,7 +182,8 @@ public class EMCMod implements ModInitializer {
                 {
                     final JsonObject currentPlayer = (JsonObject) townless.get(i);
 
-                    String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(Formatting.LIGHT_PURPLE).asFormattedString();
+                    Formatting playerTextFormatting = Formatting.byName(config.townless.townlessPlayerColor);
+                    String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
 
                     final Integer playerX = currentPlayer.get("x").getAsInt();
                     final Integer playerY = currentPlayer.get("y").getAsInt();
