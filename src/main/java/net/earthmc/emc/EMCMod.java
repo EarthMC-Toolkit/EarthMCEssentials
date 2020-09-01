@@ -68,7 +68,7 @@ public class EMCMod implements ModInitializer {
         {
             if (f4.isPressed())
             {
-                ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Essentials Config");
+                ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Essentials Config").setTransparentBackground(true);
 
                 ConfigCategory general = builder.getOrCreateCategory("General");
                 ConfigCategory townless = builder.getOrCreateCategory("Townless");
