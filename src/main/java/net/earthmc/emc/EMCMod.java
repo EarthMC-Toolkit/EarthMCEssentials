@@ -12,8 +12,6 @@ import org.lwjgl.glfw.GLFW;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigManager;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.ConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -33,6 +31,8 @@ import net.minecraft.util.Formatting;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.earthmc.emc.utils.*;
+
 public class EMCMod implements ModInitializer {
     JsonArray townless;
     int currentYOffset;
@@ -47,6 +47,9 @@ public class EMCMod implements ModInitializer {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
         
+        KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Townless Players", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
+
+        //#region Create Townless Timer
         townless = getTownless();
 
         final Timer timer = new Timer();
@@ -58,9 +61,8 @@ public class EMCMod implements ModInitializer {
             {
                 townless = getTownless();
             }
-        }, 0, 2*60*1000);   
-
-        KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Townless Players", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
+        }, 0, 2*60*1000);
+        //#endregion
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> 
         {
@@ -73,6 +75,7 @@ public class EMCMod implements ModInitializer {
     
                 ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
+                //#region Add Entries
                 // Enable Mod
                 general.addEntry(entryBuilder.startBooleanToggle("Enable Mod", config.general.enableMod)
                 .setDefaultValue(true)
@@ -114,22 +117,19 @@ public class EMCMod implements ModInitializer {
                 .setTooltip("The horizontal offset (in pixels) of the 'Townless Players' text.")
                 .setSaveConsumer(newValue -> config.townless.townlessTextXOffset = newValue)
                 .build());
+                //#endregion
     
                 Screen screen = builder.build();
                 MinecraftClient.getInstance().openScreen(screen);
 
                 builder.setSavingRunnable(() -> 
                 {  
-                    try 
-                    {
-                        ((ConfigManager<ModConfig>) AutoConfig.getConfigHolder(ModConfig.class)).getSerializer().serialize(config);
-                    } catch (ConfigSerializer.SerializationException serializeException) {
-                        serializeException.printStackTrace();
-                    }
+                    ConfigUtils.serializeConfig(config);
                 });
 			}
         });
 
+        //#region HUDRendderCallback
         HudRenderCallback.EVENT.register(e -> 
         {     
             if (!config.general.enableMod || !config.townless.enableTownless) return;
@@ -173,8 +173,10 @@ public class EMCMod implements ModInitializer {
                 }
             }
         });
+        //#endregion
     }
 
+    //#region Townless GET request
     static JsonArray getTownless()
     {
         try
@@ -216,4 +218,5 @@ public class EMCMod implements ModInitializer {
 
         return new JsonArray();
     }
+    //#endregion
 }
