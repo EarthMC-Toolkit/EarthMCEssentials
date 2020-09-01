@@ -12,6 +12,8 @@ import org.lwjgl.glfw.GLFW;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import me.sargunvohra.mcmods.autoconfig1u.ConfigManager;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.ConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -44,7 +46,7 @@ public class EMCMod implements ModInitializer {
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-
+        
         townless = getTownless();
 
         final Timer timer = new Timer();
@@ -112,14 +114,19 @@ public class EMCMod implements ModInitializer {
                 .setTooltip("The horizontal offset (in pixels) of the 'Townless Players' text.")
                 .setSaveConsumer(newValue -> config.townless.townlessTextXOffset = newValue)
                 .build());
-
-                // builder.setSavingRunnable(() -> 
-                // {
-                //     // Serialise config to a file
-                // });
     
                 Screen screen = builder.build();
                 MinecraftClient.getInstance().openScreen(screen);
+
+                builder.setSavingRunnable(() -> 
+                {  
+                    try 
+                    {
+                        ((ConfigManager<ModConfig>) AutoConfig.getConfigHolder(ModConfig.class)).getSerializer().serialize(config);
+                    } catch (ConfigSerializer.SerializationException serializeException) {
+                        serializeException.printStackTrace();
+                    }
+                });
 			}
         });
 
