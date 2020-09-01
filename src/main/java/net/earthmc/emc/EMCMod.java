@@ -36,12 +36,11 @@ public class EMCMod implements ModInitializer {
     int currentYOffset;
 
     ModConfig config;
-    ModMenuIntegration modMenu;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
     {
-        System.out.println("EarthMC Mod Initialized!");
+        System.out.println("EarthMC Essentials Initialized!");
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
@@ -116,7 +115,7 @@ public class EMCMod implements ModInitializer {
 
                 // builder.setSavingRunnable(() -> 
                 // {
-                    
+                //     // Serialise config to a file
                 // });
     
                 Screen screen = builder.build();
@@ -126,7 +125,8 @@ public class EMCMod implements ModInitializer {
 
         HudRenderCallback.EVENT.register(e -> 
         {     
-            if (config.general.enableMod == false || config.townless.enableTownless == false) return;          
+            if (!config.general.enableMod || !config.townless.enableTownless) return;
+
             // This is where the first player will be, who determines where the list will be.
             currentYOffset = config.townless.townlessListYOffset;
 
