@@ -16,6 +16,7 @@ public class ModConfig implements ConfigData
     static class General 
     {
         boolean enableMod = true;
+        boolean emcOnly = true;
         boolean enableTownless = true;
         boolean enableNearTo = true;
     }

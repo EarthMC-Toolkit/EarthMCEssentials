@@ -38,6 +38,7 @@ public class EMCMod implements ModInitializer {
     int currentYOffset;
 
     ModConfig config;
+    String[] colors;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
@@ -48,6 +49,8 @@ public class EMCMod implements ModInitializer {
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
         
         KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Townless Players", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
+
+        colors = new String[] {"BLUE","DARK_BLUE","GREEN","DARK_GREEN","AQUA","DARK_AQUA","RED","DARK_RED","LIGHT_PURPLE","DARK_PURPLE","YELLOW","GOLD","GRAY","DARK_GRAY","BLACK","WHITE"};
 
         //#region Create Townless Timer
         townless = getTownless();
@@ -83,6 +86,13 @@ public class EMCMod implements ModInitializer {
                 .setSaveConsumer(newValue -> config.general.enableMod = newValue)
                 .build());
 
+                // Enable EMC Only
+                general.addEntry(entryBuilder.startBooleanToggle("EMC Only", config.general.emcOnly)
+                .setDefaultValue(true)
+                .setTooltip("Toggles EMC Only on or off. NOT YET IMPLEMENTED.")
+                .setSaveConsumer(newValue -> config.general.emcOnly = newValue)
+                .build());
+
                 // Enable Townless
                 general.addEntry(entryBuilder.startBooleanToggle("Enable Townless", config.general.enableTownless)
                 .setDefaultValue(true)
@@ -98,59 +108,51 @@ public class EMCMod implements ModInitializer {
                 .build());
 
                 // Townless List Y Offset
-                townless.addEntry(entryBuilder.startIntField("Townless List Y Offset", config.townless.townlessListYOffset)
+                townless.addEntry(entryBuilder.startIntSlider("Townless List Y Offset", config.townless.townlessListYOffset, 20, 450)
                 .setDefaultValue(20)
                 .setTooltip("The vertical offset (in pixels) of the townless list.")
                 .setSaveConsumer(newValue -> config.townless.townlessListYOffset = newValue)
                 .build());
 
                 // Townless List X Offset
-                townless.addEntry(entryBuilder.startIntField("Townless List X Offset", config.townless.townlessListXOffset)
+                townless.addEntry(entryBuilder.startIntSlider("Townless List X Offset", config.townless.townlessListXOffset, 5, 800)
                 .setDefaultValue(5)
                 .setTooltip("The horizontal offset (in pixels) of the townless list.")
                 .setSaveConsumer(newValue -> config.townless.townlessListXOffset = newValue)
                 .build());
 
                 // Townless Text Y Offset
-                townless.addEntry(entryBuilder.startIntField("Townless Text Y Offset", config.townless.townlessTextYOffset)
+                townless.addEntry(entryBuilder.startIntSlider("Townless Text Y Offset", config.townless.townlessTextYOffset, 5, 450)
                 .setDefaultValue(5)
                 .setTooltip("The vertical offset (in pixels) of the 'Townless Players' text.")
                 .setSaveConsumer(newValue -> config.townless.townlessTextYOffset = newValue)
                 .build());
 
                 // Townless Text X Offset
-                townless.addEntry(entryBuilder.startIntField("Townless Text X Offset", config.townless.townlessTextXOffset)
-                .setDefaultValue(5) 
+                townless.addEntry(entryBuilder.startIntSlider("Townless Text X Offset", config.townless.townlessTextXOffset, 5, 800)
+                .setDefaultValue(5)
                 .setTooltip("The horizontal offset (in pixels) of the 'Townless Players' text.")
                 .setSaveConsumer(newValue -> config.townless.townlessTextXOffset = newValue)
                 .build());
 
                 // Townless Text Color
-                townless.addEntry(entryBuilder.startStrField("Townless Text Color", config.townless.townlessTextColor)
+                townless.addEntry(entryBuilder.startSelector("Townless Text Color", colors, config.townless.townlessTextColor)
                 .setDefaultValue("LIGHT_PURPLE")
                 .setTooltip("The color of the 'Townless Players' text. Color names can be found at https://minecraft.gamepedia.com/Formatting_codes")
-                .setSaveConsumer(newValue -> 
-                {
-                    Formatting ttf = Formatting.byName(newValue);
-
-                    if (ttf != null) config.townless.townlessTextColor = newValue;
-                }).build());
+                .setSaveConsumer(newValue -> config.townless.townlessTextColor = newValue)
+                .build());
 
                 // Townless Player Color
-                townless.addEntry(entryBuilder.startStrField("Townless Player Color", config.townless.townlessPlayerColor)
+                townless.addEntry(entryBuilder.startSelector("Townless Player Color", colors, config.townless.townlessPlayerColor)
                 .setDefaultValue("LIGHT_PURPLE")
                 .setTooltip("The color of the townless player names. Color names can be found at https://minecraft.gamepedia.com/Formatting_codes")
-                .setSaveConsumer(newValue -> 
-                {
-                    Formatting tpf = Formatting.byName(newValue);
-
-                    if (tpf != null) config.townless.townlessPlayerColor = newValue;
-                }).build());
+                .setSaveConsumer(newValue -> config.townless.townlessPlayerColor = newValue)
+                .build());
                 //#endregion
     
                 Screen screen = builder.build();
                 MinecraftClient.getInstance().openScreen(screen);
-
+                
                 builder.setSavingRunnable(() -> 
                 {  
                     ConfigUtils.serializeConfig(config);
