@@ -6,5 +6,5 @@
 ### For both client and server, select 1.15.2 and click install.
 ### Download both .jars from the [Latest Release](github.com/Warriorrrr/EarthMCEssentials/releases/latest)
 ### Place them in your mods folder.
-### Launch Minecraft and check it out!
+### Open the Minecraft Launcher, select the Fabric Loader and launch!
 # ![EarthMC Stats Icon](/src/main/resources/assets/emc/icon.png)
