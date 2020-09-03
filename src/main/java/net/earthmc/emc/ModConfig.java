@@ -17,16 +17,15 @@ public class ModConfig implements ConfigData
     {
         boolean enableMod = true;
         boolean emcOnly = true;
+
         boolean enableTownless = true;
         boolean enableNearTo = true;
     }
 
     static class Townless
     {
-        int townlessTextXOffset = 5;
-        int townlessListYOffset = 20;
-        int townlessListXOffset = 5;
-        int townlessTextYOffset = 5;
+        int townlessListXPos = 775;
+        int townlessListYPos = 280;
 
         String townlessTextColor = Formatting.LIGHT_PURPLE.getName();
         String townlessPlayerColor = Formatting.LIGHT_PURPLE.getName();

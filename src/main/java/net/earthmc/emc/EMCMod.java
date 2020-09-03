@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.lwjgl.glfw.GLFW;
-
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -27,7 +26,6 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,7 +33,7 @@ import net.earthmc.emc.utils.*;
 
 public class EMCMod implements ModInitializer {
     JsonArray townless;
-    int currentYOffset;
+    int tempPlayerOffset;
 
     ModConfig config;
     String[] colors;
@@ -47,28 +45,28 @@ public class EMCMod implements ModInitializer {
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-        
-        KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Townless Players", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
-        colors = new String[] {"BLUE","DARK_BLUE","GREEN","DARK_GREEN","AQUA","DARK_AQUA","RED","DARK_RED","LIGHT_PURPLE","DARK_PURPLE","YELLOW","GOLD","GRAY","DARK_GRAY","BLACK","WHITE"};
+        KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
-        //#region Create Townless Timer
+        colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
+                "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
+
+        // #region Create Townless Timer
         townless = getTownless();
 
         final Timer timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() 
-        {
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run() 
-            {
+            public void run() {
                 townless = getTownless();
             }
         }, 0, 2*60*1000);
-        //#endregion
+        // #endregion
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> 
         {
+            // Pressed F4 (Config Menu)
             if (f4.isPressed())
             {
                 ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Essentials Config").setTransparentBackground(true);
@@ -107,45 +105,31 @@ public class EMCMod implements ModInitializer {
                 .setSaveConsumer(newValue -> config.general.enableNearTo = newValue)
                 .build());
 
-                // Townless List Y Offset
-                townless.addEntry(entryBuilder.startIntSlider("Townless List Y Offset", config.townless.townlessListYOffset, 20, 450)
-                .setDefaultValue(20)
-                .setTooltip("The vertical offset (in pixels) of the townless list.")
-                .setSaveConsumer(newValue -> config.townless.townlessListYOffset = newValue)
+                // Townless Horizontal Position
+                townless.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.townless.townlessListXPos, 10, 770)
+                .setDefaultValue(775)
+                .setTooltip("The horizontal position on the HUD.")
+                .setSaveConsumer(newValue -> config.townless.townlessListXPos = newValue)
                 .build());
 
-                // Townless List X Offset
-                townless.addEntry(entryBuilder.startIntSlider("Townless List X Offset", config.townless.townlessListXOffset, 5, 800)
-                .setDefaultValue(5)
-                .setTooltip("The horizontal offset (in pixels) of the townless list.")
-                .setSaveConsumer(newValue -> config.townless.townlessListXOffset = newValue)
-                .build());
-
-                // Townless Text Y Offset
-                townless.addEntry(entryBuilder.startIntSlider("Townless Text Y Offset", config.townless.townlessTextYOffset, 5, 450)
-                .setDefaultValue(5)
-                .setTooltip("The vertical offset (in pixels) of the 'Townless Players' text.")
-                .setSaveConsumer(newValue -> config.townless.townlessTextYOffset = newValue)
-                .build());
-
-                // Townless Text X Offset
-                townless.addEntry(entryBuilder.startIntSlider("Townless Text X Offset", config.townless.townlessTextXOffset, 5, 800)
-                .setDefaultValue(5)
-                .setTooltip("The horizontal offset (in pixels) of the 'Townless Players' text.")
-                .setSaveConsumer(newValue -> config.townless.townlessTextXOffset = newValue)
+                // Townless Vertical Position
+                townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.townless.townlessListYPos, 20, 280)
+                .setDefaultValue(280)
+                .setTooltip("The vertical position on the HUD.")
+                .setSaveConsumer(newValue -> config.townless.townlessListYPos = newValue)
                 .build());
 
                 // Townless Text Color
                 townless.addEntry(entryBuilder.startSelector("Townless Text Color", colors, config.townless.townlessTextColor)
                 .setDefaultValue("LIGHT_PURPLE")
-                .setTooltip("The color of the 'Townless Players' text. Color names can be found at https://minecraft.gamepedia.com/Formatting_codes")
+                .setTooltip("The color of the 'Townless Players' text.")
                 .setSaveConsumer(newValue -> config.townless.townlessTextColor = newValue)
                 .build());
 
                 // Townless Player Color
                 townless.addEntry(entryBuilder.startSelector("Townless Player Color", colors, config.townless.townlessPlayerColor)
                 .setDefaultValue("LIGHT_PURPLE")
-                .setTooltip("The color of the townless player names. Color names can be found at https://minecraft.gamepedia.com/Formatting_codes")
+                .setTooltip("The color of the townless player names.")
                 .setSaveConsumer(newValue -> config.townless.townlessPlayerColor = newValue)
                 .build());
                 //#endregion
@@ -160,13 +144,13 @@ public class EMCMod implements ModInitializer {
 			}
         });
 
-        //#region HUDRendderCallback
+        //#region HUDRenderCallback
         HudRenderCallback.EVENT.register(e -> 
         {     
             if (!config.general.enableMod || !config.general.enableTownless) return;
 
             // This is where the first player will be, who determines where the list will be.
-            currentYOffset = config.townless.townlessListYOffset;
+            tempPlayerOffset = config.townless.townlessListYPos;
 
             // Create client & renderer
             final MinecraftClient client = MinecraftClient.getInstance();
@@ -176,7 +160,7 @@ public class EMCMod implements ModInitializer {
             String townlessText = new LiteralText("Townless Players").formatted(townlessTextFormatting).asFormattedString();
 
             // Draw 'Townless Players' text.
-            renderer.draw(townlessText, config.townless.townlessTextXOffset, config.townless.townlessTextYOffset, Formatting.WHITE.getColorValue());
+            renderer.drawWithShadow(townlessText, config.townless.townlessListXPos, config.townless.townlessListYPos - 15, Formatting.WHITE.getColorValue());
 
             if (townless.size() >= 1)
             {            
@@ -194,15 +178,15 @@ public class EMCMod implements ModInitializer {
                     // If underground, display "Underground" instead of their position
                     if (playerX == 0 && playerZ == 0)
                     {
-                        renderer.draw(playerName + " Underground", config.townless.townlessListXOffset, currentYOffset, Formatting.WHITE.getColorValue());
+                        renderer.drawWithShadow(playerName + " Underground", config.townless.townlessListXPos, tempPlayerOffset, Formatting.WHITE.getColorValue());
                     }
                     else 
                     {                   
-                        renderer.draw(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.townlessListXOffset, currentYOffset, Formatting.WHITE.getColorValue());
+                        renderer.drawWithShadow(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.townlessListXPos, tempPlayerOffset, Formatting.WHITE.getColorValue());
                     }
 
                     // Add offset for the next player.
-                    currentYOffset += 10;
+                    tempPlayerOffset += 10;
                 }
             }
         });
