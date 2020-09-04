@@ -96,20 +96,6 @@ public class EMCMod implements ModInitializer
                 .setSaveConsumer(newValue -> config.general.emcOnly = newValue)
                 .build());
 
-                // Enable Townless
-                general.addEntry(entryBuilder.startBooleanToggle("Enable Townless", config.general.enableTownless)
-                .setDefaultValue(true)
-                .setTooltip("Toggles Townless on or off.")
-                .setSaveConsumer(newValue -> config.general.enableTownless = newValue)
-                .build());
-
-                // Enable Near To
-                general.addEntry(entryBuilder.startBooleanToggle("Enable Near To", config.general.enableNearTo)
-                .setDefaultValue(true)
-                .setTooltip("Toggles Near To on or off. NOT YET IMPLEMENTED.")
-                .setSaveConsumer(newValue -> config.general.enableNearTo = newValue)
-                .build());
-
                 // Townless Horizontal Position
                 townless.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.townless.townlessListXPos, 10, 770)
                 .setDefaultValue(775)

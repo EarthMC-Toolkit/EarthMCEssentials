@@ -16,8 +16,6 @@ public class ModConfig implements ConfigData
     {
         boolean enableMod = true;
         boolean emcOnly = true;
-        boolean enableTownless = true;
-        boolean enableNearTo = true;
     }
 
     static class Townless
