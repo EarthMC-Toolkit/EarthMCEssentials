@@ -9,12 +9,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.lwjgl.glfw.GLFW;
+
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -31,12 +31,15 @@ import java.util.TimerTask;
 
 import net.earthmc.emc.utils.*;
 
-public class EMCMod implements ModInitializer {
+public class EMCMod implements ModInitializer 
+{
     JsonArray townless;
     int tempPlayerOffset;
 
     ModConfig config;
     String[] colors;
+
+    KeyBinding configKeybind;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
@@ -46,7 +49,7 @@ public class EMCMod implements ModInitializer {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
-        KeyBinding f4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
+        configKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
@@ -56,27 +59,29 @@ public class EMCMod implements ModInitializer {
 
         final Timer timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() 
+        {
             @Override
-            public void run() {
+            public void run() 
+            {
                 townless = getTownless();
             }
-        }, 0, 2*60*1000);
+        }, 0, 2 * 60 * 1000);
         // #endregion
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> 
         {
             // Pressed F4 (Config Menu)
-            if (f4.isPressed())
+            if (configKeybind.wasPressed())
             {
                 ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Essentials Config").setTransparentBackground(true);
 
                 ConfigCategory general = builder.getOrCreateCategory("General");
                 ConfigCategory townless = builder.getOrCreateCategory("Townless");
-    
+
                 ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-                //#region Add Entries
+                // #region Add Entries
                 // Enable Mod
                 general.addEntry(entryBuilder.startBooleanToggle("Enable Mod", config.general.enableMod)
                 .setDefaultValue(true)
@@ -133,10 +138,10 @@ public class EMCMod implements ModInitializer {
                 .setSaveConsumer(newValue -> config.townless.townlessPlayerColor = newValue)
                 .build());
                 //#endregion
-    
+
                 Screen screen = builder.build();
                 MinecraftClient.getInstance().openScreen(screen);
-                
+
                 builder.setSavingRunnable(() -> 
                 {  
                     ConfigUtils.serializeConfig(config);
