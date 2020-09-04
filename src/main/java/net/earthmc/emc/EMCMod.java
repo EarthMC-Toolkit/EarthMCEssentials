@@ -138,7 +138,7 @@ public class EMCMod implements ModInitializer
         //#region HUDRenderCallback
         HudRenderCallback.EVENT.register(e -> 
         {     
-            if (!config.general.enableMod || !config.general.enableTownless) return;
+            if (!config.general.enableMod) return;
 
             // This is where the first player will be, who determines where the list will be.
             tempPlayerOffset = config.townless.townlessListYPos;
