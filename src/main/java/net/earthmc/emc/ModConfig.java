@@ -21,8 +21,8 @@ public class ModConfig implements ConfigData
 
     static class Townless
     {
-        int townlessListXPos = 775;
-        int townlessListYPos = 280;
+        int townlessListXPos = 770;
+        int townlessListYPos = 450;
 
         String townlessTextColor = Formatting.LIGHT_PURPLE.getName();
         String townlessPlayerColor = Formatting.LIGHT_PURPLE.getName();
@@ -30,13 +30,15 @@ public class ModConfig implements ConfigData
 
     static class Nearby
     {
-        int nearbyListXPos = 775;
-        int nearbyListYPos = 180;
+        int nearbyListXPos = 770;
+        int nearbyListYPos = 300;
 
         String nearbyTextColor = Formatting.GOLD.getName();
         String nearbyPlayerColor = Formatting.GOLD.getName();
 
-        int xRadius = 100;
-        int zRadius = 100;
+        String playerName = "";
+
+        int xRadius = 500;
+        int zRadius = 500;
     }
 }

@@ -57,21 +57,30 @@ public class EMCMod implements ModInitializer
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
 
-        // #region Create 2 Minute Timer
         townless = getTownless();
-        nearby = getNearby(config);
+        nearby = new JsonArray();
 
-        final Timer timer = new Timer();
+        final Timer townlessTimer = new Timer();
+        final Timer nearbyTimer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() 
+        // #region Create Timers
+        townlessTimer.scheduleAtFixedRate(new TimerTask() 
         {
             @Override
             public void run() 
             {
                 townless = getTownless();
-                nearby = getNearby(config);
             }
         }, 0, 2 * 60 * 1000);
+
+        nearbyTimer.scheduleAtFixedRate(new TimerTask() 
+        {
+            @Override
+            public void run() 
+            {
+                nearby = getNearby(config);
+            }
+        }, 0, 10 * 1000);
         // #endregion
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> 
@@ -83,6 +92,7 @@ public class EMCMod implements ModInitializer
 
                 ConfigCategory general = builder.getOrCreateCategory("General");
                 ConfigCategory townless = builder.getOrCreateCategory("Townless");
+                ConfigCategory nearby = builder.getOrCreateCategory("Nearby");
 
                 ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
@@ -103,14 +113,14 @@ public class EMCMod implements ModInitializer
 
                 // Townless Horizontal Position
                 townless.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.townless.townlessListXPos, 10, 770)
-                .setDefaultValue(775)
+                .setDefaultValue(770)
                 .setTooltip("The horizontal position on the HUD.")
                 .setSaveConsumer(newValue -> config.townless.townlessListXPos = newValue)
                 .build());
 
                 // Townless Vertical Position
-                townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.townless.townlessListYPos, 20, 280)
-                .setDefaultValue(280)
+                townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.townless.townlessListYPos, 20, 500)
+                .setDefaultValue(450)
                 .setTooltip("The vertical position on the HUD.")
                 .setSaveConsumer(newValue -> config.townless.townlessListYPos = newValue)
                 .build());
@@ -128,6 +138,55 @@ public class EMCMod implements ModInitializer
                 .setTooltip("The color of the townless player names.")
                 .setSaveConsumer(newValue -> config.townless.townlessPlayerColor = newValue)
                 .build());
+
+                 // Nearby Player Horizontal Position
+                 nearby.addEntry(entryBuilder.startIntSlider("Nearby Vertical Position", config.nearby.nearbyListXPos, 10, 770)
+                 .setDefaultValue(770)
+                 .setTooltip("The horizontal position on the HUD.")
+                 .setSaveConsumer(newValue -> config.nearby.nearbyListXPos = newValue)
+                 .build());
+
+                 // Nearby Player Vertical Position
+                 nearby.addEntry(entryBuilder.startIntSlider("Nearby Vertical Position", config.nearby.nearbyListYPos, 20, 500)
+                 .setDefaultValue(300)
+                 .setTooltip("The vertical position on the HUD.")
+                 .setSaveConsumer(newValue -> config.nearby.nearbyListYPos = newValue)
+                 .build());
+
+                 // Nearby Player Text Color
+                 nearby.addEntry(entryBuilder.startSelector("Nearby Text Color", colors, config.nearby.nearbyTextColor)
+                 .setDefaultValue("GOLD")
+                 .setTooltip("The color of the 'Nearby Players' text.")
+                 .setSaveConsumer(newValue -> config.nearby.nearbyTextColor = newValue)
+                 .build());
+
+                 // Nearby Player Player Color
+                 nearby.addEntry(entryBuilder.startSelector("Nearby Player Color", colors, config.nearby.nearbyPlayerColor)
+                 .setDefaultValue("GOLD")
+                 .setTooltip("The color of the nearby player names.")
+                 .setSaveConsumer(newValue -> config.nearby.nearbyPlayerColor = newValue)
+                 .build());
+
+                 // Nearby Player Name
+                 nearby.addEntry(entryBuilder.startStrField("Player Name", config.nearby.playerName)
+                 .setDefaultValue("")
+                 .setTooltip("The name of the player to check nearby.")
+                 .setSaveConsumer(newValue -> config.nearby.playerName = newValue)
+                 .build());
+
+                 // Nearby X Radius
+                 nearby.addEntry(entryBuilder.startIntSlider("X Radius", config.nearby.xRadius, 50, 10000)
+                 .setDefaultValue(500)
+                 .setTooltip("The x radius (in blocks) to check inside.")
+                 .setSaveConsumer(newValue -> config.nearby.xRadius = newValue)
+                 .build());
+
+                 // Nearby Z Radius
+                 nearby.addEntry(entryBuilder.startIntSlider("Z Radius", config.nearby.zRadius, 50, 10000)
+                 .setDefaultValue(500)
+                 .setTooltip("The z radius (in blocks) to check inside.")
+                 .setSaveConsumer(newValue -> config.nearby.zRadius = newValue)
+                 .build());
                 //#endregion
 
                 Screen screen = builder.build();
@@ -265,11 +324,9 @@ public class EMCMod implements ModInitializer
 
     static JsonArray getNearby(ModConfig config)
     {
-        MinecraftClient client = MinecraftClient.getInstance();
-
         try
         {
-            final URL url = new URL("http://earthmc-api.herokuapp.com/onlineplayers/" + client.player.getName() + "/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
+            final URL url = new URL("http://earthmc-api.herokuapp.com/onlineplayers/" + config.nearby.playerName + "/nearby/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
 
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
