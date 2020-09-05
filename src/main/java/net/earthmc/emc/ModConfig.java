@@ -11,6 +11,7 @@ public class ModConfig implements ConfigData
     @ConfigEntry.Gui.CollapsibleObject
     General general = new General();
     Townless townless = new Townless();
+    Nearby nearby = new Nearby();
 
     static class General
     {
@@ -25,5 +26,17 @@ public class ModConfig implements ConfigData
 
         String townlessTextColor = Formatting.LIGHT_PURPLE.getName();
         String townlessPlayerColor = Formatting.LIGHT_PURPLE.getName();
+    }
+
+    static class Nearby
+    {
+        int nearbyListXPos = 775;
+        int nearbyListYPos = 180;
+
+        String nearbyTextColor = Formatting.GOLD.getName();
+        String nearbyPlayerColor = Formatting.GOLD.getName();
+
+        int xRadius = 100;
+        int zRadius = 100;
     }
 }

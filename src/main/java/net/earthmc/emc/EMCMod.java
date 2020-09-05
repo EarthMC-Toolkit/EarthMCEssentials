@@ -34,7 +34,10 @@ import net.earthmc.emc.utils.*;
 public class EMCMod implements ModInitializer 
 {
     JsonArray townless;
-    int tempPlayerOffset;
+    JsonArray nearby;
+
+    int townlessPlayerOffset;
+    int nearbyPlayerOffset;
 
     ModConfig config;
     String[] colors;
@@ -54,8 +57,9 @@ public class EMCMod implements ModInitializer
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
 
-        // #region Create Townless Timer
+        // #region Create 2 Minute Timer
         townless = getTownless();
+        nearby = getNearby(config);
 
         final Timer timer = new Timer();
 
@@ -65,6 +69,7 @@ public class EMCMod implements ModInitializer
             public void run() 
             {
                 townless = getTownless();
+                nearby = getNearby(config);
             }
         }, 0, 2 * 60 * 1000);
         // #endregion
@@ -140,51 +145,82 @@ public class EMCMod implements ModInitializer
         {     
             if (!config.general.enableMod) return;
 
-            // This is where the first player will be, who determines where the list will be.
-            tempPlayerOffset = config.townless.townlessListYPos;
-
             // Create client & renderer
             final MinecraftClient client = MinecraftClient.getInstance();
             final TextRenderer renderer = client.textRenderer;
-            
+
+            //#region Draw Townless List
+            townlessPlayerOffset = config.townless.townlessListYPos; // Position of the first player, who determines where the list will be.
+             
             Formatting townlessTextFormatting = Formatting.byName(config.townless.townlessTextColor);
             String townlessText = new LiteralText("Townless Players").formatted(townlessTextFormatting).asFormattedString();
-
+ 
             // Draw 'Townless Players' text.
             renderer.drawWithShadow(townlessText, config.townless.townlessListXPos, config.townless.townlessListYPos - 15, Formatting.WHITE.getColorValue());
-
+ 
             if (townless.size() >= 1)
             {            
                 for (int i = 0; i < townless.size(); i++) 
                 {
                     final JsonObject currentPlayer = (JsonObject) townless.get(i);
-
+ 
                     Formatting playerTextFormatting = Formatting.byName(config.townless.townlessPlayerColor);
                     String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
-
+ 
                     final Integer playerX = currentPlayer.get("x").getAsInt();
                     final Integer playerY = currentPlayer.get("y").getAsInt();
                     final Integer playerZ = currentPlayer.get("z").getAsInt();
-
+ 
                     // If underground, display "Underground" instead of their position
                     if (playerX == 0 && playerZ == 0)
                     {
-                        renderer.drawWithShadow(playerName + " Underground", config.townless.townlessListXPos, tempPlayerOffset, Formatting.WHITE.getColorValue());
+                        renderer.drawWithShadow(playerName + " Underground", config.townless.townlessListXPos, townlessPlayerOffset, Formatting.WHITE.getColorValue());
                     }
                     else 
                     {                   
-                        renderer.drawWithShadow(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.townlessListXPos, tempPlayerOffset, Formatting.WHITE.getColorValue());
+                        renderer.drawWithShadow(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.townlessListXPos, townlessPlayerOffset, Formatting.WHITE.getColorValue());
                     }
-
+ 
                     // Add offset for the next player.
-                    tempPlayerOffset += 10;
+                    townlessPlayerOffset += 10;
                 }
             }
+            //#endregion
+
+            //#region Draw Nearby List
+            nearbyPlayerOffset = config.nearby.nearbyListYPos; // Position of the first player, who determines where the list will be.
+             
+            Formatting nearbyTextFormatting = Formatting.byName(config.nearby.nearbyTextColor);
+            String nearbyText = new LiteralText("Nearby Players").formatted(nearbyTextFormatting).asFormattedString();
+ 
+            // Draw 'Nearby Players' text.
+            renderer.drawWithShadow(nearbyText, config.nearby.nearbyListXPos, config.nearby.nearbyListYPos - 15, Formatting.WHITE.getColorValue());
+ 
+            if (nearby.size() >= 1)
+            {            
+                for (int i = 0; i < nearby.size(); i++) 
+                {
+                    final JsonObject currentPlayer = (JsonObject) nearby.get(i);
+ 
+                    Formatting playerTextFormatting = Formatting.byName(config.nearby.nearbyPlayerColor);
+                    String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
+ 
+                    final Integer playerX = currentPlayer.get("x").getAsInt();
+                    final Integer playerY = currentPlayer.get("y").getAsInt();
+                    final Integer playerZ = currentPlayer.get("z").getAsInt();
+ 
+                    renderer.drawWithShadow(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.nearby.nearbyListXPos, nearbyPlayerOffset, Formatting.WHITE.getColorValue());
+ 
+                    // Add offset for the next player.
+                    nearbyPlayerOffset += 10;
+                }
+            }
+            //#endregion
         });
         //#endregion
     }
 
-    //#region Townless GET request
+    //#region API Calls
     static JsonArray getTownless()
     {
         try
@@ -217,6 +253,50 @@ public class EMCMod implements ModInitializer
                 final JsonArray townlessArray = (JsonArray) parse.parse(inline);
                     
                 return townlessArray;
+            }
+        }
+        catch (final Exception exc) 
+        {
+            return new JsonArray();
+        }
+
+        return new JsonArray();
+    }
+
+    static JsonArray getNearby(ModConfig config)
+    {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        try
+        {
+            final URL url = new URL("http://earthmc-api.herokuapp.com/onlineplayers/" + client.player.getName() + "/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
+
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            // Getting the response code
+            final int responsecode = conn.getResponseCode();
+
+            if (responsecode == 200) 
+            {
+                String inline = "";
+                final Scanner scanner = new Scanner(url.openStream());
+
+                // Write all the JSON data into a string using a scanner
+                while (scanner.hasNext()) 
+                {
+                    inline += scanner.nextLine();
+                }
+
+                // Close the scanner
+                scanner.close();
+
+                // Using the JSON simple library parse the string into a json object
+                final JsonParser parse = new JsonParser();
+                final JsonArray nearbyArray = (JsonArray) parse.parse(inline);
+                    
+                return nearbyArray;
             }
         }
         catch (final Exception exc) 
