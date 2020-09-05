@@ -69,7 +69,7 @@ public class EMCMod implements ModInitializer
             @Override
             public void run() 
             {
-                townless = getTownless();
+                if (config.general.enableMod) townless = getTownless();
             }
         }, 0, 2 * 60 * 1000);
 
@@ -78,7 +78,7 @@ public class EMCMod implements ModInitializer
             @Override
             public void run() 
             {
-                nearby = getNearby(config);
+                if (config.general.enableMod) nearby = getNearby(config);
             }
         }, 0, 10 * 1000);
         // #endregion
@@ -120,7 +120,7 @@ public class EMCMod implements ModInitializer
 
                 // Townless Vertical Position
                 townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.townless.townlessListYPos, 20, 500)
-                .setDefaultValue(450)
+                .setDefaultValue(375)
                 .setTooltip("The vertical position on the HUD.")
                 .setSaveConsumer(newValue -> config.townless.townlessListYPos = newValue)
                 .build());
@@ -140,15 +140,15 @@ public class EMCMod implements ModInitializer
                 .build());
 
                  // Nearby Player Horizontal Position
-                 nearby.addEntry(entryBuilder.startIntSlider("Nearby Vertical Position", config.nearby.nearbyListXPos, 10, 770)
+                 nearby.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.nearby.nearbyListXPos, 10, 770)
                  .setDefaultValue(770)
                  .setTooltip("The horizontal position on the HUD.")
                  .setSaveConsumer(newValue -> config.nearby.nearbyListXPos = newValue)
                  .build());
 
                  // Nearby Player Vertical Position
-                 nearby.addEntry(entryBuilder.startIntSlider("Nearby Vertical Position", config.nearby.nearbyListYPos, 20, 500)
-                 .setDefaultValue(300)
+                 nearby.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.nearby.nearbyListYPos, 20, 500)
+                 .setDefaultValue(275)
                  .setTooltip("The vertical position on the HUD.")
                  .setSaveConsumer(newValue -> config.nearby.nearbyListYPos = newValue)
                  .build());
