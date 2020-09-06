@@ -31,18 +31,21 @@ import java.util.TimerTask;
 
 import net.earthmc.emc.utils.*;
 
-public class EMCMod implements ModInitializer 
+public class EMCMod implements ModInitializer
 {
-    JsonArray townless;
-    JsonArray nearby;
+    public static JsonArray townless;
+    public static JsonArray nearby;
 
     int townlessPlayerOffset;
     int nearbyPlayerOffset;
 
-    ModConfig config;
+    public static ModConfig config;
     String[] colors;
 
     KeyBinding configKeybind;
+
+    public static String clientName = null;
+    public static MinecraftClient client;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
@@ -76,7 +79,7 @@ public class EMCMod implements ModInitializer
         nearbyTimer.scheduleAtFixedRate(new TimerTask() 
         {
             @Override
-            public void run() 
+            public void run()
             {
                 if (config.general.enableMod) nearby = getNearby(config);
             }
@@ -169,7 +172,7 @@ public class EMCMod implements ModInitializer
 
                  // Nearby Player Name
                  nearby.addEntry(entryBuilder.startStrField("Player Name", config.nearby.playerName)
-                 .setDefaultValue("")
+                 .setDefaultValue(clientName)
                  .setTooltip("The name of the player to check nearby.")
                  .setSaveConsumer(newValue -> config.nearby.playerName = newValue)
                  .build());
@@ -190,7 +193,7 @@ public class EMCMod implements ModInitializer
                 //#endregion
 
                 Screen screen = builder.build();
-                MinecraftClient.getInstance().openScreen(screen);
+                client.openScreen(screen);
 
                 builder.setSavingRunnable(() -> 
                 {  
@@ -205,7 +208,6 @@ public class EMCMod implements ModInitializer
             if (!config.general.enableMod) return;
 
             // Create client & renderer
-            final MinecraftClient client = MinecraftClient.getInstance();
             final TextRenderer renderer = client.textRenderer;
 
             //#region Draw Townless List
@@ -280,7 +282,7 @@ public class EMCMod implements ModInitializer
     }
 
     //#region API Calls
-    static JsonArray getTownless()
+    public static JsonArray getTownless()
     {
         try
         {
@@ -322,7 +324,7 @@ public class EMCMod implements ModInitializer
         return new JsonArray();
     }
 
-    static JsonArray getNearby(ModConfig config)
+    public static JsonArray getNearby(ModConfig config)
     {
         try
         {

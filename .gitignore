@@ -14,3 +14,6 @@ gradle-app.setting
 .gradle/
 build/
 bin/
+out/
+.idea/
+run/
