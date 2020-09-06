@@ -26,8 +26,6 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import net.earthmc.emc.utils.*;
 
@@ -63,29 +61,7 @@ public class EMCMod implements ModInitializer
         townless = getTownless();
         nearby = new JsonArray();
 
-        final Timer townlessTimer = new Timer();
-        final Timer nearbyTimer = new Timer();
-
-        // #region Create Timers
-        townlessTimer.scheduleAtFixedRate(new TimerTask() 
-        {
-            @Override
-            public void run() 
-            {
-                if (config.general.enableMod) townless = getTownless();
-            }
-        }, 0, 2 * 60 * 1000);
-
-        nearbyTimer.scheduleAtFixedRate(new TimerTask() 
-        {
-            @Override
-            public void run()
-            {
-                if (config.general.enableMod) nearby = getNearby(config);
-            }
-        }, 0, 10 * 1000);
-        // #endregion
-
+        //#region ClientTickEvents
         ClientTickEvents.END_CLIENT_TICK.register(client -> 
         {
             // Pressed F4 (Config Menu)
@@ -130,14 +106,14 @@ public class EMCMod implements ModInitializer
 
                 // Townless Text Color
                 townless.addEntry(entryBuilder.startSelector("Townless Text Color", colors, config.townless.townlessTextColor)
-                .setDefaultValue("LIGHT_PURPLE")
+                .setDefaultValue(colors[8])
                 .setTooltip("The color of the 'Townless Players' text.")
                 .setSaveConsumer(newValue -> config.townless.townlessTextColor = newValue)
                 .build());
 
                 // Townless Player Color
                 townless.addEntry(entryBuilder.startSelector("Townless Player Color", colors, config.townless.townlessPlayerColor)
-                .setDefaultValue("LIGHT_PURPLE")
+                .setDefaultValue(colors[8])
                 .setTooltip("The color of the townless player names.")
                 .setSaveConsumer(newValue -> config.townless.townlessPlayerColor = newValue)
                 .build());
@@ -158,14 +134,14 @@ public class EMCMod implements ModInitializer
 
                  // Nearby Player Text Color
                  nearby.addEntry(entryBuilder.startSelector("Nearby Text Color", colors, config.nearby.nearbyTextColor)
-                 .setDefaultValue("GOLD")
+                 .setDefaultValue(colors[11])
                  .setTooltip("The color of the 'Nearby Players' text.")
                  .setSaveConsumer(newValue -> config.nearby.nearbyTextColor = newValue)
                  .build());
 
                  // Nearby Player Player Color
                  nearby.addEntry(entryBuilder.startSelector("Nearby Player Color", colors, config.nearby.nearbyPlayerColor)
-                 .setDefaultValue("GOLD")
+                 .setDefaultValue(colors[11])
                  .setTooltip("The color of the nearby player names.")
                  .setSaveConsumer(newValue -> config.nearby.nearbyPlayerColor = newValue)
                  .build());
@@ -198,6 +174,7 @@ public class EMCMod implements ModInitializer
                 builder.setSavingRunnable(() -> ConfigUtils.serializeConfig(config));
 			}
         });
+        //#endregion
 
         //#region HUDRenderCallback
         HudRenderCallback.EVENT.register(e -> 

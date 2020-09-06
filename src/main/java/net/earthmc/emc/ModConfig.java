@@ -9,36 +9,36 @@ import net.minecraft.util.Formatting;
 public class ModConfig implements ConfigData
 {
     @ConfigEntry.Gui.CollapsibleObject
-    General general = new General();
-    Townless townless = new Townless();
-    Nearby nearby = new Nearby();
+	public General general = new General();
+    public Townless townless = new Townless();
+    public Nearby nearby = new Nearby();
 
-    static class General
+    public static class General
     {
-        boolean enableMod = true;
-        boolean emcOnly = true;
+        public boolean enableMod = true;
+        public boolean emcOnly = true;
     }
 
-    static class Townless
+    public static class Townless
     {
-        int townlessListXPos = 770;
-        int townlessListYPos = 375;
+        public int townlessListXPos = 770;
+        public int townlessListYPos = 375;
 
-        String townlessTextColor = Formatting.LIGHT_PURPLE.getName();
-        String townlessPlayerColor = Formatting.LIGHT_PURPLE.getName();
+        public String townlessTextColor = "LIGHT_PURPLE";
+        public String townlessPlayerColor = "LIGHT_PURPLE";
     }
 
-    static class Nearby
+    public static class Nearby
     {
-        int nearbyListXPos = 770;
-        int nearbyListYPos = 275;
+        public int nearbyListXPos = 770;
+        public int nearbyListYPos = 275;
 
-        String nearbyTextColor = Formatting.GOLD.getName();
-        String nearbyPlayerColor = Formatting.GOLD.getName();
+        public String nearbyTextColor = "GOLD";
+        public String nearbyPlayerColor = "GOLD";
 
-        String playerName = "";
+        public String playerName = "";
 
-        int xRadius = 500;
-        int zRadius = 500;
+        public int xRadius = 500;
+        public int zRadius = 500;
     }
 }
