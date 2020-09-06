@@ -195,10 +195,7 @@ public class EMCMod implements ModInitializer
                 Screen screen = builder.build();
                 client.openScreen(screen);
 
-                builder.setSavingRunnable(() -> 
-                {  
-                    ConfigUtils.serializeConfig(config);
-                });
+                builder.setSavingRunnable(() -> ConfigUtils.serializeConfig(config));
 			}
         });
 
@@ -228,9 +225,9 @@ public class EMCMod implements ModInitializer
                     Formatting playerTextFormatting = Formatting.byName(config.townless.townlessPlayerColor);
                     String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
  
-                    final Integer playerX = currentPlayer.get("x").getAsInt();
-                    final Integer playerY = currentPlayer.get("y").getAsInt();
-                    final Integer playerZ = currentPlayer.get("z").getAsInt();
+                    final int playerX = currentPlayer.get("x").getAsInt();
+                    final int playerY = currentPlayer.get("y").getAsInt();
+                    final int playerZ = currentPlayer.get("z").getAsInt();
  
                     // If underground, display "Underground" instead of their position
                     if (playerX == 0 && playerZ == 0)
@@ -266,9 +263,9 @@ public class EMCMod implements ModInitializer
                     Formatting playerTextFormatting = Formatting.byName(config.nearby.nearbyPlayerColor);
                     String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
  
-                    final Integer playerX = currentPlayer.get("x").getAsInt();
-                    final Integer playerY = currentPlayer.get("y").getAsInt();
-                    final Integer playerZ = currentPlayer.get("z").getAsInt();
+                    final int playerX = currentPlayer.get("x").getAsInt();
+                    final int playerY = currentPlayer.get("y").getAsInt();
+                    final int playerZ = currentPlayer.get("z").getAsInt();
  
                     renderer.drawWithShadow(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.nearby.nearbyListXPos, nearbyPlayerOffset, Formatting.WHITE.getColorValue());
  
@@ -297,13 +294,13 @@ public class EMCMod implements ModInitializer
 
             if (responsecode == 200) 
             {
-                String inline = "";
+                StringBuilder inline = new StringBuilder();
                 final Scanner scanner = new Scanner(url.openStream());
 
                 // Write all the JSON data into a string using a scanner
                 while (scanner.hasNext()) 
                 {
-                    inline += scanner.nextLine();
+                    inline.append(scanner.nextLine());
                 }
 
                 // Close the scanner
@@ -311,9 +308,7 @@ public class EMCMod implements ModInitializer
 
                 // Using the JSON simple library parse the string into a json object
                 final JsonParser parse = new JsonParser();
-                final JsonArray townlessArray = (JsonArray) parse.parse(inline);
-                    
-                return townlessArray;
+                return (JsonArray) parse.parse(inline.toString());
             }
         }
         catch (final Exception exc) 
@@ -339,13 +334,13 @@ public class EMCMod implements ModInitializer
 
             if (responsecode == 200) 
             {
-                String inline = "";
+                StringBuilder inline = new StringBuilder();
                 final Scanner scanner = new Scanner(url.openStream());
 
                 // Write all the JSON data into a string using a scanner
                 while (scanner.hasNext()) 
                 {
-                    inline += scanner.nextLine();
+                    inline.append(scanner.nextLine());
                 }
 
                 // Close the scanner
@@ -353,9 +348,7 @@ public class EMCMod implements ModInitializer
 
                 // Using the JSON simple library parse the string into a json object
                 final JsonParser parse = new JsonParser();
-                final JsonArray nearbyArray = (JsonArray) parse.parse(inline);
-                    
-                return nearbyArray;
+                return (JsonArray) parse.parse(inline.toString());
             }
         }
         catch (final Exception exc) 
