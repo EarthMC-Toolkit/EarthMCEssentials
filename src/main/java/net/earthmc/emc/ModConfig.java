@@ -22,8 +22,8 @@ public class ModConfig implements ConfigData
     {
         public boolean townlessCoords = false;
 
-        public int townlessListXPos = 770;
-        public int townlessListYPos = 375;
+        public int townlessListXPos = 1;
+        public int townlessListYPos = 16;
 
         public String townlessTextColor = "LIGHT_PURPLE";
         public String townlessPlayerColor = "LIGHT_PURPLE";
@@ -31,8 +31,8 @@ public class ModConfig implements ConfigData
 
     public static class Nearby
     {
-        public int nearbyListXPos = 770;
-        public int nearbyListYPos = 275;
+        public int nearbyListXPos = 100;
+        public int nearbyListYPos = 16;
 
         public String nearbyTextColor = "GOLD";
         public String nearbyPlayerColor = "GOLD";
