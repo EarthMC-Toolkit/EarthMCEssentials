@@ -3,7 +3,6 @@ package net.earthmc.emc;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import net.minecraft.util.Formatting;
 
 @Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
@@ -21,6 +20,8 @@ public class ModConfig implements ConfigData
 
     public static class Townless
     {
+        public boolean townlessCoords = false;
+
         public int townlessListXPos = 770;
         public int townlessListYPos = 375;
 
