@@ -20,7 +20,7 @@ public class ModConfig implements ConfigData
 
     public static class Townless
     {
-        public boolean townlessCoords = false;
+        public boolean showCoords = true;
 
         public int townlessListXPos = 1;
         public int townlessListYPos = 16;

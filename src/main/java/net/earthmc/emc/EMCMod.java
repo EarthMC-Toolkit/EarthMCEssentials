@@ -91,10 +91,10 @@ public class EMCMod implements ModInitializer
                 .build());
 
                 // Townless Horizontal Position
-                townless.addEntry(entryBuilder.startBooleanToggle("Townless Coordindates", config.townless.townlessCoords)
-                .setDefaultValue(false)
-                .setTooltip("Toggles coordinates for townless people on or off.")
-                .setSaveConsumer(newValue -> config.townless.townlessCoords = newValue)
+                townless.addEntry(entryBuilder.startBooleanToggle("Show Coordinates", config.townless.showCoords)
+                .setDefaultValue(true)
+                .setTooltip("Toggles coordinates for townless players on or off.")
+                .setSaveConsumer(newValue -> config.townless.showCoords = newValue)
                 .build());
 
                 // Townless Horizontal Position
@@ -201,48 +201,37 @@ public class EMCMod implements ModInitializer
             renderer.drawWithShadow(townlessText, config.townless.townlessListXPos, config.townless.townlessListYPos - 15, Formatting.WHITE.getColorValue());
  
             if (townless.size() >= 1)
-            {   
-                if (config.townless.townlessCoords)
+            {
+                for (int i = 0; i < townless.size(); i++)
                 {
-                    for (int i = 0; i < townless.size(); i++) 
+                    final JsonObject currentPlayer = (JsonObject) townless.get(i);
+
+                    Formatting playerTextFormatting = Formatting.byName(config.townless.townlessPlayerColor);
+                    String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
+
+                    if (config.townless.showCoords)
                     {
-                        final JsonObject currentPlayer = (JsonObject) townless.get(i);
-     
-                        Formatting playerTextFormatting = Formatting.byName(config.townless.townlessPlayerColor);
-                        String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
-     
                         final int playerX = currentPlayer.get("x").getAsInt();
                         final int playerY = currentPlayer.get("y").getAsInt();
                         final int playerZ = currentPlayer.get("z").getAsInt();
-     
+
                         // If underground, display "Underground" instead of their position
                         if (playerX == 0 && playerZ == 0)
                         {
                             renderer.drawWithShadow(playerName + " Underground", config.townless.townlessListXPos, townlessPlayerOffset, Formatting.WHITE.getColorValue());
                         }
-                        else 
-                        {                   
+                        else
+                        {
                             renderer.drawWithShadow(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.townlessListXPos, townlessPlayerOffset, Formatting.WHITE.getColorValue());
                         }
-     
-                        // Add offset for the next player.
-                        townlessPlayerOffset += 10;
                     }
-                }         
-                else
-                {
-                    for (int i = 0; i < townless.size(); i++) 
+                    else
                     {
-                        final JsonObject currentPlayer = (JsonObject) townless.get(i);
-     
-                        Formatting playerTextFormatting = Formatting.byName(config.townless.townlessPlayerColor);
-                        String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
-
                         renderer.drawWithShadow(playerName, config.townless.townlessListXPos, townlessPlayerOffset, Formatting.WHITE.getColorValue());
+                    }
 
-                        // Add offset for the next player.
-                        townlessPlayerOffset += 10;
-                    } 
+                    // Add offset for the next player.
+                    townlessPlayerOffset += 10;
                 }
             }
             //#endregion
