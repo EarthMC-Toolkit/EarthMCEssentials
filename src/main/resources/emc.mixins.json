@@ -3,7 +3,8 @@
   "package": "net.earthmc.emc.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "ClientPlayNetworkHandlerMixin"
+    "ClientPlayNetworkHandlerMixin",
+    "PlayerJoinMixin"
   ],
   "injectors": {
     "defaultRequire": 1

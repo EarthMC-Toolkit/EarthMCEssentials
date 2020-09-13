@@ -2,13 +2,13 @@ package net.earthmc.emc;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.earthmc.emc.utils.ConfigUtils;
+import net.earthmc.emc.utils.EmcApi;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -21,10 +21,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
 
 public class EMCMod implements ModInitializer
 {
@@ -57,7 +53,7 @@ public class EMCMod implements ModInitializer
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
 
-        townless = getTownless();
+        townless = EmcApi.getTownless();
         nearby = new JsonArray();
 
         //#region ClientTickEvents
@@ -265,86 +261,4 @@ public class EMCMod implements ModInitializer
         });
         //#endregion
     }
-
-    //#region API Calls
-    public static JsonArray getTownless()
-    {
-        try
-        {
-            final URL url = new URL("http://earthmc-api.herokuapp.com/townlessplayers");
-
-            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            // Getting the response code
-            final int responsecode = conn.getResponseCode();
-
-            if (responsecode == 200) 
-            {
-                StringBuilder inline = new StringBuilder();
-                final Scanner scanner = new Scanner(url.openStream());
-
-                // Write all the JSON data into a string using a scanner
-                while (scanner.hasNext()) 
-                {
-                    inline.append(scanner.nextLine());
-                }
-
-                // Close the scanner
-                scanner.close();
-
-                // Using the JSON simple library parse the string into a json object
-                final JsonParser parse = new JsonParser();
-                return (JsonArray) parse.parse(inline.toString());
-            }
-        }
-        catch (final Exception exc) 
-        {
-            return new JsonArray();
-        }
-
-        return new JsonArray();
-    }
-
-    public static JsonArray getNearby(ModConfig config)
-    {
-        try
-        {
-            final URL url = new URL("http://earthmc-api.herokuapp.com/onlineplayers/" + config.nearby.playerName + "/nearby/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
-
-            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            // Getting the response code
-            final int responsecode = conn.getResponseCode();
-
-            if (responsecode == 200) 
-            {
-                StringBuilder inline = new StringBuilder();
-                final Scanner scanner = new Scanner(url.openStream());
-
-                // Write all the JSON data into a string using a scanner
-                while (scanner.hasNext()) 
-                {
-                    inline.append(scanner.nextLine());
-                }
-
-                // Close the scanner
-                scanner.close();
-
-                // Using the JSON simple library parse the string into a json object
-                final JsonParser parse = new JsonParser();
-                return (JsonArray) parse.parse(inline.toString());
-            }
-        }
-        catch (final Exception exc) 
-        {
-            return new JsonArray();
-        }
-
-        return new JsonArray();
-    }
-    //#endregion
 }

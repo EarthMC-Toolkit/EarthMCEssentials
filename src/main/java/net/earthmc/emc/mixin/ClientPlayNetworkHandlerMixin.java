@@ -2,6 +2,7 @@ package net.earthmc.emc.mixin;
 
 import net.earthmc.emc.EMCMod;
 import net.earthmc.emc.utils.ConfigUtils;
+import net.earthmc.emc.utils.EmcApi;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
@@ -34,7 +35,7 @@ public class ClientPlayNetworkHandlerMixin
             @Override
             public void run() 
             {
-                if (EMCMod.config.general.enableMod) EMCMod.townless = EMCMod.getTownless();
+                if (EMCMod.config.general.enableMod) EMCMod.townless = EmcApi.getTownless();
             }
         }, 0, 2 * 60 * 1000);
 
@@ -43,7 +44,7 @@ public class ClientPlayNetworkHandlerMixin
             @Override
             public void run()
             {
-                if (EMCMod.config.general.enableMod) EMCMod.nearby = EMCMod.getNearby(EMCMod.config);
+                if (EMCMod.config.general.enableMod) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
             }
         }, 0, 10 * 1000);
         // #endregion
