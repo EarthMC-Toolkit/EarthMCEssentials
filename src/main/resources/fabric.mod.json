@@ -21,6 +21,9 @@
   "entrypoints": {
     "main": [
       "net.earthmc.emc.EMCMod"
+    ],
+    "modmenu": [
+      "net.earthmc.emc.ModMenuIntegration"
     ]
   },
   "mixins": [

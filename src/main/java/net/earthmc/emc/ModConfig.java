@@ -16,7 +16,6 @@ public class ModConfig implements ConfigData
     {
         public boolean enableMod = true;
         public boolean emcOnly = true;
-        public boolean joinMessages = true;
     }
 
     public static class Townless

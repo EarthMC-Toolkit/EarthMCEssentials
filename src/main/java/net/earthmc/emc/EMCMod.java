@@ -1,20 +1,14 @@
 package net.earthmc.emc;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import org.lwjgl.glfw.GLFW;
-
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.earthmc.emc.utils.ConfigUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -26,8 +20,11 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
 
-import net.earthmc.emc.utils.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
 
 public class EMCMod implements ModInitializer
 {
@@ -38,12 +35,14 @@ public class EMCMod implements ModInitializer
     int nearbyPlayerOffset;
 
     public static ModConfig config;
-    String[] colors;
 
+    public static String[] colors;
     KeyBinding configKeybind;
 
     public static String clientName = null;
     public static MinecraftClient client;
+
+    public static Screen screen;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
@@ -78,128 +77,126 @@ public class EMCMod implements ModInitializer
                 // #region Add Entries
                 // Enable Mod
                 general.addEntry(entryBuilder.startBooleanToggle("Enable Mod", config.general.enableMod)
-                .setDefaultValue(true)
-                .setTooltip("Toggles the mod on or off.")
-                .setSaveConsumer(newValue -> config.general.enableMod = newValue)
-                .build());
+                        .setDefaultValue(true)
+                        .setTooltip("Toggles the mod on or off.")
+                        .setSaveConsumer(newValue -> config.general.enableMod = newValue)
+                        .build());
 
                 // Enable EMC Only
                 general.addEntry(entryBuilder.startBooleanToggle("EMC Only", config.general.emcOnly)
-                .setDefaultValue(true)
-                .setTooltip("Toggles EMC Only on or off. NOT YET IMPLEMENTED.")
-                .setSaveConsumer(newValue -> config.general.emcOnly = newValue)
-                .build());
+                        .setDefaultValue(true)
+                        .setTooltip("Toggles EMC Only on or off. NOT YET IMPLEMENTED.")
+                        .setSaveConsumer(newValue -> config.general.emcOnly = newValue)
+                        .build());
 
                 // Townless Horizontal Position
                 townless.addEntry(entryBuilder.startBooleanToggle("Show Coordinates", config.townless.showCoords)
-                .setDefaultValue(true)
-                .setTooltip("Toggles coordinates for townless players on or off.")
-                .setSaveConsumer(newValue -> config.townless.showCoords = newValue)
-                .build());
+                        .setDefaultValue(true)
+                        .setTooltip("Toggles coordinates for townless players on or off.")
+                        .setSaveConsumer(newValue -> config.townless.showCoords = newValue)
+                        .build());
 
                 // Townless Horizontal Position
                 townless.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.townless.townlessListXPos, 1, 1000)
-                .setDefaultValue(770)
-                .setTooltip("The horizontal position on the HUD.")
-                .setSaveConsumer(newValue -> config.townless.townlessListXPos = newValue)
-                .build());
+                        .setDefaultValue(770)
+                        .setTooltip("The horizontal position on the HUD.")
+                        .setSaveConsumer(newValue -> config.townless.townlessListXPos = newValue)
+                        .build());
 
                 // Townless Vertical Position
                 townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.townless.townlessListYPos, 16, 1000)
-                .setDefaultValue(375)
-                .setTooltip("The vertical position on the HUD.")
-                .setSaveConsumer(newValue -> config.townless.townlessListYPos = newValue)
-                .build());
+                        .setDefaultValue(375)
+                        .setTooltip("The vertical position on the HUD.")
+                        .setSaveConsumer(newValue -> config.townless.townlessListYPos = newValue)
+                        .build());
 
                 // Townless Text Color
                 townless.addEntry(entryBuilder.startSelector("Townless Text Color", colors, config.townless.townlessTextColor)
-                .setDefaultValue(colors[8])
-                .setTooltip("The color of the 'Townless Players' text.")
-                .setSaveConsumer(newValue -> config.townless.townlessTextColor = newValue)
-                .build());
+                        .setDefaultValue(colors[8])
+                        .setTooltip("The color of the 'Townless Players' text.")
+                        .setSaveConsumer(newValue -> config.townless.townlessTextColor = newValue)
+                        .build());
 
                 // Townless Player Color
                 townless.addEntry(entryBuilder.startSelector("Townless Player Color", colors, config.townless.townlessPlayerColor)
-                .setDefaultValue(colors[8])
-                .setTooltip("The color of the townless player names.")
-                .setSaveConsumer(newValue -> config.townless.townlessPlayerColor = newValue)
-                .build());
+                        .setDefaultValue(colors[8])
+                        .setTooltip("The color of the townless player names.")
+                        .setSaveConsumer(newValue -> config.townless.townlessPlayerColor = newValue)
+                        .build());
 
-                 // Nearby Player Horizontal Position
-                 nearby.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.nearby.nearbyListXPos, 100, 1000)
-                 .setDefaultValue(770)
-                 .setTooltip("The horizontal position on the HUD.")
-                 .setSaveConsumer(newValue -> config.nearby.nearbyListXPos = newValue)
-                 .build());
+                // Nearby Player Horizontal Position
+                nearby.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.nearby.nearbyListXPos, 100, 1000)
+                        .setDefaultValue(770)
+                        .setTooltip("The horizontal position on the HUD.")
+                        .setSaveConsumer(newValue -> config.nearby.nearbyListXPos = newValue)
+                        .build());
 
-                 // Nearby Player Vertical Position
-                 nearby.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.nearby.nearbyListYPos, 16, 1000)
-                 .setDefaultValue(275)
-                 .setTooltip("The vertical position on the HUD.")
-                 .setSaveConsumer(newValue -> config.nearby.nearbyListYPos = newValue)
-                 .build());
+                // Nearby Player Vertical Position
+                nearby.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.nearby.nearbyListYPos, 16, 1000)
+                        .setDefaultValue(275)
+                        .setTooltip("The vertical position on the HUD.")
+                        .setSaveConsumer(newValue -> config.nearby.nearbyListYPos = newValue)
+                        .build());
 
-                 // Nearby Player Text Color
-                 nearby.addEntry(entryBuilder.startSelector("Nearby Text Color", colors, config.nearby.nearbyTextColor)
-                 .setDefaultValue(colors[11])
-                 .setTooltip("The color of the 'Nearby Players' text.")
-                 .setSaveConsumer(newValue -> config.nearby.nearbyTextColor = newValue)
-                 .build());
+                // Nearby Player Text Color
+                nearby.addEntry(entryBuilder.startSelector("Nearby Text Color", colors, config.nearby.nearbyTextColor)
+                        .setDefaultValue(colors[11])
+                        .setTooltip("The color of the 'Nearby Players' text.")
+                        .setSaveConsumer(newValue -> config.nearby.nearbyTextColor = newValue)
+                        .build());
 
-                 // Nearby Player Player Color
-                 nearby.addEntry(entryBuilder.startSelector("Nearby Player Color", colors, config.nearby.nearbyPlayerColor)
-                 .setDefaultValue(colors[11])
-                 .setTooltip("The color of the nearby player names.")
-                 .setSaveConsumer(newValue -> config.nearby.nearbyPlayerColor = newValue)
-                 .build());
+                // Nearby Player Player Color
+                nearby.addEntry(entryBuilder.startSelector("Nearby Player Color", colors, config.nearby.nearbyPlayerColor)
+                        .setDefaultValue(colors[11])
+                        .setTooltip("The color of the nearby player names.")
+                        .setSaveConsumer(newValue -> config.nearby.nearbyPlayerColor = newValue)
+                        .build());
 
-                 // Nearby Player Name
-                 nearby.addEntry(entryBuilder.startStrField("Player Name", config.nearby.playerName)
-                 .setDefaultValue(clientName)
-                 .setTooltip("The name of the player to check nearby.")
-                 .setSaveConsumer(newValue -> config.nearby.playerName = newValue)
-                 .build());
+                // Nearby Player Name
+                nearby.addEntry(entryBuilder.startStrField("Player Name", config.nearby.playerName)
+                        .setDefaultValue(clientName)
+                        .setTooltip("The name of the player to check nearby.")
+                        .setSaveConsumer(newValue -> config.nearby.playerName = newValue)
+                        .build());
 
-                 // Nearby X Radius
-                 nearby.addEntry(entryBuilder.startIntSlider("X Radius", config.nearby.xRadius, 50, 10000)
-                 .setDefaultValue(500)
-                 .setTooltip("The x radius (in blocks) to check inside.")
-                 .setSaveConsumer(newValue -> config.nearby.xRadius = newValue)
-                 .build());
+                // Nearby X Radius
+                nearby.addEntry(entryBuilder.startIntSlider("X Radius", config.nearby.xRadius, 50, 10000)
+                        .setDefaultValue(500)
+                        .setTooltip("The x radius (in blocks) to check inside.")
+                        .setSaveConsumer(newValue -> config.nearby.xRadius = newValue)
+                        .build());
 
-                 // Nearby Z Radius
-                 nearby.addEntry(entryBuilder.startIntSlider("Z Radius", config.nearby.zRadius, 50, 10000)
-                 .setDefaultValue(500)
-                 .setTooltip("The z radius (in blocks) to check inside.")
-                 .setSaveConsumer(newValue -> config.nearby.zRadius = newValue)
-                 .build());
-                //#endregion
+                // Nearby Z Radius
+                nearby.addEntry(entryBuilder.startIntSlider("Z Radius", config.nearby.zRadius, 50, 10000)
+                        .setDefaultValue(500)
+                        .setTooltip("The z radius (in blocks) to check inside.")
+                        .setSaveConsumer(newValue -> config.nearby.zRadius = newValue)
+                        .build());
 
-                Screen screen = builder.build();
+                screen = builder.build();
+
                 client.openScreen(screen);
-
                 builder.setSavingRunnable(() -> ConfigUtils.serializeConfig(config));
 			}
         });
         //#endregion
 
         //#region HUDRenderCallback
-        HudRenderCallback.EVENT.register(e -> 
-        {     
+        HudRenderCallback.EVENT.register(event ->
+        {
             if (!config.general.enableMod) return;
 
-            // Create client & renderer
             final TextRenderer renderer = client.textRenderer;
 
             //#region Draw Townless List
             townlessPlayerOffset = config.townless.townlessListYPos; // Position of the first player, who determines where the list will be.
-             
+
             Formatting townlessTextFormatting = Formatting.byName(config.townless.townlessTextColor);
             String townlessText = new LiteralText("Townless Players").formatted(townlessTextFormatting).asFormattedString();
- 
+
             // Draw 'Townless Players' text.
             renderer.drawWithShadow(townlessText, config.townless.townlessListXPos, config.townless.townlessListYPos - 15, Formatting.WHITE.getColorValue());
- 
+
             if (townless.size() >= 1)
             {
                 for (int i = 0; i < townless.size(); i++)
@@ -238,28 +235,28 @@ public class EMCMod implements ModInitializer
 
             //#region Draw Nearby List
             nearbyPlayerOffset = config.nearby.nearbyListYPos; // Position of the first player, who determines where the list will be.
-             
+
             Formatting nearbyTextFormatting = Formatting.byName(config.nearby.nearbyTextColor);
             String nearbyText = new LiteralText("Nearby Players").formatted(nearbyTextFormatting).asFormattedString();
- 
+
             // Draw 'Nearby Players' text.
             renderer.drawWithShadow(nearbyText, config.nearby.nearbyListXPos, config.nearby.nearbyListYPos - 15, Formatting.WHITE.getColorValue());
- 
+
             if (nearby.size() >= 1)
-            {            
-                for (int i = 0; i < nearby.size(); i++) 
+            {
+                for (int i = 0; i < nearby.size(); i++)
                 {
                     final JsonObject currentPlayer = (JsonObject) nearby.get(i);
- 
+
                     Formatting playerTextFormatting = Formatting.byName(config.nearby.nearbyPlayerColor);
                     String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
- 
+
                     final int playerX = currentPlayer.get("x").getAsInt();
                     final int playerY = currentPlayer.get("y").getAsInt();
                     final int playerZ = currentPlayer.get("z").getAsInt();
- 
+
                     renderer.drawWithShadow(playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.nearby.nearbyListXPos, nearbyPlayerOffset, Formatting.WHITE.getColorValue());
- 
+
                     // Add offset for the next player.
                     nearbyPlayerOffset += 10;
                 }
