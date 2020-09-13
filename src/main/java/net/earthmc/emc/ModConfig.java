@@ -21,6 +21,7 @@ public class ModConfig implements ConfigData
     public static class Townless
     {
         public boolean showCoords = true;
+        public boolean autoInvite = false;
 
         public int townlessListXPos = 1;
         public int townlessListYPos = 16;
