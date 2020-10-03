@@ -35,7 +35,7 @@ public class ClientPlayNetworkHandlerMixin
             @Override
             public void run() 
             {
-                if (EMCMod.config.general.enableMod) EMCMod.townless = EmcApi.getTownless();
+                if (EMCMod.config.general.enableMod && EMCMod.config.townless.enableTownless) EMCMod.nearby = EmcApi.getTownless();
             }
         }, 0, 2 * 60 * 1000);
 
@@ -44,7 +44,7 @@ public class ClientPlayNetworkHandlerMixin
             @Override
             public void run()
             {
-                if (EMCMod.config.general.enableMod) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
+                if (EMCMod.config.general.enableMod && EMCMod.config.nearby.enableNearby) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
             }
         }, 0, 10 * 1000);
         // #endregion

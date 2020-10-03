@@ -20,7 +20,8 @@ public class ModConfig implements ConfigData
 
     public static class Townless
     {
-        public boolean showCoords = true;
+        public boolean enableTownless = true;
+        public boolean showCoords = false;
 
         public int townlessListXPos = 1;
         public int townlessListYPos = 16;
@@ -31,6 +32,8 @@ public class ModConfig implements ConfigData
 
     public static class Nearby
     {
+        public boolean enableNearby = true;
+        
         public int nearbyListXPos = 100;
         public int nearbyListYPos = 16;
 
