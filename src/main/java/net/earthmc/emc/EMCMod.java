@@ -188,6 +188,7 @@ public class EMCMod implements ModInitializer
         });
         //#endregion
 
+        //#region HudRenderCallback
         HudRenderCallback.EVENT.register(event ->
         {
             if (!config.general.enableMod) return;
@@ -239,6 +240,7 @@ public class EMCMod implements ModInitializer
                     }
                 }
             }
+
             if (config.nearby.enableNearby)
             {
                 final TextRenderer renderer = client.textRenderer;
@@ -272,5 +274,6 @@ public class EMCMod implements ModInitializer
                 }
             }
         });
+        //#endregion
     }
 }
