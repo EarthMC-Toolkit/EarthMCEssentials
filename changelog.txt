@@ -1,0 +1,16 @@
+Version 1.0.0: (1 September 2020)
+- Toggles moved to general.
+- Townless colours can now be changed.
+
+Version 1.0.1: (5 September 2020)
+- Edited nearby hud and added it's config entries.
+
+Version 1.0.2 (6 September 2020)
+- Put the timers in onGameJoin instead of onInitialize.
+- Fixed some bugs with default values in nearby.
+
+Version 1.0.3: (9 October 2020)
+- Added changelog.txt.
+- Able to disable townless coordinates.
+- Tweaked sliders and default settings.
+- Changed the icon so it's no longer the EMC Stats one.
