@@ -57,7 +57,7 @@ public class ModConfig implements ConfigData
         public String headingTextColour = "DARK_GREEN";
         public String infoTextColour = "DARK_GREEN";
 
-        public int townInfoXPos = 400;
+        public int townInfoXPos = 350;
         public int townInfoYPos = 16;
     }
 
@@ -70,7 +70,7 @@ public class ModConfig implements ConfigData
         public String headingTextColour = "DARK_AQUA";
         public String infoTextColour = "DARK_AQUA";
 
-        public int nationInfoXPos = 500;
+        public int nationInfoXPos = 450;
         public int nationInfoYPos = 16;
     }
 }

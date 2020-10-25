@@ -161,7 +161,7 @@ public class ModMenuIntegration implements ModMenuApi
 
         // Town Information Horizontal Position
         townInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townInfo.townInfoXPos, 1, 1000)
-                .setDefaultValue(400)
+                .setDefaultValue(350)
                 .setTooltip("The horizontal position on the HUD.")
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.townInfoXPos = newValue)
                 .build());
@@ -203,7 +203,7 @@ public class ModMenuIntegration implements ModMenuApi
 
         // Nation Information Horizontal Position
         nationInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.nationInfo.nationInfoXPos, 1, 1000)
-                .setDefaultValue(500)
+                .setDefaultValue(450)
                 .setTooltip("The horizontal position on the HUD.")
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.nationInfoXPos = newValue)
                 .build());
