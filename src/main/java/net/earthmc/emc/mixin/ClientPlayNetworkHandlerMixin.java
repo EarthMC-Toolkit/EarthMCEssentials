@@ -1,5 +1,6 @@
 package net.earthmc.emc.mixin;
 
+import com.google.gson.JsonObject;
 import net.earthmc.emc.EMCMod;
 import net.earthmc.emc.utils.ConfigUtils;
 import net.earthmc.emc.utils.EmcApi;
@@ -21,8 +22,17 @@ public class ClientPlayNetworkHandlerMixin
     private void onGameJoin(CallbackInfo info)
     {
         EMCMod.client = MinecraftClient.getInstance();
+
         EMCMod.clientName = EMCMod.client.player.getName().asString();
         EMCMod.config.nearby.playerName = EMCMod.clientName;
+
+        JsonObject resident = EmcApi.getResident(EMCMod.clientName);
+
+        EMCMod.clientTownName = resident.get("town").getAsString();
+        EMCMod.config.townInfo.townName = EMCMod.clientTownName;
+
+        EMCMod.clientNationName = resident.get("nation").getAsString();
+        EMCMod.config.nationInfo.nationName = EMCMod.clientNationName;
 
         ConfigUtils.serializeConfig(EMCMod.config);
 
@@ -35,7 +45,7 @@ public class ClientPlayNetworkHandlerMixin
             @Override
             public void run() 
             {
-                if (EMCMod.config.general.enableMod && EMCMod.config.townless.enableTownless) EMCMod.nearby = EmcApi.getTownless();
+                if (EMCMod.config.general.enableMod && EMCMod.config.townless.enabled) EMCMod.nearby = EmcApi.getTownless();
             }
         }, 0, 2 * 60 * 1000);
 
@@ -44,7 +54,7 @@ public class ClientPlayNetworkHandlerMixin
             @Override
             public void run()
             {
-                if (EMCMod.config.general.enableMod && EMCMod.config.nearby.enableNearby) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
+                if (EMCMod.config.general.enableMod && EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
             }
         }, 0, 10 * 1000);
         // #endregion

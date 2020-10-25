@@ -1,8 +1,8 @@
 package net.earthmc.emc;
 
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 
 @Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
@@ -11,6 +11,8 @@ public class ModConfig implements ConfigData
 	public General general = new General();
     public Townless townless = new Townless();
     public Nearby nearby = new Nearby();
+    public TownInfo townInfo = new TownInfo();
+    public NationInfo nationInfo = new NationInfo();
 
     public static class General
     {
@@ -20,29 +22,55 @@ public class ModConfig implements ConfigData
 
     public static class Townless
     {
-        public boolean enableTownless = true;
+        public boolean enabled = true;
         public boolean showCoords = false;
 
         public int townlessListXPos = 1;
         public int townlessListYPos = 16;
 
-        public String townlessTextColor = "LIGHT_PURPLE";
-        public String townlessPlayerColor = "LIGHT_PURPLE";
+        public String headingTextColour = "LIGHT_PURPLE";
+        public String playerTextColour = "LIGHT_PURPLE";
     }
 
     public static class Nearby
     {
-        public boolean enableNearby = true;
+        public boolean enabled = true;
         
         public int nearbyListXPos = 100;
         public int nearbyListYPos = 16;
 
-        public String nearbyTextColor = "GOLD";
-        public String nearbyPlayerColor = "GOLD";
+        public String headingTextColour = "GOLD";
+        public String playerTextColour = "GOLD";
 
         public String playerName = "";
 
         public int xRadius = 500;
         public int zRadius = 500;
+    }
+
+    public static class TownInfo
+    {
+        public boolean enabled = true;
+
+        public String townName = "";
+
+        public String headingTextColour = "DARK_GREEN";
+        public String infoTextColour = "DARK_GREEN";
+
+        public int townInfoXPos = 400;
+        public int townInfoYPos = 16;
+    }
+
+    public static class NationInfo
+    {
+        public boolean enabled = true;
+
+        public String nationName = "";
+
+        public String headingTextColour = "DARK_AQUA";
+        public String infoTextColour = "DARK_AQUA";
+
+        public int nationInfoXPos = 500;
+        public int nationInfoYPos = 16;
     }
 }

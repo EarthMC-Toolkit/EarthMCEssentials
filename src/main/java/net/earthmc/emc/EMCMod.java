@@ -19,6 +19,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
@@ -35,8 +36,11 @@ public class EMCMod implements ModInitializer
     public static String[] colors;
     KeyBinding configKeybind;
 
-    public static String clientName = null;
     public static MinecraftClient client;
+
+    public static String clientName = "";
+    public static String clientTownName = "";
+    public static String clientNationName = "";
 
     public static Screen screen;
 
@@ -60,130 +64,9 @@ public class EMCMod implements ModInitializer
             // Pressed F4 (Config Menu)
             if (configKeybind.wasPressed())
             {
-                ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Essentials Config").setTransparentBackground(true);
-
-                ConfigCategory general = builder.getOrCreateCategory("General");
-                ConfigCategory townless = builder.getOrCreateCategory("Townless");
-                ConfigCategory nearby = builder.getOrCreateCategory("Nearby");
-
-                ConfigEntryBuilder entryBuilder = builder.entryBuilder();
-
-                // Enable Mod
-                general.addEntry(entryBuilder.startBooleanToggle("Enable Mod", config.general.enableMod)
-                    .setDefaultValue(true)
-                    .setTooltip("Toggles the mod on or off.")
-                    .setSaveConsumer(newValue -> config.general.enableMod = newValue)
-                    .build());
-
-                // Enable EMC Only
-                general.addEntry(entryBuilder.startBooleanToggle("EMC Only", config.general.emcOnly)
-                    .setDefaultValue(true)
-                    .setTooltip("Toggles EMC Only on or off. NOT YET IMPLEMENTED.")
-                    .setSaveConsumer(newValue -> config.general.emcOnly = newValue)
-                    .build());
-
-                // Enable Townless
-                townless.addEntry(entryBuilder.startBooleanToggle("Enable Townless", config.townless.enableTownless)
-                    .setDefaultValue(true)
-                    .setTooltip("Toggles townless players on or off.")
-                    .setSaveConsumer(newValue -> config.townless.enableTownless = newValue)
-                    .build());
-
-                // Townless Horizontal Position
-                townless.addEntry(entryBuilder.startBooleanToggle("Show Coordinates", config.townless.showCoords)
-                    .setDefaultValue(false)
-                    .setTooltip("Toggles coordinates for townless players on or off.")
-                    .setSaveConsumer(newValue -> config.townless.showCoords = newValue)
-                    .build());
-
-                // Townless Horizontal Position
-                townless.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.townless.townlessListXPos, 1, 1000)
-                    .setDefaultValue(770)
-                    .setTooltip("The horizontal position on the HUD.")
-                    .setSaveConsumer(newValue -> config.townless.townlessListXPos = newValue)
-                    .build());
-
-                // Townless Vertical Position
-                townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.townless.townlessListYPos, 16, 1000)
-                    .setDefaultValue(375)
-                    .setTooltip("The vertical position on the HUD.")
-                    .setSaveConsumer(newValue -> config.townless.townlessListYPos = newValue)
-                    .build());
-
-                // Townless Text Color
-                townless.addEntry(entryBuilder.startSelector("Townless Text Color", colors, config.townless.townlessTextColor)
-                    .setDefaultValue(colors[8])
-                    .setTooltip("The color of the 'Townless Players' text.")
-                    .setSaveConsumer(newValue -> config.townless.townlessTextColor = newValue)
-                    .build());
-
-                // Townless Player Color
-                townless.addEntry(entryBuilder.startSelector("Townless Player Color", colors, config.townless.townlessPlayerColor)
-                    .setDefaultValue(colors[8])
-                    .setTooltip("The color of the townless player names.")
-                    .setSaveConsumer(newValue -> config.townless.townlessPlayerColor = newValue)
-                    .build());
-
-                // Enable nearby
-                nearby.addEntry(entryBuilder.startBooleanToggle("Enable Nearby", config.nearby.enableNearby)
-                    .setDefaultValue(true)
-                    .setTooltip("Toggles nearby players on or off.")
-                    .setSaveConsumer(newValue -> config.nearby.enableNearby = newValue)
-                    .build());
-
-                // Nearby Player Horizontal Position
-                nearby.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", config.nearby.nearbyListXPos, 1, 1000)
-                    .setDefaultValue(770)
-                    .setTooltip("The horizontal position on the HUD.")
-                    .setSaveConsumer(newValue -> config.nearby.nearbyListXPos = newValue)
-                    .build());
-
-                // Nearby Player Vertical Position
-                nearby.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", config.nearby.nearbyListYPos, 16, 1000)
-                    .setDefaultValue(275)
-                    .setTooltip("The vertical position on the HUD.")
-                    .setSaveConsumer(newValue -> config.nearby.nearbyListYPos = newValue)
-                    .build());
-
-                // Nearby Player Text Color
-                nearby.addEntry(entryBuilder.startSelector("Nearby Text Color", colors, config.nearby.nearbyTextColor)
-                    .setDefaultValue(colors[11])
-                    .setTooltip("The color of the 'Nearby Players' text.")
-                    .setSaveConsumer(newValue -> config.nearby.nearbyTextColor = newValue)
-                    .build());
-
-                // Nearby Player Player Color
-                nearby.addEntry(entryBuilder.startSelector("Nearby Player Color", colors, config.nearby.nearbyPlayerColor)
-                    .setDefaultValue(colors[11])
-                    .setTooltip("The color of the nearby player names.")
-                    .setSaveConsumer(newValue -> config.nearby.nearbyPlayerColor = newValue)
-                    .build());
-
-                // Nearby Player Name
-                nearby.addEntry(entryBuilder.startStrField("Player Name", config.nearby.playerName)
-                    .setDefaultValue(clientName)
-                    .setTooltip("The name of the player to check nearby.")
-                    .setSaveConsumer(newValue -> config.nearby.playerName = newValue)
-                    .build());
-
-                // Nearby X Radius
-                nearby.addEntry(entryBuilder.startIntSlider("X Radius", config.nearby.xRadius, 50, 10000)
-                    .setDefaultValue(500)
-                    .setTooltip("The x radius (in blocks) to check inside.")
-                    .setSaveConsumer(newValue -> config.nearby.xRadius = newValue)
-                    .build());
-
-                // Nearby Z Radius
-                nearby.addEntry(entryBuilder.startIntSlider("Z Radius", config.nearby.zRadius, 50, 10000)
-                    .setDefaultValue(500)
-                    .setTooltip("The z radius (in blocks) to check inside.")
-                    .setSaveConsumer(newValue -> config.nearby.zRadius = newValue)
-                    .build());
-
-                screen = builder.build();
+                screen = ModMenuIntegration.getConfigBuilder().build();
 
                 client.openScreen(screen);
-                builder.setSavingRunnable(() -> ConfigUtils.serializeConfig(config));
 		    }
         });
         //#endregion
@@ -193,16 +76,16 @@ public class EMCMod implements ModInitializer
         {
             if (!config.general.enableMod) return;
 
-            if (config.townless.enableTownless)
-            {
-                final TextRenderer renderer = client.textRenderer;
+            final TextRenderer renderer = client.textRenderer;
 
+            if (config.townless.enabled)
+            {
                 townlessPlayerOffset = config.townless.townlessListYPos; // Position of the first player, who determines where the list will be.
 
-                Formatting townlessTextFormatting = Formatting.byName(config.townless.townlessTextColor);
-                String townlessText = new LiteralText("Townless Players").formatted(townlessTextFormatting).asFormattedString();
+                Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
+                String townlessText = new TranslatableText("Townless Players").formatted(townlessTextFormatting).asFormattedString();
 
-                // Draw 'Townless Players' text.
+                // Draw heading.
                 renderer.drawWithShadow(townlessText, config.townless.townlessListXPos, config.townless.townlessListYPos - 15, Formatting.WHITE.getColorValue());
 
                 if (townless.size() >= 1)
@@ -211,8 +94,8 @@ public class EMCMod implements ModInitializer
                     {
                         final JsonObject currentPlayer = (JsonObject) townless.get(i);
 
-                        Formatting playerTextFormatting = Formatting.byName(config.townless.townlessPlayerColor);
-                        String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
+                        Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour);
+                        String playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
 
                         if (config.townless.showCoords)
                         {
@@ -241,16 +124,14 @@ public class EMCMod implements ModInitializer
                 }
             }
 
-            if (config.nearby.enableNearby)
+            if (config.nearby.enabled)
             {
-                final TextRenderer renderer = client.textRenderer;
-
                 nearbyPlayerOffset = config.nearby.nearbyListYPos; // Position of the first player, who determines where the list will be.
 
-                Formatting nearbyTextFormatting = Formatting.byName(config.nearby.nearbyTextColor);
-                String nearbyText = new LiteralText("Nearby Players").formatted(nearbyTextFormatting).asFormattedString();
+                Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour);
+                String nearbyText = new TranslatableText("Nearby Players").formatted(nearbyTextFormatting).asFormattedString();
 
-                // Draw 'Nearby Players' text.
+                // Draw heading.
                 renderer.drawWithShadow(nearbyText, config.nearby.nearbyListXPos, config.nearby.nearbyListYPos - 15, Formatting.WHITE.getColorValue());
 
                 if (nearby.size() >= 1)
@@ -259,7 +140,7 @@ public class EMCMod implements ModInitializer
                     {
                         final JsonObject currentPlayer = (JsonObject) nearby.get(i);
 
-                        Formatting playerTextFormatting = Formatting.byName(config.nearby.nearbyPlayerColor);
+                        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
                         String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
 
                         final int playerX = currentPlayer.get("x").getAsInt();
@@ -272,6 +153,29 @@ public class EMCMod implements ModInitializer
                         nearbyPlayerOffset += 10;
                     }
                 }
+            }
+
+            if (config.townInfo.enabled)
+            {
+                Formatting townInfoTextFormatting = Formatting.byName(config.townInfo.headingTextColour);
+                String townInfoText = new TranslatableText("Town Information").formatted(townInfoTextFormatting).asFormattedString();
+
+                // Draw heading.
+                renderer.drawWithShadow(townInfoText, config.townInfo.townInfoXPos, config.townInfo.townInfoYPos - 15, Formatting.WHITE.getColorValue());
+
+                // Draw info.
+
+            }
+
+            if (config.nationInfo.enabled)
+            {
+                Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.headingTextColour);
+                String nationInfoText = new TranslatableText("Nation Information").formatted(nationInfoTextFormatting).asFormattedString();
+
+                // Draw heading.
+                renderer.drawWithShadow(nationInfoText, config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos - 15, Formatting.WHITE.getColorValue());
+
+                // Draw info.
             }
         });
         //#endregion

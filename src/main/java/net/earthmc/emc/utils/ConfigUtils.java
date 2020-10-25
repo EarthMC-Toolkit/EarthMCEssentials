@@ -7,9 +7,7 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.ConfigSerializer;
 
 public class ConfigUtils
 {
-    private ConfigUtils(){
-
-    }
+    private ConfigUtils() { }
 
     public static void serializeConfig(ModConfig config)
     {
