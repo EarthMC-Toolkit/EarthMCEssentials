@@ -161,14 +161,14 @@ public class ModMenuIntegration implements ModMenuApi
 
         // Town Information Horizontal Position
         townInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townInfo.townInfoXPos, 1, 1000)
-                .setDefaultValue(350)
+                .setDefaultValue(15)
                 .setTooltip("The horizontal position on the HUD.")
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.townInfoXPos = newValue)
                 .build());
 
         // Town Information Vertical Position
         townInfo.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.townInfo.townInfoYPos, 16, 1000)
-                .setDefaultValue(16)
+                .setDefaultValue(275)
                 .setTooltip("The vertical position on the HUD.")
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.townInfoYPos = newValue)
                 .build());
@@ -203,14 +203,14 @@ public class ModMenuIntegration implements ModMenuApi
 
         // Nation Information Horizontal Position
         nationInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.nationInfo.nationInfoXPos, 1, 1000)
-                .setDefaultValue(450)
+                .setDefaultValue(15)
                 .setTooltip("The horizontal position on the HUD.")
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.nationInfoXPos = newValue)
                 .build());
 
         // Nation Information Vertical Position
         nationInfo.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.nationInfo.nationInfoYPos, 16, 1000)
-                .setDefaultValue(16)
+                .setDefaultValue(375)
                 .setTooltip("The vertical position on the HUD.")
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.nationInfoYPos = newValue)
                 .build());

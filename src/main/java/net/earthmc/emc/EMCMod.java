@@ -4,10 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
-import me.shedaniel.clothconfig2.api.ConfigBuilder;
-import me.shedaniel.clothconfig2.api.ConfigCategory;
-import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.earthmc.emc.utils.ConfigUtils;
 import net.earthmc.emc.utils.EmcApi;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -27,6 +23,9 @@ public class EMCMod implements ModInitializer
 {
     public static JsonArray townless;
     public static JsonArray nearby;
+
+    public static JsonObject townInfo;
+    public static JsonObject nationInfo;
 
     int townlessPlayerOffset;
     int nearbyPlayerOffset;
@@ -55,8 +54,11 @@ public class EMCMod implements ModInitializer
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
 
+        townInfo = EmcApi.getTown(clientTownName);
+        nationInfo = EmcApi.getNation(clientNationName);
         townless = EmcApi.getTownless();
-        nearby = new JsonArray();
+
+        nearby = new JsonArray(); // New because the client cant be near anyone yet.
 
         //#region ClientTickEvents
         ClientTickEvents.END_CLIENT_TICK.register(client -> 
@@ -157,25 +159,54 @@ public class EMCMod implements ModInitializer
 
             if (config.townInfo.enabled)
             {
-                Formatting townInfoTextFormatting = Formatting.byName(config.townInfo.headingTextColour);
-                String townInfoText = new TranslatableText("Town Information").formatted(townInfoTextFormatting).asFormattedString();
+                Formatting townInfoHeadingFormatting = Formatting.byName(config.townInfo.headingTextColour);
+                Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
 
                 // Draw heading.
+                String townInfoText = new TranslatableText("Town Information - " + clientTownName).formatted(townInfoHeadingFormatting).asFormattedString();
                 renderer.drawWithShadow(townInfoText, config.townInfo.townInfoXPos, config.townInfo.townInfoYPos - 15, Formatting.WHITE.getColorValue());
 
                 // Draw info.
+                String mayorText = new TranslatableText("Mayor: ").formatted(infoTextFormatting).asFormattedString();
+                if (townInfo.has("mayor")) renderer.drawWithShadow(mayorText + townInfo.get("mayor").getAsString(), config.townInfo.townInfoXPos, config.townInfo.townInfoYPos + 10, Formatting.WHITE.getColorValue());
 
+                String areaText = new TranslatableText("Area/Chunks: ").formatted(infoTextFormatting).asFormattedString();
+                if (townInfo.has("area")) renderer.drawWithShadow(areaText + townInfo.get("area").getAsString(), config.townInfo.townInfoXPos, config.townInfo.townInfoYPos + 20, Formatting.WHITE.getColorValue());
+
+                String residentsText = new TranslatableText("Residents: ").formatted(infoTextFormatting).asFormattedString();
+                if (townInfo.has("residents")) renderer.drawWithShadow(residentsText + townInfo.get("residents").getAsJsonArray().size(), config.townInfo.townInfoXPos, config.townInfo.townInfoYPos + 30, Formatting.WHITE.getColorValue());
+
+                String locationText = new TranslatableText("Location: ").formatted(infoTextFormatting).asFormattedString();
+                if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(locationText + townInfo.get("x").getAsString() + ", " + townInfo.get("z").getAsString(), config.townInfo.townInfoXPos, config.townInfo.townInfoYPos + 40, Formatting.WHITE.getColorValue());
             }
 
             if (config.nationInfo.enabled)
             {
-                Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.headingTextColour);
-                String nationInfoText = new TranslatableText("Nation Information").formatted(nationInfoTextFormatting).asFormattedString();
+                Formatting nationInfoHeadingFormatting = Formatting.byName(config.nationInfo.headingTextColour);
+                Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
 
                 // Draw heading.
+                String nationInfoText = new TranslatableText("Nation Information - " + clientNationName).formatted(nationInfoHeadingFormatting).asFormattedString();
                 renderer.drawWithShadow(nationInfoText, config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos - 15, Formatting.WHITE.getColorValue());
 
                 // Draw info.
+                String kingText = new TranslatableText("King: ").formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("king")) renderer.drawWithShadow(kingText + nationInfo.get("king").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 10, Formatting.WHITE.getColorValue());
+
+                String capitalText = new TranslatableText("Capital: ").formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("capital")) renderer.drawWithShadow(capitalText + nationInfo.get("capital").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 20, Formatting.WHITE.getColorValue());
+
+                String areaText = new TranslatableText("Area/Chunks: ").formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("area")) renderer.drawWithShadow(areaText + nationInfo.get("area").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 30, Formatting.WHITE.getColorValue());
+
+                String residentsText = new TranslatableText("Residents: ").formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("residents")) renderer.drawWithShadow(residentsText + nationInfo.get("residents").getAsJsonArray().size(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 40, Formatting.WHITE.getColorValue());
+
+                String townsText = new TranslatableText("Towns: ").formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("towns")) renderer.drawWithShadow(townsText + nationInfo.get("towns").getAsJsonArray().size(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 50, Formatting.WHITE.getColorValue());
+
+                String locationText = new TranslatableText("Location: ").formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("x") && nationInfo.has("z")) renderer.drawWithShadow(locationText + nationInfo.get("x").getAsString() + ", " + nationInfo.get("z").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 60, Formatting.WHITE.getColorValue());
             }
         });
         //#endregion

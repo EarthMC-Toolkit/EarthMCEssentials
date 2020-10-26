@@ -26,26 +26,22 @@ public class ClientPlayNetworkHandlerMixin
         EMCMod.clientName = EMCMod.client.player.getName().asString();
         EMCMod.config.nearby.playerName = EMCMod.clientName;
 
-        JsonObject resident = EmcApi.getResident(EMCMod.clientName);
-
-        EMCMod.clientTownName = resident.get("town").getAsString();
-        EMCMod.config.townInfo.townName = EMCMod.clientTownName;
-
-        EMCMod.clientNationName = resident.get("nation").getAsString();
-        EMCMod.config.nationInfo.nationName = EMCMod.clientNationName;
-
         ConfigUtils.serializeConfig(EMCMod.config);
 
         // #region Create Timers
         final Timer townlessTimer = new Timer();
         final Timer nearbyTimer = new Timer();
+        final Timer townNationTimer = new Timer();
 
         townlessTimer.scheduleAtFixedRate(new TimerTask() 
         {
             @Override
             public void run() 
             {
-                if (EMCMod.config.general.enableMod && EMCMod.config.townless.enabled) EMCMod.nearby = EmcApi.getTownless();
+                if (EMCMod.config.general.enableMod)
+                {
+                    if (EMCMod.config.townless.enabled) EMCMod.townless = EmcApi.getTownless();
+                }
             }
         }, 0, 2 * 60 * 1000);
 
@@ -54,9 +50,44 @@ public class ClientPlayNetworkHandlerMixin
             @Override
             public void run()
             {
-                if (EMCMod.config.general.enableMod && EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
+                if (EMCMod.config.general.enableMod)
+                {
+                    if (EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
+                }
             }
         }, 0, 10 * 1000);
+
+        townNationTimer.scheduleAtFixedRate(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                if (EMCMod.config.general.enableMod)
+                {
+                    JsonObject resident = EmcApi.getResident(EMCMod.clientName);
+
+                    // Resident exists
+                    if (resident.has("name"))
+                    {
+                        if (EMCMod.config.townInfo.enabled)
+                        {
+                            EMCMod.clientTownName = resident.get("town").getAsString();
+                            EMCMod.config.townInfo.townName = EMCMod.clientTownName;
+
+                            EMCMod.townInfo = EmcApi.getTown(EMCMod.clientTownName);
+                        }
+                        if (EMCMod.config.nationInfo.enabled)
+                        {
+                            EMCMod.clientNationName = resident.get("nation").getAsString();
+                            EMCMod.config.nationInfo.nationName = EMCMod.clientNationName;
+
+                            EMCMod.nationInfo = EmcApi.getNation(EMCMod.clientNationName);
+                        }
+                    }
+                    else System.out.println(EMCMod.clientName + " is townless.");
+                }
+            }
+        }, 0, 60 * 1000);
         // #endregion
     }
 }
