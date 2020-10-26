@@ -194,7 +194,7 @@ public class EMCMod implements ModInitializer
                 if (nationInfo.has("king")) renderer.drawWithShadow(kingText + nationInfo.get("king").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 10, Formatting.WHITE.getColorValue());
 
                 String capitalText = new TranslatableText("Capital: ").formatted(nationInfoTextFormatting).asFormattedString();
-                if (nationInfo.has("capital")) renderer.drawWithShadow(capitalText + nationInfo.get("capital").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 20, Formatting.WHITE.getColorValue());
+                if (nationInfo.has("capitalName")) renderer.drawWithShadow(capitalText + nationInfo.get("capitalName").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 20, Formatting.WHITE.getColorValue());
 
                 String areaText = new TranslatableText("Area/Chunks: ").formatted(nationInfoTextFormatting).asFormattedString();
                 if (nationInfo.has("area")) renderer.drawWithShadow(areaText + nationInfo.get("area").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 30, Formatting.WHITE.getColorValue());
@@ -206,7 +206,7 @@ public class EMCMod implements ModInitializer
                 if (nationInfo.has("towns")) renderer.drawWithShadow(townsText + nationInfo.get("towns").getAsJsonArray().size(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 50, Formatting.WHITE.getColorValue());
 
                 String locationText = new TranslatableText("Location: ").formatted(nationInfoTextFormatting).asFormattedString();
-                if (nationInfo.has("x") && nationInfo.has("z")) renderer.drawWithShadow(locationText + nationInfo.get("x").getAsString() + ", " + nationInfo.get("z").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 60, Formatting.WHITE.getColorValue());
+                if (nationInfo.has("capitalX") && nationInfo.has("capitalZ")) renderer.drawWithShadow(locationText + nationInfo.get("capitalX").getAsString() + ", " + nationInfo.get("capitalZ").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 60, Formatting.WHITE.getColorValue());
             }
         });
         //#endregion
