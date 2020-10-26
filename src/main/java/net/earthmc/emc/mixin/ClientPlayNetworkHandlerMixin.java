@@ -72,19 +72,17 @@ public class ClientPlayNetworkHandlerMixin
                         if (EMCMod.config.townInfo.enabled)
                         {
                             EMCMod.clientTownName = resident.get("town").getAsString();
-                            EMCMod.config.townInfo.townName = EMCMod.clientTownName;
-
                             EMCMod.townInfo = EmcApi.getTown(EMCMod.clientTownName);
                         }
+
                         if (EMCMod.config.nationInfo.enabled)
                         {
                             EMCMod.clientNationName = resident.get("nation").getAsString();
-                            EMCMod.config.nationInfo.nationName = EMCMod.clientNationName;
-
                             EMCMod.nationInfo = EmcApi.getNation(EMCMod.clientNationName);
+
+                            System.out.println(EMCMod.nationInfo);
                         }
                     }
-                    else System.out.println(EMCMod.clientName + " is townless.");
                 }
             }
         }, 0, 60 * 1000);

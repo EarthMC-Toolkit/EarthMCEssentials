@@ -52,8 +52,6 @@ public class ModConfig implements ConfigData
     {
         public boolean enabled = true;
 
-        public String townName = "";
-
         public String headingTextColour = "DARK_GREEN";
         public String infoTextColour = "DARK_GREEN";
 
@@ -64,8 +62,6 @@ public class ModConfig implements ConfigData
     public static class NationInfo
     {
         public boolean enabled = true;
-
-        public String nationName = "";
 
         public String headingTextColour = "DARK_AQUA";
         public String infoTextColour = "DARK_AQUA";

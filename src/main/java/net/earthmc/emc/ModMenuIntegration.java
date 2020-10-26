@@ -152,13 +152,6 @@ public class ModMenuIntegration implements ModMenuApi
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.enabled = newValue)
                 .build());
 
-        // Town Information Town Name
-        townInfo.addEntry(entryBuilder.startStrField("Town Name", EMCMod.config.townInfo.townName)
-                .setDefaultValue(EMCMod.clientTownName)
-                .setTooltip("The name of the town to display information about.")
-                .setSaveConsumer(newValue -> EMCMod.config.townInfo.townName = newValue)
-                .build());
-
         // Town Information Horizontal Position
         townInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townInfo.townInfoXPos, 1, 1000)
                 .setDefaultValue(15)
@@ -192,13 +185,6 @@ public class ModMenuIntegration implements ModMenuApi
                 .setDefaultValue(true)
                 .setTooltip("Toggles town information on or off.")
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.enabled = newValue)
-                .build());
-
-        // Nation Information Nation Name
-        nationInfo.addEntry(entryBuilder.startStrField("Nation Name", EMCMod.config.nationInfo.nationName)
-                .setDefaultValue(EMCMod.clientNationName)
-                .setTooltip("The name of the town to display information about.")
-                .setSaveConsumer(newValue -> EMCMod.config.nationInfo.nationName = newValue)
                 .build());
 
         // Nation Information Horizontal Position
