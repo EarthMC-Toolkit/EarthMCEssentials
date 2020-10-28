@@ -78,7 +78,7 @@ public class ClientPlayNetworkHandlerMixin
                         if (EMCMod.config.nationInfo.enabled)
                         {
                             EMCMod.clientNationName = resident.get("nation").getAsString();
-                            EMCMod.nationInfo = EmcApi.getNation(EMCMod.clientNationName);
+                            EMCMod.nationInfo = EmcApi.getNation(EMCMod.clientNationName); // OFFENDING LINE.
 
                             System.out.println(EMCMod.nationInfo);
                         }

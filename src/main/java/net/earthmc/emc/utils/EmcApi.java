@@ -205,6 +205,7 @@ public class EmcApi
         }
         catch (final Exception exc)
         {
+            System.out.println("Failed to get nation: " + nationName);
             return new JsonObject();
         }
 
