@@ -54,8 +54,6 @@ public class EMCMod implements ModInitializer
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
 
-        townInfo = EmcApi.getTown(clientTownName);
-        nationInfo = EmcApi.getNation(clientNationName);
         townless = EmcApi.getTownless();
 
         nearby = new JsonArray(); // New because the client cant be near anyone yet.
@@ -157,7 +155,7 @@ public class EMCMod implements ModInitializer
                 }
             }
 
-            if (config.townInfo.enabled)
+            if (config.townInfo.enabled && townInfo != null)
             {
                 Formatting townInfoHeadingFormatting = Formatting.byName(config.townInfo.headingTextColour);
                 Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
@@ -180,7 +178,7 @@ public class EMCMod implements ModInitializer
                 if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(locationText + townInfo.get("x").getAsString() + ", " + townInfo.get("z").getAsString(), config.townInfo.townInfoXPos, config.townInfo.townInfoYPos + 40, Formatting.WHITE.getColorValue());
             }
 
-            if (config.nationInfo.enabled)
+            if (config.nationInfo.enabled && nationInfo != null)
             {
                 Formatting nationInfoHeadingFormatting = Formatting.byName(config.nationInfo.headingTextColour);
                 Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
@@ -204,9 +202,6 @@ public class EMCMod implements ModInitializer
 
                 String townsText = new TranslatableText("Towns: ").formatted(nationInfoTextFormatting).asFormattedString();
                 if (nationInfo.has("towns")) renderer.drawWithShadow(townsText + nationInfo.get("towns").getAsJsonArray().size(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 50, Formatting.WHITE.getColorValue());
-
-                String locationText = new TranslatableText("Location: ").formatted(nationInfoTextFormatting).asFormattedString();
-                if (nationInfo.has("capitalX") && nationInfo.has("capitalZ")) renderer.drawWithShadow(locationText + nationInfo.get("capitalX").getAsString() + ", " + nationInfo.get("capitalZ").getAsString(), config.nationInfo.nationInfoXPos, config.nationInfo.nationInfoYPos + 60, Formatting.WHITE.getColorValue());
             }
         });
         //#endregion

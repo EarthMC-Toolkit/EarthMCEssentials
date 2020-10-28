@@ -163,8 +163,9 @@ public class EmcApi
                 return (JsonObject) parse.parse(inline.toString());
             }
         }
-        catch (final Exception exc)
+        catch (final Exception e)
         {
+            System.out.println(e);
             return new JsonObject();
         }
 
@@ -203,9 +204,9 @@ public class EmcApi
                 return (JsonObject) parse.parse(inline.toString());
             }
         }
-        catch (final Exception exc)
+        catch (final Exception e)
         {
-            System.out.println("Failed to get nation: " + nationName);
+            System.out.println(e);
             return new JsonObject();
         }
 

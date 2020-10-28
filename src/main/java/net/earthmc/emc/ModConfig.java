@@ -52,8 +52,8 @@ public class ModConfig implements ConfigData
     {
         public boolean enabled = true;
 
-        public String headingTextColour = "DARK_GREEN";
-        public String infoTextColour = "DARK_GREEN";
+        public String headingTextColour = "GREEN";
+        public String infoTextColour = "GREEN";
 
         public int townInfoXPos = 15;
         public int townInfoYPos = 275;
@@ -63,8 +63,8 @@ public class ModConfig implements ConfigData
     {
         public boolean enabled = true;
 
-        public String headingTextColour = "DARK_AQUA";
-        public String infoTextColour = "DARK_AQUA";
+        public String headingTextColour = "AQUA";
+        public String infoTextColour = "AQUA";
 
         public int nationInfoXPos = 15;
         public int nationInfoYPos = 375;

@@ -168,14 +168,14 @@ public class ModMenuIntegration implements ModMenuApi
 
         // Town Information Heading Colour
         townInfo.addEntry(entryBuilder.startSelector("Heading Colour", EMCMod.colors, EMCMod.config.townInfo.headingTextColour)
-                .setDefaultValue("DARK_GREEN")
+                .setDefaultValue("GREEN")
                 .setTooltip("The colour of the header.")
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.headingTextColour = newValue)
                 .build());
 
         // Town Information Info Colour
         townInfo.addEntry(entryBuilder.startSelector("Info Colour", EMCMod.colors, EMCMod.config.townInfo.infoTextColour)
-                .setDefaultValue("DARK_GREEN")
+                .setDefaultValue("GREEN")
                 .setTooltip("The colour of the information.")
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.infoTextColour = newValue)
                 .build());
@@ -203,14 +203,14 @@ public class ModMenuIntegration implements ModMenuApi
 
         // Nation Information Heading Colour
         nationInfo.addEntry(entryBuilder.startSelector("Heading Colour", EMCMod.colors, EMCMod.config.nationInfo.headingTextColour)
-                .setDefaultValue("DARK_AQUA")
+                .setDefaultValue("AQUA")
                 .setTooltip("The colour of the header.")
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.headingTextColour = newValue)
                 .build());
 
         // Nation Information Info Colour
         nationInfo.addEntry(entryBuilder.startSelector("Info Colour", EMCMod.colors, EMCMod.config.nationInfo.infoTextColour)
-                .setDefaultValue("DARK_AQUA")
+                .setDefaultValue("AQUA")
                 .setTooltip("The colour of the information.")
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.infoTextColour = newValue)
                 .build());
