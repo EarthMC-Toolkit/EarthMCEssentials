@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "emc-essentials",
-  "version": "1.0.3",
+  "version": "1.0.4",
 
   "name": "EarthMCEssentials",
   "description": "A mod providing info on the EarthMC Minecraft server.",
