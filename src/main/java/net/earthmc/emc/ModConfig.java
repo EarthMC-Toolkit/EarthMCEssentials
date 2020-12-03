@@ -13,6 +13,7 @@ public class ModConfig implements ConfigData
     public Nearby nearby = new Nearby();
     public TownInfo townInfo = new TownInfo();
     public NationInfo nationInfo = new NationInfo();
+    public TownEvents townEvents = new TownEvents();
 
     public static class General
     {
@@ -25,8 +26,8 @@ public class ModConfig implements ConfigData
         public boolean enabled = true;
         public boolean showCoords = false;
 
-        public int townlessListXPos = 1;
-        public int townlessListYPos = 16;
+        public int xPos = 1;
+        public int yPos = 16;
 
         public String headingTextColour = "LIGHT_PURPLE";
         public String playerTextColour = "LIGHT_PURPLE";
@@ -36,8 +37,8 @@ public class ModConfig implements ConfigData
     {
         public boolean enabled = true;
         
-        public int nearbyListXPos = 100;
-        public int nearbyListYPos = 16;
+        public int xPos = 100;
+        public int yPos = 16;
 
         public String headingTextColour = "GOLD";
         public String playerTextColour = "GOLD";
@@ -55,8 +56,8 @@ public class ModConfig implements ConfigData
         public String headingTextColour = "GREEN";
         public String infoTextColour = "GREEN";
 
-        public int townInfoXPos = 15;
-        public int townInfoYPos = 275;
+        public int xPos = 15;
+        public int yPos = 275;
     }
 
     public static class NationInfo
@@ -66,7 +67,18 @@ public class ModConfig implements ConfigData
         public String headingTextColour = "AQUA";
         public String infoTextColour = "AQUA";
 
-        public int nationInfoXPos = 15;
-        public int nationInfoYPos = 375;
+        public int xPos = 15;
+        public int yPos = 375;
+    }
+
+    public static class TownEvents
+    {
+        public boolean enabled = true;
+
+        public String headingTextColour = "AQUA";
+        public String infoTextColour = "AQUA";
+
+        public int xPos = 15;
+        public int yPos = 375;
     }
 }

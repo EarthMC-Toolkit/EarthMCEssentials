@@ -62,17 +62,17 @@ public class ModMenuIntegration implements ModMenuApi
                 .build());
 
         // Townless Horizontal Position
-        townless.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townless.townlessListXPos, 1, 1000)
+        townless.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townless.xPos, 1, 1000)
                 .setDefaultValue(770)
                 .setTooltip("The horizontal position on the HUD.")
-                .setSaveConsumer(newValue -> EMCMod.config.townless.townlessListXPos = newValue)
+                .setSaveConsumer(newValue -> EMCMod.config.townless.xPos = newValue)
                 .build());
 
         // Townless Vertical Position
-        townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.townless.townlessListYPos, 16, 1000)
+        townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.townless.yPos, 16, 1000)
                 .setDefaultValue(375)
                 .setTooltip("The vertical position on the HUD.")
-                .setSaveConsumer(newValue -> EMCMod.config.townless.townlessListYPos = newValue)
+                .setSaveConsumer(newValue -> EMCMod.config.townless.yPos = newValue)
                 .build());
 
         // Townless Text Color
@@ -97,17 +97,17 @@ public class ModMenuIntegration implements ModMenuApi
                 .build());
 
         // Nearby Player Horizontal Position
-        nearby.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.nearby.nearbyListXPos, 1, 1000)
+        nearby.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.nearby.xPos, 1, 1000)
                 .setDefaultValue(770)
                 .setTooltip("The horizontal position on the HUD.")
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.nearbyListXPos = newValue)
+                .setSaveConsumer(newValue -> EMCMod.config.nearby.xPos = newValue)
                 .build());
 
         // Nearby Player Vertical Position
-        nearby.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.nearby.nearbyListYPos, 16, 1000)
+        nearby.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.nearby.yPos, 16, 1000)
                 .setDefaultValue(275)
                 .setTooltip("The vertical position on the HUD.")
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.nearbyListYPos = newValue)
+                .setSaveConsumer(newValue -> EMCMod.config.nearby.yPos = newValue)
                 .build());
 
         // Nearby Player Text Color
@@ -153,17 +153,17 @@ public class ModMenuIntegration implements ModMenuApi
                 .build());
 
         // Town Information Horizontal Position
-        townInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townInfo.townInfoXPos, 1, 1000)
+        townInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townInfo.xPos, 1, 1000)
                 .setDefaultValue(15)
                 .setTooltip("The horizontal position on the HUD.")
-                .setSaveConsumer(newValue -> EMCMod.config.townInfo.townInfoXPos = newValue)
+                .setSaveConsumer(newValue -> EMCMod.config.townInfo.xPos = newValue)
                 .build());
 
         // Town Information Vertical Position
-        townInfo.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.townInfo.townInfoYPos, 16, 1000)
+        townInfo.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.townInfo.yPos, 16, 1000)
                 .setDefaultValue(275)
                 .setTooltip("The vertical position on the HUD.")
-                .setSaveConsumer(newValue -> EMCMod.config.townInfo.townInfoYPos = newValue)
+                .setSaveConsumer(newValue -> EMCMod.config.townInfo.yPos = newValue)
                 .build());
 
         // Town Information Heading Colour
@@ -188,17 +188,17 @@ public class ModMenuIntegration implements ModMenuApi
                 .build());
 
         // Nation Information Horizontal Position
-        nationInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.nationInfo.nationInfoXPos, 1, 1000)
+        nationInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.nationInfo.xPos, 1, 1000)
                 .setDefaultValue(15)
                 .setTooltip("The horizontal position on the HUD.")
-                .setSaveConsumer(newValue -> EMCMod.config.nationInfo.nationInfoXPos = newValue)
+                .setSaveConsumer(newValue -> EMCMod.config.nationInfo.xPos = newValue)
                 .build());
 
         // Nation Information Vertical Position
-        nationInfo.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.nationInfo.nationInfoYPos, 16, 1000)
+        nationInfo.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.nationInfo.yPos, 16, 1000)
                 .setDefaultValue(375)
                 .setTooltip("The vertical position on the HUD.")
-                .setSaveConsumer(newValue -> EMCMod.config.nationInfo.nationInfoYPos = newValue)
+                .setSaveConsumer(newValue -> EMCMod.config.nationInfo.yPos = newValue)
                 .build());
 
         // Nation Information Heading Colour

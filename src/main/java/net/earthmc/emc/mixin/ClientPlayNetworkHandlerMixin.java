@@ -29,11 +29,12 @@ public class ClientPlayNetworkHandlerMixin
         ConfigUtils.serializeConfig(EMCMod.config);
 
         // #region Create Timers
-        final Timer townlessTimer = new Timer();
-        final Timer nearbyTimer = new Timer();
-        final Timer townNationTimer = new Timer();
+        final Timer twoMinuteTimer = new Timer();
+        final Timer tenSecondTimer = new Timer();
+        final Timer fiveSecondTimer = new Timer();
+        final Timer oneMinuteTimer = new Timer();
 
-        townlessTimer.scheduleAtFixedRate(new TimerTask() 
+        twoMinuteTimer.scheduleAtFixedRate(new TimerTask()
         {
             @Override
             public void run() 
@@ -45,7 +46,19 @@ public class ClientPlayNetworkHandlerMixin
             }
         }, 0, 2 * 60 * 1000);
 
-        nearbyTimer.scheduleAtFixedRate(new TimerTask() 
+        fiveSecondTimer.scheduleAtFixedRate(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                if (EMCMod.config.general.enableMod)
+                {
+                    if (EMCMod.config.townEvents.enabled) EMCMod.oldTowns = EmcApi.getTowns();
+                }
+            }
+        }, 0, 10 * 1000);
+
+        tenSecondTimer.scheduleAtFixedRate(new TimerTask()
         {
             @Override
             public void run()
@@ -53,11 +66,12 @@ public class ClientPlayNetworkHandlerMixin
                 if (EMCMod.config.general.enableMod)
                 {
                     if (EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
+                    if (EMCMod.config.townEvents.enabled) EMCMod.towns = EmcApi.getTowns();
                 }
             }
         }, 0, 10 * 1000);
 
-        townNationTimer.scheduleAtFixedRate(new TimerTask()
+        oneMinuteTimer.scheduleAtFixedRate(new TimerTask()
         {
             @Override
             public void run()
