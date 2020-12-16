@@ -197,15 +197,16 @@ public class EMCMod implements ModInitializer
                         {
                             final JsonObject currentPlayer = (JsonObject) nearby.get(i);
 
-                            Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
-                            MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
-
                             final int playerX = currentPlayer.get("x").getAsInt();
                             final int playerY = currentPlayer.get("y").getAsInt();
                             final int playerZ = currentPlayer.get("z").getAsInt();
 
-                            // Player is not underground, draw them.
-                            if (playerX != 0 && playerZ != 0) renderer.drawWithShadow(matrixStack, playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.nearby.xPos, nearbyPlayerOffset, Formatting.WHITE.getColorValue());
+                            if (playerX == 0 && playerZ == 0 && playerY == 64) continue;
+
+                            Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
+                            MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
+
+                            renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, Formatting.WHITE.getColorValue());
 
                             // Add offset for the next player.
                             nearbyPlayerOffset += 10;
