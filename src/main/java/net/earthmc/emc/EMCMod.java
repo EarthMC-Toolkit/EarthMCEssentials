@@ -198,13 +198,14 @@ public class EMCMod implements ModInitializer
                             final JsonObject currentPlayer = (JsonObject) nearby.get(i);
 
                             Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
-                            String playerName = new LiteralText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).getString();
+                            MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
 
                             final int playerX = currentPlayer.get("x").getAsInt();
                             final int playerY = currentPlayer.get("y").getAsInt();
                             final int playerZ = currentPlayer.get("z").getAsInt();
 
-                            renderer.drawWithShadow(matrixStack, playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.nearby.xPos, nearbyPlayerOffset, Formatting.WHITE.getColorValue());
+                            // Player is not underground, draw them.
+                            if (playerX != 0 && playerZ != 0) renderer.drawWithShadow(matrixStack, playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.nearby.xPos, nearbyPlayerOffset, Formatting.WHITE.getColorValue());
 
                             // Add offset for the next player.
                             nearbyPlayerOffset += 10;
@@ -213,7 +214,7 @@ public class EMCMod implements ModInitializer
                 }
 
                 // Town info is enabled and object isnt null or empty.
-                if (config.townInfo.enabled && !townInfo.isEmpty() && townInfo != null)
+                if (config.townInfo.enabled && townInfo.has("name") && townInfo != null)
                 {
                     Formatting townInfoHeadingFormatting = Formatting.byName(config.townInfo.headingTextColour);
                     Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
@@ -237,7 +238,7 @@ public class EMCMod implements ModInitializer
                 }
 
                 // Nation info is enabled and object isnt null or empty.
-                if (config.nationInfo.enabled && !nationInfo.isEmpty() && nationInfo != null)
+                if (config.nationInfo.enabled && nationInfo.has("name") && nationInfo != null)
                 {
                     Formatting nationInfoHeadingFormatting = Formatting.byName(config.nationInfo.headingTextColour);
                     Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
