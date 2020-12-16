@@ -128,7 +128,7 @@ public class EMCMod implements ModInitializer
                         String eventText = new TranslatableText("Townless Players").formatted(eventTextFormatting).asString();
 
                         // Draw heading.
-                        renderer.drawWithShadow(matrixStack, eventText, config.townless.xPos, config.townless.yPos - 15, Formatting.WHITE.getColorValue());
+                        renderer.drawWithShadow(matrixStack, eventText, config.townless.xPos, config.townless.yPos - 15, 16777215);
                     }
                 }*/
 
@@ -141,7 +141,7 @@ public class EMCMod implements ModInitializer
                     MutableText townlessText = new TranslatableText("Townless Players").formatted(townlessTextFormatting);
 
                     // Draw heading.
-                    renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, Formatting.WHITE.getColorValue());
+                    renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
 
                     if (townless.size() >= 1)
                     {
@@ -161,16 +161,16 @@ public class EMCMod implements ModInitializer
                                 // If underground, display "Underground" instead of their position
                                 if (playerX == 0 && playerZ == 0)
                                 {
-                                    renderer.drawWithShadow(matrixStack, playerName + " Underground", config.townless.xPos, townlessPlayerOffset, Formatting.WHITE.getColorValue());
+                                    renderer.drawWithShadow(matrixStack, playerName + " Underground", config.townless.xPos, townlessPlayerOffset, 16777215);
                                 }
                                 else
                                 {
-                                    renderer.drawWithShadow(matrixStack, playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.xPos, townlessPlayerOffset, Formatting.WHITE.getColorValue());
+                                    renderer.drawWithShadow(matrixStack, playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.xPos, townlessPlayerOffset, 16777215);
                                 }
                             }
                             else
                             {
-                                renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, Formatting.WHITE.getColorValue());
+                                renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
                             }
 
                             // Add offset for the next player.
@@ -188,7 +188,7 @@ public class EMCMod implements ModInitializer
                     MutableText nearbyText = new TranslatableText("Nearby Players").formatted(nearbyTextFormatting);
 
                     // Draw heading.
-                    renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, Formatting.WHITE.getColorValue());
+                    renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
 
                     if (nearby.size() >= 1)
                     {
@@ -205,7 +205,7 @@ public class EMCMod implements ModInitializer
                             Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
                             MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
 
-                            renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, Formatting.WHITE.getColorValue());
+                            renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
 
                             // Add offset for the next player.
                             nearbyPlayerOffset += 10;
@@ -221,20 +221,20 @@ public class EMCMod implements ModInitializer
 
                     // Draw heading.
                     MutableText townInfoText = new TranslatableText("Town Information - " + clientTownName).formatted(townInfoHeadingFormatting);
-                    renderer.drawWithShadow(matrixStack, townInfoText, config.townInfo.xPos, config.townInfo.yPos - 5, Formatting.WHITE.getColorValue());
+                    renderer.drawWithShadow(matrixStack, townInfoText, config.townInfo.xPos, config.townInfo.yPos - 5, 16777215);
 
                     // Draw info.
                     MutableText mayorText = new TranslatableText("Mayor: " + townInfo.get("mayor").getAsString()).formatted(infoTextFormatting);
-                    if (townInfo.has("mayor")) renderer.drawWithShadow(matrixStack, mayorText, config.townInfo.xPos, config.townInfo.yPos + 10, Formatting.WHITE.getColorValue());
+                    if (townInfo.has("mayor")) renderer.drawWithShadow(matrixStack, mayorText, config.townInfo.xPos, config.townInfo.yPos + 10, 16777215);
 
                     MutableText areaText = new TranslatableText("Area/Chunks: " + townInfo.get("area").getAsString()).formatted(infoTextFormatting);
-                    if (townInfo.has("area")) renderer.drawWithShadow(matrixStack, areaText, config.townInfo.xPos, config.townInfo.yPos + 20, Formatting.WHITE.getColorValue());
+                    if (townInfo.has("area")) renderer.drawWithShadow(matrixStack, areaText, config.townInfo.xPos, config.townInfo.yPos + 20, 16777215);
 
                     MutableText residentsText = new TranslatableText("Residents: " + townInfo.get("residents").getAsJsonArray().size()).formatted(infoTextFormatting);
-                    if (townInfo.has("residents")) renderer.drawWithShadow(matrixStack, residentsText, config.townInfo.xPos, config.townInfo.yPos + 30, Formatting.WHITE.getColorValue());
+                    if (townInfo.has("residents")) renderer.drawWithShadow(matrixStack, residentsText, config.townInfo.xPos, config.townInfo.yPos + 30, 16777215);
 
                     MutableText locationText = new TranslatableText("Location: " + townInfo.get("x").getAsString() + ", " + townInfo.get("z").getAsString()).formatted(infoTextFormatting);
-                    if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(matrixStack, locationText, config.townInfo.xPos, config.townInfo.yPos + 40, Formatting.WHITE.getColorValue());
+                    if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(matrixStack, locationText, config.townInfo.xPos, config.townInfo.yPos + 40, 16777215);
                 }
 
                 // Nation info is enabled and object isnt null or empty.
@@ -245,23 +245,23 @@ public class EMCMod implements ModInitializer
 
                     // Draw heading.
                     MutableText nationInfoText = new TranslatableText("Nation Information - " + clientNationName).formatted(nationInfoHeadingFormatting);
-                    renderer.drawWithShadow(matrixStack, nationInfoText, config.nationInfo.xPos, config.nationInfo.yPos - 5, Formatting.WHITE.getColorValue());
+                    renderer.drawWithShadow(matrixStack, nationInfoText, config.nationInfo.xPos, config.nationInfo.yPos - 5, 16777215);
 
                     // Draw info.
                     MutableText kingText = new TranslatableText("King: " + nationInfo.get("king").getAsString()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("king")) renderer.drawWithShadow(matrixStack, kingText, config.nationInfo.xPos, config.nationInfo.yPos + 10, Formatting.WHITE.getColorValue());
+                    if (nationInfo.has("king")) renderer.drawWithShadow(matrixStack, kingText, config.nationInfo.xPos, config.nationInfo.yPos + 10, 16777215);
 
                     MutableText capitalText = new TranslatableText("Capital: " + nationInfo.get("capitalName").getAsString()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("capitalName")) renderer.drawWithShadow(matrixStack, capitalText, config.nationInfo.xPos, config.nationInfo.yPos + 20, Formatting.WHITE.getColorValue());
+                    if (nationInfo.has("capitalName")) renderer.drawWithShadow(matrixStack, capitalText, config.nationInfo.xPos, config.nationInfo.yPos + 20, 16777215);
 
                     MutableText areaText = new TranslatableText("Area/Chunks: " + nationInfo.get("area").getAsString()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("area")) renderer.drawWithShadow(matrixStack, areaText, config.nationInfo.xPos, config.nationInfo.yPos + 30, Formatting.WHITE.getColorValue());
+                    if (nationInfo.has("area")) renderer.drawWithShadow(matrixStack, areaText, config.nationInfo.xPos, config.nationInfo.yPos + 30, 16777215);
 
                     MutableText residentsText = new TranslatableText("Residents: " + nationInfo.get("residents").getAsJsonArray().size()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("residents")) renderer.drawWithShadow(matrixStack, residentsText, config.nationInfo.xPos, config.nationInfo.yPos + 40, Formatting.WHITE.getColorValue());
+                    if (nationInfo.has("residents")) renderer.drawWithShadow(matrixStack, residentsText, config.nationInfo.xPos, config.nationInfo.yPos + 40, 16777215);
 
                     MutableText townsText = new TranslatableText("Towns: " + nationInfo.get("towns").getAsJsonArray().size()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("towns")) renderer.drawWithShadow(matrixStack, townsText, config.nationInfo.xPos, config.nationInfo.yPos + 50, Formatting.WHITE.getColorValue());
+                    if (nationInfo.has("towns")) renderer.drawWithShadow(matrixStack, townsText, config.nationInfo.xPos, config.nationInfo.yPos + 50, 16777215);
                 }
             }
         });
