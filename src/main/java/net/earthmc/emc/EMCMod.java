@@ -215,7 +215,7 @@ public class EMCMod implements ModInitializer
                 }
 
                 // Town info is enabled and object isnt null or empty.
-                if (config.townInfo.enabled && townInfo.has("name") && townInfo != null)
+                if (config.townInfo.enabled && townInfo != null)
                 {
                     Formatting townInfoHeadingFormatting = Formatting.byName(config.townInfo.headingTextColour);
                     Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
@@ -239,7 +239,7 @@ public class EMCMod implements ModInitializer
                 }
 
                 // Nation info is enabled and object isnt null or empty.
-                if (config.nationInfo.enabled && nationInfo.has("name") && nationInfo != null)
+                if (config.nationInfo.enabled && nationInfo != null)
                 {
                     Formatting nationInfoHeadingFormatting = Formatting.byName(config.nationInfo.headingTextColour);
                     Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
