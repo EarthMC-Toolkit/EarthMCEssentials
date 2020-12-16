@@ -60,7 +60,7 @@ public class EMCMod implements ModInitializer
 
         oldTowns = EmcApi.getTowns();
         townless = EmcApi.getTownless();
-        nearby = new JsonArray(); // New because the client cant be near anyone yet.
+        nearby = new JsonArray(); // 'new' because the client cant be near anyone yet.
 
         //#region ClientTickEvents
         ClientTickEvents.END_CLIENT_TICK.register(client ->
@@ -92,7 +92,7 @@ public class EMCMod implements ModInitializer
                         for (int i = 0; i < towns.size(); i++)
                         {
                             final JsonObject currentTown = (JsonObject) towns.get(i);
-                            final JsonObject oldTown = matrixStack; // MAKE THIS INTO A .FIND
+                            final JsonObject oldTown = null; // MAKE THIS INTO A .FIND
 
                             if (currentTown.get("pvp").getAsBoolean() != oldTown.get("pvp").getAsBoolean())
                             {
@@ -212,7 +212,8 @@ public class EMCMod implements ModInitializer
                     }
                 }
 
-                if (config.townInfo.enabled && townInfo != null)
+                // Town info is enabled and object isnt null or empty.
+                if (config.townInfo.enabled && !townInfo.isEmpty() && townInfo != null)
                 {
                     Formatting townInfoHeadingFormatting = Formatting.byName(config.townInfo.headingTextColour);
                     Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
@@ -235,7 +236,8 @@ public class EMCMod implements ModInitializer
                     if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(matrixStack, locationText, config.townInfo.xPos, config.townInfo.yPos + 40, Formatting.WHITE.getColorValue());
                 }
 
-                if (config.nationInfo.enabled && nationInfo != null)
+                // Nation info is enabled and object isnt null or empty.
+                if (config.nationInfo.enabled && !nationInfo.isEmpty() && nationInfo != null)
                 {
                     Formatting nationInfoHeadingFormatting = Formatting.byName(config.nationInfo.headingTextColour);
                     Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
