@@ -83,6 +83,7 @@ public class EMCMod implements ModInitializer
 
                 final TextRenderer renderer = client.textRenderer;
 
+                /*
                 if (config.townEvents.enabled)
                 {
                     if (towns.size() >= 1)
@@ -129,7 +130,7 @@ public class EMCMod implements ModInitializer
                         // Draw heading.
                         renderer.drawWithShadow(null, eventText, config.townless.xPos, config.townless.yPos - 15, Formatting.WHITE.getColorValue());
                     }
-                }
+                }*/
 
                 if (config.townless.enabled)
                 {
