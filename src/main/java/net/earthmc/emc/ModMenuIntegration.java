@@ -6,6 +6,7 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.earthmc.emc.utils.ConfigUtils;
+import net.minecraft.text.TranslatableText;
 
 public class ModMenuIntegration implements ModMenuApi
 {
@@ -22,196 +23,196 @@ public class ModMenuIntegration implements ModMenuApi
 
     public static ConfigBuilder getConfigBuilder()
     {
-        ConfigBuilder builder = ConfigBuilder.create().setTitle("EarthMC Essentials Config").setTransparentBackground(true);
+        ConfigBuilder builder = ConfigBuilder.create().setTitle(new TranslatableText("EarthMC Essentials Config")).setTransparentBackground(true);
 
-        ConfigCategory general = builder.getOrCreateCategory("General");
-        ConfigCategory townless = builder.getOrCreateCategory("Townless");
-        ConfigCategory nearby = builder.getOrCreateCategory("Nearby");
-        ConfigCategory townInfo = builder.getOrCreateCategory("Town Info");
-        ConfigCategory nationInfo = builder.getOrCreateCategory("Nation Info");
+        ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("General"));
+        ConfigCategory townless = builder.getOrCreateCategory(new TranslatableText("Townless"));
+        ConfigCategory nearby = builder.getOrCreateCategory(new TranslatableText("Nearby"));
+        ConfigCategory townInfo = builder.getOrCreateCategory(new TranslatableText("Town Info"));
+        ConfigCategory nationInfo = builder.getOrCreateCategory(new TranslatableText("Nation Info"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
         // #region Add Entries
         // Enable Mod
-        general.addEntry(entryBuilder.startBooleanToggle("Enable Mod", EMCMod.config.general.enableMod)
+        general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Enable Mod"), EMCMod.config.general.enableMod)
                 .setDefaultValue(true)
-                .setTooltip("Toggles the mod on or off.")
+                .setTooltip(new TranslatableText("Toggles the mod on or off."))
                 .setSaveConsumer(newValue -> EMCMod.config.general.enableMod = newValue)
                 .build());
 
         // Enable EMC Only
-        general.addEntry(entryBuilder.startBooleanToggle("EMC Only", EMCMod.config.general.emcOnly)
+        general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("EMC Only"), EMCMod.config.general.emcOnly)
                 .setDefaultValue(true)
-                .setTooltip("Toggles EMC Only on or off. NOT YET IMPLEMENTED.")
+                .setTooltip(new TranslatableText("Toggles EMC Only on or off. NOT YET IMPLEMENTED."))
                 .setSaveConsumer(newValue -> EMCMod.config.general.emcOnly = newValue)
                 .build());
 
         // Enable Townless
-        townless.addEntry(entryBuilder.startBooleanToggle("Enabled", EMCMod.config.townless.enabled)
+        townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Enabled"), EMCMod.config.townless.enabled)
                 .setDefaultValue(true)
-                .setTooltip("Toggles townless players on or off.")
+                .setTooltip(new TranslatableText("Toggles townless players on or off."))
                 .setSaveConsumer(newValue -> EMCMod.config.townless.enabled = newValue)
                 .build());
 
         // Townless Horizontal Position
-        townless.addEntry(entryBuilder.startBooleanToggle("Show Coordinates", EMCMod.config.townless.showCoords)
+        townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Show Coordinates"), EMCMod.config.townless.showCoords)
                 .setDefaultValue(false)
-                .setTooltip("Toggles coordinates for townless players on or off.")
+                .setTooltip(new TranslatableText("Toggles coordinates for townless players on or off."))
                 .setSaveConsumer(newValue -> EMCMod.config.townless.showCoords = newValue)
                 .build());
 
         // Townless Horizontal Position
-        townless.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townless.xPos, 1, 1000)
+        townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townless.xPos, 1, 1000)
                 .setDefaultValue(770)
-                .setTooltip("The horizontal position on the HUD.")
+                .setTooltip(new TranslatableText("The horizontal position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.townless.xPos = newValue)
                 .build());
 
         // Townless Vertical Position
-        townless.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.townless.yPos, 16, 1000)
+        townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townless.yPos, 16, 1000)
                 .setDefaultValue(375)
-                .setTooltip("The vertical position on the HUD.")
+                .setTooltip(new TranslatableText("The vertical position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.townless.yPos = newValue)
                 .build());
 
         // Townless Text Color
-        townless.addEntry(entryBuilder.startSelector("Heading Colour", EMCMod.colors, EMCMod.config.townless.headingTextColour)
+        townless.addEntry(entryBuilder.startSelector(new TranslatableText("Heading Colour"), EMCMod.colors, EMCMod.config.townless.headingTextColour)
                 .setDefaultValue(EMCMod.colors[8])
-                .setTooltip("The colour of the 'Townless Players' text.")
+                .setTooltip(new TranslatableText("The colour of the 'Townless Players' text."))
                 .setSaveConsumer(newValue -> EMCMod.config.townless.headingTextColour = newValue)
                 .build());
 
         // Townless Player Color
-        townless.addEntry(entryBuilder.startSelector("Player Colour", EMCMod.colors, EMCMod.config.townless.playerTextColour)
+        townless.addEntry(entryBuilder.startSelector(new TranslatableText("Player Colour"), EMCMod.colors, EMCMod.config.townless.playerTextColour)
                 .setDefaultValue(EMCMod.colors[8])
-                .setTooltip("The colour of the townless player names.")
+                .setTooltip(new TranslatableText("The colour of the townless player names."))
                 .setSaveConsumer(newValue -> EMCMod.config.townless.playerTextColour = newValue)
                 .build());
 
         // Enable nearby
-        nearby.addEntry(entryBuilder.startBooleanToggle("Enabled", EMCMod.config.nearby.enabled)
+        nearby.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Enabled"), EMCMod.config.nearby.enabled)
                 .setDefaultValue(true)
-                .setTooltip("Toggles nearby players on or off.")
+                .setTooltip(new TranslatableText("Toggles nearby players on or off."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.enabled = newValue)
                 .build());
 
         // Nearby Player Horizontal Position
-        nearby.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.nearby.xPos, 1, 1000)
+        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.nearby.xPos, 1, 1000)
                 .setDefaultValue(770)
-                .setTooltip("The horizontal position on the HUD.")
+                .setTooltip(new TranslatableText("The horizontal position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.xPos = newValue)
                 .build());
 
         // Nearby Player Vertical Position
-        nearby.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.nearby.yPos, 16, 1000)
+        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.nearby.yPos, 16, 1000)
                 .setDefaultValue(275)
-                .setTooltip("The vertical position on the HUD.")
+                .setTooltip(new TranslatableText("The vertical position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.yPos = newValue)
                 .build());
 
         // Nearby Player Text Color
-        nearby.addEntry(entryBuilder.startSelector("Heading Colour", EMCMod.colors, EMCMod.config.nearby.headingTextColour)
+        nearby.addEntry(entryBuilder.startSelector(new TranslatableText("Heading Colour"), EMCMod.colors, EMCMod.config.nearby.headingTextColour)
                 .setDefaultValue(EMCMod.colors[11])
-                .setTooltip("The colour of the 'Nearby Players' text.")
+                .setTooltip(new TranslatableText("The colour of the 'Nearby Players' text."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.headingTextColour = newValue)
                 .build());
 
         // Nearby Player Player Color
-        nearby.addEntry(entryBuilder.startSelector("Player Colour", EMCMod.colors, EMCMod.config.nearby.playerTextColour)
+        nearby.addEntry(entryBuilder.startSelector(new TranslatableText("Player Colour"), EMCMod.colors, EMCMod.config.nearby.playerTextColour)
                 .setDefaultValue(EMCMod.colors[11])
-                .setTooltip("The colour of the nearby player names.")
+                .setTooltip(new TranslatableText("The colour of the nearby player names."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.playerTextColour = newValue)
                 .build());
 
         // Nearby Player Name
-        nearby.addEntry(entryBuilder.startStrField("Player Name", EMCMod.config.nearby.playerName)
+        nearby.addEntry(entryBuilder.startStrField(new TranslatableText("Player Name"), EMCMod.config.nearby.playerName)
                 .setDefaultValue(EMCMod.clientName)
-                .setTooltip("The name of the player to check nearby.")
+                .setTooltip(new TranslatableText("The name of the player to check nearby."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.playerName = newValue)
                 .build());
 
         // Nearby X Radius
-        nearby.addEntry(entryBuilder.startIntSlider("X Radius", EMCMod.config.nearby.xRadius, 50, 10000)
+        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("X Radius"), EMCMod.config.nearby.xRadius, 50, 10000)
                 .setDefaultValue(500)
-                .setTooltip("The x radius (in blocks) to check inside.")
+                .setTooltip(new TranslatableText("The x radius (in blocks) to check inside."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.xRadius = newValue)
                 .build());
 
         // Nearby Z Radius
-        nearby.addEntry(entryBuilder.startIntSlider("Z Radius", EMCMod.config.nearby.zRadius, 50, 10000)
+        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Z Radius"), EMCMod.config.nearby.zRadius, 50, 10000)
                 .setDefaultValue(500)
-                .setTooltip("The z radius (in blocks) to check inside.")
+                .setTooltip(new TranslatableText("The z radius (in blocks) to check inside."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.zRadius = newValue)
                 .build());
 
         // Enable Town Information
-        townInfo.addEntry(entryBuilder.startBooleanToggle("Enabled", EMCMod.config.townInfo.enabled)
+        townInfo.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Enabled"), EMCMod.config.townInfo.enabled)
                 .setDefaultValue(true)
-                .setTooltip("Toggles town information on or off.")
+                .setTooltip(new TranslatableText("Toggles town information on or off."))
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.enabled = newValue)
                 .build());
 
         // Town Information Horizontal Position
-        townInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.townInfo.xPos, 1, 1000)
+        townInfo.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townInfo.xPos, 1, 1000)
                 .setDefaultValue(15)
-                .setTooltip("The horizontal position on the HUD.")
+                .setTooltip(new TranslatableText("The horizontal position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.xPos = newValue)
                 .build());
 
         // Town Information Vertical Position
-        townInfo.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.townInfo.yPos, 16, 1000)
+        townInfo.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townInfo.yPos, 16, 1000)
                 .setDefaultValue(275)
-                .setTooltip("The vertical position on the HUD.")
+                .setTooltip(new TranslatableText("The vertical position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.yPos = newValue)
                 .build());
 
         // Town Information Heading Colour
-        townInfo.addEntry(entryBuilder.startSelector("Heading Colour", EMCMod.colors, EMCMod.config.townInfo.headingTextColour)
+        townInfo.addEntry(entryBuilder.startSelector(new TranslatableText("Heading Colour"), EMCMod.colors, EMCMod.config.townInfo.headingTextColour)
                 .setDefaultValue("GREEN")
-                .setTooltip("The colour of the header.")
+                .setTooltip(new TranslatableText("The colour of the header."))
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.headingTextColour = newValue)
                 .build());
 
         // Town Information Info Colour
-        townInfo.addEntry(entryBuilder.startSelector("Info Colour", EMCMod.colors, EMCMod.config.townInfo.infoTextColour)
+        townInfo.addEntry(entryBuilder.startSelector(new TranslatableText("Info Colour"), EMCMod.colors, EMCMod.config.townInfo.infoTextColour)
                 .setDefaultValue("GREEN")
-                .setTooltip("The colour of the information.")
+                .setTooltip(new TranslatableText("The colour of the information."))
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.infoTextColour = newValue)
                 .build());
 
         // Enable Nation Information
-        nationInfo.addEntry(entryBuilder.startBooleanToggle("Enabled", EMCMod.config.nationInfo.enabled)
+        nationInfo.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Enabled"), EMCMod.config.nationInfo.enabled)
                 .setDefaultValue(true)
-                .setTooltip("Toggles town information on or off.")
+                .setTooltip(new TranslatableText("Toggles town information on or off."))
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.enabled = newValue)
                 .build());
 
         // Nation Information Horizontal Position
-        nationInfo.addEntry(entryBuilder.startIntSlider("Horizontal Position (X)", EMCMod.config.nationInfo.xPos, 1, 1000)
+        nationInfo.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.nationInfo.xPos, 1, 1000)
                 .setDefaultValue(15)
-                .setTooltip("The horizontal position on the HUD.")
+                .setTooltip(new TranslatableText("The horizontal position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.xPos = newValue)
                 .build());
 
         // Nation Information Vertical Position
-        nationInfo.addEntry(entryBuilder.startIntSlider("Vertical Position (Y)", EMCMod.config.nationInfo.yPos, 16, 1000)
+        nationInfo.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.nationInfo.yPos, 16, 1000)
                 .setDefaultValue(375)
-                .setTooltip("The vertical position on the HUD.")
+                .setTooltip(new TranslatableText("The vertical position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.yPos = newValue)
                 .build());
 
         // Nation Information Heading Colour
-        nationInfo.addEntry(entryBuilder.startSelector("Heading Colour", EMCMod.colors, EMCMod.config.nationInfo.headingTextColour)
+        nationInfo.addEntry(entryBuilder.startSelector(new TranslatableText("Heading Colour"), EMCMod.colors, EMCMod.config.nationInfo.headingTextColour)
                 .setDefaultValue("AQUA")
-                .setTooltip("The colour of the header.")
+                .setTooltip(new TranslatableText("The colour of the header."))
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.headingTextColour = newValue)
                 .build());
 
         // Nation Information Info Colour
-        nationInfo.addEntry(entryBuilder.startSelector("Info Colour", EMCMod.colors, EMCMod.config.nationInfo.infoTextColour)
+        nationInfo.addEntry(entryBuilder.startSelector(new TranslatableText("Info Colour"), EMCMod.colors, EMCMod.config.nationInfo.infoTextColour)
                 .setDefaultValue("AQUA")
-                .setTooltip("The colour of the information.")
+                .setTooltip(new TranslatableText("The colour of the information."))
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.infoTextColour = newValue)
                 .build());
 
