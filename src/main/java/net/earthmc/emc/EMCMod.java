@@ -200,7 +200,7 @@ public class EMCMod implements ModInitializer
                             final int playerY = currentPlayer.get("y").getAsInt();
                             final int playerZ = currentPlayer.get("z").getAsInt();
 
-                            if (playerX == 0 && playerZ == 0 && playerY == 64) continue;
+                            if (playerX == 0 && playerZ == 0 && playerY == 64 || currentPlayer.get("name").getAsString() == clientName) continue;
 
                             Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
                             MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
