@@ -24,7 +24,6 @@ public class ClientPlayNetworkHandlerMixin
         EMCMod.client = MinecraftClient.getInstance();
 
         EMCMod.clientName = EMCMod.client.player.getName().asString();
-        EMCMod.config.nearby.playerName = EMCMod.clientName;
 
         ConfigUtils.serializeConfig(EMCMod.config);
 

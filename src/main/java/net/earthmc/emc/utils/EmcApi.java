@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.earthmc.emc.ModConfig;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -55,7 +57,9 @@ public class EmcApi
     {
         try
         {
-            final URL url = new URL("http://earthmc-api.herokuapp.com/onlineplayers/" + config.nearby.playerName + "/nearby/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
+            MinecraftClient client = MinecraftClient.getInstance();
+            ClientPlayerEntity player = client.player;
+            final URL url = new URL("http://earthmc-api.herokuapp.com/nearby/" + (int)player.getX() + "/" + (int)player.getZ() + "/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
 
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
