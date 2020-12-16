@@ -43,8 +43,6 @@ public class ModConfig implements ConfigData
         public String headingTextColour = "GOLD";
         public String playerTextColour = "GOLD";
 
-        public String playerName = "";
-
         public int xRadius = 500;
         public int zRadius = 500;
     }

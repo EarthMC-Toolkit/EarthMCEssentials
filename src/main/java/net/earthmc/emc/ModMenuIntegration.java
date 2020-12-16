@@ -124,14 +124,7 @@ public class ModMenuIntegration implements ModMenuApi
                 .setTooltip(new TranslatableText("The colour of the nearby player names."))
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.playerTextColour = newValue)
                 .build());
-
-        // Nearby Player Name
-        nearby.addEntry(entryBuilder.startStrField(new TranslatableText("Player Name"), EMCMod.config.nearby.playerName)
-                .setDefaultValue(EMCMod.clientName)
-                .setTooltip(new TranslatableText("The name of the player to check nearby."))
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.playerName = newValue)
-                .build());
-
+                
         // Nearby X Radius
         nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("X Radius"), EMCMod.config.nearby.xRadius, 50, 10000)
                 .setDefaultValue(500)
