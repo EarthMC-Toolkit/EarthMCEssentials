@@ -46,18 +46,20 @@ public class EMCMod implements ModInitializer
 
     public static Screen screen;
 
+    public static boolean timersActivated;
+
     @Override
     public void onInitialize() // Called when Minecraft starts.
     {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
-        configKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
+        configKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Open Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
 
-        oldTowns = EmcApi.getTowns();
+        //oldTowns = EmcApi.getTowns();
         townless = EmcApi.getTownless();
         nearby = new JsonArray(); // 'new' because the client cant be near anyone yet.
 
@@ -125,7 +127,7 @@ public class EMCMod implements ModInitializer
                         }
 
                         Formatting eventTextFormatting = Formatting.byName(config.townless.headingTextColour);
-                        String eventText = new TranslatableText("Townless Players").formatted(eventTextFormatting).asString();
+                        MutableText eventText = new TranslatableText("Townless Players").formatted(eventTextFormatting);
 
                         // Draw heading.
                         renderer.drawWithShadow(matrixStack, eventText, config.townless.xPos, config.townless.yPos - 15, 16777215);
