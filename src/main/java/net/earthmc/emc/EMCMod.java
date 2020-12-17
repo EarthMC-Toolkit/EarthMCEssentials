@@ -161,11 +161,13 @@ public class EMCMod implements ModInitializer
                                 // If underground, display "Underground" instead of their position
                                 if (playerX == 0 && playerZ == 0)
                                 {
-                                    renderer.drawWithShadow(matrixStack, playerName + " Underground", config.townless.xPos, townlessPlayerOffset, 16777215);
+                                    playerName = new TranslatableText(currentPlayer.get("name").getAsString() + ": Underground").formatted(playerTextFormatting);
+                                    renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
                                 }
                                 else
                                 {
-                                    renderer.drawWithShadow(matrixStack, playerName + " " + playerX + ", " + playerY + ", " + playerZ, config.townless.xPos, townlessPlayerOffset, 16777215);
+                                    playerName = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
+                                    renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
                                 }
                             }
                             else
@@ -200,7 +202,7 @@ public class EMCMod implements ModInitializer
                             final int playerY = currentPlayer.get("y").getAsInt();
                             final int playerZ = currentPlayer.get("z").getAsInt();
 
-                            if (playerX == 0 && playerZ == 0 && playerY == 64 || currentPlayer.get("name").getAsString() == clientName) continue;
+                            if ((playerX == 0 && playerZ == 0 && playerY == 64) || currentPlayer.get("name").getAsString() == clientName) continue;
 
                             Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
                             MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
