@@ -30,7 +30,7 @@ public class ClientPlayNetworkHandlerMixin
         // #region Create Timers
         final Timer twoMinuteTimer = new Timer();
         final Timer tenSecondTimer = new Timer();
-        final Timer fiveSecondTimer = new Timer();
+        //final Timer fiveSecondTimer = new Timer();
         final Timer oneMinuteTimer = new Timer();
 
         twoMinuteTimer.scheduleAtFixedRate(new TimerTask()
@@ -45,6 +45,7 @@ public class ClientPlayNetworkHandlerMixin
             }
         }, 0, 2 * 60 * 1000);
 
+        /*
         fiveSecondTimer.scheduleAtFixedRate(new TimerTask()
         {
             @Override
@@ -55,7 +56,7 @@ public class ClientPlayNetworkHandlerMixin
                     if (EMCMod.config.townEvents.enabled) EMCMod.oldTowns = EmcApi.getTowns();
                 }
             }
-        }, 0, 10 * 1000);
+        }, 0, 10 * 1000);*/
 
         tenSecondTimer.scheduleAtFixedRate(new TimerTask()
         {
