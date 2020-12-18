@@ -52,7 +52,7 @@ public class ClientPlayNetworkHandlerMixin
                             EMCMod.clientTownName = resident.get("town").getAsString();
                             JsonObject town = EmcApi.getTown(EMCMod.clientTownName);
 
-                            if (town != null) EMCMod.townInfo = town;
+                            if (!town.entrySet().isEmpty()) EMCMod.townInfo = town;
                         }
                         
                         if (EMCMod.config.nationInfo.enabled)
@@ -60,7 +60,7 @@ public class ClientPlayNetworkHandlerMixin
                             EMCMod.clientNationName = resident.get("nation").getAsString();
                             JsonObject nation = EmcApi.getNation(EMCMod.clientNationName);
 
-                            if (nation != null) EMCMod.nationInfo = nation;
+                            if (!nation.entrySet().isEmpty()) EMCMod.nationInfo = nation;
                         }
                     }
                 }

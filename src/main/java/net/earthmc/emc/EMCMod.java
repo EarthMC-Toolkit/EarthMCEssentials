@@ -61,6 +61,8 @@ public class EMCMod implements ModInitializer
 
         //oldTowns = EmcApi.getTowns();
         townless = EmcApi.getTownless();
+        nationInfo = new JsonObject();
+        townInfo = new JsonObject();
         nearby = new JsonArray(); // 'new' because the client cant be near anyone yet.
 
         //#region ClientTickEvents
@@ -217,8 +219,8 @@ public class EMCMod implements ModInitializer
                     }
                 }
 
-                // Town info is enabled and object isnt null or empty.
-                if (config.townInfo.enabled && townInfo != null)
+                // Town info is enabled and object isnt empty.
+                if (config.townInfo.enabled && !townInfo.entrySet().isEmpty())
                 {
                     Formatting townInfoHeadingFormatting = Formatting.byName(config.townInfo.headingTextColour);
                     Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
@@ -241,8 +243,8 @@ public class EMCMod implements ModInitializer
                     if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(matrixStack, locationText, config.townInfo.xPos, config.townInfo.yPos + 40, 16777215);
                 }
 
-                // Nation info is enabled and object isnt null or empty.
-                if (config.nationInfo.enabled && nationInfo != null)
+                // Nation info is enabled and object isnt empty.
+                if (config.nationInfo.enabled && !nationInfo.entrySet().isEmpty())
                 {
                     Formatting nationInfoHeadingFormatting = Formatting.byName(config.nationInfo.headingTextColour);
                     Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
