@@ -21,7 +21,8 @@ public class ClientPlayNetworkHandlerMixin
     @Inject(at = @At("TAIL"), method="onGameJoin")
     private void onGameJoin(CallbackInfo info)
     {
-        if (EMCMod.timersActivated) return;
+        // Timers already running or mod isn't enabled.
+        if (EMCMod.timersActivated || !EMCMod.config.general.enableMod) return;
         EMCMod.timersActivated = true;
 
         EMCMod.client = MinecraftClient.getInstance();
@@ -32,8 +33,6 @@ public class ClientPlayNetworkHandlerMixin
         // #region Create Timers
         final Timer twoMinuteTimer = new Timer();
         final Timer tenSecondTimer = new Timer();
-
-        if (!EMCMod.config.general.enableMod) return;
 
         twoMinuteTimer.scheduleAtFixedRate(new TimerTask()
         {

@@ -32,6 +32,19 @@ public class ModConfig implements ConfigData
         public String playerTextColour = "LIGHT_PURPLE";
 
 		public int maxLength = 0; // < 1 = No limit
+
+        public enum PositionState
+        {
+            LEFT,
+            RIGHT,
+            TOP,
+            BOTTOM,
+            MIDDLE,
+            TOP_LEFT,
+            TOP_RIGHT,
+            BOTTOM_LEFT,
+            BOTTOM_RIGHT
+        }
     }
 
     public static class Nearby
