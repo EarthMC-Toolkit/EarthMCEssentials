@@ -63,18 +63,38 @@ public class ModMenuIntegration implements ModMenuApi
                 .build());
 
         // Townless Horizontal Position
-        townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townless.xPos, 1, 1000)
-                .setDefaultValue(770)
-                .setTooltip(new TranslatableText("The horizontal position on the HUD."))
-                .setSaveConsumer(newValue -> EMCMod.config.townless.xPos = newValue)
+        townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Show Coordinates"), EMCMod.config.townless.showCoords)
+                .setDefaultValue(false)
+                .setTooltip(new TranslatableText("Toggles coordinates for townless players on or off."))
+                .setSaveConsumer(newValue -> EMCMod.config.townless.showCoords = newValue)
                 .build());
 
-        // Townless Vertical Position
-        townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townless.yPos, 16, 1000)
-                .setDefaultValue(375)
-                .setTooltip(new TranslatableText("The vertical position on the HUD."))
-                .setSaveConsumer(newValue -> EMCMod.config.townless.yPos = newValue)
-                .build());
+        // If advanced positioning isn't toggled, use preset position.
+        if (!EMCMod.config.townless.advancedPositioning)
+        {
+//            // Townless Preset Position
+//            townless.addEntry(entryBuilder.startSelector(new TranslatableText("Preset Position"), EMCMod.positions, EMCMod.config.townless.presetPosition)
+//                    .setDefaultValue(EMCMod.positions[5])
+//                    .setTooltip(new TranslatableText("The position of the Townless info."))
+//                    .setSaveConsumer(newValue -> EMCMod.config.townless. = newValue)
+//                    .build());
+        }
+        else
+        {   // Townless Horizontal Position
+            townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townless.xPos, 1, 1000)
+                    .setDefaultValue(770)
+                    .setTooltip(new TranslatableText("The horizontal position on the HUD."))
+                    .setSaveConsumer(newValue -> EMCMod.config.townless.xPos = newValue)
+                    .build());
+
+            // Townless Vertical Position
+            townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townless.yPos, 16, 1000)
+                    .setDefaultValue(375)
+                    .setTooltip(new TranslatableText("The vertical position on the HUD."))
+                    .setSaveConsumer(newValue -> EMCMod.config.townless.yPos = newValue)
+                    .build());
+
+        }
 
         // Townless Text Color
         townless.addEntry(entryBuilder.startSelector(new TranslatableText("Heading Colour"), EMCMod.colors, EMCMod.config.townless.headingTextColour)

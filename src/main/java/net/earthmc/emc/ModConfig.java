@@ -3,6 +3,7 @@ package net.earthmc.emc;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
+import net.earthmc.emc.utils.PresetPositions;
 
 @Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
@@ -24,6 +25,9 @@ public class ModConfig implements ConfigData
     {
 	    public boolean enabled = true;
         public boolean showCoords = false;
+        public boolean advancedPositioning = false;
+
+        public PresetPositions presetsPositions = new PresetPositions();
 
         public int xPos = 1;
         public int yPos = 16;
@@ -32,19 +36,6 @@ public class ModConfig implements ConfigData
         public String playerTextColour = "LIGHT_PURPLE";
 
 		public int maxLength = 0; // < 1 = No limit
-
-        public enum PositionState
-        {
-            LEFT,
-            RIGHT,
-            TOP,
-            BOTTOM,
-            MIDDLE,
-            TOP_LEFT,
-            TOP_RIGHT,
-            BOTTOM_LEFT,
-            BOTTOM_RIGHT
-        }
     }
 
     public static class Nearby
