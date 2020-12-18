@@ -86,16 +86,31 @@ public class EMCMod implements ModInitializer
 
             if (config.townless.enabled)
             {
-                if (EMCMod.config.townless.advancedPositioning)
+                if (!EMCMod.config.townless.advancedPositioning)
                 {
+                    int posX = 800;
+                    int posY = 900;
+
+                    switch (EMCMod.config.townless.presetPosition)
+                    {
+                        case "BOTTOM_RIGHT": {
+                            posX = 800;
+                            posY = 900;
+                        }
+                        case "BOTTOM_LEFT": {
+                            posX = 16;
+                            posY = 900;
+                        }
+                    }
+
                     // Position of the first player, who determines where the list will be.
-                    townlessPlayerOffset = 900;
+                    townlessPlayerOffset = posX;
 
                     Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
                     MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
 
                     // Draw heading.
-                    renderer.drawWithShadow(matrixStack, townlessText, 800, 900 - 15, 16777215);
+                    renderer.drawWithShadow(matrixStack, townlessText, posX, posY - 15, 16777215);
 
                     if (townless.size() >= 1)
                     {
@@ -108,7 +123,7 @@ public class EMCMod implements ModInitializer
                                 if (i >= config.townless.maxLength)
                                 {
                                     MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
-                                    renderer.drawWithShadow(matrixStack, remainingText, 800, townlessPlayerOffset, 16777215);
+                                    renderer.drawWithShadow(matrixStack, remainingText, posX, townlessPlayerOffset, 16777215);
                                     break;
                                 }
                             }
@@ -133,7 +148,7 @@ public class EMCMod implements ModInitializer
                                 }
                             }
 
-                            renderer.drawWithShadow(matrixStack, playerName, 800, townlessPlayerOffset, 16777215);
+                            renderer.drawWithShadow(matrixStack, playerName, posX, townlessPlayerOffset, 16777215);
 
                             // Add offset for the next player.
                             townlessPlayerOffset += 10;

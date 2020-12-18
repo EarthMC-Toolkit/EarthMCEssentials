@@ -62,22 +62,22 @@ public class ModMenuIntegration implements ModMenuApi
                 .setSaveConsumer(newValue -> EMCMod.config.townless.showCoords = newValue)
                 .build());
 
-        // Townless Horizontal Position
-        townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Show Coordinates"), EMCMod.config.townless.showCoords)
+        // Townless Advanced Positioning
+        townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Advanced Positioning"), EMCMod.config.townless.advancedPositioning)
                 .setDefaultValue(false)
-                .setTooltip(new TranslatableText("Toggles coordinates for townless players on or off."))
-                .setSaveConsumer(newValue -> EMCMod.config.townless.showCoords = newValue)
+                .setTooltip(new TranslatableText("Toggles whether sliders should be used for x and y positions instead of presets."))
+                .setSaveConsumer(newValue -> EMCMod.config.townless.advancedPositioning = newValue)
                 .build());
 
         // If advanced positioning isn't toggled, use preset position.
         if (!EMCMod.config.townless.advancedPositioning)
         {
-//            // Townless Preset Position
-//            townless.addEntry(entryBuilder.startSelector(new TranslatableText("Preset Position"), EMCMod.positions, EMCMod.config.townless.presetPosition)
-//                    .setDefaultValue(EMCMod.positions[5])
-//                    .setTooltip(new TranslatableText("The position of the Townless info."))
-//                    .setSaveConsumer(newValue -> EMCMod.config.townless. = newValue)
-//                    .build());
+            // Townless Preset Position
+            townless.addEntry(entryBuilder.startSelector(new TranslatableText("Preset Position"), EMCMod.positions, EMCMod.config.townless.presetPosition)
+                    .setDefaultValue(EMCMod.positions[5])
+                    .setTooltip(new TranslatableText("The position of the Townless info."))
+                    .setSaveConsumer(newValue -> EMCMod.config.townless.presetPosition = newValue)
+                    .build());
         }
         else
         {   // Townless Horizontal Position
