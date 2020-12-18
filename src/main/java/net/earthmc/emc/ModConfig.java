@@ -13,7 +13,6 @@ public class ModConfig implements ConfigData
     public Nearby nearby = new Nearby();
     public TownInfo townInfo = new TownInfo();
     public NationInfo nationInfo = new NationInfo();
-    public TownEvents townEvents = new TownEvents();
 
     public static class General
     {
@@ -61,17 +60,6 @@ public class ModConfig implements ConfigData
     }
 
     public static class NationInfo
-    {
-        public boolean enabled = true;
-
-        public String headingTextColour = "AQUA";
-        public String infoTextColour = "AQUA";
-
-        public int xPos = 15;
-        public int yPos = 375;
-    }
-
-    public static class TownEvents
     {
         public boolean enabled = true;
 

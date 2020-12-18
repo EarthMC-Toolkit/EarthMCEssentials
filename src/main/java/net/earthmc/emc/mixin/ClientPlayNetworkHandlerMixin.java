@@ -25,13 +25,15 @@ public class ClientPlayNetworkHandlerMixin
         EMCMod.timersActivated = true;
 
         EMCMod.client = MinecraftClient.getInstance();
-        EMCMod.clientName = EMCMod.client.player.getName().asString();
+        if (EMCMod.client.player != null) EMCMod.clientName = EMCMod.client.player.getName().asString();
 
         ConfigUtils.serializeConfig(EMCMod.config);
 
         // #region Create Timers
         final Timer twoMinuteTimer = new Timer();
         final Timer tenSecondTimer = new Timer();
+
+        if (!EMCMod.config.general.enableMod) return;
 
         twoMinuteTimer.scheduleAtFixedRate(new TimerTask()
         {
@@ -75,7 +77,6 @@ public class ClientPlayNetworkHandlerMixin
                 if (EMCMod.config.general.enableMod)
                 {
                     if (EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
-                    //if (EMCMod.config.townEvents.enabled) EMCMod.towns = EmcApi.getTowns();
                 }
             }
         }, 0, 10 * 1000);
