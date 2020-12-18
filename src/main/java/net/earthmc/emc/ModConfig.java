@@ -23,7 +23,7 @@ public class ModConfig implements ConfigData
 
     public static class Townless
     {
-        public boolean enabled = true;
+	    public boolean enabled = true;
         public boolean showCoords = false;
 
         public int xPos = 1;
@@ -31,6 +31,8 @@ public class ModConfig implements ConfigData
 
         public String headingTextColour = "LIGHT_PURPLE";
         public String playerTextColour = "LIGHT_PURPLE";
+
+		public int maxLength = 0; // < 1 = No limit
     }
 
     public static class Nearby

@@ -142,7 +142,7 @@ public class EMCMod implements ModInitializer
                     townlessPlayerOffset = config.townless.yPos;
 
                     Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
-                    MutableText townlessText = new TranslatableText("Townless Players").formatted(townlessTextFormatting);
+                    MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
 
                     // Draw heading.
                     renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
@@ -151,9 +151,18 @@ public class EMCMod implements ModInitializer
                     {
                         for (int i = 0; i < townless.size(); i++)
                         {
-                            final JsonObject currentPlayer = (JsonObject) townless.get(i);
-
                             Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour);
+
+                            if (config.townless.maxLength >= 1)
+                            {
+                                if (i >= config.townless.maxLength)
+                                {
+                                    MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
+                                    renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
+                                    break;
+                                }
+                            }
+                            final JsonObject currentPlayer = (JsonObject) townless.get(i);                            
                             MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
 
                             if (config.townless.showCoords)

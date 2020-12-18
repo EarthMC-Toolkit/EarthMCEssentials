@@ -90,6 +90,13 @@ public class ModMenuIntegration implements ModMenuApi
                 .setSaveConsumer(newValue -> EMCMod.config.townless.playerTextColour = newValue)
                 .build());
 
+        // Townless Max length
+        townless.addEntry(entryBuilder.startIntField(new TranslatableText("Maximum Length"), EMCMod.config.townless.maxLength)
+                .setDefaultValue(0)
+                .setTooltip(new TranslatableText("The maximum length the townless list can be. Enter anything under 1 for no limit."))
+                .setSaveConsumer(newValue -> EMCMod.config.townless.maxLength = newValue)
+                .build());
+
         // Enable nearby
         nearby.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Enabled"), EMCMod.config.nearby.enabled)
                 .setDefaultValue(true)
