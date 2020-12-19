@@ -12,12 +12,6 @@ import net.minecraft.text.TranslatableText;
 public class ModMenuIntegration implements ModMenuApi
 {
     @Override
-    public String getModId()
-    {
-        return "emc-essentials";
-    }
-
-    @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return screen -> getConfigBuilder().build();
     }

@@ -30,22 +30,17 @@ public class EMCMod implements ModInitializer
     int townlessPlayerOffset;
     int nearbyPlayerOffset;
 
-    public static ModConfig config;
-
     public static String[] colors;
-    public static String[] positions;
-
-    KeyBinding configKeybind;
-
-    public static MinecraftClient client;
-
     public static String clientName = "";
     public static String clientTownName = "";
     public static String clientNationName = "";
 
-    public static Screen screen;
-
     public static boolean timersActivated;
+
+    public static MinecraftClient client;
+    public static Screen screen;
+    public static ModConfig config;
+    KeyBinding configKeybind;
 
     @Override
     public void onInitialize() // Called when Minecraft starts.
@@ -57,8 +52,6 @@ public class EMCMod implements ModInitializer
 
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
-
-        positions = new String[] { "RIGHT", "LEFT", "TOP", "BOTTOM", "TOP_RIGHT", "BOTTOM_RIGHT", "TOP_LEFT", "BOTTOM_LEFT" };
 
         townless = EmcApi.getTownless();
         nationInfo = new JsonObject();
@@ -141,9 +134,8 @@ public class EMCMod implements ModInitializer
                         }
                     }
                 }
-                else {
-                    // POSITION STATE LOGIC HERE
-
+                else // No advanced positioning, use preset states.
+                {
                     // Position of the first player, who determines where the list will be.
                     townlessPlayerOffset = config.townless.positionState.getY();
 
