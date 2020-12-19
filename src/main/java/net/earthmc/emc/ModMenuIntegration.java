@@ -74,7 +74,7 @@ public class ModMenuIntegration implements ModMenuApi
         if (!EMCMod.config.townless.advancedPositioning)
         {
             // Townless Preset Position
-            townless.addEntry(entryBuilder.startEnumSelector(new TranslatableText("Preset Position"), HudUtils.State.class, HudUtils.State.BOTTOM_RIGHT)
+            townless.addEntry(entryBuilder.startEnumSelector(new TranslatableText("Preset Position"), HudUtils.State.class, EMCMod.config.townless.positionState)
                     .setDefaultValue(HudUtils.State.BOTTOM_RIGHT)
                     .setTooltip(new TranslatableText("The position of the Townless info."))
                     .setSaveConsumer(newValue -> EMCMod.config.townless.positionState = newValue)
