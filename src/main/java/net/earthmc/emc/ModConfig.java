@@ -3,6 +3,7 @@ package net.earthmc.emc;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
+import net.earthmc.emc.utils.HudUtils;
 
 @Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
@@ -22,14 +23,14 @@ public class ModConfig implements ConfigData
 
     public static class Townless
     {
-	    public boolean enabled = true;
+        public boolean enabled = true;
         public boolean showCoords = false;
         public boolean advancedPositioning = false;
 
         public int xPos = 1;
         public int yPos = 16;
 
-        public String presetPosition = "BOTTOM_RIGHT";
+        public HudUtils.State positionState = HudUtils.State.BOTTOM_RIGHT;
         public String headingTextColour = "LIGHT_PURPLE";
         public String playerTextColour = "LIGHT_PURPLE";
 

@@ -87,55 +87,113 @@ public class EMCMod implements ModInitializer
 
             if (config.townless.enabled)
             {
-                // Position of the first player, who determines where the list will be.
-                townlessPlayerOffset = config.townless.yPos;
-
-                Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
-                MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
-
-                // Draw heading.
-                renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
-
-                if (townless.size() >= 1)
+                if (config.townless.advancedPositioning)
                 {
-                    for (int i = 0; i < townless.size(); i++)
+                    // Position of the first player, who determines where the list will be.
+                    townlessPlayerOffset = config.townless.yPos;
+
+                    Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
+                    MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
+
+                    // Draw heading.
+                    renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
+
+                    if (townless.size() >= 1)
                     {
-                        Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour);
-
-                        if (config.townless.maxLength >= 1)
+                        for (int i = 0; i < townless.size(); i++)
                         {
-                            if (i >= config.townless.maxLength)
+                            Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour);
+
+                            if (config.townless.maxLength >= 1)
                             {
-                                MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
-                                renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
-                                break;
+                                if (i >= config.townless.maxLength)
+                                {
+                                    MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
+                                    renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
+                                    break;
+                                }
                             }
+
+                            final JsonObject currentPlayer = (JsonObject) townless.get(i);
+                            MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
+
+                            if (config.townless.showCoords)
+                            {
+                                final int playerX = currentPlayer.get("x").getAsInt();
+                                final int playerY = currentPlayer.get("y").getAsInt();
+                                final int playerZ = currentPlayer.get("z").getAsInt();
+
+                                // If underground, display "Underground" instead of their position
+                                if (playerX == 0 && playerZ == 0)
+                                {
+                                    playerName = new TranslatableText(currentPlayer.get("name").getAsString() + ": Underground").formatted(playerTextFormatting);
+                                }
+                                else
+                                {
+                                    playerName = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
+                                }
+                            }
+
+                            renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
+
+                            // Add offset for the next player.
+                            townlessPlayerOffset += 10;
                         }
+                    }
+                }
+                else {
+                    // POSITION STATE LOGIC HERE
 
-                        final JsonObject currentPlayer = (JsonObject) townless.get(i);
-                        MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
+                    // Position of the first player, who determines where the list will be.
+                    townlessPlayerOffset = config.townless.positionState.getY();
 
-                        if (config.townless.showCoords)
+                    Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
+                    MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
+
+                    // Draw heading.
+                    renderer.drawWithShadow(matrixStack, townlessText, config.townless.positionState.getX(), config.townless.positionState.getY() - 15, 16777215);
+
+                    if (townless.size() >= 1)
+                    {
+                        for (int i = 0; i < townless.size(); i++)
                         {
-                            final int playerX = currentPlayer.get("x").getAsInt();
-                            final int playerY = currentPlayer.get("y").getAsInt();
-                            final int playerZ = currentPlayer.get("z").getAsInt();
+                            Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour);
 
-                            // If underground, display "Underground" instead of their position
-                            if (playerX == 0 && playerZ == 0)
+                            if (config.townless.maxLength >= 1)
                             {
-                                playerName = new TranslatableText(currentPlayer.get("name").getAsString() + ": Underground").formatted(playerTextFormatting);
+                                if (i >= config.townless.maxLength)
+                                {
+                                    MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
+                                    renderer.drawWithShadow(matrixStack, remainingText, config.townless.positionState.getX(), townlessPlayerOffset, 16777215);
+                                    break;
+                                }
                             }
-                            else
+
+                            final JsonObject currentPlayer = (JsonObject) townless.get(i);
+                            MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
+
+                            if (config.townless.showCoords)
                             {
-                                playerName = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
+                                final int playerX = currentPlayer.get("x").getAsInt();
+                                final int playerY = currentPlayer.get("y").getAsInt();
+                                final int playerZ = currentPlayer.get("z").getAsInt();
+
+                                // If underground, display "Underground" instead of their position
+                                if (playerX == 0 && playerZ == 0)
+                                {
+                                    playerName = new TranslatableText(currentPlayer.get("name").getAsString() + ": Underground").formatted(playerTextFormatting);
+                                }
+                                else
+                                {
+                                    playerName = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
+                                }
                             }
+
+                            renderer.drawWithShadow(matrixStack, playerName,config.townless.positionState.getX(), townlessPlayerOffset, 16777215);
+
+                            // Add offset for the next player.
+                            townlessPlayerOffset += 10;
                         }
-
-                        renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
-
-                        // Add offset for the next player.
-                        townlessPlayerOffset += 10;
                     }
                 }
             }

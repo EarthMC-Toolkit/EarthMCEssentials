@@ -6,6 +6,7 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.earthmc.emc.utils.ConfigUtils;
+import net.earthmc.emc.utils.HudUtils;
 import net.minecraft.text.TranslatableText;
 
 public class ModMenuIntegration implements ModMenuApi
@@ -73,10 +74,10 @@ public class ModMenuIntegration implements ModMenuApi
         if (!EMCMod.config.townless.advancedPositioning)
         {
             // Townless Preset Position
-            townless.addEntry(entryBuilder.startSelector(new TranslatableText("Preset Position"), EMCMod.positions, EMCMod.config.townless.presetPosition)
-                    .setDefaultValue(EMCMod.positions[5])
+            townless.addEntry(entryBuilder.startEnumSelector(new TranslatableText("Preset Position"), HudUtils.State.class, HudUtils.State.BOTTOM_RIGHT)
+                    .setDefaultValue(HudUtils.State.BOTTOM_RIGHT)
                     .setTooltip(new TranslatableText("The position of the Townless info."))
-                    .setSaveConsumer(newValue -> EMCMod.config.townless.presetPosition = newValue)
+                    .setSaveConsumer(newValue -> EMCMod.config.townless.positionState = newValue)
                     .build());
         }
         else
