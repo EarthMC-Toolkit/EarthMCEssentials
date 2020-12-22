@@ -102,4 +102,43 @@ public class ModUtils
 
         return totalLength;
     }
+
+    public static int getTownlessArrayHeigth(JsonArray array, int maxLength)
+    {
+        if (array.size() == 0) return 0;
+
+        int totalLength = 0;
+        for (int i = 0; i < array.size(); i++)
+        {
+            if (i >= maxLength)
+            {
+                String maxLengthString = "And " + (array.size()-i) + " more...";
+                totalLength += getStringHeight(maxLengthString);
+                return totalLength;
+            }
+            else
+            {
+                JsonObject currentObj = (JsonObject) array.get(i);
+                totalLength += getStringHeight(currentObj.get("name").getAsString());
+            }
+        }
+
+        return totalLength;
+    }
+
+    public static int getNearbyLongestElement(JsonArray array)
+    {
+        if (array.size() == 0) return 0;
+
+        int longestElement = 0;
+        for (int i = 0; i < array.size(); i++)
+        {
+            JsonObject currentObj = (JsonObject) array.get(i);
+            String nearbyTextString = currentObj.get("name").getAsString() + ": " + currentObj.get("x").getAsString() + ", " + currentObj.get("y").getAsString() + ", " + currentObj.get("z").getAsString();
+            int currentWidth = getStringWidth(nearbyTextString);
+            if (currentWidth > longestElement) longestElement = currentWidth;
+        }
+
+        return longestElement;
+    }
 }
