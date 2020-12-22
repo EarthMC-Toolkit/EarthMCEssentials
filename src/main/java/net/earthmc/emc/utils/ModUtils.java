@@ -87,7 +87,7 @@ public class ModUtils
         return longestElement;
     }
 
-    public static int getArrayHeigth(JsonArray array)
+    public static int getArrayHeight(JsonArray array)
     {
         if (array.size() == 0) return 0;
 

@@ -149,27 +149,27 @@ public class EMCMod implements ModInitializer
                         case "LEFT":
                         {
                             startingPositionX = 5;
-                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getArrayHeigth(townless)/2;
+                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getArrayHeight(townless)/2;
                             break;
                         }
                         case "RIGHT":
                         {
                             if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
                             else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
-                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getArrayHeigth(townless)/2;
+                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getArrayHeight(townless)/2;
                             break;
                         }
                         case "BOTTOM_RIGHT":
                         {
                             if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
                             else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
-                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getArrayHeigth(townless)-10;
+                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getArrayHeight(townless)-10;
                             break;
                         }
                         case "BOTTOM_LEFT":
                         {
                             startingPositionX = 5;
-                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getArrayHeigth(townless)-10;
+                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getArrayHeight(townless)-10;
                             break;
                         }
                         default: //Defaults to top left
