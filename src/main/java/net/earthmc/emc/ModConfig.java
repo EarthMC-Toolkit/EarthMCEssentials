@@ -28,12 +28,12 @@ public class ModConfig implements ConfigData
 
         public int xPos = 1;
         public int yPos = 16;
+        public int maxLength = 0; // < 1 = No limit
 
-        public ModUtils.State positionState = ModUtils.State.TOP_LEFT;
         public String headingTextColour = "LIGHT_PURPLE";
         public String playerTextColour = "LIGHT_PURPLE";
 
-		public int maxLength = 0; // < 1 = No limit
+        public ModUtils.State positionState = ModUtils.State.TOP_LEFT;
     }
 
     public static class Nearby
@@ -44,12 +44,13 @@ public class ModConfig implements ConfigData
         public int xPos = 100;
         public int yPos = 16;
 
-        public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
         public String headingTextColour = "GOLD";
         public String playerTextColour = "GOLD";
 
         public int xRadius = 500;
         public int zRadius = 500;
+
+        public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
     }
 
     public static class TownInfo
@@ -61,6 +62,8 @@ public class ModConfig implements ConfigData
 
         public int xPos = 15;
         public int yPos = 275;
+
+        public ModUtils.State positionState = ModUtils.State.BOTTOM_RIGHT;
     }
 
     public static class NationInfo
@@ -72,5 +75,7 @@ public class ModConfig implements ConfigData
 
         public int xPos = 15;
         public int yPos = 375;
+
+        public ModUtils.State positionState = ModUtils.State.BOTTOM_RIGHT;
     }
 }
