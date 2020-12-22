@@ -11,7 +11,7 @@ public class ModUtils
 {
     Window window = MinecraftClient.getInstance().getWindow();
     int windowWidth = window.getScaledWidth();
-    int windowHeigth = window.getScaledHeight();
+    int windowHeight = window.getScaledHeight();
 
     public enum State
     {
@@ -52,7 +52,7 @@ public class ModUtils
         return renderer.getWidth(string);
     }
 
-    public static int getStringHeigth(String string)
+    public static int getStringHeight(String string)
     {
         MinecraftClient client = MinecraftClient.getInstance();
         TextRenderer renderer = client.textRenderer;  
@@ -95,7 +95,7 @@ public class ModUtils
         for (int i = 0; i < array.size(); i++)
         {
             JsonObject currentObj = (JsonObject) array.get(i);
-            totalLength += getStringHeigth(currentObj.get("name").getAsString());
+            totalLength += getStringHeight(currentObj.get("name").getAsString());
         }
 
         return totalLength;
