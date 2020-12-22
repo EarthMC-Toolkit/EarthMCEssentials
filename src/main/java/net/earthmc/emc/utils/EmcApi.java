@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
+@SuppressWarnings("ThrowablePrintedToSystemOut")
 public class EmcApi
 {
     public static JsonArray getTownless()
@@ -59,32 +60,35 @@ public class EmcApi
         {
             MinecraftClient client = MinecraftClient.getInstance();
             ClientPlayerEntity player = client.player;
-            final URL url = new URL("http://earthmc-api.herokuapp.com/nearby/" + (int)player.getX() + "/" + (int)player.getZ() + "/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
+            final URL url;
 
-            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-
-            // Getting the response code
-            final int responsecode = conn.getResponseCode();
-
-            if (responsecode == 200)
+            if (player != null)
             {
-                StringBuilder inline = new StringBuilder();
-                final Scanner scanner = new Scanner(url.openStream());
+                url = new URL("http://earthmc-api.herokuapp.com/nearby/" + (int) player.getX() + "/" + (int) player.getZ() + "/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
 
-                // Write all the JSON data into a string using a scanner
-                while (scanner.hasNext())
-                {
-                    inline.append(scanner.nextLine());
+                final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                // Getting the response code
+                final int responsecode = conn.getResponseCode();
+
+                if (responsecode == 200) {
+                    StringBuilder inline = new StringBuilder();
+                    final Scanner scanner = new Scanner(url.openStream());
+
+                    // Write all the JSON data into a string using a scanner
+                    while (scanner.hasNext()) {
+                        inline.append(scanner.nextLine());
+                    }
+
+                    // Close the scanner
+                    scanner.close();
+
+                    // Using the JSON simple library parse the string into a json object
+                    final JsonParser parse = new JsonParser();
+                    return (JsonArray) parse.parse(inline.toString());
                 }
-
-                // Close the scanner
-                scanner.close();
-
-                // Using the JSON simple library parse the string into a json object
-                final JsonParser parse = new JsonParser();
-                return (JsonArray) parse.parse(inline.toString());
             }
         }
         catch (final Exception exc)

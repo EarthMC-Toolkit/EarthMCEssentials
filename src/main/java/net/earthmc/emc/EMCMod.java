@@ -260,8 +260,8 @@ public class EMCMod implements ModInitializer
                             if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")-5;
                             else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(nearby)-5;
                             
-                                if (EMCMod.client.player.getStatusEffects().isEmpty()) startingPositionY = 16;
-                                else startingPositionY = 38;
+                            if (EMCMod.client.player.getStatusEffects().isEmpty()) startingPositionY = 16;
+                            else startingPositionY = 38;
                     
                             break;
                         }
