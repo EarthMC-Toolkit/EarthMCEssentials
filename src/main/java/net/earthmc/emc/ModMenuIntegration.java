@@ -6,7 +6,7 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.earthmc.emc.utils.ConfigUtils;
-import net.earthmc.emc.utils.HudUtils;
+import net.earthmc.emc.utils.ModUtils;
 import net.minecraft.text.TranslatableText;
 
 public class ModMenuIntegration implements ModMenuApi
@@ -50,44 +50,38 @@ public class ModMenuIntegration implements ModMenuApi
                 .setSaveConsumer(newValue -> EMCMod.config.townless.enabled = newValue)
                 .build());
 
-        // Townless Horizontal Position
-        townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Show Coordinates"), EMCMod.config.townless.showCoords)
-                .setDefaultValue(false)
-                .setTooltip(new TranslatableText("Toggles coordinates for townless players on or off."))
-                .setSaveConsumer(newValue -> EMCMod.config.townless.showCoords = newValue)
-                .build());
-
-        // Townless Advanced Positioning
-        townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Advanced Positioning"), EMCMod.config.townless.advancedPositioning)
-                .setDefaultValue(false)
-                .setTooltip(new TranslatableText("Toggles whether sliders should be used for x and y positions instead of presets."))
-                .setSaveConsumer(newValue -> EMCMod.config.townless.advancedPositioning = newValue)
+        // Townless Preset positions
+        townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Use Preset Positions"), EMCMod.config.townless.presetPositions)
+                .setDefaultValue(true)
+                .setTooltip(new TranslatableText("Toggles the use of preset positions, uses sliders if off."))
+                .setSaveConsumer(newValue -> EMCMod.config.townless.presetPositions = newValue)
                 .build());
 
         // If advanced positioning isn't toggled, use preset position.
-        if (!EMCMod.config.townless.advancedPositioning)
+        if (EMCMod.config.townless.presetPositions)
         {
-            // Townless Preset Position
-            townless.addEntry(entryBuilder.startEnumSelector(new TranslatableText("Preset Position"), HudUtils.State.class, EMCMod.config.townless.positionState)
-                    .setDefaultValue(HudUtils.State.BOTTOM_RIGHT)
-                    .setTooltip(new TranslatableText("The position of the Townless info."))
-                    .setSaveConsumer(newValue -> EMCMod.config.townless.positionState = newValue)
-                    .build());
+                // Townless Preset Position
+                townless.addEntry(entryBuilder.startEnumSelector(new TranslatableText("Preset Position"), ModUtils.State.class, EMCMod.config.townless.positionState)
+                        .setDefaultValue(ModUtils.State.TOP_LEFT)
+                        .setTooltip(new TranslatableText("The position of the Townless info."))
+                        .setSaveConsumer(newValue -> EMCMod.config.townless.positionState = newValue)
+                        .build());
         }
         else
-        {   // Townless Horizontal Position
-            townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townless.xPos, 1, 1000)
-                    .setDefaultValue(770)
-                    .setTooltip(new TranslatableText("The horizontal position on the HUD."))
-                    .setSaveConsumer(newValue -> EMCMod.config.townless.xPos = newValue)
-                    .build());
+        {   
+                // Townless Horizontal Position
+                townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townless.xPos, 1, 1000)
+                        .setDefaultValue(770)
+                        .setTooltip(new TranslatableText("The horizontal position on the HUD."))
+                        .setSaveConsumer(newValue -> EMCMod.config.townless.xPos = newValue)
+                        .build());
 
-            // Townless Vertical Position
-            townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townless.yPos, 16, 1000)
-                    .setDefaultValue(375)
-                    .setTooltip(new TranslatableText("The vertical position on the HUD."))
-                    .setSaveConsumer(newValue -> EMCMod.config.townless.yPos = newValue)
-                    .build());
+                // Townless Vertical Position
+                townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townless.yPos, 16, 1000)
+                        .setDefaultValue(375)
+                        .setTooltip(new TranslatableText("The vertical position on the HUD."))
+                        .setSaveConsumer(newValue -> EMCMod.config.townless.yPos = newValue)
+                        .build());
 
         }
 
@@ -119,19 +113,38 @@ public class ModMenuIntegration implements ModMenuApi
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.enabled = newValue)
                 .build());
 
-        // Nearby Player Horizontal Position
-        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.nearby.xPos, 1, 1000)
-                .setDefaultValue(770)
-                .setTooltip(new TranslatableText("The horizontal position on the HUD."))
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.xPos = newValue)
+        // Nearby Preset positions
+        nearby.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Use Preset Positions"), EMCMod.config.nearby.presetPositions)
+                .setDefaultValue(true)
+                .setTooltip(new TranslatableText("Toggles the use of preset positions, uses sliders if off."))
+                .setSaveConsumer(newValue -> EMCMod.config.nearby.presetPositions = newValue)
                 .build());
 
-        // Nearby Player Vertical Position
-        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.nearby.yPos, 16, 1000)
-                .setDefaultValue(275)
-                .setTooltip(new TranslatableText("The vertical position on the HUD."))
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.yPos = newValue)
-                .build());
+        if (EMCMod.config.nearby.presetPositions)
+        {
+                // Nearby Preset Position
+                nearby.addEntry(entryBuilder.startEnumSelector(new TranslatableText("Preset Position"), ModUtils.State.class, EMCMod.config.nearby.positionState)
+                        .setDefaultValue(ModUtils.State.TOP_RIGHT)
+                        .setTooltip(new TranslatableText("The position of the Nearby info."))
+                        .setSaveConsumer(newValue -> EMCMod.config.nearby.positionState = newValue)
+                        .build());
+        }
+        else
+        {
+                // Nearby Player Horizontal Position
+                nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.nearby.xPos, 1, 1000)
+                        .setDefaultValue(770)
+                        .setTooltip(new TranslatableText("The horizontal position on the HUD."))
+                        .setSaveConsumer(newValue -> EMCMod.config.nearby.xPos = newValue)
+                        .build());
+
+                // Nearby Player Vertical Position
+                nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.nearby.yPos, 16, 1000)
+                        .setDefaultValue(275)
+                        .setTooltip(new TranslatableText("The vertical position on the HUD."))
+                        .setSaveConsumer(newValue -> EMCMod.config.nearby.yPos = newValue)
+                        .build());
+        }
 
         // Nearby Player Text Color
         nearby.addEntry(entryBuilder.startSelector(new TranslatableText("Heading Colour"), EMCMod.colors, EMCMod.config.nearby.headingTextColour)
