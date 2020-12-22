@@ -3,7 +3,7 @@ package net.earthmc.emc;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
-import net.earthmc.emc.utils.HudUtils;
+import net.earthmc.emc.utils.ModUtils;
 
 @Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
@@ -24,13 +24,12 @@ public class ModConfig implements ConfigData
     public static class Townless
     {
         public boolean enabled = true;
-        public boolean showCoords = false;
-        public boolean advancedPositioning = false;
+        public boolean presetPositions = true;
 
         public int xPos = 1;
         public int yPos = 16;
 
-        public HudUtils.State positionState = HudUtils.State.BOTTOM_RIGHT;
+        public ModUtils.State positionState = ModUtils.State.TOP_LEFT;
         public String headingTextColour = "LIGHT_PURPLE";
         public String playerTextColour = "LIGHT_PURPLE";
 
@@ -40,10 +39,12 @@ public class ModConfig implements ConfigData
     public static class Nearby
     {
         public boolean enabled = true;
+        public boolean presetPositions = true;
         
         public int xPos = 100;
         public int yPos = 16;
 
+        public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
         public String headingTextColour = "GOLD";
         public String playerTextColour = "GOLD";
 
