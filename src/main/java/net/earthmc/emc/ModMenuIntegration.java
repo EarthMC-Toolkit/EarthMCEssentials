@@ -70,14 +70,14 @@ public class ModMenuIntegration implements ModMenuApi
         else
         {   
                 // Townless Horizontal Position
-                townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townless.xPos, 1, 1000)
+                townless.addEntry(entryBuilder.startIntField(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townless.xPos)
                         .setDefaultValue(770)
                         .setTooltip(new TranslatableText("The horizontal position on the HUD."))
                         .setSaveConsumer(newValue -> EMCMod.config.townless.xPos = newValue)
                         .build());
 
                 // Townless Vertical Position
-                townless.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townless.yPos, 16, 1000)
+                townless.addEntry(entryBuilder.startIntField(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townless.yPos)
                         .setDefaultValue(375)
                         .setTooltip(new TranslatableText("The vertical position on the HUD."))
                         .setSaveConsumer(newValue -> EMCMod.config.townless.yPos = newValue)
