@@ -158,13 +158,13 @@ public class EMCMod implements ModInitializer
                         {
                             if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
                             else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
-                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)-10;
+                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)-16;
                             break;
                         }
                         case "BOTTOM_LEFT":
                         {
                             startingPositionX = 5;
-                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)-10;
+                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)-16;
                             break;
                         }
                         default: //Defaults to top left

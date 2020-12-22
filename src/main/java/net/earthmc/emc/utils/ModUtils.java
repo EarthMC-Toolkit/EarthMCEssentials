@@ -108,11 +108,11 @@ public class ModUtils
         int totalLength = 0;
         for (int i = 0; i < array.size(); i++)
         {
-            if (i >= maxLength)
+            if (i >= maxLength && maxLength != 0)
             {
                 String maxLengthString = "And " + (array.size()-i) + " more...";
                 totalLength += getStringHeight(maxLengthString);
-                return totalLength;
+                return totalLength-10;
             }
             else
             {
