@@ -144,27 +144,27 @@ public class EMCMod implements ModInitializer
                         case "LEFT":
                         {
                             startingPositionX = 5;
-                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getArrayHeight(townless)/2;
+                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)/2;
                             break;
                         }
                         case "RIGHT":
                         {
                             if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
                             else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
-                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getArrayHeight(townless)/2;
+                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)/2;
                             break;
                         }
                         case "BOTTOM_RIGHT":
                         {
                             if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
                             else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
-                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getArrayHeight(townless)-10;
+                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)-10;
                             break;
                         }
                         case "BOTTOM_LEFT":
                         {
                             startingPositionX = 5;
-                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getArrayHeight(townless)-10;
+                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)-10;
                             break;
                         }
                         default: //Defaults to top left
@@ -250,15 +250,15 @@ public class EMCMod implements ModInitializer
                     {
                         case "TOP_MIDDLE":
                         {
-                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()/2-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")/2;
-                            else startingPositionX = ModUtils.getWindowWidth()/2-ModUtils.getLongestElement(nearby)/2;
+                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getNearbyLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()/2-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")/2;
+                            else startingPositionX = ModUtils.getWindowWidth()/2-ModUtils.getNearbyLongestElement(nearby)/2;
                             startingPositionY = 16;
                             break;
                         }
                         case "TOP_RIGHT":
                         {
-                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")-5;
-                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(nearby)-5;
+                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getNearbyLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")-5;
+                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getNearbyLongestElement(nearby)-5;
                             
                             if (EMCMod.client.player.getStatusEffects().isEmpty()) startingPositionY = 16;
                             else startingPositionY = 38;
@@ -273,15 +273,15 @@ public class EMCMod implements ModInitializer
                         }
                         case "RIGHT":
                         {
-                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")-5;
-                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(nearby)-5;
+                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getNearbyLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")-5;
+                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getNearbyLongestElement(nearby)-5;
                             startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getArrayHeight(nearby)/2;
                             break;
                         }
                         case "BOTTOM_RIGHT":
                         {
-                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")-5;
-                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(nearby)-5;
+                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > ModUtils.getNearbyLongestElement(nearby)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")-5;
+                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getNearbyLongestElement(nearby)-5;
                             startingPositionY = ModUtils.getWindowHeight()-ModUtils.getArrayHeight(nearby)-10;
                             break;
                         }

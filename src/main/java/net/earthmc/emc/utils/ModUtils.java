@@ -79,7 +79,6 @@ public class ModUtils
         int longestElement = 0;     
         for (int i = 0; i < array.size(); i++)
         {
-            //TODO: Take Nearby coords into account
             JsonObject currentObj = (JsonObject) array.get(i);
             int currentWidth = getStringWidth(currentObj.get("name").getAsString());
             if (currentWidth > longestElement) longestElement = currentWidth;
@@ -95,7 +94,6 @@ public class ModUtils
         int totalLength = 0;
         for (int i = 0; i < array.size(); i++)
         {
-            //TODO: Take townless maxLength into account
             JsonObject currentObj = (JsonObject) array.get(i);
             totalLength += getStringHeight(currentObj.get("name").getAsString());
         }
