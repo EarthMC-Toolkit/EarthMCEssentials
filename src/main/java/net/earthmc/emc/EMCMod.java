@@ -125,12 +125,6 @@ public class EMCMod implements ModInitializer
 
                     switch(config.townless.positionState.getName())
                     {
-                        case "TOP_LEFT":
-                        {
-                            startingPositionX = 5;
-                            startingPositionY = 16;
-                            break;
-                        }
                         case "TOP_MIDDLE":
                         {
                             if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()/2-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")/2;
