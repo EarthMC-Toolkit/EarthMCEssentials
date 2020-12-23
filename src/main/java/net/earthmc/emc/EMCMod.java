@@ -120,56 +120,66 @@ public class EMCMod implements ModInitializer
                 }
                 else // No advanced positioning, use preset states.
                 {
-                    int startingPositionX;
-                    int startingPositionY;
+                    ModUtils.State state = config.townless.positionState;
 
                     switch(config.townless.positionState.getName())
                     {
                         case "TOP_MIDDLE":
                         {
-                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()/2-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")/2;
-                            else startingPositionX = ModUtils.getWindowWidth()/2-ModUtils.getLongestElement(townless)/2;
-                            startingPositionY = 16;
+                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
+                                state.setX(ModUtils.getWindowWidth() / 2 - ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") / 2);
+                            else
+                                state.setX(ModUtils.getWindowWidth() / 2 - ModUtils.getLongestElement(townless) / 2);
+
+                            state.setY(16);
                             break;
                         }
                         case "TOP_RIGHT":
                         {
-                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
-                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
-                            
-                            startingPositionY = ModUtils.getStatusEffectOffset(client.player.getStatusEffects());
+                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
+                                state.setX(ModUtils.getWindowWidth() - ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") - 5);
+                            else
+                                state.setX(ModUtils.getWindowWidth() - ModUtils.getLongestElement(townless) - 5);
+
+                            state.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
                             break;
                         }
                         case "LEFT":
                         {
-                            startingPositionX = 5;
-                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)/2;
+                            state.setX(5);
+                            state.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
                             break;
                         }
                         case "RIGHT":
                         {
-                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
-                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
-                            startingPositionY = ModUtils.getWindowHeight()/2-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)/2;
+                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
+                                state.setX(ModUtils.getWindowWidth() - ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") - 5);
+                            else
+                                state.setX(ModUtils.getWindowWidth() - ModUtils.getLongestElement(townless) - 5);
+
+                            state.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
                             break;
                         }
                         case "BOTTOM_RIGHT":
                         {
-                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
-                            else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
-                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)-16;
+                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
+                                state.setX(ModUtils.getWindowWidth() - ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") - 5);
+                            else
+                                state.setX(ModUtils.getWindowWidth() - ModUtils.getLongestElement(townless) - 5);
+
+                            state.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 16);
                             break;
                         }
                         case "BOTTOM_LEFT":
                         {
-                            startingPositionX = 5;
-                            startingPositionY = ModUtils.getWindowHeight()-ModUtils.getTownlessArrayHeigth(townless, config.townless.maxLength)-16;
+                            state.setX(5);
+                            state.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 16);
                             break;
                         }
-                        default: //Defaults to top left
+                        default: // Defaults to top left
                         {
-                            startingPositionX = 5;
-                            startingPositionY = 16;
+                            state.setX(5);
+                            state.setY(16);
                             break;
                         }
                     }
@@ -178,7 +188,7 @@ public class EMCMod implements ModInitializer
                     MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
 
                     // Draw heading.
-                    renderer.drawWithShadow(matrixStack, townlessText, startingPositionX, startingPositionY-10, 16777215);
+                    renderer.drawWithShadow(matrixStack, townlessText, state.getX(), state.getY() - 10, 16777215);
 
                     if (townless.size() >= 1)
                     {
@@ -191,7 +201,7 @@ public class EMCMod implements ModInitializer
                                 if (i >= config.townless.maxLength)
                                 {
                                     MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
-                                    renderer.drawWithShadow(matrixStack, remainingText, startingPositionX, startingPositionY + i*10, 16777215);
+                                    renderer.drawWithShadow(matrixStack, remainingText, state.getX(), state.getY() + i*10, 16777215);
                                     break;
                                 }
                             }
@@ -199,7 +209,7 @@ public class EMCMod implements ModInitializer
                             final JsonObject currentPlayer = (JsonObject) townless.get(i);
                             MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
 
-                            renderer.drawWithShadow(matrixStack, playerName, startingPositionX, startingPositionY + i*10, 16777215);
+                            renderer.drawWithShadow(matrixStack, playerName, state.getX(), state.getY() + i*10, 16777215);
                         }
                     }
                 }

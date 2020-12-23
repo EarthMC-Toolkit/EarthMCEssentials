@@ -5,43 +5,50 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.Window;
 import net.minecraft.entity.effect.StatusEffectInstance;
 
 public class ModUtils
 {
-    Window window = MinecraftClient.getInstance().getWindow();
-    int windowWidth = window.getScaledWidth();
-    int windowHeight = window.getScaledHeight();
-
     public enum State
     {
-        BOTTOM_LEFT("BOTTOM_LEFT", false),
-        BOTTOM_RIGHT("BOTTOM_RIGHT", false),
-        LEFT("LEFT", false),
-        RIGHT("RIGHT", false),
-        TOP_LEFT("TOP_LEFT", false),
-        TOP_MIDDLE("TOP_MIDDLE", false),
-        TOP_RIGHT("TOP_RIGHT", false);
+        BOTTOM_LEFT("BOTTOM_LEFT", 0, 0),
+        BOTTOM_RIGHT("BOTTOM_RIGHT", 0, 0),
+        LEFT("LEFT", 0, 0),
+        RIGHT("RIGHT", 0, 0),
+        TOP_LEFT("TOP_LEFT", 0, 0),
+        TOP_MIDDLE("TOP_MIDDLE", 0, 0),
+        TOP_RIGHT("TOP_RIGHT", 0, 0);
 
-        private boolean active;
         private final String name;
+        private int posX;
+        private int posY;
 
-        State(String name, boolean active) {
+        State(String name, int posX, int posY) {
             this.name = name;
-            this.active = active;
+            this.posX = posX;
+            this.posY = posY;
         }
 
         public String getName() {
             return name;
         }
 
-        public boolean isActive() {
-            return active;
+        public int getX()
+        {
+            return posX;
+        }
+        public int getY()
+        {
+            return posY;
         }
 
-        public void setActive(boolean a) {
-            active = a;
+        public void setX(int x)
+        {
+            posX = x;
+        }
+        public void setY(int y)
+        {
+            posY = y;
         }
     }
 
@@ -102,7 +109,7 @@ public class ModUtils
         return totalLength;
     }
 
-    public static int getTownlessArrayHeigth(JsonArray array, int maxLength)
+    public static int getTownlessArrayHeight(JsonArray array, int maxLength)
     {
         if (array.size() == 0) return 0;
 
