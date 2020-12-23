@@ -81,8 +81,6 @@ public class EMCMod implements ModInitializer
 
             ModUtils.State townlessState = config.townless.positionState;
             ModUtils.State nearbyState = config.nearby.positionState;
-            ModUtils.State townInfoState = config.townInfo.positionState;
-            ModUtils.State nationInfoState = config.nationInfo.positionState;
 
             if (config.townless.enabled)
             {
@@ -125,27 +123,27 @@ public class EMCMod implements ModInitializer
                 }
                 else // No advanced positioning, use preset states.
                 {
+                    int townlessLongest;
+                    int nearbyLongest;
+                    if (ModUtils.getLongestElement(townless) > ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")) townlessLongest = ModUtils.getLongestElement(townless);
+                    else townlessLongest = ModUtils.getStringWidth("Townless Players [" + townless.size() + "]");
+
+                    if (ModUtils.getNearbyLongestElement(nearby) > ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")) nearbyLongest = ModUtils.getNearbyLongestElement(nearby);
+                    else nearbyLongest = ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]");
+
                     switch(townlessState)
                     {
                         case TOP_MIDDLE:
                         {
-                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
-                                townlessState.setX(ModUtils.getWindowWidth() / 2 - ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") / 2);
-                            else
-                                townlessState.setX(ModUtils.getWindowWidth() / 2 - ModUtils.getLongestElement(townless) / 2);
-
+                            if (config.nearby.positionState.equals(ModUtils.State.TOP_MIDDLE)) townlessState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 );
+                            else townlessState.setX(ModUtils.getWindowWidth() / 2 - townlessLongest / 2);
                             townlessState.setY(16);
                             break;
                         }
                         case TOP_RIGHT:
                         {
-                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
-                                townlessState.setX(ModUtils.getWindowWidth() - ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") - 5);
-                            else
-                                townlessState.setX(ModUtils.getWindowWidth() - ModUtils.getLongestElement(townless) - 5);
-
+                            townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
                             if (client.player != null) townlessState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
-
                             break;
                         }
                         case LEFT:
@@ -156,28 +154,20 @@ public class EMCMod implements ModInitializer
                         }
                         case RIGHT:
                         {
-                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
-                                townlessState.setX(ModUtils.getWindowWidth() - ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") - 5);
-                            else
-                                townlessState.setX(ModUtils.getWindowWidth() - ModUtils.getLongestElement(townless) - 5);
-
+                            townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
                             townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
                             break;
                         }
                         case BOTTOM_RIGHT:
                         {
-                            if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
-                                townlessState.setX(ModUtils.getWindowWidth() - ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") - 5);
-                            else
-                                townlessState.setX(ModUtils.getWindowWidth() - ModUtils.getLongestElement(townless) - 5);
-
-                            townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 16);
+                            townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
+                            townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
                             break;
                         }
                         case BOTTOM_LEFT:
                         {
                             townlessState.setX(5);
-                            townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 16);
+                            townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
                             break;
                         }
                         default: // Defaults to top left
@@ -256,84 +246,63 @@ public class EMCMod implements ModInitializer
                 }
                 else
                 {
-                    int longestNearbyElement = ModUtils.getNearbyLongestElement(nearby);
-                    int nearbyHeadingWidth = ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]");
+                    int nearbyLongest;
+                    int townlessLongest;
+
+                    if (ModUtils.getNearbyLongestElement(nearby) > ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")) nearbyLongest = ModUtils.getNearbyLongestElement(nearby);
+                    else nearbyLongest = ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]");
+
+                    if (ModUtils.getLongestElement(townless) > ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")) townlessLongest = ModUtils.getLongestElement(townless);
+                    else townlessLongest = ModUtils.getStringWidth("Townless Players [" + townless.size() + "]");
 
                     switch(nearbyState)
                     {
                         case TOP_MIDDLE:
                         {
-                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > longestNearbyElement)
-                                nearbyState.setX(ModUtils.getWindowWidth() / 2 - nearbyHeadingWidth / 2);
-                            else
-                                nearbyState.setX(ModUtils.getWindowWidth() / 2 - longestNearbyElement / 2);
-
+                            if (townlessState.equals(ModUtils.State.TOP_MIDDLE)) nearbyState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 + townlessLongest + 5);
+                            else nearbyState.setX(ModUtils.getWindowWidth() / 2 - nearbyLongest / 2);
                             nearbyState.setY(16);
                             break;
                         }
                         case TOP_RIGHT:
                         {
-
-                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > longestNearbyElement)
-                                nearbyState.setX(ModUtils.getWindowWidth() - nearbyHeadingWidth - 5);
-                            else
-                                nearbyState.setX(ModUtils.getWindowWidth() - longestNearbyElement - 5);
-
-                            if (client.player != null)
-                                if (EMCMod.client.player.getStatusEffects().isEmpty()) nearbyState.setY(16);
-                                else nearbyState.setY(38);
-
+                            if (config.townless.positionState.equals(ModUtils.State.TOP_RIGHT)) nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                            else nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
+                            nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
                             break;
                         }
                         case LEFT:
                         {
-                            nearbyState.setX(5);
+                            if (config.townless.positionState.equals(ModUtils.State.LEFT)) nearbyState.setX(townlessLongest + 10);
+                            else nearbyState.setX(5);
                             nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
                             break;
                         }
                         case RIGHT:
                         {
-                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > longestNearbyElement)
-                                nearbyState.setX(ModUtils.getWindowWidth() - nearbyHeadingWidth - 5);
-                            else
-                                nearbyState.setX(ModUtils.getWindowWidth() - longestNearbyElement - 5);
-
+                            if (config.townless.positionState.equals(ModUtils.State.RIGHT)) nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                            else nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
                             nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
                             break;
                         }
                         case BOTTOM_RIGHT:
                         {
-                            if (ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]") > longestNearbyElement)
-                                nearbyState.setX(ModUtils.getWindowWidth() - nearbyHeadingWidth - 5);
-                            else
-                                nearbyState.setX(ModUtils.getWindowWidth() - longestNearbyElement - 5);
-
+                            if (config.townless.positionState.equals(ModUtils.State.BOTTOM_RIGHT)) nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                            else nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 15);
                             nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
                             break;
                         }
                         case BOTTOM_LEFT:
                         {
-                            nearbyState.setX(5);
+                            if (townlessState.equals(ModUtils.State.BOTTOM_LEFT)) nearbyState.setX(townlessLongest + 15);
+                            else nearbyState.setX(5);
                             nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
                             break;
                         }
-                        default: // Defaults to top left
+                        default: //Defaults to top left
                         {
-                            if (townlessState.equals(ModUtils.State.TOP_RIGHT))
-                            {
-                                int longestWidth = 0;
-
-                                if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless))
-                                    longestWidth = ModUtils.getStringWidth("Townless Players [" + townless.size() + "]");
-                                else
-                                    longestWidth = ModUtils.getLongestElement(townless);
-
-                                nearbyState.setX(longestWidth - 10);
-                            }
-                            else
-                            {
-                                nearbyState.setX(5);
-                            }
+                            if (townlessState.equals(ModUtils.State.TOP_LEFT)) nearbyState.setX(townlessLongest + 15);
+                            else nearbyState.setX(5); 
                             nearbyState.setY(16);
                             break;
                         }

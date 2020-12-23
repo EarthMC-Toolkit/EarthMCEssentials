@@ -12,7 +12,7 @@ public class ModUtils
     public enum State
     {
         BOTTOM_LEFT(0, 0),
-        BOTTOM_RIGHT( 0, 0),
+        BOTTOM_RIGHT(0, 0),
         LEFT(0, 0),
         RIGHT(0, 0),
         TOP_LEFT(0, 0),
