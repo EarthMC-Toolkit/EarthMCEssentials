@@ -1,11 +1,12 @@
 package net.earthmc.emc.utils;
 
+import java.util.Collection;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.Window;
+import net.minecraft.entity.effect.StatusEffectInstance;
 
 public class ModUtils
 {
@@ -138,5 +139,22 @@ public class ModUtils
         }
 
         return longestElement;
+    }
+
+    public static int getStatusEffectOffset(Collection<StatusEffectInstance> statusEffectInstances)
+    {
+        if (statusEffectInstances.isEmpty()) return 16;
+
+        int offset = 0;
+
+        for (StatusEffectInstance statusEffectInstance : statusEffectInstances)
+        {
+            if (statusEffectInstance.shouldShowIcon())
+            {
+                if (statusEffectInstance.getEffectType().isBeneficial()) offset = Math.max(offset, 36);
+                else offset = Math.max(offset, 64);
+            }
+        }
+        return offset;
     }
 }

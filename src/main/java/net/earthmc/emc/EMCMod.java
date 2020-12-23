@@ -137,8 +137,7 @@ public class EMCMod implements ModInitializer
                             if (ModUtils.getStringWidth("Townless Players [" + townless.size() + "]") > ModUtils.getLongestElement(townless)) startingPositionX = ModUtils.getWindowWidth()-ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")-5;
                             else startingPositionX = ModUtils.getWindowWidth()-ModUtils.getLongestElement(townless)-5;
                             
-                            if (EMCMod.client.player.getStatusEffects().isEmpty()) startingPositionY = 16;
-                            else startingPositionY = 38;
+                            startingPositionY = ModUtils.getStatusEffectOffset(client.player.getStatusEffects());
                             break;
                         }
                         case "LEFT":
