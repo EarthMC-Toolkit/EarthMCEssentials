@@ -24,6 +24,9 @@
     ],
     "modmenu": [
       "net.earthmc.emc.ModMenuIntegration"
+    ],
+    "cotton-client-commands": [
+      "net.earthmc.emc.ClientSideCommands"
     ]
   },
   "mixins": [
@@ -32,7 +35,8 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.16.x",
+    "cotton-client-commands": "^1.0.0"
   },
   "custom": {
     "modmenu:clientsideOnly": true
