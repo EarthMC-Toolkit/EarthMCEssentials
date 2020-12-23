@@ -11,26 +11,20 @@ public class ModUtils
 {
     public enum State
     {
-        BOTTOM_LEFT("BOTTOM_LEFT", 0, 0),
-        BOTTOM_RIGHT("BOTTOM_RIGHT", 0, 0),
-        LEFT("LEFT", 0, 0),
-        RIGHT("RIGHT", 0, 0),
-        TOP_LEFT("TOP_LEFT", 0, 0),
-        TOP_MIDDLE("TOP_MIDDLE", 0, 0),
-        TOP_RIGHT("TOP_RIGHT", 0, 0);
+        BOTTOM_LEFT(0, 0),
+        BOTTOM_RIGHT( 0, 0),
+        LEFT(0, 0),
+        RIGHT(0, 0),
+        TOP_LEFT(0, 0),
+        TOP_MIDDLE(0, 0),
+        TOP_RIGHT(0, 0);
 
-        private final String name;
         private int posX;
         private int posY;
 
-        State(String name, int posX, int posY) {
-            this.name = name;
+        State(int posX, int posY) {
             this.posX = posX;
             this.posY = posY;
-        }
-
-        public String getName() {
-            return name;
         }
 
         public int getX()
