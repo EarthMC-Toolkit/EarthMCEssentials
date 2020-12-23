@@ -153,9 +153,10 @@ public class ModUtils
             if (statusEffectInstance.shouldShowIcon())
             {
                 if (statusEffectInstance.getEffectType().isBeneficial()) offset = Math.max(offset, 36);
-                else offset = Math.max(offset, 64);
+                else offset = 64;
             }
         }
+
         return offset;
     }
 }
