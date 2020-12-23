@@ -2,6 +2,7 @@ package net.earthmc.emc;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
@@ -33,15 +34,12 @@ public class ClientSideCommands implements ClientCommandPlugin
 
                 source.getSource().sendFeedback(new TranslatableText("Townless Players [" + townless.size() + "]").formatted(headingFormatting));
                 source.getSource().sendFeedback(new TranslatableText(townlessString).formatted(playerNameFormattting));
-                return 1;
+                return Command.SINGLE_SUCCESS;
             }
-        ));
-
-        dispatcher.register(ArgumentBuilders.literal("townless")
-            .then(ArgumentBuilders.literal("copyNames").executes
-            (
-                source -> 
-                {
+        ).then(ArgumentBuilders.literal("copyNames").executes
+        (
+            source -> 
+            {
                     final JsonArray townless = EMCMod.townless;
                     String townlessString = "";
 
@@ -53,10 +51,9 @@ public class ClientSideCommands implements ClientCommandPlugin
 
                     EMCMod.client.keyboard.setClipboard(townlessString);
                     source.getSource().sendFeedback(new TranslatableText("Copied townless players to clipboard!"), true);
-                    return 1;
-                }
-            ))
-        );
+                    return Command.SINGLE_SUCCESS;
+            }
+        )));
     }
     
 }
