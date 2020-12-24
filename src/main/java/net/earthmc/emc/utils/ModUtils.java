@@ -1,11 +1,17 @@
 package net.earthmc.emc.utils;
 
+import java.net.InetSocketAddress;
 import java.util.Collection;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import net.earthmc.emc.EMCMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.network.ClientConnection;
 
 public class ModUtils
 {
@@ -158,5 +164,32 @@ public class ModUtils
         }
 
         return offset;
+    }
+
+    public static String getServerName() {
+
+        String serverName = "";
+        try {
+
+            ServerInfo serverInfo = EMCMod.client.getCurrentServerEntry();
+            if (serverInfo != null) {
+                if (serverInfo.isLocal()) {
+                    serverName = serverInfo.name;
+                } else {
+                    serverName = serverInfo.address;
+                }
+            } else if (EMCMod.client.isConnectedToRealms()) {
+                serverName = "Realms";
+            } else {
+                ClientPlayNetworkHandler clientPlayNetworkHandler = EMCMod.client.getNetworkHandler();
+                ClientConnection clientConnection = clientPlayNetworkHandler.getConnection();
+                InetSocketAddress socketAddress = (InetSocketAddress) clientConnection.getAddress();
+                serverName = socketAddress.getHostName();
+            }
+        } catch (Exception exception) {
+            System.out.println("EMC Essentials: Error getting serverName");
+            exception.printStackTrace();
+        }
+        return serverName;
     }
 }
