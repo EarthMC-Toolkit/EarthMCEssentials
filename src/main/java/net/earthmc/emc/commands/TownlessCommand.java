@@ -30,26 +30,32 @@ public class TownlessCommand
                     townlessString += currentPlayer.get("name").getAsString() + " ";
                 }
 
-                source.getSource().sendFeedback(new TranslatableText("Townless Players [" + townless.size() + "]").formatted(headingFormatting));
-                source.getSource().sendFeedback(new TranslatableText(townlessString).formatted(playerNameFormattting));
+                if (townlessString.length() != 0) {
+                    source.getSource().sendFeedback(new TranslatableText("Townless Players [" + townless.size() + "]").formatted(headingFormatting));
+                    source.getSource().sendFeedback(new TranslatableText(townlessString).formatted(playerNameFormattting));
+                } else {
+                    source.getSource().sendFeedback(new TranslatableText("There don't seem to be any townless players online at the moment.").formatted(Formatting.byName("RED")));
+                }
+                
                 return Command.SINGLE_SUCCESS;
             }
-        ).then(ArgumentBuilders.literal("copyNames").executes
+        ).then(ArgumentBuilders.literal("inviteAll").executes
         (
             source -> 
             {
-                    final JsonArray townless = EMCMod.townless;
-                    String townlessString = "";
+                final JsonArray townless = EMCMod.townless;
+                String townlessString = "";
 
-                    for (int i = 0; i < townless.size(); i++)
-                    {
-                        JsonObject currentPlayer = (JsonObject) townless.get(i);
-                        townlessString += currentPlayer.get("name").getAsString() + " ";
-                    }
+                for (int i = 0; i < townless.size(); i++)
+                {
+                    JsonObject currentPlayer = (JsonObject) townless.get(i);
+                    townlessString += currentPlayer.get("name").getAsString() + " ";
+                }
 
-                    EMCMod.client.keyboard.setClipboard(townlessString);
-                    source.getSource().sendFeedback(new TranslatableText("Copied townless players to clipboard!"), true);
-                    return Command.SINGLE_SUCCESS;
+                EMCMod.client.player.sendChatMessage("/towny:town invite " + townlessString);
+                source.getSource().sendFeedback(new TranslatableText("EMCE > Invites sent!").formatted(Formatting.byName("AQUA")));
+                source.getSource().sendFeedback(new TranslatableText("EMCE > Note: You still need permissions to invite players to your town.").formatted(Formatting.byName("RED")));
+                return Command.SINGLE_SUCCESS;
             }
         )));
     }
