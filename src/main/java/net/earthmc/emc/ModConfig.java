@@ -3,6 +3,7 @@ package net.earthmc.emc;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
+import net.earthmc.emc.utils.ModUtils;
 
 @Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
@@ -13,7 +14,6 @@ public class ModConfig implements ConfigData
     public Nearby nearby = new Nearby();
     public TownInfo townInfo = new TownInfo();
     public NationInfo nationInfo = new NationInfo();
-    public TownEvents townEvents = new TownEvents();
 
     public static class General
     {
@@ -24,18 +24,22 @@ public class ModConfig implements ConfigData
     public static class Townless
     {
         public boolean enabled = true;
-        public boolean showCoords = false;
+        public boolean presetPositions = true;
 
         public int xPos = 1;
         public int yPos = 16;
+        public int maxLength = 0; // < 1 = No limit
 
         public String headingTextColour = "LIGHT_PURPLE";
         public String playerTextColour = "LIGHT_PURPLE";
+
+        public ModUtils.State positionState = ModUtils.State.TOP_LEFT;
     }
 
     public static class Nearby
     {
         public boolean enabled = true;
+        public boolean presetPositions = true;
         
         public int xPos = 100;
         public int yPos = 16;
@@ -43,42 +47,37 @@ public class ModConfig implements ConfigData
         public String headingTextColour = "GOLD";
         public String playerTextColour = "GOLD";
 
-        public String playerName = "";
-
         public int xRadius = 500;
         public int zRadius = 500;
+
+        public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
     }
 
     public static class TownInfo
     {
         public boolean enabled = true;
+        public boolean presetPositions = true;
 
         public String headingTextColour = "GREEN";
         public String infoTextColour = "GREEN";
 
         public int xPos = 15;
         public int yPos = 275;
+
+        public ModUtils.State positionState = ModUtils.State.BOTTOM_RIGHT;
     }
 
     public static class NationInfo
     {
         public boolean enabled = true;
+        public boolean presetPositions = true;
 
         public String headingTextColour = "AQUA";
         public String infoTextColour = "AQUA";
 
         public int xPos = 15;
         public int yPos = 375;
-    }
 
-    public static class TownEvents
-    {
-        public boolean enabled = true;
-
-        public String headingTextColour = "AQUA";
-        public String infoTextColour = "AQUA";
-
-        public int xPos = 15;
-        public int yPos = 375;
+        public ModUtils.State positionState = ModUtils.State.BOTTOM_RIGHT;
     }
 }

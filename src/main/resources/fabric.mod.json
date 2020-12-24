@@ -1,9 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "emc-essentials",
-  "version": "1.0.4",
-
-  "name": "EarthMCEssentials",
+  "version": "${version}",
+    "name": "EarthMCEssentials",
   "description": "A mod providing info on the EarthMC Minecraft server.",
   "authors": [
     "Owen77Stubbs",
@@ -24,19 +23,19 @@
     ],
     "modmenu": [
       "net.earthmc.emc.ModMenuIntegration"
+    ],
+    "cotton-client-commands": [
+      "net.earthmc.emc.ClientSideCommands"
     ]
   },
   "mixins": [
     "emc.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": "1.15.x"
-  },
-  "suggests": {
-    "flamingo": "*"
+    "minecraft": "1.16.x",
+    "cotton-client-commands": "^1.0.0"
   },
   "custom": {
     "modmenu:clientsideOnly": true
