@@ -22,3 +22,8 @@ Version 1.0.4: (28 October 2020)
 - Changed all instances of LiteralText to TranslatableText.
 - Class properties within ModConfig now have better naming schemes.
 - Lots of bug fixes/optimization.
+
+Version 1.1.0: (24 December 2020)
+- Each overlay now has a preset positions option in the config.
+- Added client side commands. E.g. /townless, /nether etc.
+- Much more bug fixes, small changes and general optimization.
