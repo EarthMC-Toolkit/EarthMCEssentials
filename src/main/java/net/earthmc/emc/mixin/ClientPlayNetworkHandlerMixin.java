@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.earthmc.emc.EMCMod;
 import net.earthmc.emc.utils.ConfigUtils;
 import net.earthmc.emc.utils.EmcApi;
+import net.earthmc.emc.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
@@ -21,14 +22,19 @@ public class ClientPlayNetworkHandlerMixin
     @Inject(at = @At("TAIL"), method="onGameJoin")
     private void onGameJoin(CallbackInfo info)
     {
-        // Timers already running or mod isn't enabled.
-        if (EMCMod.timersActivated || !EMCMod.config.general.enableMod) return;
-        EMCMod.timersActivated = true;
-
         EMCMod.client = MinecraftClient.getInstance();
+        
+        String serverName = ModUtils.getServerName();
+        if (serverName.endsWith("earthmc.net")) EMCMod.isOnEMC = true;
+        else EMCMod.isOnEMC = false;
+
         if (EMCMod.client.player != null) EMCMod.clientName = EMCMod.client.player.getName().asString();
 
         ConfigUtils.serializeConfig(EMCMod.config);
+
+        // Return if timers are already running.
+        if (EMCMod.timersActivated) return;
+        EMCMod.timersActivated = true;
 
         // #region Create Timers
         final Timer twoMinuteTimer = new Timer();
@@ -76,6 +82,10 @@ public class ClientPlayNetworkHandlerMixin
                 if (EMCMod.config.general.enableMod)
                 {
                     if (EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
+
+                    String serverName = ModUtils.getServerName();
+                    if (serverName.endsWith("earthmc.net")) EMCMod.isOnEMC = true;
+                    else EMCMod.isOnEMC = false;
                 }
             }
         }, 0, 10 * 1000);

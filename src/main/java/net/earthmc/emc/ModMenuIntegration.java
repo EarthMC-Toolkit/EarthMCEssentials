@@ -39,7 +39,7 @@ public class ModMenuIntegration implements ModMenuApi
         // Enable EMC Only
         general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("EMC Only"), EMCMod.config.general.emcOnly)
                 .setDefaultValue(true)
-                .setTooltip(new TranslatableText("Toggles EMC Only on or off. NOT YET IMPLEMENTED."))
+                .setTooltip(new TranslatableText("While enabled, overlays only render while you are on EarthMC."))
                 .setSaveConsumer(newValue -> EMCMod.config.general.emcOnly = newValue)
                 .build());
 

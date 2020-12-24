@@ -41,6 +41,7 @@ public class EMCMod implements ModInitializer
     public static MinecraftClient client;
     public static Screen screen;
     public static ModConfig config;
+    public static boolean isOnEMC = false;
     KeyBinding configKeybind;
 
     @Override
@@ -82,7 +83,7 @@ public class EMCMod implements ModInitializer
             ModUtils.State townlessState = config.townless.positionState;
             ModUtils.State nearbyState = config.nearby.positionState;
 
-            if (config.townless.enabled)
+            if (config.townless.enabled && (isOnEMC && config.general.emcOnly))
             {
                 if (!config.townless.presetPositions)
                 {
@@ -209,7 +210,7 @@ public class EMCMod implements ModInitializer
                 }
             }
 
-            if (config.nearby.enabled)
+            if (config.nearby.enabled && (isOnEMC && config.general.emcOnly))
             {
                 if (!config.nearby.presetPositions) //Not using preset positions
                 {
@@ -336,7 +337,7 @@ public class EMCMod implements ModInitializer
             }
 
             // Town info is enabled and object isn't empty.
-            if (config.townInfo.enabled && !townInfo.entrySet().isEmpty())
+            if (config.townInfo.enabled && !townInfo.entrySet().isEmpty() && (isOnEMC && config.general.emcOnly))
             {
                 if (!config.townInfo.presetPositions)
                 {
@@ -366,7 +367,7 @@ public class EMCMod implements ModInitializer
             }
 
             // Nation info is enabled and object isn't empty.
-            if (config.nationInfo.enabled && !nationInfo.entrySet().isEmpty())
+            if (config.nationInfo.enabled && !nationInfo.entrySet().isEmpty() && (isOnEMC && config.general.emcOnly))
             {
                 if (!config.nationInfo.presetPositions)
                 {
