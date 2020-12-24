@@ -25,8 +25,10 @@ public class ClientPlayNetworkHandlerMixin
         EMCMod.client = MinecraftClient.getInstance();
         
         String serverName = ModUtils.getServerName();
-        if (serverName.endsWith("earthmc.net")) EMCMod.isOnEMC = true;
-        else EMCMod.isOnEMC = false;
+        if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
+        else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
+        else if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
+        else EMCMod.shouldRender = false;
 
         if (EMCMod.client.player != null) EMCMod.clientName = EMCMod.client.player.getName().asString();
 
@@ -84,8 +86,10 @@ public class ClientPlayNetworkHandlerMixin
                     if (EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
 
                     String serverName = ModUtils.getServerName();
-                    if (serverName.endsWith("earthmc.net")) EMCMod.isOnEMC = true;
-                    else EMCMod.isOnEMC = false;
+                    if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true; //Uses endsWith because EMC has 2 valid ip's (earthmc.net & play.earthmc.net)
+                    else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
+                    else if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
+                    else EMCMod.shouldRender = false;
                 }
             }
         }, 0, 10 * 1000);
