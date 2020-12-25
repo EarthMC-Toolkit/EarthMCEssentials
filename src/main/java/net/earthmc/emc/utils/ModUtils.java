@@ -57,7 +57,7 @@ public class ModUtils
         MinecraftClient client = MinecraftClient.getInstance();
         TextRenderer renderer = client.textRenderer;    
 
-        return renderer.getWidth(string);
+        return renderer.getStringWidth(string);
     }
 
     public static int getStringHeight(String string)
