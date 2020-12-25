@@ -126,11 +126,9 @@ public class EMCMod implements ModInitializer
                 {
                     int townlessLongest;
                     int nearbyLongest;
-                    if (ModUtils.getLongestElement(townless) > ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")) townlessLongest = ModUtils.getLongestElement(townless);
-                    else townlessLongest = ModUtils.getStringWidth("Townless Players [" + townless.size() + "]");
+                    townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
 
-                    if (ModUtils.getNearbyLongestElement(nearby) > ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")) nearbyLongest = ModUtils.getNearbyLongestElement(nearby);
-                    else nearbyLongest = ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]");
+                    nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]"));
 
                     switch(townlessState)
                     {
@@ -250,11 +248,9 @@ public class EMCMod implements ModInitializer
                     int nearbyLongest;
                     int townlessLongest;
 
-                    if (ModUtils.getNearbyLongestElement(nearby) > ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]")) nearbyLongest = ModUtils.getNearbyLongestElement(nearby);
-                    else nearbyLongest = ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]");
+                    nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]"));
 
-                    if (ModUtils.getLongestElement(townless) > ModUtils.getStringWidth("Townless Players [" + townless.size() + "]")) townlessLongest = ModUtils.getLongestElement(townless);
-                    else townlessLongest = ModUtils.getStringWidth("Townless Players [" + townless.size() + "]");
+                    townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
 
                     switch(nearbyState)
                     {
@@ -269,7 +265,9 @@ public class EMCMod implements ModInitializer
                         {
                             if (config.townless.positionState.equals(ModUtils.State.TOP_RIGHT)) nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
                             else nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
-                            nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
+                            if (client.player != null) {
+                                nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
+                            }
                             break;
                         }
                         case LEFT:
