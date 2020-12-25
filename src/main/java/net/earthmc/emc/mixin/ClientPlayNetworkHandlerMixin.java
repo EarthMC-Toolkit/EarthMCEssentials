@@ -49,7 +49,7 @@ public class ClientPlayNetworkHandlerMixin
             {
                 if (!EMCMod.config.general.enableMod && EMCMod.townless.size() == 0) return;
                 
-                if (EMCMod.config.townless.enabled) EMCMod.townless = EmcApi.getTownless(); //TODO: Fix townless from being empty sometimes.
+                if (EMCMod.config.townless.enabled) EMCMod.townless = EmcApi.getTownless();
 
                 JsonObject resident = EmcApi.getResident(EMCMod.clientName);
 
