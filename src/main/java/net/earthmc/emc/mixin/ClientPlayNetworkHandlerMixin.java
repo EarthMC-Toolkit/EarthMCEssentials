@@ -89,6 +89,9 @@ public class ClientPlayNetworkHandlerMixin
                 else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
                 else if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
                 else EMCMod.shouldRender = false;
+
+                JsonObject serverInfo = EmcApi.getServerInfo();
+                if (serverInfo.get("serverOnline").getAsBoolean()) EMCMod.queue = serverInfo.get("queue").getAsString();
             }
         }, 0, 10 * 1000);
         // #endregion

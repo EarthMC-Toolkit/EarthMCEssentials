@@ -180,6 +180,8 @@ public class ModUtils
                 }
             } else if (EMCMod.client.isConnectedToRealms()) {
                 serverName = "Realms";
+            } else if (EMCMod.client.isInSingleplayer()) {
+                serverName = "Singleplayer";
             } else {
                 ClientPlayNetworkHandler clientPlayNetworkHandler = EMCMod.client.getNetworkHandler();
                 ClientConnection clientConnection = clientPlayNetworkHandler.getConnection();

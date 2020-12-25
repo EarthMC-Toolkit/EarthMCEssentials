@@ -34,12 +34,14 @@ public class EMCMod implements ModInitializer
     public static String clientTownName = "";
     public static String clientNationName = "";
 
-    public static boolean timersActivated, shouldRender = false;
+    public static boolean timersActivated;
 
     public static MinecraftClient client;
     public static Screen screen;
     public static ModConfig config;
 
+    public static boolean shouldRender = false;
+    public static String queue;
     KeyBinding configKeybind;
 
     @Override
