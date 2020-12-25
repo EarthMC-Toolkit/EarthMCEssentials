@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import net.earthmc.emc.utils.ConfigUtils;
 import net.earthmc.emc.utils.EmcApi;
 import net.earthmc.emc.utils.ModUtils;
 import net.fabricmc.api.ModInitializer;
@@ -22,26 +23,23 @@ import org.lwjgl.glfw.GLFW;
 
 public class EMCMod implements ModInitializer
 {
-    public static JsonArray townless;
-    public static JsonArray nearby;
+    public static JsonArray townless, nearby;
+    public static JsonObject townInfo, nationInfo;
 
-    public static JsonObject townInfo;
-    public static JsonObject nationInfo;
-
-    int townlessPlayerOffset;
-    int nearbyPlayerOffset;
+    int townlessPlayerOffset, nearbyPlayerOffset;
 
     public static String[] colors;
+
     public static String clientName = "";
     public static String clientTownName = "";
     public static String clientNationName = "";
 
-    public static boolean timersActivated;
+    public static boolean timersActivated, shouldRender = false;
 
     public static MinecraftClient client;
     public static Screen screen;
     public static ModConfig config;
-    public static boolean shouldRender = false;
+
     KeyBinding configKeybind;
 
     @Override
@@ -66,7 +64,7 @@ public class EMCMod implements ModInitializer
             // Pressed F4 (Config Menu)
             if (configKeybind.wasPressed())
             {
-                screen = ModMenuIntegration.getConfigBuilder().build();
+                screen = ConfigUtils.getConfigBuilder().build();
 
                 client.openScreen(screen);
 		    }
