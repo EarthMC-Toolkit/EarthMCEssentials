@@ -42,6 +42,7 @@ public class EMCMod implements ModInitializer
     public static Screen screen;
     public static ModConfig config;
     public static boolean shouldRender = false;
+    public static String queue;
     KeyBinding configKeybind;
 
     @Override
