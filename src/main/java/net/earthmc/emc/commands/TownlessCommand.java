@@ -49,10 +49,11 @@ public class TownlessCommand
                 for (int i = 0; i < townless.size(); i++)
                 {
                     JsonObject currentPlayer = (JsonObject) townless.get(i);
-                    townlessString += currentPlayer.get("name").getAsString() + " ";
+                    if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256) break;
+                    else townlessString += currentPlayer.get("name").getAsString() + " ";
                 }
 
-                EMCMod.client.player.sendChatMessage("/towny:town invite " + townlessString); //TODO: Add a check so it doesn't go over the in-game command length limit. 
+                EMCMod.client.player.sendChatMessage("/towny:town invite " + townlessString);
                 source.getSource().sendFeedback(new TranslatableText("EMCE > Invites sent!").formatted(Formatting.byName("AQUA")));
                 source.getSource().sendFeedback(new TranslatableText("EMCE > Note: You still need permissions to invite players to your town.").formatted(Formatting.byName("RED")));
                 return Command.SINGLE_SUCCESS;

@@ -3,6 +3,8 @@ package net.earthmc.emc.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import net.earthmc.emc.EMCMod;
 import net.earthmc.emc.ModConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -87,7 +89,13 @@ public class EmcApi
 
                     // Using the JSON simple library parse the string into a json object
                     final JsonParser parse = new JsonParser();
-                    return (JsonArray) parse.parse(inline.toString());
+                    JsonArray array = (JsonArray) parse.parse(inline.toString());
+
+                    for (int i = 0; i < array.size(); i++) {
+                        JsonObject currentObj = (JsonObject) array.get(i);
+                        if (currentObj.get("name").getAsString().equals(EMCMod.clientName)) array.remove(i);
+                    }
+                    return array;
                 }
             }
         }
@@ -260,5 +268,45 @@ public class EmcApi
         }
 
         return new JsonArray();
+    }
+
+    public static JsonObject getServerInfo() 
+    {
+        try 
+        {
+            final URL url = new URL("http://earthmc-api.herokuapp.com/serverinfo/");
+
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            // Getting the response code
+            final int responsecode = conn.getResponseCode();
+
+            if (responsecode == 200)
+            {
+                StringBuilder inline = new StringBuilder();
+                final Scanner scanner = new Scanner(url.openStream());
+
+                // Write all the JSON data into a string using a scanner
+                while (scanner.hasNext())
+                {
+                    inline.append(scanner.nextLine());
+                }
+
+                // Close the scanner
+                scanner.close();
+
+                // Using the JSON simple library parse the string into a json object
+                final JsonParser parse = new JsonParser();
+                return (JsonObject) parse.parse(inline.toString());
+            }
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+            return new JsonObject();
+        }
+        return new JsonObject();
     }
 }

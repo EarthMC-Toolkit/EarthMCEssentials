@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import net.earthmc.emc.utils.ConfigUtils;
 import net.earthmc.emc.utils.EmcApi;
 import net.earthmc.emc.utils.ModUtils;
 import net.fabricmc.api.ModInitializer;
@@ -14,23 +15,21 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil; 
+import net.minecraft.client.util.InputUtil;
+import java.lang.String;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
 public class EMCMod implements ModInitializer
 {
-    public static JsonArray townless;
-    public static JsonArray nearby;
+    public static JsonArray townless, nearby;
+    public static JsonObject townInfo, nationInfo;
 
-    public static JsonObject townInfo;
-    public static JsonObject nationInfo;
-
-    int townlessPlayerOffset;
-    int nearbyPlayerOffset;
+    int townlessPlayerOffset, nearbyPlayerOffset;
 
     public static String[] colors;
+
     public static String clientName = "";
     public static String clientTownName = "";
     public static String clientNationName = "";
@@ -40,7 +39,9 @@ public class EMCMod implements ModInitializer
     public static MinecraftClient client;
     public static Screen screen;
     public static ModConfig config;
+
     public static boolean shouldRender = false;
+    public static String queue;
     KeyBinding configKeybind;
 
     @Override
@@ -65,7 +66,7 @@ public class EMCMod implements ModInitializer
             // Pressed F4 (Config Menu)
             if (configKeybind.wasPressed())
             {
-                screen = ModMenuIntegration.getConfigBuilder().build();
+                screen = ConfigUtils.getConfigBuilder().build();
 
                 client.openScreen(screen);
 		    }
@@ -123,8 +124,7 @@ public class EMCMod implements ModInitializer
                 }
                 else // No advanced positioning, use preset states.
                 {
-                    int townlessLongest;
-                    int nearbyLongest;
+                    int townlessLongest, nearbyLongest;
 
                     townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
                     nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]"));
@@ -133,8 +133,11 @@ public class EMCMod implements ModInitializer
                     {
                         case TOP_MIDDLE:
                         {
-                            if (config.nearby.positionState.equals(ModUtils.State.TOP_MIDDLE)) townlessState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 );
-                            else townlessState.setX(ModUtils.getWindowWidth() / 2 - townlessLongest / 2);
+                            if (config.nearby.positionState.equals(ModUtils.State.TOP_MIDDLE))
+                                townlessState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 );
+                            else
+                                townlessState.setX(ModUtils.getWindowWidth() / 2 - townlessLongest / 2);
+
                             townlessState.setY(16);
                             break;
                         }
@@ -244,8 +247,7 @@ public class EMCMod implements ModInitializer
                 }
                 else
                 {
-                    int nearbyLongest;
-                    int townlessLongest;
+                    int nearbyLongest, townlessLongest;
 
                     nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]"));
                     townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
@@ -254,52 +256,70 @@ public class EMCMod implements ModInitializer
                     {
                         case TOP_MIDDLE:
                         {
-                            if (townlessState.equals(ModUtils.State.TOP_MIDDLE)) nearbyState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 + townlessLongest + 5);
-                            else nearbyState.setX(ModUtils.getWindowWidth() / 2 - nearbyLongest / 2);
+                            if (townlessState.equals(ModUtils.State.TOP_MIDDLE))
+                                nearbyState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 + townlessLongest + 5);
+                            else
+                                nearbyState.setX(ModUtils.getWindowWidth() / 2 - nearbyLongest / 2);
+
                             nearbyState.setY(16);
                             break;
                         }
                         case TOP_RIGHT:
                         {
-                            if (config.townless.positionState.equals(ModUtils.State.TOP_RIGHT)) nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                            else nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
-                            if (client.player != null) {
-                                nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
-                            }
+                            if (config.townless.positionState.equals(ModUtils.State.TOP_RIGHT))
+                                nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                            else
+                                nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
+
+                            if (client.player != null) nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
                             break;
                         }
                         case LEFT:
                         {
-                            if (config.townless.positionState.equals(ModUtils.State.LEFT)) nearbyState.setX(townlessLongest + 10);
-                            else nearbyState.setX(5);
+                            if (config.townless.positionState.equals(ModUtils.State.LEFT))
+                                nearbyState.setX(townlessLongest + 10);
+                            else
+                                nearbyState.setX(5);
+
                             nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
                             break;
                         }
                         case RIGHT:
                         {
-                            if (config.townless.positionState.equals(ModUtils.State.RIGHT)) nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                            else nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
+                            if (config.townless.positionState.equals(ModUtils.State.RIGHT))
+                                nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                            else
+                                nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
+
                             nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
                             break;
                         }
                         case BOTTOM_RIGHT:
                         {
-                            if (config.townless.positionState.equals(ModUtils.State.BOTTOM_RIGHT)) nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                            else nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 15);
+                            if (config.townless.positionState.equals(ModUtils.State.BOTTOM_RIGHT))
+                                nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                            else
+                                nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 15);
+
                             nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
                             break;
                         }
                         case BOTTOM_LEFT:
                         {
-                            if (townlessState.equals(ModUtils.State.BOTTOM_LEFT)) nearbyState.setX(townlessLongest + 15);
-                            else nearbyState.setX(5);
+                            if (townlessState.equals(ModUtils.State.BOTTOM_LEFT))
+                                nearbyState.setX(townlessLongest + 15);
+                            else
+                                nearbyState.setX(5);
+
                             nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
                             break;
                         }
                         default: //Defaults to top left
                         {
                             if (townlessState.equals(ModUtils.State.TOP_LEFT)) nearbyState.setX(townlessLongest + 15);
-                            else nearbyState.setX(5); 
+                            else
+                                nearbyState.setX(5);
+
                             nearbyState.setY(16);
                             break;
                         }
@@ -335,64 +355,52 @@ public class EMCMod implements ModInitializer
             // Town info is enabled and object isn't empty.
             if (config.townInfo.enabled && !townInfo.entrySet().isEmpty())
             {
-                if (!config.townInfo.presetPositions)
-                {
-                    Formatting townInfoHeadingFormatting = Formatting.byName(config.townInfo.headingTextColour);
-                    Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
+                Formatting townInfoHeadingFormatting = Formatting.byName(config.townInfo.headingTextColour);
+                Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
 
-                    // Draw heading.
-                    String townInfoText = new TranslatableText("Town Information - " + clientTownName).formatted(townInfoHeadingFormatting).asFormattedString();
-                    renderer.drawWithShadow(townInfoText, config.townInfo.xPos, config.townInfo.yPos - 5, 16777215);
+                // Draw heading.
+                String townInfoText = new TranslatableText("Town Information - " + clientTownName).formatted(townInfoHeadingFormatting).asFormattedString();
+                renderer.drawWithShadow(townInfoText, config.townInfo.xPos, config.townInfo.yPos - 5, 16777215);
 
-                    // Draw info.
-                    String mayorText = new TranslatableText("Mayor: " + townInfo.get("mayor").getAsString()).formatted(infoTextFormatting).asFormattedString();
-                    if (townInfo.has("mayor")) renderer.drawWithShadow(mayorText, config.townInfo.xPos, config.townInfo.yPos + 10, 16777215);
+                // Draw info.
+                String mayorText = new TranslatableText("Mayor: " + townInfo.get("mayor").getAsString()).formatted(infoTextFormatting).asFormattedString();
+                if (townInfo.has("mayor")) renderer.drawWithShadow(mayorText, config.townInfo.xPos, config.townInfo.yPos + 10, 16777215);
 
-                    String areaText = new TranslatableText("Area/Chunks: " + townInfo.get("area").getAsString()).formatted(infoTextFormatting).asFormattedString();
-                    if (townInfo.has("area")) renderer.drawWithShadow(areaText, config.townInfo.xPos, config.townInfo.yPos + 20, 16777215);
+                String areaText = new TranslatableText("Area/Chunks: " + townInfo.get("area").getAsString()).formatted(infoTextFormatting).asFormattedString();
+                if (townInfo.has("area")) renderer.drawWithShadow(areaText, config.townInfo.xPos, config.townInfo.yPos + 20, 16777215);
 
-                    String residentsText = new TranslatableText("Residents: " + townInfo.get("residents").getAsJsonArray().size()).formatted(infoTextFormatting).asFormattedString();
-                    if (townInfo.has("residents")) renderer.drawWithShadow(residentsText, config.townInfo.xPos, config.townInfo.yPos + 30, 16777215);
+                String residentsText = new TranslatableText("Residents: " + townInfo.get("residents").getAsJsonArray().size()).formatted(infoTextFormatting).asFormattedString();
+                if (townInfo.has("residents")) renderer.drawWithShadow(residentsText, config.townInfo.xPos, config.townInfo.yPos + 30, 16777215);
 
-                    String locationText = new TranslatableText("Location: " + townInfo.get("x").getAsString() + ", " + townInfo.get("z").getAsString()).formatted(infoTextFormatting).asFormattedString();
-                    if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(locationText, config.townInfo.xPos, config.townInfo.yPos + 40, 16777215);
-                }
-                else {
-                    //TODO Add switch case positions
-                }
+                String locationText = new TranslatableText("Location: " + townInfo.get("x").getAsString() + ", " + townInfo.get("z").getAsString()).formatted(infoTextFormatting).asFormattedString();
+                if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(locationText, config.townInfo.xPos, config.townInfo.yPos + 40, 16777215);
             }
 
             // Nation info is enabled and object isn't empty.
             if (config.nationInfo.enabled && !nationInfo.entrySet().isEmpty())
             {
-                if (!config.nationInfo.presetPositions)
-                {
-                    Formatting nationInfoHeadingFormatting = Formatting.byName(config.nationInfo.headingTextColour);
-                    Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
+                Formatting nationInfoHeadingFormatting = Formatting.byName(config.nationInfo.headingTextColour);
+                Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
 
-                    // Draw heading.
-                    String nationInfoText = new TranslatableText("Nation Information - " + clientNationName).formatted(nationInfoHeadingFormatting).asFormattedString();
-                    renderer.drawWithShadow(nationInfoText, config.nationInfo.xPos, config.nationInfo.yPos - 5, 16777215);
+                // Draw heading.
+                String nationInfoText = new TranslatableText("Nation Information - " + clientNationName).formatted(nationInfoHeadingFormatting).asFormattedString();
+                renderer.drawWithShadow(nationInfoText, config.nationInfo.xPos, config.nationInfo.yPos - 5, 16777215);
 
-                    // Draw info.
-                    String kingText = new TranslatableText("King: " + nationInfo.get("king").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
-                    if (nationInfo.has("king")) renderer.drawWithShadow(kingText, config.nationInfo.xPos, config.nationInfo.yPos + 10, 16777215);
+                // Draw info.
+                String kingText = new TranslatableText("King: " + nationInfo.get("king").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("king")) renderer.drawWithShadow(kingText, config.nationInfo.xPos, config.nationInfo.yPos + 10, 16777215);
 
-                    String capitalText = new TranslatableText("Capital: " + nationInfo.get("capitalName").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
-                    if (nationInfo.has("capitalName")) renderer.drawWithShadow(capitalText, config.nationInfo.xPos, config.nationInfo.yPos + 20, 16777215);
+                String capitalText = new TranslatableText("Capital: " + nationInfo.get("capitalName").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("capitalName")) renderer.drawWithShadow(capitalText, config.nationInfo.xPos, config.nationInfo.yPos + 20, 16777215);
 
-                    String areaText = new TranslatableText("Area/Chunks: " + nationInfo.get("area").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
-                    if (nationInfo.has("area")) renderer.drawWithShadow(areaText, config.nationInfo.xPos, config.nationInfo.yPos + 30, 16777215);
+                String areaText = new TranslatableText("Area/Chunks: " + nationInfo.get("area").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("area")) renderer.drawWithShadow(areaText, config.nationInfo.xPos, config.nationInfo.yPos + 30, 16777215);
 
-                    String residentsText = new TranslatableText("Residents: " + nationInfo.get("residents").getAsJsonArray().size()).formatted(nationInfoTextFormatting).asFormattedString();
-                    if (nationInfo.has("residents")) renderer.drawWithShadow(residentsText, config.nationInfo.xPos, config.nationInfo.yPos + 40, 16777215);
+                String residentsText = new TranslatableText("Residents: " + nationInfo.get("residents").getAsJsonArray().size()).formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("residents")) renderer.drawWithShadow(residentsText, config.nationInfo.xPos, config.nationInfo.yPos + 40, 16777215);
 
-                    String townsText = new TranslatableText("Towns: " + nationInfo.get("towns").getAsJsonArray().size()).formatted(nationInfoTextFormatting).asFormattedString();
-                    if (nationInfo.has("towns")) renderer.drawWithShadow(townsText, config.nationInfo.xPos, config.nationInfo.yPos + 50, 16777215);
-                }
-                else{
-                    //TODO Add switch case positions
-                }
+                String townsText = new TranslatableText("Towns: " + nationInfo.get("towns").getAsJsonArray().size()).formatted(nationInfoTextFormatting).asFormattedString();
+                if (nationInfo.has("towns")) renderer.drawWithShadow(townsText, config.nationInfo.xPos, config.nationInfo.yPos + 50, 16777215);
             }
         });
         //#endregion
