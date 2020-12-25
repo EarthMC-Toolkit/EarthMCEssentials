@@ -14,8 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.MutableText;
+import net.minecraft.client.util.InputUtil; 
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
@@ -74,7 +73,7 @@ public class EMCMod implements ModInitializer
         //#endregion
 
         //#region HudRenderCallback
-        HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->
+        HudRenderCallback.EVENT.register(e ->
         {
             if (!config.general.enableMod || !shouldRender) return;
 
@@ -91,10 +90,10 @@ public class EMCMod implements ModInitializer
                     townlessPlayerOffset = config.townless.yPos;
 
                     Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
-                    MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
+                    String townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting).asFormattedString();
 
                     // Draw heading.
-                    renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
+                    renderer.drawWithShadow(townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
 
                     if (townless.size() >= 1)
                     {
@@ -106,16 +105,16 @@ public class EMCMod implements ModInitializer
                             {
                                 if (i >= config.townless.maxLength)
                                 {
-                                    MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
-                                    renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
+                                    String remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting).asFormattedString();
+                                    renderer.drawWithShadow(remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
                                     break;
                                 }
                             }
 
                             final JsonObject currentPlayer = (JsonObject) townless.get(i);
-                            MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
+                            String playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
 
-                            renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
+                            renderer.drawWithShadow(playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
 
                             // Add offset for the next player.
                             townlessPlayerOffset += 10;
@@ -126,8 +125,8 @@ public class EMCMod implements ModInitializer
                 {
                     int townlessLongest;
                     int nearbyLongest;
-                    townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
 
+                    townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
                     nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]"));
 
                     switch(townlessState)
@@ -178,10 +177,10 @@ public class EMCMod implements ModInitializer
                     }
 
                     Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
-                    MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
+                    String townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting).asFormattedString();
 
                     // Draw heading.
-                    renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
+                    renderer.drawWithShadow(townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
 
                     if (townless.size() >= 1)
                     {
@@ -193,16 +192,16 @@ public class EMCMod implements ModInitializer
                             {
                                 if (i >= config.townless.maxLength)
                                 {
-                                    MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
-                                    renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + i*10, 16777215);
+                                    String remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting).asFormattedString();
+                                    renderer.drawWithShadow(remainingText, townlessState.getX(), townlessState.getY() + i*10, 16777215);
                                     break;
                                 }
                             }
 
                             final JsonObject currentPlayer = (JsonObject) townless.get(i);
-                            MutableText playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting);
+                            String playerName = new TranslatableText(currentPlayer.get("name").getAsString()).formatted(playerTextFormatting).asFormattedString();
 
-                            renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + i*10, 16777215);
+                            renderer.drawWithShadow(playerName, townlessState.getX(), townlessState.getY() + i*10, 16777215);
                         }
                     }
                 }
@@ -216,10 +215,10 @@ public class EMCMod implements ModInitializer
                     nearbyPlayerOffset = config.nearby.yPos;
 
                     Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour);
-                    MutableText nearbyText = new TranslatableText("Nearby Players [" + nearby.size() + "]").formatted(nearbyTextFormatting);
+                    String nearbyText = new TranslatableText("Nearby Players [" + nearby.size() + "]").formatted(nearbyTextFormatting).asFormattedString();
 
                     // Draw heading.
-                    renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
+                    renderer.drawWithShadow(nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
 
                     if (nearby.size() >= 1)
                     {
@@ -234,9 +233,9 @@ public class EMCMod implements ModInitializer
                             if (currentPlayer.get("name").getAsString().equals(clientName)) continue;
 
                             Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
-                            MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
+                            String playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting).asFormattedString();
 
-                            renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
+                            renderer.drawWithShadow(playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
 
                             // Add offset for the next player.
                             nearbyPlayerOffset += 10;
@@ -249,7 +248,6 @@ public class EMCMod implements ModInitializer
                     int townlessLongest;
 
                     nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]"));
-
                     townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
 
                     switch(nearbyState)
@@ -308,10 +306,10 @@ public class EMCMod implements ModInitializer
                     }
 
                     Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour);
-                    MutableText nearbyText = new TranslatableText("Nearby Players [" + nearby.size() + "]").formatted(nearbyTextFormatting);
+                    String nearbyText = new TranslatableText("Nearby Players [" + nearby.size() + "]").formatted(nearbyTextFormatting).asFormattedString();
 
                     // Draw heading.
-                    renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);
+                    renderer.drawWithShadow(nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);
 
                     if (nearby.size() >= 1)
                     {
@@ -326,9 +324,9 @@ public class EMCMod implements ModInitializer
                             if (currentPlayer.get("name").getAsString().equals(clientName)) continue;
 
                             Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
-                            MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting);
+                            String playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + playerX + ", " + playerY + ", " + playerZ).formatted(playerTextFormatting).asFormattedString();
 
-                            renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10*i, 16777215);
+                            renderer.drawWithShadow(playerText, nearbyState.getX(), nearbyState.getY() + 10*i, 16777215);
                         }
                     }
                 }
@@ -343,21 +341,21 @@ public class EMCMod implements ModInitializer
                     Formatting infoTextFormatting = Formatting.byName(config.townInfo.infoTextColour);
 
                     // Draw heading.
-                    MutableText townInfoText = new TranslatableText("Town Information - " + clientTownName).formatted(townInfoHeadingFormatting);
-                    renderer.drawWithShadow(matrixStack, townInfoText, config.townInfo.xPos, config.townInfo.yPos - 5, 16777215);
+                    String townInfoText = new TranslatableText("Town Information - " + clientTownName).formatted(townInfoHeadingFormatting).asFormattedString();
+                    renderer.drawWithShadow(townInfoText, config.townInfo.xPos, config.townInfo.yPos - 5, 16777215);
 
                     // Draw info.
-                    MutableText mayorText = new TranslatableText("Mayor: " + townInfo.get("mayor").getAsString()).formatted(infoTextFormatting);
-                    if (townInfo.has("mayor")) renderer.drawWithShadow(matrixStack, mayorText, config.townInfo.xPos, config.townInfo.yPos + 10, 16777215);
+                    String mayorText = new TranslatableText("Mayor: " + townInfo.get("mayor").getAsString()).formatted(infoTextFormatting).asFormattedString();
+                    if (townInfo.has("mayor")) renderer.drawWithShadow(mayorText, config.townInfo.xPos, config.townInfo.yPos + 10, 16777215);
 
-                    MutableText areaText = new TranslatableText("Area/Chunks: " + townInfo.get("area").getAsString()).formatted(infoTextFormatting);
-                    if (townInfo.has("area")) renderer.drawWithShadow(matrixStack, areaText, config.townInfo.xPos, config.townInfo.yPos + 20, 16777215);
+                    String areaText = new TranslatableText("Area/Chunks: " + townInfo.get("area").getAsString()).formatted(infoTextFormatting).asFormattedString();
+                    if (townInfo.has("area")) renderer.drawWithShadow(areaText, config.townInfo.xPos, config.townInfo.yPos + 20, 16777215);
 
-                    MutableText residentsText = new TranslatableText("Residents: " + townInfo.get("residents").getAsJsonArray().size()).formatted(infoTextFormatting);
-                    if (townInfo.has("residents")) renderer.drawWithShadow(matrixStack, residentsText, config.townInfo.xPos, config.townInfo.yPos + 30, 16777215);
+                    String residentsText = new TranslatableText("Residents: " + townInfo.get("residents").getAsJsonArray().size()).formatted(infoTextFormatting).asFormattedString();
+                    if (townInfo.has("residents")) renderer.drawWithShadow(residentsText, config.townInfo.xPos, config.townInfo.yPos + 30, 16777215);
 
-                    MutableText locationText = new TranslatableText("Location: " + townInfo.get("x").getAsString() + ", " + townInfo.get("z").getAsString()).formatted(infoTextFormatting);
-                    if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(matrixStack, locationText, config.townInfo.xPos, config.townInfo.yPos + 40, 16777215);
+                    String locationText = new TranslatableText("Location: " + townInfo.get("x").getAsString() + ", " + townInfo.get("z").getAsString()).formatted(infoTextFormatting).asFormattedString();
+                    if (townInfo.has("x") && townInfo.has("z")) renderer.drawWithShadow(locationText, config.townInfo.xPos, config.townInfo.yPos + 40, 16777215);
                 }
                 else {
                     //TODO Add switch case positions
@@ -373,24 +371,24 @@ public class EMCMod implements ModInitializer
                     Formatting nationInfoTextFormatting = Formatting.byName(config.nationInfo.infoTextColour);
 
                     // Draw heading.
-                    MutableText nationInfoText = new TranslatableText("Nation Information - " + clientNationName).formatted(nationInfoHeadingFormatting);
-                    renderer.drawWithShadow(matrixStack, nationInfoText, config.nationInfo.xPos, config.nationInfo.yPos - 5, 16777215);
+                    String nationInfoText = new TranslatableText("Nation Information - " + clientNationName).formatted(nationInfoHeadingFormatting).asFormattedString();
+                    renderer.drawWithShadow(nationInfoText, config.nationInfo.xPos, config.nationInfo.yPos - 5, 16777215);
 
                     // Draw info.
-                    MutableText kingText = new TranslatableText("King: " + nationInfo.get("king").getAsString()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("king")) renderer.drawWithShadow(matrixStack, kingText, config.nationInfo.xPos, config.nationInfo.yPos + 10, 16777215);
+                    String kingText = new TranslatableText("King: " + nationInfo.get("king").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
+                    if (nationInfo.has("king")) renderer.drawWithShadow(kingText, config.nationInfo.xPos, config.nationInfo.yPos + 10, 16777215);
 
-                    MutableText capitalText = new TranslatableText("Capital: " + nationInfo.get("capitalName").getAsString()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("capitalName")) renderer.drawWithShadow(matrixStack, capitalText, config.nationInfo.xPos, config.nationInfo.yPos + 20, 16777215);
+                    String capitalText = new TranslatableText("Capital: " + nationInfo.get("capitalName").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
+                    if (nationInfo.has("capitalName")) renderer.drawWithShadow(capitalText, config.nationInfo.xPos, config.nationInfo.yPos + 20, 16777215);
 
-                    MutableText areaText = new TranslatableText("Area/Chunks: " + nationInfo.get("area").getAsString()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("area")) renderer.drawWithShadow(matrixStack, areaText, config.nationInfo.xPos, config.nationInfo.yPos + 30, 16777215);
+                    String areaText = new TranslatableText("Area/Chunks: " + nationInfo.get("area").getAsString()).formatted(nationInfoTextFormatting).asFormattedString();
+                    if (nationInfo.has("area")) renderer.drawWithShadow(areaText, config.nationInfo.xPos, config.nationInfo.yPos + 30, 16777215);
 
-                    MutableText residentsText = new TranslatableText("Residents: " + nationInfo.get("residents").getAsJsonArray().size()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("residents")) renderer.drawWithShadow(matrixStack, residentsText, config.nationInfo.xPos, config.nationInfo.yPos + 40, 16777215);
+                    String residentsText = new TranslatableText("Residents: " + nationInfo.get("residents").getAsJsonArray().size()).formatted(nationInfoTextFormatting).asFormattedString();
+                    if (nationInfo.has("residents")) renderer.drawWithShadow(residentsText, config.nationInfo.xPos, config.nationInfo.yPos + 40, 16777215);
 
-                    MutableText townsText = new TranslatableText("Towns: " + nationInfo.get("towns").getAsJsonArray().size()).formatted(nationInfoTextFormatting);
-                    if (nationInfo.has("towns")) renderer.drawWithShadow(matrixStack, townsText, config.nationInfo.xPos, config.nationInfo.yPos + 50, 16777215);
+                    String townsText = new TranslatableText("Towns: " + nationInfo.get("towns").getAsJsonArray().size()).formatted(nationInfoTextFormatting).asFormattedString();
+                    if (nationInfo.has("towns")) renderer.drawWithShadow(townsText, config.nationInfo.xPos, config.nationInfo.yPos + 50, 16777215);
                 }
                 else{
                     //TODO Add switch case positions
