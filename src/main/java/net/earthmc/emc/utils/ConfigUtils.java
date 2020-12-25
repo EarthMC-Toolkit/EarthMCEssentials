@@ -190,14 +190,14 @@ public class ConfigUtils
                 .build());
 
         // Town Information Horizontal Position
-        townInfo.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townInfo.xPos, 1, 1000)
+        townInfo.addEntry(entryBuilder.startIntField(new TranslatableText("Horizontal Position (X)"), EMCMod.config.townInfo.xPos)
                 .setDefaultValue(15)
                 .setTooltip(new TranslatableText("The horizontal position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.xPos = newValue)
                 .build());
 
         // Town Information Vertical Position
-        townInfo.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townInfo.yPos, 16, 1000)
+        townInfo.addEntry(entryBuilder.startIntField(new TranslatableText("Vertical Position (Y)"), EMCMod.config.townInfo.yPos)
                 .setDefaultValue(275)
                 .setTooltip(new TranslatableText("The vertical position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.townInfo.yPos = newValue)
@@ -225,14 +225,14 @@ public class ConfigUtils
                 .build());
 
         // Nation Information Horizontal Position
-        nationInfo.addEntry(entryBuilder.startIntSlider(new TranslatableText("Horizontal Position (X)"), EMCMod.config.nationInfo.xPos, 1, 1000)
+        nationInfo.addEntry(entryBuilder.startIntField(new TranslatableText("Horizontal Position (X)"), EMCMod.config.nationInfo.xPos)
                 .setDefaultValue(15)
                 .setTooltip(new TranslatableText("The horizontal position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.xPos = newValue)
                 .build());
 
         // Nation Information Vertical Position
-        nationInfo.addEntry(entryBuilder.startIntSlider(new TranslatableText("Vertical Position (Y)"), EMCMod.config.nationInfo.yPos, 16, 1000)
+        nationInfo.addEntry(entryBuilder.startIntField(new TranslatableText("Vertical Position (Y)"), EMCMod.config.nationInfo.yPos)
                 .setDefaultValue(375)
                 .setTooltip(new TranslatableText("The vertical position on the HUD."))
                 .setSaveConsumer(newValue -> EMCMod.config.nationInfo.yPos = newValue)
