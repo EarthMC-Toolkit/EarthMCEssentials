@@ -3,6 +3,8 @@ package net.earthmc.emc.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import net.earthmc.emc.EMCMod;
 import net.earthmc.emc.ModConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -87,7 +89,13 @@ public class EmcApi
 
                     // Using the JSON simple library parse the string into a json object
                     final JsonParser parse = new JsonParser();
-                    return (JsonArray) parse.parse(inline.toString());
+                    JsonArray array = (JsonArray) parse.parse(inline.toString());
+
+                    for (int i = 0; i < array.size(); i++) {
+                        JsonObject currentObj = (JsonObject) array.get(i);
+                        if (currentObj.get("name").getAsString().equals(EMCMod.clientName)) array.remove(i);
+                    }
+                    return array;
                 }
             }
         }
