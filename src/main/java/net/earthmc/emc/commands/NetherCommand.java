@@ -17,10 +17,10 @@ public class NetherCommand
         dispatcher.register(
         ArgumentBuilders.literal("nether").then(
             ArgumentBuilders.argument("x", IntegerArgumentType.integer()).then(
-                ArgumentBuilders.argument("y", IntegerArgumentType.integer()).executes(c -> {
+                ArgumentBuilders.argument("z", IntegerArgumentType.integer()).executes(c -> {
 
                 int x = IntegerArgumentType.getInteger(c, "x");
-                int z = IntegerArgumentType.getInteger(c, "y");
+                int z = IntegerArgumentType.getInteger(c, "z");
                 c.getSource().sendFeedback(new TranslatableText("EMCE > Nether coordinates for " + x + ", " + z + ": " + x / 8 + ", " + z / 8).formatted(Formatting.byName("AQUA")));
                 return Command.SINGLE_SUCCESS;
 
