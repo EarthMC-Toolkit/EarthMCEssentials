@@ -11,11 +11,11 @@ version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
 repositories {
+	jcenter()
 	maven {
         name = 'CottonMC'
         url = 'https://server.bbkr.space/artifactory/libs-release'
     }
-	jcenter()
 }
 
 dependencies {
@@ -26,10 +26,10 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "io.github.prospector:modmenu:1.14.13+build.19"
-	modImplementation "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
+	modImplementation "io.github.prospector:modmenu:1.10.2+build.32"
+	modImplementation "io.github.cottonmc:cotton-client-commands:1.0.0+1.15.2"
 
-	modApi("me.shedaniel.cloth:config-2:4.8.3") {
+	modApi("me.shedaniel.cloth:config-2:2.13.4") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
