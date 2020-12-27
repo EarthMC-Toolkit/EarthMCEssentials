@@ -1,10 +1,7 @@
 package net.earthmc.emc.utils;
 
-import java.net.InetSocketAddress;
-import java.util.Collection;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import net.earthmc.emc.EMCMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -12,6 +9,9 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.network.ClientConnection;
+
+import java.net.InetSocketAddress;
+import java.util.Collection;
 
 public class ModUtils
 {
@@ -57,7 +57,7 @@ public class ModUtils
         MinecraftClient client = MinecraftClient.getInstance();
         TextRenderer renderer = client.textRenderer;    
 
-        return renderer.getStringWidth(string);
+        return renderer.getWidth(string);
     }
 
     public static int getStringHeight(String string)
@@ -166,32 +166,48 @@ public class ModUtils
         return offset;
     }
 
-    public static String getServerName() {
-
+    public static String getServerName()
+    {
         String serverName = "";
-        try {
 
+        try
+        {
             ServerInfo serverInfo = EMCMod.client.getCurrentServerEntry();
-            if (serverInfo != null) {
-                if (serverInfo.isLocal()) {
+
+            if (serverInfo != null)
+            {
+                if (serverInfo.isLocal())
                     serverName = serverInfo.name;
-                } else {
+                else
                     serverName = serverInfo.address;
-                }
-            } else if (EMCMod.client.isConnectedToRealms()) {
-                serverName = "Realms";
-            } else if (EMCMod.client.isInSingleplayer()) {
-                serverName = "Singleplayer";
-            } else {
-                ClientPlayNetworkHandler clientPlayNetworkHandler = EMCMod.client.getNetworkHandler();
-                ClientConnection clientConnection = clientPlayNetworkHandler.getConnection();
-                InetSocketAddress socketAddress = (InetSocketAddress) clientConnection.getAddress();
-                serverName = socketAddress.getHostName();
             }
-        } catch (Exception exception) {
+            else if (EMCMod.client.isConnectedToRealms())
+                serverName = "Realms";
+            else if (EMCMod.client.isInSingleplayer())
+                serverName = "Singleplayer";
+            else
+            {
+                ClientPlayNetworkHandler clientPlayNetworkHandler = EMCMod.client.getNetworkHandler();
+                ClientConnection clientConnection = null;
+
+                if (clientPlayNetworkHandler != null) {
+                    clientConnection = clientPlayNetworkHandler.getConnection();
+                }
+
+                InetSocketAddress socketAddress;
+
+                if (clientConnection != null) {
+                    socketAddress = (InetSocketAddress) clientConnection.getAddress();
+                    serverName = socketAddress.getHostName();
+                }
+            }
+        }
+        catch (Exception exception)
+        {
             System.out.println("EMC Essentials: Error getting serverName");
             exception.printStackTrace();
         }
+
         return serverName;
     }
 }
