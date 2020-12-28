@@ -334,13 +334,11 @@ public class EMCMod implements ModInitializer
                         default: // Defaults to top left
                         {
                             if (townlessState.equals(ModUtils.State.TOP_LEFT))
-                            {
                                 nearbyState.setX(townlessLongest + 15);
-                            }
-                            else {
+                            else
                                 nearbyState.setX(5);
-                                nearbyState.setY(16);
-                            }
+                            
+                            nearbyState.setY(16);
 
                             break;
                         }
