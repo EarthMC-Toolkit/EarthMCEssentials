@@ -337,7 +337,7 @@ public class EMCMod implements ModInitializer
                                 nearbyState.setX(townlessLongest + 15);
                             else
                                 nearbyState.setX(5);
-                            
+
                             nearbyState.setY(16);
 
                             break;

@@ -16,6 +16,86 @@ import java.util.Scanner;
 @SuppressWarnings("ThrowablePrintedToSystemOut")
 public class EmcApi
 {
+    public static JsonObject getMapData()
+    {
+        try
+        {
+            final URL url = new URL("https://earthmc.net/map/tiles/_markers_/marker_earth.json");
+
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            // Getting the response code
+            final int responsecode = conn.getResponseCode();
+
+            if (responsecode == 200)
+            {
+                StringBuilder inline = new StringBuilder();
+                final Scanner scanner = new Scanner(url.openStream());
+
+                // Write all the JSON data into a string using a scanner
+                while (scanner.hasNext())
+                {
+                    inline.append(scanner.nextLine());
+                }
+
+                // Close the scanner
+                scanner.close();
+
+                // Using the JSON simple library parse the string into a json object
+                final JsonParser parse = new JsonParser();
+                return (JsonObject) parse.parse(inline.toString());
+            }
+        }
+        catch (final Exception exc)
+        {
+            return new JsonObject();
+        }
+
+        return new JsonObject();
+    }
+
+    public static JsonObject getPlayerData()
+    {
+        try
+        {
+            final URL url = new URL("https://earthmc.net/map/up/world/earth/");
+
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            // Getting the response code
+            final int responsecode = conn.getResponseCode();
+
+            if (responsecode == 200)
+            {
+                StringBuilder inline = new StringBuilder();
+                final Scanner scanner = new Scanner(url.openStream());
+
+                // Write all the JSON data into a string using a scanner
+                while (scanner.hasNext())
+                {
+                    inline.append(scanner.nextLine());
+                }
+
+                // Close the scanner
+                scanner.close();
+
+                // Using the JSON simple library parse the string into a json object
+                final JsonParser parse = new JsonParser();
+                return (JsonObject) parse.parse(inline.toString());
+            }
+        }
+        catch (final Exception exc)
+        {
+            return new JsonObject();
+        }
+
+        return new JsonObject();
+    }
+
     public static JsonArray getTownless()
     {
         try
@@ -307,6 +387,7 @@ public class EmcApi
             exception.printStackTrace();
             return new JsonObject();
         }
+
         return new JsonObject();
     }
 }
