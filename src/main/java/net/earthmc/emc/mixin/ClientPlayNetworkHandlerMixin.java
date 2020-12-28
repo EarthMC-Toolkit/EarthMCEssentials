@@ -7,28 +7,31 @@ import net.earthmc.emc.utils.EmcApi;
 import net.earthmc.emc.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin
 {
+    String serverName;
+
     @Inject(at = @At("TAIL"), method="onGameJoin")
     private void onGameJoin(CallbackInfo info)
     {
         EMCMod.client = MinecraftClient.getInstance();
-        
-        String serverName = ModUtils.getServerName();
-        if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
-        else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
-        else if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
-        else EMCMod.shouldRender = false;
+
+        serverName = ModUtils.getServerName();
+
+        if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly)
+            EMCMod.shouldRender = true;
+        else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly)
+            EMCMod.shouldRender = true;
+        else EMCMod.shouldRender = serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly;
 
         if (EMCMod.client.player != null) EMCMod.clientName = EMCMod.client.player.getName().asString();
 
@@ -81,14 +84,16 @@ public class ClientPlayNetworkHandlerMixin
             public void run()
             {
                 if (!EMCMod.config.general.enableMod && EMCMod.nearby.size() == 0) return;
-                
                 if (EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
 
-                String serverName = ModUtils.getServerName();
-                if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true; //Uses endsWith because EMC has 2 valid ip's (earthmc.net & play.earthmc.net)
-                else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
-                else if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly) EMCMod.shouldRender = true;
-                else EMCMod.shouldRender = false;
+                serverName = ModUtils.getServerName();
+
+                // Uses endsWith because EMC has 2 valid IPs (earthmc.net & play.earthmc.net)
+                if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly)
+                    EMCMod.shouldRender = true;
+                else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly)
+                    EMCMod.shouldRender = true;
+                else EMCMod.shouldRender = serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly;
 
                 JsonObject serverInfo = EmcApi.getServerInfo();
                 if (serverInfo.get("serverOnline").getAsBoolean()) EMCMod.queue = serverInfo.get("queue").getAsString();
