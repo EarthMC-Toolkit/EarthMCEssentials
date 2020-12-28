@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import net.earthmc.emc.EMCMod;
 import net.earthmc.emc.utils.ConfigUtils;
 import net.earthmc.emc.utils.EmcApi;
-import net.earthmc.emc.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,21 +17,10 @@ import java.util.TimerTask;
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin
 {
-    String serverName;
-
     @Inject(at = @At("TAIL"), method="onGameJoin")
     private void onGameJoin(CallbackInfo info)
     {
         EMCMod.client = MinecraftClient.getInstance();
-
-        serverName = ModUtils.getServerName();
-
-        if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly)
-            EMCMod.shouldRender = true;
-        else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly)
-            EMCMod.shouldRender = true;
-        else EMCMod.shouldRender = serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly;
-
         if (EMCMod.client.player != null) EMCMod.clientName = EMCMod.client.player.getName().asString();
 
         ConfigUtils.serializeConfig(EMCMod.config);
@@ -86,17 +74,8 @@ public class ClientPlayNetworkHandlerMixin
                 if (!EMCMod.config.general.enableMod && EMCMod.nearby.size() == 0) return;
                 if (EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
 
-                serverName = ModUtils.getServerName();
-
-                // Uses endsWith because EMC has 2 valid IPs (earthmc.net & play.earthmc.net)
-                if (serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly)
-                    EMCMod.shouldRender = true;
-                else if (!serverName.endsWith("earthmc.net") && !EMCMod.config.general.emcOnly)
-                    EMCMod.shouldRender = true;
-                else EMCMod.shouldRender = serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly;
-
                 JsonObject serverInfo = EmcApi.getServerInfo();
-                if (serverInfo.get("serverOnline").getAsBoolean()) EMCMod.queue = serverInfo.get("queue").getAsString();
+                if (serverInfo != null && serverInfo.get("serverOnline").getAsBoolean()) EMCMod.queue = serverInfo.get("queue").getAsString();
             }
         }, 0, 10 * 1000);
         // #endregion
