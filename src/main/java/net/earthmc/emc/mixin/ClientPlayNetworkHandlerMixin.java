@@ -75,7 +75,7 @@ public class ClientPlayNetworkHandlerMixin
                 JsonObject serverInfo = EmcApi.getServerInfo();
                 JsonElement serverOnline = serverInfo.get("serverOnline");
 
-                if (serverInfo != null && serverOnline != null && serverOnline.getAsBoolean()) EMCMod.queue = serverInfo.get("queue").getAsString();
+                if (serverOnline != null && serverOnline.getAsBoolean()) EMCMod.queue = serverInfo.get("queue").getAsString();
             }
         }, 0, 10 * 1000);
         // #endregion
