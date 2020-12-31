@@ -16,7 +16,7 @@ public class ConfigUtils
 
     public static void serializeConfig(ModConfig config)
     {
-        try 
+        try
         {
             ((ConfigManager<ModConfig>) AutoConfig.getConfigHolder(ModConfig.class)).getSerializer().serialize(config);
         } catch (ConfigSerializer.SerializationException serializeException) {

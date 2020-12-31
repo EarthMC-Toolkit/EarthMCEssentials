@@ -166,6 +166,19 @@ public class ModUtils
         return offset;
     }
 
+    public static boolean shouldRender()
+    {
+        String serverName = getServerName();
+
+        // Uses endsWith because EMC has 2 valid IPs (earthmc.net & play.earthmc.net)
+        if (!serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly)
+            return false;
+        else if ((serverName.equals("Singleplayer") || serverName.equals("Realms")) && EMCMod.config.general.emcOnly)
+            return false;
+
+        return true;
+    }
+
     public static String getServerName()
     {
         String serverName = "";

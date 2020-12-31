@@ -1,8 +1,8 @@
 package net.earthmc.emc.mixin;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.earthmc.emc.EMCMod;
-import net.earthmc.emc.utils.ConfigUtils;
 import net.earthmc.emc.utils.EmcApi;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -22,8 +22,6 @@ public class ClientPlayNetworkHandlerMixin
     {
         EMCMod.client = MinecraftClient.getInstance();
         if (EMCMod.client.player != null) EMCMod.clientName = EMCMod.client.player.getName().asString();
-
-        ConfigUtils.serializeConfig(EMCMod.config);
 
         // Return if timers are already running.
         if (EMCMod.timersActivated) return;
@@ -75,7 +73,9 @@ public class ClientPlayNetworkHandlerMixin
                 if (EMCMod.config.nearby.enabled) EMCMod.nearby = EmcApi.getNearby(EMCMod.config);
 
                 JsonObject serverInfo = EmcApi.getServerInfo();
-                if (serverInfo != null && serverInfo.get("serverOnline").getAsBoolean()) EMCMod.queue = serverInfo.get("queue").getAsString();
+                JsonElement serverOnline = serverInfo.get("serverOnline");
+
+                if (serverInfo != null && serverOnline != null && serverOnline.getAsBoolean()) EMCMod.queue = serverInfo.get("queue").getAsString();
             }
         }, 0, 10 * 1000);
         // #endregion
