@@ -1,5 +1,6 @@
 package net.earthmc.emc.mixin;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.earthmc.emc.EMCMod;
@@ -40,27 +41,20 @@ public class ClientPlayNetworkHandlerMixin
                 
                 if (EMCMod.config.townless.enabled) EMCMod.townless = EmcApi.getTownless();
 
+                JsonArray nations = EmcApi.getNations();
+                JsonArray towns = EmcApi.getTowns();
                 JsonObject resident = EmcApi.getResident(EMCMod.clientName);
 
-                // Resident exists
-                if (resident.has("name"))
-                {
-                    if (EMCMod.config.townInfo.enabled)
-                    {
-                        EMCMod.clientTownName = resident.get("town").getAsString();
-                        JsonObject town = EmcApi.getTown(EMCMod.clientTownName);
-
-                        if (!town.entrySet().isEmpty()) EMCMod.townInfo = town;
-                    }
-                        
-                    if (EMCMod.config.nationInfo.enabled)
-                    {
-                        EMCMod.clientNationName = resident.get("nation").getAsString();
-                        JsonObject nation = EmcApi.getNation(EMCMod.clientNationName);
-
-                        if (!nation.entrySet().isEmpty()) EMCMod.nationInfo = nation;
-                    }
+                if (resident.has("name")) {
+                    EMCMod.clientNationName = resident.get("nation").getAsString();
+                    EMCMod.clientTownName = resident.get("town").getAsString();
                 }
+
+                if (nations.size() != 0) 
+                    EMCMod.allNations = nations;
+
+                if (towns.size() != 0) 
+                    EMCMod.allTowns = towns;
             }
         }, 0, 2 * 60 * 1000);
 
