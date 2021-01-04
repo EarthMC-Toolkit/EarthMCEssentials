@@ -9,6 +9,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.text.MutableText;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -59,6 +60,13 @@ public class ModUtils
 
         return renderer.getWidth(string);
     }
+    public static int getTextWidth(MutableText text)
+    {
+        MinecraftClient client = MinecraftClient.getInstance();
+        TextRenderer renderer = client.textRenderer;    
+
+        return renderer.getWidth(text);
+    }
 
     public static int getStringHeight(String string)
     {
@@ -89,7 +97,7 @@ public class ModUtils
         {
             JsonObject currentObj = (JsonObject) array.get(i);
             int currentWidth = getStringWidth(currentObj.get("name").getAsString());
-            if (currentWidth > longestElement) longestElement = currentWidth;
+            longestElement = Math.max(currentWidth, longestElement);
         }
 
         return longestElement;
