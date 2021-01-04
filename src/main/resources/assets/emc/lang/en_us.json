@@ -14,17 +14,21 @@
     "msg_townless_permissions": "§6EMCE §7> Note: You still need permissions to invite players to your town.",
 
     "msg_queue_err": "§6EMCE §7> §cCouldn't fetch queue size, try again later.",
-    "msg_queue_success": "§6EMCE §7> §bCurrent queue size: %d",
+    "msg_queue_success": "§6EMCE §6EMCE §7> 7> §bCurrent queue size: %d",
 
     "text_towninfo_header": "Town Information - %s",
     "text_towninfo_mayor": "Mayor: %s",
     "text_towninfo_area": "Area/Chunks: %s",
-    "text_towninfo_residents": "Residents: %s",
     "text_towninfo_location": "Location: %s, %s",
+    "text_towninfo_err": "§6EMCE §7> §cTown %s is not registered.",
 
     "text_nationinfo_header": "Nation Information - %s",
     "text_nationinfo_king": "King: %s",
     "text_nationinfo_capital": "Capital: %s",
-    "text_nationinfo_residents": "Residents: %s",
-    "text_nationinfo_towns": "Towns: %s"
+    "text_nationinfo_area": "Area: %s",
+    "text_nationinfo_towns": "Towns: %s",
+    "text_nationinfo_err": "§6EMCE §7> §cNation %s is not registered.",
+
+    "text_shared_residents": "Residents: %d",
+    "text_shared_notregistered": "§6EMCE §7> §cResident %s is not registered."
 }
