@@ -48,8 +48,7 @@ public class EmcApi
                 return (JsonObject) parse.parse(inline.toString());
             }
         }
-        catch (final Exception exc)
-        {
+        catch (Exception ignore) {
             return new JsonObject();
         }
 
@@ -88,8 +87,7 @@ public class EmcApi
                 return (JsonObject) parse.parse(inline.toString());
             }
         }
-        catch (final Exception exc)
-        {
+        catch (Exception ignore) {
             return new JsonObject();
         }
 
@@ -128,8 +126,7 @@ public class EmcApi
                 return (JsonArray) parse.parse(inline.toString());
             }
         }
-        catch (final Exception exc)
-        {
+        catch (Exception ignore) {
             return new JsonArray();
         }
 
@@ -179,8 +176,7 @@ public class EmcApi
                 }
             }
         }
-        catch (final Exception exc)
-        {
+        catch (Exception ignore) {
             return new JsonArray();
         }
 
@@ -219,8 +215,7 @@ public class EmcApi
                 return (JsonObject) parse.parse(inline.toString());
             }
         }
-        catch (final Exception exc)
-        {
+        catch (Exception ignore) {
             return new JsonObject();
         }
 
@@ -259,9 +254,7 @@ public class EmcApi
                 return (JsonObject) parse.parse(inline.toString());
             }
         }
-        catch (final Exception e)
-        {
-            System.out.println(e);
+        catch (Exception ignore) {
             return new JsonObject();
         }
 
@@ -300,9 +293,7 @@ public class EmcApi
                 return (JsonObject) parse.parse(inline.toString());
             }
         }
-        catch (final Exception e)
-        {
-            System.out.println(e);
+        catch (Exception ignore) {
             return new JsonObject();
         }
 
@@ -341,9 +332,8 @@ public class EmcApi
                 return (JsonArray) parse.parse(inline.toString());
             }
         }
-        catch (final Exception e)
+        catch (Exception ignore)
         {
-            System.out.println(e);
             return new JsonArray();
         }
 
@@ -382,12 +372,35 @@ public class EmcApi
                 return (JsonObject) parse.parse(inline.toString());
             }
         }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
+        catch (Exception ignore) {
             return new JsonObject();
-        }
-
+        } 
         return new JsonObject();
+    }
+
+    public static JsonArray getNations() {
+        try {
+            final URL url = new URL("http://earthmc-api.herokuapp.com/nations/");
+
+            final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            if (conn.getResponseCode() == 200) {
+                StringBuilder inline = new StringBuilder();
+                final Scanner scanner = new Scanner(url.openStream());
+
+                while (scanner.hasNext()) 
+                    inline.append(scanner.nextLine());
+
+                scanner.close();
+
+                final JsonParser parse = new JsonParser();
+                return (JsonArray) parse.parse(inline.toString());
+            }
+        } catch (Exception ignore) {
+            return new JsonArray();
+        }
+        return new JsonArray();
     }
 }
