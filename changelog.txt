@@ -28,3 +28,9 @@ Version 1.1.0: (26 December 2020)
 - Added client side commands. E.g. /townless, /nether etc.
 - Added EMC-only config option
 - Much more bug fixes, small changes and general optimization.
+
+Version 1.1.1 (Unknown)
+- Renamed the Queue command to queuesize since EMC uses /queue already.
+- Null check in the queue command.
+- Added language file support
+- Added formatting to command outputs.
