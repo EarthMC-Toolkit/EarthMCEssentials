@@ -90,7 +90,7 @@ public class EMCMod implements ModInitializer
                     townlessPlayerOffset = config.townless.yPos;
 
                     Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
-                    MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
+                    MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
 
                     // Draw heading.
                     renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
@@ -105,7 +105,7 @@ public class EMCMod implements ModInitializer
                             {
                                 if (i >= config.townless.maxLength)
                                 {
-                                    MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
+                                    MutableText remainingText = new TranslatableText("text_townless_remaining", townless.size()-1).formatted(playerTextFormatting);
                                     renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
                                     break;
                                 }
@@ -125,8 +125,8 @@ public class EMCMod implements ModInitializer
                 {
                     int townlessLongest, nearbyLongest;
 
-                    townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
-                    nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]"));
+                    townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
+                    nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
 
                     switch(townlessState)
                     {
@@ -179,7 +179,7 @@ public class EMCMod implements ModInitializer
                     }
 
                     Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
-                    MutableText townlessText = new TranslatableText("Townless Players [" + townless.size() + "]").formatted(townlessTextFormatting);
+                    MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
 
                     // Draw heading.
                     renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
@@ -194,7 +194,7 @@ public class EMCMod implements ModInitializer
                             {
                                 if (i >= config.townless.maxLength)
                                 {
-                                    MutableText remainingText = new TranslatableText("And " + (townless.size()-i) + " more...").formatted(playerTextFormatting);
+                                    MutableText remainingText = new TranslatableText("text_townless_remaining", townless.size()-1).formatted(playerTextFormatting);
                                     renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + i*10, 16777215);
                                     break;
                                 }
@@ -217,7 +217,7 @@ public class EMCMod implements ModInitializer
                     nearbyPlayerOffset = config.nearby.yPos;
 
                     Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour);
-                    MutableText nearbyText = new TranslatableText("Nearby Players [" + nearby.size() + "]").formatted(nearbyTextFormatting);
+                    MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
 
                     // Draw heading.
                     renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
@@ -248,8 +248,8 @@ public class EMCMod implements ModInitializer
                 {
                     int nearbyLongest, townlessLongest;
 
-                    nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getStringWidth("Nearby Players [" + nearby.size() + "]"));
-                    townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getStringWidth("Townless Players [" + townless.size() + "]"));
+                    nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(nearby), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
+                    townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
 
                     switch(nearbyState)
                     {
@@ -344,7 +344,7 @@ public class EMCMod implements ModInitializer
                     }
 
                     Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour);
-                    MutableText nearbyText = new TranslatableText("Nearby Players [" + nearby.size() + "]").formatted(nearbyTextFormatting);
+                    MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
 
                     // Draw heading.
                     renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);

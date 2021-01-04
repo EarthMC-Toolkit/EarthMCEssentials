@@ -31,11 +31,10 @@ public class TownlessCommand
                 }
 
                 if (townlessString.length() != 0) {
-                    source.getSource().sendFeedback(new TranslatableText("Townless Players [" + townless.size() + "]").formatted(headingFormatting));
+                    source.getSource().sendFeedback(new TranslatableText("text_townless_header", townless.size()).formatted(headingFormatting));
                     source.getSource().sendFeedback(new TranslatableText(townlessString.toString()).formatted(playerNameFormatting));
-                } else {
-                    source.getSource().sendFeedback(new TranslatableText("There don't seem to be any townless players online at the moment.").formatted(Formatting.byName("RED")));
-                }
+                } else 
+                    source.getSource().sendFeedback(new TranslatableText("msg_townless_none"));
                 
                 return Command.SINGLE_SUCCESS;
             }
@@ -57,8 +56,8 @@ public class TownlessCommand
                     EMCMod.client.player.sendChatMessage("/towny:town invite " + townlessString);
                 }
 
-                source.getSource().sendFeedback(new TranslatableText("EMCE > Invites sent!").formatted(Formatting.byName("AQUA")));
-                source.getSource().sendFeedback(new TranslatableText("EMCE > Note: You still need permissions to invite players to your town.").formatted(Formatting.byName("RED")));
+                source.getSource().sendFeedback(new TranslatableText("msg_townless_sent"));
+                source.getSource().sendFeedback(new TranslatableText("msg_townless_permissions"));
                 return Command.SINGLE_SUCCESS;
             }
         )));

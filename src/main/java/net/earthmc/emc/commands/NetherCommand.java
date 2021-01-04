@@ -21,12 +21,12 @@ public class NetherCommand
 
                 int x = IntegerArgumentType.getInteger(c, "x");
                 int z = IntegerArgumentType.getInteger(c, "z");
-                c.getSource().sendFeedback(new TranslatableText("EMCE > Nether coordinates for " + x + ", " + z + ": " + x / 8 + ", " + z / 8).formatted(Formatting.byName("AQUA")));
+                c.getSource().sendFeedback(new TranslatableText("msg_nether_success", x/8, z/8).formatted(Formatting.GOLD));
                 return Command.SINGLE_SUCCESS;
 
             })
         ).executes(c -> {
-            c.getSource().sendFeedback(new TranslatableText("EMCE > Not enough arguments! (x + z)").formatted(Formatting.byName("RED")));
+            c.getSource().sendFeedback(new TranslatableText("msg_nether_err_args"));
             return Command.SINGLE_SUCCESS;
         })).executes(c ->
         {
@@ -38,12 +38,11 @@ public class NetherCommand
                 x = (int) EMCMod.client.player.getX();
                 z = (int) EMCMod.client.player.getZ();
 
-                // TODO: figure out a way to use formatting codes for colors.
-                c.getSource().sendFeedback(new TranslatableText("EMCE > No coordinates specified, using your own instead.").formatted(Formatting.byName("RED")));
-                c.getSource().sendFeedback(new TranslatableText("EMCE > Nether coordinates for " + x + ", " + z + ": " + x / 8 + ", " + z / 8).formatted(Formatting.byName("AQUA")));
+                c.getSource().sendFeedback(new TranslatableText("msg_nether_owncoords"));
+                c.getSource().sendFeedback(new TranslatableText("msg_nether_success", x/8, z/8).formatted(Formatting.GOLD));
             }
             else {
-                c.getSource().sendFeedback(new TranslatableText("EMCE > Unable to use your own coordiantes! This is rare.").formatted(Formatting.byName("RED")));
+                c.getSource().sendFeedback(new TranslatableText("msg_nether_err_null"));
             }
 
             return Command.SINGLE_SUCCESS;

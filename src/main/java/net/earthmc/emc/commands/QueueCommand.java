@@ -11,12 +11,11 @@ import net.minecraft.util.Formatting;
 
 public class QueueCommand {
     public static void register(CommandDispatcher<CottonClientCommandSource> dispatcher) {
-        dispatcher.register(ArgumentBuilders.literal("queue").executes(source ->
-        {
+        dispatcher.register(ArgumentBuilders.literal("queuesize").executes(source -> {
             if (EMCMod.queue == null)
-                source.getSource().sendFeedback(new TranslatableText("EMCE > Couldn't fetch queue size, there may be an issue with the API." + EMCMod.queue).formatted(Formatting.byName("RED")));
+                source.getSource().sendFeedback(new TranslatableText("msg_queue_err"));
             else
-                source.getSource().sendFeedback(new TranslatableText("EMCE > Current queue size: " + EMCMod.queue).formatted(Formatting.byName("AQUA")));
+                source.getSource().sendFeedback(new TranslatableText("msg_queue_success", EMCMod.queue).formatted(Formatting.GOLD));
 
             return Command.SINGLE_SUCCESS;
         }));
