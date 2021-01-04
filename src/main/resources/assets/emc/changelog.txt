@@ -1,0 +1,37 @@
+Version 1.0.0: (1 September 2020)
+- Toggles moved to general.
+- Townless colours can now be changed.
+
+Version 1.0.1: (5 September 2020)
+- Edited nearby hud and added it's config entries.
+
+Version 1.0.2 (6 September 2020)
+- Put the timers in onGameJoin instead of onInitialize.
+- Fixed some bugs with default values in nearby.
+
+Version 1.0.3: (9 October 2020)
+- Added changelog.txt.
+- Able to disable townless coordinates.
+- Tweaked sliders and default settings.
+- Changed the icon so it's no longer the EMC Stats one.
+
+Version 1.0.4: (28 October 2020)
+- Info about the client's town and nation will be displayed on screen.
+- Added 'Town Info' and 'Nation Info' to the config menu.
+- Mod Menu is now REQUIRED (see README.md).
+- Changed all instances of LiteralText to TranslatableText.
+- Class properties within ModConfig now have better naming schemes.
+- Lots of bug fixes/optimization.
+
+Version 1.1.0: (26 December 2020)
+- Each overlay now has a preset positions option in the config.
+- Added client side commands. E.g. /townless, /nether etc.
+- Added EMC-only config option
+- Much more bug fixes, small changes and general optimization.
+
+Version 1.2.0 (Unknown)
+- Renamed the Queue command to queuesize since EMC uses /queue already.
+- Null check in the queue command.
+- Added language file support
+- Added formatting to command outputs.
+- Nation info and Town info have been changed into commands.
