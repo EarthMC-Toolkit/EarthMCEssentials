@@ -1,20 +1,25 @@
 {
     "text_townless_header": "Townless Players [%d]",
     "text_townless_remaining": "And %d more...",
+    "msg_townless_none": "§6EMCE §7> §cNo townless players online at the moment, try again later.",
+    "msg_townless_sent": "§6EMCE §7> §bInvites sent!",
+    "msg_townless_permissions": "§6EMCE §7> Note: You still need permissions to invite players to your town.",
+    "msg_townless_refresh": "§6EMCE §7> §bRefreshing townless players...",
+    "msg_townless_clear": "§6EMCE §7> §bClearing townless players...",
+
 
     "text_nearby_header": "Nearby Players [%d]",
+    "msg_nearby_refresh": "§6EMCE §7> §bClearing nearby players...",
+    "msg_nearby_clear": "§6EMCE §7> §bClearing nearby players...",
+    "msg_nearby_none": "§6EMCE §7> §cNo nearby players detected at the moment, try again later.",
 
     "msg_nether_err_args": "§6EMCE §7> §cNot enough arguments! (x + z)",
     "msg_nether_success": "§6EMCE §7> §bNether coordinates: %d, %d",
     "msg_nether_err_null": "§6EMCE §7> §cUnable to use your own coordinates! This is rare.",
     "msg_nether_owncoords": "§6EMCE §7> No coordinates specified, using your own instead.",
 
-    "msg_townless_none": "§6EMCE §7> §cNo townless players online at the moment, try again later.",
-    "msg_townless_sent": "§6EMCE §7> §bInvites sent!",
-    "msg_townless_permissions": "§6EMCE §7> Note: You still need permissions to invite players to your town.",
-
     "msg_queue_err": "§6EMCE §7> §cCouldn't fetch queue size, try again later.",
-    "msg_queue_success": "§6EMCE §6EMCE §7> 7> §bCurrent queue size: %d",
+    "msg_queue_success": "§6EMCE §7> §bCurrent queue size: %d",
 
     "text_towninfo_header": "Town Information - %s",
     "text_towninfo_mayor": "Mayor: %s",
