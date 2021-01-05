@@ -35,3 +35,6 @@ Version 1.2.0 (Unknown)
 - Added language file support
 - Added formatting to command outputs.
 - Nation info and Town info have been changed into commands.
+- /nearby has been added as a command.
+- Timers have been moved to their own seperate file.
+- Added /townless clear and /townless refresh
