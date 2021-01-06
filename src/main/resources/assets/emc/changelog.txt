@@ -38,3 +38,4 @@ Version 1.2.0 (Unknown)
 - /nearby has been added as a command.
 - Timers have been moved to their own seperate file.
 - Added /townless clear and /townless refresh
+- Nearby coords have been replaced by distance
