@@ -10,6 +10,7 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableText;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -148,9 +149,11 @@ public class ModUtils
         for (int i = 0; i < array.size(); i++)
         {
             JsonObject currentObj = (JsonObject) array.get(i);
-            String nearbyTextString = currentObj.get("name").getAsString() + ": " + currentObj.get("x").getAsString() + ", " + currentObj.get("y").getAsString() + ", " + currentObj.get("z").getAsString();
-            int currentWidth = getStringWidth(nearbyTextString);
-            if (currentWidth > longestElement) longestElement = currentWidth;
+            if (currentObj.get("name").getAsString().equals(EMCMod.clientName)) 
+                continue;
+            int distance = Math.abs(currentObj.get("x").getAsInt() - (int) EMCMod.client.player.getX()) + Math.abs(currentObj.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
+            MutableText nearbyText = new TranslatableText("text_nearby_name", currentObj.get("name").getAsString(), distance);
+            longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
 
         return longestElement;
