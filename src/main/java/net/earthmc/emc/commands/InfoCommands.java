@@ -103,7 +103,7 @@ public class InfoCommands {
                 source.sendFeedback(new TranslatableText("text_nationinfo_towns", nationObject.get("towns").getAsJsonArray().size()).formatted(nationInfoTextColour));
             }
             return Command.SINGLE_SUCCESS;
-        })).executes(c -> //get client's nation
+        })).executes(c ->
         {
             CottonClientCommandSource source = c.getSource();
             if (EMCMod.clientNationName.equals("")) 
