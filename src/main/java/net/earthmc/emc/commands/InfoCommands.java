@@ -29,8 +29,8 @@ public class InfoCommands {
                 }
 
                 CottonClientCommandSource source = c.getSource();
-                if (!townObject.has("name"))
-                    source.sendFeedback(new TranslatableText("text_towninfo_err", townName).formatted(Formatting.RED));
+                if (!townObject.has("name")) 
+                    source.sendFeedback(new TranslatableText("text_towninfo_err", EMCMod.clientTownName).formatted(Formatting.RED));
                 else {
                     Formatting townInfoTextColour = Formatting.byName(EMCMod.config.commands.townInfoTextColour);
 
@@ -60,14 +60,14 @@ public class InfoCommands {
                 }
 
                 if (!townObject.has("name")) 
-                    source.sendFeedback(new TranslatableText("text_towninfo_err", EMCMod.clientTownName));
+                    source.sendFeedback(new TranslatableText("text_towninfo_err", EMCMod.clientTownName).formatted(Formatting.RED));
                 else {
                     Formatting townInfoTextColour = Formatting.byName(EMCMod.config.commands.townInfoTextColour);
 
                     source.sendFeedback(new TranslatableText("text_towninfo_header", townObject.get("name").getAsString()).formatted(townInfoTextColour));
                     source.sendFeedback(new TranslatableText("text_towninfo_mayor", townObject.get("mayor").getAsString()).formatted(townInfoTextColour));
                     source.sendFeedback(new TranslatableText("text_towninfo_area", townObject.get("area").getAsString()).formatted(townInfoTextColour));
-                    source.sendFeedback(new TranslatableText("text_shared_residents", townObject.get("residents").getAsJsonObject().size()).formatted(townInfoTextColour));
+                    source.sendFeedback(new TranslatableText("text_shared_residents", townObject.get("residents").getAsJsonArray().size()).formatted(townInfoTextColour));
                     source.sendFeedback(new TranslatableText("text_towninfo_location", townObject.get("x").getAsString(), townObject.get("z").getAsString()).formatted(townInfoTextColour));
                 }
             }

@@ -29,8 +29,8 @@ public class ModConfig implements ConfigData
         public int yPos = 16;
         public int maxLength = 0; // < 1 = No limit
 
-        public String headingTextColour = "LIGHT_PURPLE";
-        public String playerTextColour = "LIGHT_PURPLE";
+        public String headingTextColour = "BLUE";
+        public String playerTextColour = "BLUE";
 
         public ModUtils.State positionState = ModUtils.State.TOP_LEFT;
     }

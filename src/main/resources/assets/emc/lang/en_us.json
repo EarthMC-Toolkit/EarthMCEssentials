@@ -9,7 +9,6 @@
 
 
     "text_nearby_header": "Nearby Players [%d]",
-    "text_nearby_name": "%s: Distance: %d",
     "msg_nearby_refresh": "§6EMCE §7> §bRefreshing nearby players...",
     "msg_nearby_clear": "§6EMCE §7> §bClearing nearby players...",
     "msg_nearby_none": "§6EMCE §7> §cNo nearby players detected at the moment, try again later.",

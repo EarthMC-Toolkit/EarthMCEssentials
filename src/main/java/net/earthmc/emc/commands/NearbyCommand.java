@@ -25,7 +25,7 @@ public class NearbyCommand {
                 JsonObject currentPlayer = (JsonObject) nearby.get(i);
                 int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCMod.client.player.getX()) + Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
 
-                c.getSource().sendFeedback(new TranslatableText("text_nearby_name", currentPlayer.get("name").getAsString(), distance).formatted(textFormatting));
+                c.getSource().sendFeedback(new TranslatableText(currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(textFormatting));
             }
             return Command.SINGLE_SUCCESS;
         }).then(ArgumentBuilders.literal("refresh").executes(c -> {

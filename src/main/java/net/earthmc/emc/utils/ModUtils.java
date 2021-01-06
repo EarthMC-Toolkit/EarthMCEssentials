@@ -152,7 +152,7 @@ public class ModUtils
             if (currentObj.get("name").getAsString().equals(EMCMod.clientName)) 
                 continue;
             int distance = Math.abs(currentObj.get("x").getAsInt() - (int) EMCMod.client.player.getX()) + Math.abs(currentObj.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
-            MutableText nearbyText = new TranslatableText("text_nearby_name", currentObj.get("name").getAsString(), distance);
+            MutableText nearbyText = new TranslatableText(currentObj.get("name").getAsString() + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
 
