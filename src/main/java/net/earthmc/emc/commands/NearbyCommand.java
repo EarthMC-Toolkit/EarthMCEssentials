@@ -4,7 +4,6 @@ import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.earthmc.emc.EMCMod;
 import net.earthmc.emc.utils.TimerTasks;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
@@ -24,11 +23,9 @@ public class NearbyCommand {
 
             for (int i = 0; i < nearby.size(); i++) {
                 JsonObject currentPlayer = (JsonObject) nearby.get(i);
-                int x = currentPlayer.get("x").getAsInt();
-                int y = currentPlayer.get("y").getAsInt();
-                int z = currentPlayer.get("z").getAsInt();
+                int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCMod.client.player.getX()) + Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
 
-                c.getSource().sendFeedback(new LiteralText(currentPlayer.get("name").getAsString() + ": " + x + ", " + y + ", " + z).formatted(textFormatting));
+                c.getSource().sendFeedback(new TranslatableText("text_nearby_name", currentPlayer.get("name").getAsString(), distance).formatted(textFormatting));
             }
             return Command.SINGLE_SUCCESS;
         }).then(ArgumentBuilders.literal("refresh").executes(c -> {
