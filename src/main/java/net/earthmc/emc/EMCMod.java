@@ -131,7 +131,7 @@ public class EMCMod implements ModInitializer
                     {
                         case TOP_MIDDLE:
                         {
-                            if (config.nearby.positionState.equals(ModUtils.State.TOP_MIDDLE))
+                            if (nearbyState.equals(ModUtils.State.TOP_MIDDLE))
                                 townlessState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 );
                             else
                                 townlessState.setX(ModUtils.getWindowWidth() / 2 - townlessLongest / 2);
@@ -210,7 +210,7 @@ public class EMCMod implements ModInitializer
 
             if (config.nearby.enabled)
             {
-                if (!config.nearby.presetPositions) //Not using preset positions
+                if (!config.nearby.presetPositions) // Not using preset positions
                 {
                     // Position of the first player, who determines where the list will be.
                     nearbyPlayerOffset = config.nearby.yPos;
@@ -256,7 +256,7 @@ public class EMCMod implements ModInitializer
                         {
                             if (townlessState.equals(ModUtils.State.TOP_MIDDLE)) {
                                 nearbyState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 + townlessLongest + 5);
-                                nearbyState.setY(config.townless.positionState.getY());
+                                nearbyState.setY(townlessState.getY());
                             }
                             else {
                                 nearbyState.setX(ModUtils.getWindowWidth() / 2 - nearbyLongest / 2);
@@ -267,7 +267,7 @@ public class EMCMod implements ModInitializer
                         }
                         case TOP_RIGHT:
                         {
-                            if (config.townless.positionState.equals(ModUtils.State.TOP_RIGHT))
+                            if (townlessState.equals(ModUtils.State.TOP_RIGHT))
                                 nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
                             else
                                 nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
@@ -278,9 +278,9 @@ public class EMCMod implements ModInitializer
                         }
                         case LEFT:
                         {
-                            if (config.townless.positionState.equals(ModUtils.State.LEFT)) {
+                            if (townlessState.equals(ModUtils.State.LEFT)) {
                                 nearbyState.setX(townlessLongest + 10);
-                                nearbyState.setY(config.townless.positionState.getY());
+                                nearbyState.setY(townlessState.getY());
                             }
                             else {
                                 nearbyState.setX(5);
@@ -291,9 +291,9 @@ public class EMCMod implements ModInitializer
                         }
                         case RIGHT:
                         {
-                            if (config.townless.positionState.equals(ModUtils.State.RIGHT)) {
+                            if (townlessState.equals(ModUtils.State.RIGHT)) {
                                 nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                                nearbyState.setY(config.townless.positionState.getY());
+                                nearbyState.setY(townlessState.getY());
                             }
                             else {
                                 nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
@@ -304,10 +304,10 @@ public class EMCMod implements ModInitializer
                         }
                         case BOTTOM_RIGHT:
                         {
-                            if (config.townless.positionState.equals(ModUtils.State.BOTTOM_RIGHT))
+                            if (townlessState.equals(ModUtils.State.BOTTOM_RIGHT))
                             {
                                 nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                                nearbyState.setY(config.townless.positionState.getY());
+                                nearbyState.setY(townlessState.getY());
                             }
                             else {
                                 nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 15);
@@ -320,7 +320,7 @@ public class EMCMod implements ModInitializer
                         {
                             if (townlessState.equals(ModUtils.State.BOTTOM_LEFT)) {
                                 nearbyState.setX(townlessLongest + 15);
-                                nearbyState.setY(config.townless.positionState.getY());
+                                nearbyState.setY(townlessState.getY());
                             }
                             else {
                                 nearbyState.setX(5);
