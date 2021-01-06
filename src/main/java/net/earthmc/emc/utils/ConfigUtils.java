@@ -167,18 +167,11 @@ public class ConfigUtils
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.playerTextColour = newValue)
                 .build());
 
-        // Nearby X Radius
-        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("X Radius"), EMCMod.config.nearby.xRadius, 50, 10000)
+        // Nearby Radius
+        nearby.addEntry(entryBuilder.startIntField(new TranslatableText("Radius"), EMCMod.config.nearby.radius)
                 .setDefaultValue(500)
-                .setTooltip(new TranslatableText("The x radius (in blocks) to check inside."))
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.xRadius = newValue)
-                .build());
-
-        // Nearby Z Radius
-        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Z Radius"), EMCMod.config.nearby.zRadius, 50, 10000)
-                .setDefaultValue(500)
-                .setTooltip(new TranslatableText("The z radius (in blocks) to check inside."))
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.zRadius = newValue)
+                .setTooltip(new TranslatableText("The radius (in blocks) to check inside."))
+                .setSaveConsumer(newValue -> EMCMod.config.nearby.radius = newValue)
                 .build());
 
         // Town Information Colour

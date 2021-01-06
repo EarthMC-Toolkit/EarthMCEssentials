@@ -46,8 +46,7 @@ public class ModConfig implements ConfigData
         public String headingTextColour = "GOLD";
         public String playerTextColour = "GOLD";
 
-        public int xRadius = 500;
-        public int zRadius = 500;
+        public int radius = 500;
 
         public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
     }
