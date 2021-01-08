@@ -143,7 +143,7 @@ public class EmcApi
 
             if (player != null)
             {
-                url = new URL("http://earthmc-api.herokuapp.com/nearby/" + (int) player.getX() + "/" + (int) player.getZ() + "/" + config.nearby.radius + "/" + config.nearby.radius);
+                url = new URL("http://earthmc-api.herokuapp.com/nearby/" + (int) player.getX() + "/" + (int) player.getZ() + "/" + config.nearby.xRadius + "/" + config.nearby.zRadius);
 
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
