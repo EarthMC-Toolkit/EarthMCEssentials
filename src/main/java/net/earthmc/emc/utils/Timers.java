@@ -1,20 +1,27 @@
 package net.earthmc.emc.utils;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.earthmc.emc.EMCMod;
 
-public class TimerTasks {
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class Timers
+{
+    public static boolean running;
 
     static Timer twoMinuteTimer = new Timer();
     static Timer tenSecondTimer = new Timer();
 
-    public static void startTimers() {
+    public static void setRunning(boolean value){
+        running = value;
+    }
+
+    public static void start()
+    {
+        setRunning(true);
 
         twoMinuteTimer = new Timer();
         tenSecondTimer = new Timer();
@@ -61,14 +68,18 @@ public class TimerTasks {
         }, 0, 10 * 1000);
     } 
 
-    public static void restartTimers() {
+    public static void restart()
+    {
         twoMinuteTimer.cancel();
         tenSecondTimer.cancel();
-        TimerTasks.startTimers();
+        start();
     }
 
-    public static void stopTimers() {
+    public static void stop()
+    {
         twoMinuteTimer.cancel();
         tenSecondTimer.cancel();
+
+        setRunning(false);
     }
 }

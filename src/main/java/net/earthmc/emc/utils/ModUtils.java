@@ -2,7 +2,6 @@ package net.earthmc.emc.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.earthmc.emc.EMCMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -15,8 +14,16 @@ import net.minecraft.text.TranslatableText;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
+import static net.earthmc.emc.EMCMod.*;
+
 public class ModUtils
 {
+    public enum ScaleMethod
+    {
+        Independent,
+        Proportionate
+    }
+
     public enum State
     {
         BOTTOM_LEFT(0, 0),
@@ -143,15 +150,18 @@ public class ModUtils
 
     public static int getNearbyLongestElement(JsonArray array)
     {
-        if (array.size() == 0) return 0;
+        if (array.size() == 0 || client.player == null) return 0;
 
         int longestElement = 0;
         for (int i = 0; i < array.size(); i++)
         {
             JsonObject currentObj = (JsonObject) array.get(i);
-            if (currentObj.get("name").getAsString().equals(EMCMod.clientName)) 
+            if (currentObj.get("name").getAsString().equals(clientName))
                 continue;
-            int distance = Math.abs(currentObj.get("x").getAsInt() - (int) EMCMod.client.player.getX()) + Math.abs(currentObj.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
+
+            int distance = Math.abs(currentObj.get("x").getAsInt() - (int) client.player.getX()) +
+                           Math.abs(currentObj.get("z").getAsInt() - (int) client.player.getZ());
+
             MutableText nearbyText = new TranslatableText(currentObj.get("name").getAsString() + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
@@ -182,9 +192,9 @@ public class ModUtils
         String serverName = getServerName();
 
         // Uses endsWith because EMC has 2 valid IPs (earthmc.net & play.earthmc.net)
-        if (!serverName.endsWith("earthmc.net") && EMCMod.config.general.emcOnly)
+        if (!serverName.endsWith("earthmc.net") && config.general.emcOnly)
             return false;
-        else if ((serverName.equals("Singleplayer") || serverName.equals("Realms")) && EMCMod.config.general.emcOnly)
+        else if ((serverName.equals("Singleplayer") || serverName.equals("Realms")) && config.general.emcOnly)
             return false;
 
         return true;
@@ -196,7 +206,7 @@ public class ModUtils
 
         try
         {
-            ServerInfo serverInfo = EMCMod.client.getCurrentServerEntry();
+            ServerInfo serverInfo = client.getCurrentServerEntry();
 
             if (serverInfo != null)
             {
@@ -205,13 +215,13 @@ public class ModUtils
                 else
                     serverName = serverInfo.address;
             }
-            else if (EMCMod.client.isConnectedToRealms())
+            else if (client.isConnectedToRealms())
                 serverName = "Realms";
-            else if (EMCMod.client.isInSingleplayer())
+            else if (client.isInSingleplayer())
                 serverName = "Singleplayer";
             else
             {
-                ClientPlayNetworkHandler clientPlayNetworkHandler = EMCMod.client.getNetworkHandler();
+                ClientPlayNetworkHandler clientPlayNetworkHandler = client.getNetworkHandler();
                 ClientConnection clientConnection = null;
 
                 if (clientPlayNetworkHandler != null) {

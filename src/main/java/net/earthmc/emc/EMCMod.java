@@ -34,8 +34,6 @@ public class EMCMod implements ModInitializer
     public static String clientTownName = "";
     public static String clientNationName = "";
 
-    public static boolean timersActivated;
-
     public static MinecraftClient client;
     public static Screen screen;
     public static ModConfig config;
@@ -223,10 +221,13 @@ public class EMCMod implements ModInitializer
 
                     if (nearby.size() >= 1)
                     {
+                        if (client.player == null) return;
+
                         for (int i = 0; i < nearby.size(); i++)
                         {
                             JsonObject currentPlayer = (JsonObject) nearby.get(i);
-                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCMod.client.player.getX()) + Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
+                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCMod.client.player.getX()) +
+                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
 
                             if (currentPlayer.get("name").getAsString().equals(clientName)) continue;
 
@@ -347,10 +348,13 @@ public class EMCMod implements ModInitializer
 
                     if (nearby.size() >= 1)
                     {
+                        if (client.player == null) return;
+
                         for (int i = 0; i < nearby.size(); i++)
                         {
                             JsonObject currentPlayer = (JsonObject) nearby.get(i);
-                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCMod.client.player.getX()) + Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
+                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCMod.client.player.getX()) +
+                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
 
                             if (currentPlayer.get("name").getAsString().equals(clientName)) continue;
 

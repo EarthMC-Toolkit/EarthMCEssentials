@@ -25,31 +25,37 @@ public class ModConfig implements ConfigData
         public boolean enabled = true;
         public boolean presetPositions = true;
 
+        public ModUtils.State positionState = ModUtils.State.TOP_LEFT;
+
         public int xPos = 1;
         public int yPos = 16;
         public int maxLength = 0; // < 1 = No limit
 
         public String headingTextColour = "BLUE";
         public String playerTextColour = "BLUE";
-
-        public ModUtils.State positionState = ModUtils.State.TOP_LEFT;
     }
 
     public static class Nearby
     {
         public boolean enabled = true;
         public boolean presetPositions = true;
-        
+
+        public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
+
         public int xPos = 100;
         public int yPos = 16;
 
         public String headingTextColour = "GOLD";
         public String playerTextColour = "GOLD";
 
-        public int xRadius = 500;
-        public int zRadius = 500;
+        public ModUtils.ScaleMethod scaleMethod = ModUtils.ScaleMethod.Proportionate;
 
-        public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
+        // Proportionate scaling - both axis' must be same.
+        public int radius = 500;
+
+        // Independent scaling - each axis can be same or different.
+        public int xBlocks = 500;
+        public int zBlocks = 500;
     }
 
     public static class Commands

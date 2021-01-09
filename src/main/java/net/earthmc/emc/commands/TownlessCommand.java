@@ -4,11 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.earthmc.emc.EMCMod;
-import net.earthmc.emc.utils.TimerTasks;
+import net.earthmc.emc.utils.Timers;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
@@ -48,7 +47,7 @@ public class TownlessCommand {
             c.getSource().sendFeedback(new TranslatableText("msg_townless_permissions"));
             return Command.SINGLE_SUCCESS;
         })).then(ArgumentBuilders.literal("refresh").executes(c -> {
-            TimerTasks.restartTimers();
+            Timers.restart();
             c.getSource().sendFeedback(new TranslatableText("msg_townless_refresh"));
             return Command.SINGLE_SUCCESS;
         })).then(ArgumentBuilders.literal("clear").executes(c -> {

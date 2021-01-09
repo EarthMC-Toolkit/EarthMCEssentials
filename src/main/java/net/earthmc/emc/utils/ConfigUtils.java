@@ -167,19 +167,38 @@ public class ConfigUtils
                 .setSaveConsumer(newValue -> EMCMod.config.nearby.playerTextColour = newValue)
                 .build());
 
-        // Nearby X Radius
-        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("X Radius"), EMCMod.config.nearby.xRadius, 50, 10000)
-                .setDefaultValue(500)
-                .setTooltip(new TranslatableText("The x radius (in blocks) to check inside."))
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.xRadius = newValue)
+        // Nearby Scale Method
+        nearby.addEntry(entryBuilder.startEnumSelector(new TranslatableText("Scale Method"), ModUtils.ScaleMethod.class, EMCMod.config.nearby.scaleMethod)
+                .setDefaultValue(ModUtils.ScaleMethod.Proportionate)
+                .setTooltip(new TranslatableText("The method of scaling used for the nearby radius"))
+                .setSaveConsumer(newValue -> EMCMod.config.nearby.scaleMethod = newValue)
                 .build());
 
-        // Nearby Z Radius
-        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Z Radius"), EMCMod.config.nearby.zRadius, 50, 10000)
-                .setDefaultValue(500)
-                .setTooltip(new TranslatableText("The z radius (in blocks) to check inside."))
-                .setSaveConsumer(newValue -> EMCMod.config.nearby.zRadius = newValue)
-                .build());
+        if (EMCMod.config.nearby.scaleMethod == ModUtils.ScaleMethod.Proportionate)
+        {
+            // Nearby Radius (X and Y)
+            nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Radius"), EMCMod.config.nearby.radius, 50, 10000)
+                    .setDefaultValue(500)
+                    .setTooltip(new TranslatableText("The radius (in blocks) to check inside."))
+                    .setSaveConsumer(newValue -> EMCMod.config.nearby.radius = newValue)
+                    .build());
+        }
+        else
+        {
+            // Nearby X Blocks
+            nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("X Blocks"), EMCMod.config.nearby.xBlocks, 50, 10000)
+                    .setDefaultValue(500)
+                    .setTooltip(new TranslatableText("The amount of blocks to check on the X axis."))
+                    .setSaveConsumer(newValue -> EMCMod.config.nearby.xBlocks = newValue)
+                    .build());
+
+            // Nearby Z Blocks
+            nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Z Blocks"), EMCMod.config.nearby.zBlocks, 50, 10000)
+                    .setDefaultValue(500)
+                    .setTooltip(new TranslatableText("The amount of blocks to check on the Z axis."))
+                    .setSaveConsumer(newValue -> EMCMod.config.nearby.zBlocks = newValue)
+                    .build());
+        }
 
         // Town Information Colour
         commands.addEntry(entryBuilder.startSelector(new TranslatableText("Town Info Colour"), EMCMod.colors, EMCMod.config.commands.townInfoTextColour)
