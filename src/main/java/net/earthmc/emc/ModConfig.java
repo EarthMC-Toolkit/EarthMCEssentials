@@ -50,7 +50,7 @@ public class ModConfig implements ConfigData
 
         public ModUtils.ScaleMethod scaleMethod = ModUtils.ScaleMethod.Proportionate;
 
-        // Proportionate scaling - both axis' must be same.
+        // Proportionate scaling - both axes must be same.
         public int radius = 500;
 
         // Independent scaling - each axis can be same or different.

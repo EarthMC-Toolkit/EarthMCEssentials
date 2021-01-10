@@ -22,7 +22,7 @@ public class ClientPlayNetworkHandlerMixin
         // Return if timers are already running.
         if (running) return;
 
-        // Start the timers (sets running to true)
-        start();
+        // Start the timers (also sets running to true)
+        startAll();
     }
 }

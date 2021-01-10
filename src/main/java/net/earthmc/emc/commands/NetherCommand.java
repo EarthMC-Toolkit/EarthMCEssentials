@@ -1,14 +1,13 @@
 package net.earthmc.emc.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.earthmc.emc.EMCMod;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
+
+import static net.earthmc.emc.EMCMod.client;
 
 public class NetherCommand 
 {
@@ -22,30 +21,32 @@ public class NetherCommand
                 int x = IntegerArgumentType.getInteger(c, "x");
                 int z = IntegerArgumentType.getInteger(c, "z");
                 c.getSource().sendFeedback(new TranslatableText("msg_nether_success", x/8, z/8).formatted(Formatting.GOLD));
-                return Command.SINGLE_SUCCESS;
 
+                return 1;
             })
         ).executes(c -> {
             c.getSource().sendFeedback(new TranslatableText("msg_nether_err_args"));
-            return Command.SINGLE_SUCCESS;
+            return 1;
         })).executes(c ->
         {
             int x;
             int z;
 
-            if (EMCMod.client.player != null)
+            if (client.player != null)
             {
-                x = (int) EMCMod.client.player.getX();
-                z = (int) EMCMod.client.player.getZ();
+                x = (int) client.player.getX();
+                z = (int) client.player.getZ();
 
                 c.getSource().sendFeedback(new TranslatableText("msg_nether_owncoords"));
                 c.getSource().sendFeedback(new TranslatableText("msg_nether_success", x/8, z/8).formatted(Formatting.GOLD));
+
+                return 1;
             }
             else {
                 c.getSource().sendFeedback(new TranslatableText("msg_nether_err_null"));
-            }
 
-            return Command.SINGLE_SUCCESS;
+                return -1;
+            }
         }));
     }
 }

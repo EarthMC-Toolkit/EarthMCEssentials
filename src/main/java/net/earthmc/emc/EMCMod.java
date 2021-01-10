@@ -23,8 +23,6 @@ import org.lwjgl.glfw.GLFW;
 
 public class EMCMod implements ModInitializer
 {
-    public static JsonArray townless, nearby, allNations, allTowns;
-
     int townlessPlayerOffset, nearbyPlayerOffset;
 
     public static String[] colors;
@@ -37,6 +35,8 @@ public class EMCMod implements ModInitializer
     public static MinecraftClient client;
     public static Screen screen;
     public static ModConfig config;
+
+    public static JsonArray townless, nearby, allNations, allTowns;
 
     KeyBinding configKeybind;
 
