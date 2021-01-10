@@ -19,10 +19,7 @@ public class ClientPlayNetworkHandlerMixin
         client = MinecraftClient.getInstance();
         if (client.player != null) clientName = client.player.getName().asString();
 
-        // Return if timers are already running.
-        if (running) return;
-
-        // Start the timers (also sets running to true)
-        startAll();
+        // If the timers aren't running, start them.
+        if (!getRunning()) startAll();
     }
 }

@@ -11,20 +11,24 @@ import static net.earthmc.emc.EMCMod.*;
 
 public class Timers
 {
-    public static boolean running;
-
     public static Timer queueTimer;
     public static Timer nearbyTimer;
     public static Timer townlessTimer;
     public static Timer infoTimer;
 
+    private static boolean running;
+
     public static void setRunning(boolean value){
         running = value;
+    }
+    public static boolean getRunning(){
+        return running;
     }
 
     public static void startTownless(int delay, int period)
     {
-        townlessTimer = new Timer();
+        setRunning(true);
+        townlessTimer = new Timer("townless", true);
 
         townlessTimer.scheduleAtFixedRate(new TimerTask()
         {
@@ -38,7 +42,8 @@ public class Timers
 
     public static void startNearby(int delay, int period)
     {
-        nearbyTimer = new Timer();
+        setRunning(true);
+        nearbyTimer = new Timer("nearby", true);
 
         nearbyTimer.scheduleAtFixedRate(new TimerTask()
         {
@@ -52,7 +57,8 @@ public class Timers
 
     public static void startQueue(int delay, int period)
     {
-        queueTimer = new Timer();
+        setRunning(true);
+        queueTimer = new Timer("queue", true);
 
         queueTimer.scheduleAtFixedRate(new TimerTask()
         {
@@ -69,7 +75,8 @@ public class Timers
 
     public static void startInfo(int delay, int period)
     {
-        infoTimer = new Timer();
+        setRunning(true);
+        infoTimer = new Timer("info", true);
 
         infoTimer.scheduleAtFixedRate(new TimerTask()
         {
@@ -96,6 +103,7 @@ public class Timers
 
     public static void startAll()
     {
+        if (running) return;
         setRunning(true);
 
         startInfo(0, 2*60*1000);
@@ -104,7 +112,19 @@ public class Timers
         startQueue(0, 10*1000);
     }
 
-    public static void restart(Timer timer)
+    public static void stopAll()
+    {
+        if (!running) return;
+
+        infoTimer.cancel();
+        townlessTimer.cancel();
+        nearbyTimer.cancel();
+        queueTimer.cancel();
+
+        setRunning(false);
+    }
+
+    public static void restartTimer(Timer timer)
     {
         timer.cancel();
 
@@ -112,25 +132,19 @@ public class Timers
         else if (timer.equals(townlessTimer)) startTownless(0, 60*1000);
         else if (timer.equals(nearbyTimer)) startNearby(0, 10*1000);
         else if (timer.equals(queueTimer)) startQueue(0, 10*1000);
+        else throw new IllegalStateException("Unexpected value: " + timer.getClass().getName());
     }
 
     public static void restartAll()
     {
-        infoTimer.cancel();
-        townlessTimer.cancel();
-        nearbyTimer.cancel();
-        queueTimer.cancel();
+        if (!running) return;
 
-        startAll();
-    }
-
-    public static void stop()
-    {
         infoTimer.cancel();
         townlessTimer.cancel();
         nearbyTimer.cancel();
         queueTimer.cancel();
 
         setRunning(false);
+        startAll();
     }
 }

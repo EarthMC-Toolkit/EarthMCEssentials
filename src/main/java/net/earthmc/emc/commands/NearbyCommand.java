@@ -36,7 +36,7 @@ public class NearbyCommand
             return 1;
         }).then(ArgumentBuilders.literal("refresh").executes(c ->
         {
-            restart(nearbyTimer);
+            restartTimer(nearbyTimer);
             c.getSource().sendFeedback(new TranslatableText("msg_nearby_refresh"));
 
             return 1;

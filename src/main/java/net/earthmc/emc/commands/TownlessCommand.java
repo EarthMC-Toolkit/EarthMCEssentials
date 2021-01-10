@@ -54,7 +54,7 @@ public class TownlessCommand
                 return 1;
             }
         })).then(ArgumentBuilders.literal("refresh").executes(c -> {
-            restart(townlessTimer);
+            restartTimer(townlessTimer);
             c.getSource().sendFeedback(new TranslatableText("msg_townless_refresh"));
 
             return 1;
