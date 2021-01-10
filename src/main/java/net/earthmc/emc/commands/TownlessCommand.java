@@ -5,12 +5,11 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.earthmc.emc.utils.Timers;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import static net.earthmc.emc.EMCMod.*;
-import static net.earthmc.emc.utils.Timers.townlessTimer;
+import static net.earthmc.emc.utils.Timers.*;
 
 public class TownlessCommand
 {
@@ -55,7 +54,7 @@ public class TownlessCommand
                 return 1;
             }
         })).then(ArgumentBuilders.literal("refresh").executes(c -> {
-            Timers.restart(townlessTimer);
+            restart(townlessTimer);
             c.getSource().sendFeedback(new TranslatableText("msg_townless_refresh"));
 
             return 1;
