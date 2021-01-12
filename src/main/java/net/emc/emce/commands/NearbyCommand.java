@@ -1,15 +1,15 @@
-package net.earthmc.emc.commands;
+package net.emc.emce.commands;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.emc.emce.utils.Timers;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
-import static net.earthmc.emc.EMCMod.*;
-import static net.earthmc.emc.utils.Timers.*;
+import static net.emc.emce.EMCE.*;
 
 public class NearbyCommand
 {
@@ -36,7 +36,7 @@ public class NearbyCommand
             return 1;
         }).then(ArgumentBuilders.literal("refresh").executes(c ->
         {
-            restartTimer(nearbyTimer);
+            Timers.restartTimer(Timers.nearbyTimer);
             c.getSource().sendFeedback(new TranslatableText("msg_nearby_refresh"));
 
             return 1;

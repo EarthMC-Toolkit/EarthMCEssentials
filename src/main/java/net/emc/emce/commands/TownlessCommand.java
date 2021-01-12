@@ -1,15 +1,16 @@
-package net.earthmc.emc.commands;
+package net.emc.emce.commands;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.emc.emce.utils.ModUtils;
+import net.emc.emce.utils.Timers;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
-import static net.earthmc.emc.EMCMod.*;
-import static net.earthmc.emc.utils.Timers.*;
+import static net.emc.emce.EMCE.*;
 
 public class TownlessCommand
 {
@@ -35,26 +36,30 @@ public class TownlessCommand
             return 1;
         }).then(ArgumentBuilders.literal("inviteAll").executes(c ->
         {
-            StringBuilder townlessString = new StringBuilder();
-
-            for (int i = 0; i < townless.size(); i++)
-            {
-                JsonObject currentPlayer = (JsonObject) townless.get(i);
-                if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256) break;
-                else townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
-            }
-
             if (client.player == null) return -1;
             else {
-                client.player.sendChatMessage("/towny:town invite " + townlessString);
+                if (ModUtils.shouldRender())
+                {
+                    StringBuilder townlessString = new StringBuilder();
 
-                c.getSource().sendFeedback(new TranslatableText("msg_townless_sent"));
-                c.getSource().sendFeedback(new TranslatableText("msg_townless_permissions"));
+                    for (int i = 0; i < townless.size(); i++) {
+                        JsonObject currentPlayer = (JsonObject) townless.get(i);
+                        if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256)
+                            break;
+                        else townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
+                    }
+
+                    client.player.sendChatMessage("/towny:town invite " + townlessString);
+
+                    c.getSource().sendFeedback(new TranslatableText("msg_townless_sent"));
+                    c.getSource().sendFeedback(new TranslatableText("msg_townless_permissions"));
+                }
+                else c.getSource().sendFeedback(new TranslatableText("msg_townless_invite_err"));
 
                 return 1;
             }
         })).then(ArgumentBuilders.literal("refresh").executes(c -> {
-            restartTimer(townlessTimer);
+            Timers.restartTimer(Timers.townlessTimer);
             c.getSource().sendFeedback(new TranslatableText("msg_townless_refresh"));
 
             return 1;

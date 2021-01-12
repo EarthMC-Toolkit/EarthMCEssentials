@@ -4,9 +4,9 @@
     "msg_townless_none": "§6EMCE §7> §cNo townless players online at the moment, try again later.",
     "msg_townless_sent": "§6EMCE §7> §bInvites sent!",
     "msg_townless_permissions": "§6EMCE §7> Note: You still need permissions to invite players to your town.",
+    "msg_townless_invite_err": "§6EMCE §7> Note: Unable to invite, please try again on EarthMC.",
     "msg_townless_refresh": "§6EMCE §7> §bRefreshing townless players...",
     "msg_townless_clear": "§6EMCE §7> §bClearing townless players...",
-
 
     "text_nearby_header": "Nearby Players [%d]",
     "msg_nearby_refresh": "§6EMCE §7> §bRefreshing nearby players...",

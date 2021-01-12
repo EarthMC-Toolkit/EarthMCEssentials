@@ -1,11 +1,11 @@
-package net.earthmc.emc.utils;
+package net.emc.emce.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import net.earthmc.emc.EMCMod;
-import net.earthmc.emc.ModConfig;
+import net.emc.emce.EMCE;
+import net.emc.emce.ModConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -170,7 +170,7 @@ public class EmcApi
 
                     for (int i = 0; i < array.size(); i++) {
                         JsonObject currentObj = (JsonObject) array.get(i);
-                        if (currentObj.get("name").getAsString().equals(EMCMod.clientName)) array.remove(i);
+                        if (currentObj.get("name").getAsString().equals(EMCE.clientName)) array.remove(i);
                     }
                     return array;
                 }

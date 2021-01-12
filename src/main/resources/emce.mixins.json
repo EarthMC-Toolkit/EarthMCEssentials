@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.earthmc.emc.mixin",
+  "package": "net.emc.emce.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
     "ClientPlayNetworkHandlerMixin"

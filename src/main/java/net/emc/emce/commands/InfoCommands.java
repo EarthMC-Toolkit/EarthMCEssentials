@@ -1,4 +1,4 @@
-package net.earthmc.emc.commands;
+package net.emc.emce.commands;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -9,7 +9,7 @@ import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
-import static net.earthmc.emc.EMCMod.*;
+import static net.emc.emce.EMCE.*;
 
 public class InfoCommands
 {

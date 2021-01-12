@@ -1,4 +1,4 @@
-package net.earthmc.emc.utils;
+package net.emc.emce.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -14,7 +14,7 @@ import net.minecraft.text.TranslatableText;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
-import static net.earthmc.emc.EMCMod.*;
+import static net.emc.emce.EMCE.*;
 
 public class ModUtils
 {

@@ -1,12 +1,12 @@
-package net.earthmc.emc;
+package net.emc.emce;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
-import net.earthmc.emc.utils.ConfigUtils;
-import net.earthmc.emc.utils.EmcApi;
-import net.earthmc.emc.utils.ModUtils;
+import net.emc.emce.utils.ConfigUtils;
+import net.emc.emce.utils.EmcApi;
+import net.emc.emce.utils.ModUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -21,13 +21,13 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
-public class EMCMod implements ModInitializer
+public class EMCE implements ModInitializer
 {
     int townlessPlayerOffset, nearbyPlayerOffset;
 
     public static String[] colors;
 
-    public static String queue;
+    public static int queue = 0;
     public static String clientName = "";
     public static String clientTownName = "";
     public static String clientNationName = "";
@@ -226,8 +226,8 @@ public class EMCMod implements ModInitializer
                         for (int i = 0; i < nearby.size(); i++)
                         {
                             JsonObject currentPlayer = (JsonObject) nearby.get(i);
-                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCMod.client.player.getX()) +
-                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
+                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCE.client.player.getX()) +
+                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCE.client.player.getZ());
 
                             if (currentPlayer.get("name").getAsString().equals(clientName)) continue;
 
@@ -353,8 +353,8 @@ public class EMCMod implements ModInitializer
                         for (int i = 0; i < nearby.size(); i++)
                         {
                             JsonObject currentPlayer = (JsonObject) nearby.get(i);
-                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCMod.client.player.getX()) +
-                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCMod.client.player.getZ());
+                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCE.client.player.getX()) +
+                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCE.client.player.getZ());
 
                             if (currentPlayer.get("name").getAsString().equals(clientName)) continue;
 

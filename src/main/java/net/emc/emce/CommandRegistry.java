@@ -1,15 +1,15 @@
-package net.earthmc.emc;
+package net.emc.emce;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.cottonmc.clientcommands.ClientCommandPlugin;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.earthmc.emc.commands.InfoCommands;
-import net.earthmc.emc.commands.NearbyCommand;
-import net.earthmc.emc.commands.NetherCommand;
-import net.earthmc.emc.commands.QueueCommand;
-import net.earthmc.emc.commands.TownlessCommand;
+import net.emc.emce.commands.InfoCommands;
+import net.emc.emce.commands.NearbyCommand;
+import net.emc.emce.commands.NetherCommand;
+import net.emc.emce.commands.QueueCommand;
+import net.emc.emce.commands.TownlessCommand;
 
-public class ClientSideCommands implements ClientCommandPlugin
+public class CommandRegistry implements ClientCommandPlugin
 {
     @Override
     public void registerCommands(CommandDispatcher<CottonClientCommandSource> dispatcher)

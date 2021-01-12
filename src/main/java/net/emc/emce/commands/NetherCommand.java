@@ -1,4 +1,4 @@
-package net.earthmc.emc.commands;
+package net.emc.emce.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -7,7 +7,7 @@ import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
-import static net.earthmc.emc.EMCMod.client;
+import static net.emc.emce.EMCE.client;
 
 public class NetherCommand 
 {

@@ -1,4 +1,4 @@
-package net.earthmc.emc.utils;
+package net.emc.emce.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -7,14 +7,11 @@ import com.google.gson.JsonObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static net.earthmc.emc.EMCMod.*;
+import static net.emc.emce.EMCE.*;
 
 public class Timers
 {
-    public static Timer queueTimer;
-    public static Timer nearbyTimer;
-    public static Timer townlessTimer;
-    public static Timer infoTimer;
+    public static Timer queueTimer, nearbyTimer, townlessTimer, infoTimer;
 
     private static boolean running;
 
@@ -68,7 +65,7 @@ public class Timers
                 JsonObject serverInfo = EmcApi.getServerInfo();
                 JsonElement serverOnline = serverInfo.get("serverOnline");
 
-                if (serverOnline != null && serverOnline.getAsBoolean()) queue = serverInfo.get("queue").getAsString();
+                if (serverOnline != null && serverOnline.getAsBoolean()) queue = serverInfo.get("queue").getAsInt();
             }
         }, delay, period);
     }
@@ -108,7 +105,7 @@ public class Timers
 
         startInfo(0, 2*60*1000);
         startTownless(0, 60*1000);
-        startNearby(0, 10*1000);
+        startNearby(0, 20*1000);
         startQueue(0, 10*1000);
     }
 
@@ -130,7 +127,7 @@ public class Timers
 
         if (timer.equals(infoTimer)) startInfo(0, 2*60*1000);
         else if (timer.equals(townlessTimer)) startTownless(0, 60*1000);
-        else if (timer.equals(nearbyTimer)) startNearby(0, 10*1000);
+        else if (timer.equals(nearbyTimer)) startNearby(0, 20*1000);
         else if (timer.equals(queueTimer)) startQueue(0, 10*1000);
         else throw new IllegalStateException("Unexpected value: " + timer.getClass().getName());
     }

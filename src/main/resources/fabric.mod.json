@@ -14,22 +14,22 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/emc/icon.png",
+  "icon": "assets/emce/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.earthmc.emc.EMCMod"
+      "net.emc.emce.EMCE"
     ],
     "modmenu": [
-      "net.earthmc.emc.ModMenuIntegration"
+      "net.emc.emce.ModMenuIntegration"
     ],
     "cotton-client-commands": [
-      "net.earthmc.emc.ClientSideCommands"
+      "net.emc.emce.CommandRegistry"
     ]
   },
   "mixins": [
-    "emc.mixins.json"
+    "emce.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
