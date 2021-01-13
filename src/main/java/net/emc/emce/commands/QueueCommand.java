@@ -14,10 +14,8 @@ public class QueueCommand
     {
         dispatcher.register(ArgumentBuilders.literal("queuesize").executes(source ->
         {
-            if (queue <= 0)
-                source.getSource().sendFeedback(new TranslatableText("msg_queue_err"));
-            else
-                source.getSource().sendFeedback(new TranslatableText("msg_queue_success", queue).formatted(Formatting.GOLD));
+            if (queue >= 0) source.getSource().sendFeedback(new TranslatableText("msg_queue_success", queue).formatted(Formatting.GOLD));
+            else source.getSource().sendFeedback(new TranslatableText("msg_queue_err"));
 
             return 1;
         }));

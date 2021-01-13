@@ -29,8 +29,7 @@ public class NetherCommand
             return 1;
         })).executes(c ->
         {
-            int x;
-            int z;
+            int x, z;
 
             if (client.player != null)
             {
@@ -39,14 +38,10 @@ public class NetherCommand
 
                 c.getSource().sendFeedback(new TranslatableText("msg_nether_owncoords"));
                 c.getSource().sendFeedback(new TranslatableText("msg_nether_success", x/8, z/8).formatted(Formatting.GOLD));
-
-                return 1;
             }
-            else {
-                c.getSource().sendFeedback(new TranslatableText("msg_nether_err_null"));
+            else c.getSource().sendFeedback(new TranslatableText("msg_nether_err_null"));
 
-                return -1;
-            }
+            return 1;
         }));
     }
 }

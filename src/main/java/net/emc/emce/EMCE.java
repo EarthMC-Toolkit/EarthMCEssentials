@@ -27,7 +27,8 @@ public class EMCE implements ModInitializer
 
     public static String[] colors;
 
-    public static int queue = 0;
+    public static Integer queue = null;
+
     public static String clientName = "";
     public static String clientTownName = "";
     public static String clientNationName = "";
