@@ -10,6 +10,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import static net.emc.emce.EMCE.*;
+import static net.emc.emce.utils.Timers.*;
 
 public class InfoCommands
 {
@@ -50,6 +51,8 @@ public class InfoCommands
             })
         ).executes(c -> {
             CottonClientCommandSource source = c.getSource();
+            restartTimer(residentInfoTimer); // Makes sure clientTownName isn't delayed.
+
             if (clientTownName.equals(""))
                 source.sendFeedback(new TranslatableText("text_shared_notregistered", clientName).formatted(Formatting.RED));
             else {
@@ -86,12 +89,11 @@ public class InfoCommands
         dispatcher.register(ArgumentBuilders.literal("nationinfo").then(
             ArgumentBuilders.argument("nationName", StringArgumentType.string()).executes(c -> {
             String nationName = StringArgumentType.getString(c, "nationName");
-            JsonArray nations = allNations;
             JsonObject nationObject = new JsonObject();
 
-            for (int i = 0; i < nations.size(); i++)
+            for (int i = 0; i < allNations.size(); i++)
             {
-                JsonObject nation = (JsonObject) nations.get(i);
+                JsonObject nation = (JsonObject) allNations.get(i);
 
                 if (nation.get("name").getAsString().toLowerCase().equals(nationName.toLowerCase()))
                 {
@@ -118,6 +120,8 @@ public class InfoCommands
         })).executes(c ->
         {
             CottonClientCommandSource source = c.getSource();
+            restartTimer(residentInfoTimer); // Makes sure clientNationName isn't delayed.
+
             if (clientNationName.equals("")) 
                 source.sendFeedback(new TranslatableText("text_shared_notregistered", clientName).formatted(Formatting.RED));
             else {

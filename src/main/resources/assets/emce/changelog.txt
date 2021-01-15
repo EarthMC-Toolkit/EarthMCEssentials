@@ -48,3 +48,13 @@ v1.2.1 (Jan 12 2021)
 - Lots of files will now use static imports instead of referencing EMCE all the time.
 - Timers are now unique and can be started/restarted individually instead of bundled together.
 - Timers threads are now daemons and have names assigned to what they do.
+
+v1.3.0 (Jan 15 2021)
+- Split info timer into 2, one updates clientTownName/clientNationName and the other updates allTowns/allNations.
+- Player can now change the text colour when using /townless (option found within commands submenu in config menu)
+- Removed unneeded methods in EmcApi
+- Changed getNearby to use x and z ints instead of passing in the config
+- Static imports in ConfigUtils and Timers
+- Fixed town info colour "reset" button setting to blue instead of default green
+- Fixed "not registered" error when player joins a town or town joins a nation. (By adding restartTimer() before command logic)
+- Cotton-Client-Commands is now included in the main jar to complement the mod :)

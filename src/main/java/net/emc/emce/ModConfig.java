@@ -60,6 +60,7 @@ public class ModConfig implements ConfigData
 
     public static class Commands
     {
+        public String townlessTextColour = "DARK_PURPLE";
         public String townInfoTextColour = "GREEN";
         public String nationInfoTextColour = "AQUA";
     }

@@ -19,8 +19,7 @@ public class TownlessCommand
         dispatcher.register(ArgumentBuilders.literal("townless").executes(c ->
         {
             StringBuilder townlessString = new StringBuilder();
-            Formatting headingFormatting = Formatting.byName(config.townless.headingTextColour);
-            Formatting playerNameFormatting = Formatting.byName(config.townless.playerTextColour);
+            Formatting townlessTextFormatting = Formatting.byName(config.commands.townlessTextColour);
 
             for (int i = 0; i < townless.size(); i++)
             {
@@ -28,36 +27,36 @@ public class TownlessCommand
                 townlessString.append(currentPlayer.get("name").getAsString()).append(", ");
             }
 
-            c.getSource().sendFeedback(new TranslatableText("text_townless_header", townless.size()).formatted(headingFormatting));
+            c.getSource().sendFeedback(new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting));
             
             if (townless.size() > 0)
-                c.getSource().sendFeedback(new TranslatableText(townlessString.toString()).formatted(playerNameFormatting));
+                c.getSource().sendFeedback(new TranslatableText(townlessString.toString()).formatted(townlessTextFormatting));
                 
             return 1;
         }).then(ArgumentBuilders.literal("inviteAll").executes(c ->
         {
             if (client.player == null) return -1;
-            else {
-                if (ModUtils.shouldRender())
+
+            if (ModUtils.shouldRender())
+            {
+                StringBuilder townlessString = new StringBuilder();
+
+                for (int i = 0; i < townless.size(); i++)
                 {
-                    StringBuilder townlessString = new StringBuilder();
-
-                    for (int i = 0; i < townless.size(); i++) {
-                        JsonObject currentPlayer = (JsonObject) townless.get(i);
-                        if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256)
-                            break;
-                        else townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
-                    }
-
-                    client.player.sendChatMessage("/towny:town invite " + townlessString);
-
-                    c.getSource().sendFeedback(new TranslatableText("msg_townless_sent"));
-                    c.getSource().sendFeedback(new TranslatableText("msg_townless_permissions"));
+                    JsonObject currentPlayer = (JsonObject) townless.get(i);
+                    if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256)
+                        break;
+                    else townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
                 }
-                else c.getSource().sendFeedback(new TranslatableText("msg_townless_invite_err"));
 
-                return 1;
+                client.player.sendChatMessage("/towny:town invite " + townlessString);
+
+                c.getSource().sendFeedback(new TranslatableText("msg_townless_sent"));
+                c.getSource().sendFeedback(new TranslatableText("msg_townless_permissions"));
             }
+            else c.getSource().sendFeedback(new TranslatableText("msg_townless_invite_err"));
+
+            return 1;
         })).then(ArgumentBuilders.literal("refresh").executes(c -> {
             Timers.restartTimer(Timers.townlessTimer);
             c.getSource().sendFeedback(new TranslatableText("msg_townless_refresh"));
