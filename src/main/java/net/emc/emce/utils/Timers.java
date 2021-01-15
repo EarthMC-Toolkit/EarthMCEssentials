@@ -48,7 +48,9 @@ public class Timers
             @Override
             public void run() {
                 if (!config.general.enableMod && nearby.size() == 0) return;
-                if (config.nearby.enabled) nearby = getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
+                if (config.nearby.enabled)
+                    nearby = getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
+                    nearbySurrounding = getNearby(32, 32);
             }
         }, delay, period);
     }
@@ -121,8 +123,8 @@ public class Timers
         startTownNationInfo(0, 2*60*1000);
         startResidentInfo(0, 60*1000);
         startTownless(0, 60*1000);
-        startNearby(0, 20*1000);
-        startQueue(0, 10*1000);
+        startNearby(0, 10*1000);
+        startQueue(0, 5*1000);
     }
 
     public static void stopAll()
@@ -145,8 +147,8 @@ public class Timers
         if (timer.equals(townNationInfo)) startTownNationInfo(0, 2*60*1000);
         else if (timer.equals(residentInfoTimer)) startResidentInfo(0, 60*1000);
         else if (timer.equals(townlessTimer)) startTownless(0, 60*1000);
-        else if (timer.equals(nearbyTimer)) startNearby(0, 20*1000);
-        else if (timer.equals(queueTimer)) startQueue(0, 10*1000);
+        else if (timer.equals(nearbyTimer)) startNearby(0, 10*1000);
+        else if (timer.equals(queueTimer)) startQueue(0, 5*1000);
         else throw new IllegalStateException("Unexpected value: " + timer.getClass().getName());
     }
 

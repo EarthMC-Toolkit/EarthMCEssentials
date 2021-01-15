@@ -122,7 +122,14 @@ public class ConfigUtils
                 .setSaveConsumer(newValue -> config.nearby.enabled = newValue)
                 .build());
 
-        // Nearby Preset positions
+        // Show nearby player rank
+        nearby.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Show Rank"), config.nearby.showRank)
+                .setDefaultValue(true)
+                .setTooltip(new TranslatableText("Toggles the showing of players ranks before their names."))
+                .setSaveConsumer(newValue -> config.nearby.showRank = newValue)
+                .build());
+
+        // Nearby preset positions
         nearby.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Use Preset Positions"), config.nearby.presetPositions)
                 .setDefaultValue(true)
                 .setTooltip(new TranslatableText("Toggles the use of preset positions, uses sliders if off."))
@@ -204,7 +211,7 @@ public class ConfigUtils
 
         // Townless Information Colour
         commands.addEntry(entryBuilder.startSelector(new TranslatableText("Town Info Colour"), colors, config.commands.townlessTextColour)
-                .setDefaultValue("DARK_PURPLE")
+                .setDefaultValue("LIGHT_PURPLE")
                 .setTooltip(new TranslatableText("The colour of the townless players text."))
                 .setSaveConsumer(newValue -> config.commands.townlessTextColour = newValue)
                 .build());

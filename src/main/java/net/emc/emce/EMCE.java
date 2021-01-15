@@ -37,7 +37,7 @@ public class EMCE implements ModInitializer
     public static Screen screen;
     public static ModConfig config;
 
-    public static JsonArray townless, nearby, allNations, allTowns;
+    public static JsonArray townless, nearby, nearbySurrounding, allNations, allTowns;
 
     KeyBinding configKeybind;
 
@@ -227,13 +227,13 @@ public class EMCE implements ModInitializer
                         for (int i = 0; i < nearby.size(); i++)
                         {
                             JsonObject currentPlayer = (JsonObject) nearby.get(i);
-                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCE.client.player.getX()) +
-                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCE.client.player.getZ());
+                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
+                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 
                             if (currentPlayer.get("name").getAsString().equals(clientName)) continue;
 
                             Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
-                            MutableText playerText = new TranslatableText("text_nearby_name", currentPlayer.get("name").getAsString(), distance).formatted(playerTextFormatting);
+                            MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString(), distance).formatted(playerTextFormatting);
 
                             renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
 
@@ -354,13 +354,21 @@ public class EMCE implements ModInitializer
                         for (int i = 0; i < nearby.size(); i++)
                         {
                             JsonObject currentPlayer = (JsonObject) nearby.get(i);
-                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) EMCE.client.player.getX()) +
-                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) EMCE.client.player.getZ());
+                            int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
+                                           Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 
                             if (currentPlayer.get("name").getAsString().equals(clientName)) continue;
 
+                            String prefix = "";
+
+                            if (config.nearby.showRank)
+                            {
+                                if (!currentPlayer.has("town")) prefix = "(Townless) ";
+                                else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
+                            }
+
                             Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
-                            MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(playerTextFormatting);
+                            MutableText playerText = new TranslatableText(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(playerTextFormatting);
 
                             renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10*i, 16777215);
                         }

@@ -37,22 +37,49 @@ public class TownlessCommand
         {
             if (client.player == null) return -1;
 
-            if (ModUtils.shouldRender())
+            if (ModUtils.getServerName().endsWith("earthmc.net"))
             {
                 StringBuilder townlessString = new StringBuilder();
 
                 for (int i = 0; i < townless.size(); i++)
                 {
                     JsonObject currentPlayer = (JsonObject) townless.get(i);
-                    if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256)
-                        break;
+                    if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256) break;
                     else townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
                 }
 
                 client.player.sendChatMessage("/towny:town invite " + townlessString);
 
-                c.getSource().sendFeedback(new TranslatableText("msg_townless_sent"));
-                c.getSource().sendFeedback(new TranslatableText("msg_townless_permissions"));
+                c.getSource().sendFeedback(new TranslatableText("msg_townless_sent", townless.size()).formatted(Formatting.AQUA));
+            }
+            else c.getSource().sendFeedback(new TranslatableText("msg_townless_invite_err"));
+
+            return 1;
+        })).then(ArgumentBuilders.literal("inviteNearby").executes(c -> {
+            if (client.player == null) return -1;
+
+            if (ModUtils.getServerName().endsWith("earthmc.net"))
+            {
+                StringBuilder townlessString = new StringBuilder();
+                int invitesSent = 0;
+
+                for (int i = 0; i < nearbySurrounding.size(); i++)
+                {
+                    JsonObject currentPlayer = (JsonObject) nearbySurrounding.get(i);
+
+                    // not townless, skip
+                    if (currentPlayer.has("town")) continue;
+
+                    if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256)
+                        break;
+                    else
+                        townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
+                        invitesSent += 1;
+                }
+
+                client.player.sendChatMessage("/towny:town invite " + townlessString);
+
+                c.getSource().sendFeedback(new TranslatableText("msg_townless_sent", Integer.toString(invitesSent)).formatted(Formatting.AQUA));
             }
             else c.getSource().sendFeedback(new TranslatableText("msg_townless_invite_err"));
 

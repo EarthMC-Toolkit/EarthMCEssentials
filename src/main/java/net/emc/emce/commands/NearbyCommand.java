@@ -30,7 +30,15 @@ public class NearbyCommand
                 int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
                                Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 
-                c.getSource().sendFeedback(new TranslatableText(currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(textFormatting));
+                String prefix = "";
+
+                if (config.nearby.showRank)
+                {
+                    if (!currentPlayer.has("town")) prefix = "(Townless) ";
+                    else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
+                }
+
+                c.getSource().sendFeedback(new TranslatableText(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(textFormatting));
             }
 
             return 1;

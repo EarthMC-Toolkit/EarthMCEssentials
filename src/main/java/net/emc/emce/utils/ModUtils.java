@@ -162,7 +162,14 @@ public class ModUtils
             int distance = Math.abs(currentObj.get("x").getAsInt() - (int) client.player.getX()) +
                            Math.abs(currentObj.get("z").getAsInt() - (int) client.player.getZ());
 
-            MutableText nearbyText = new TranslatableText(currentObj.get("name").getAsString() + ": " + distance + "m");
+            String prefix = "";
+
+            if (config.nearby.showRank) {
+                if (!currentObj.has("town")) prefix = "(Townless) ";
+                else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
+            }
+
+            MutableText nearbyText = new TranslatableText(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
 

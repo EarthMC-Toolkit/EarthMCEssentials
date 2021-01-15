@@ -38,6 +38,7 @@ public class ModConfig implements ConfigData
     public static class Nearby
     {
         public boolean enabled = true;
+        public boolean showRank = true;
         public boolean presetPositions = true;
 
         public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
@@ -60,7 +61,7 @@ public class ModConfig implements ConfigData
 
     public static class Commands
     {
-        public String townlessTextColour = "DARK_PURPLE";
+        public String townlessTextColour = "LIGHT_PURPLE";
         public String townInfoTextColour = "GREEN";
         public String nationInfoTextColour = "AQUA";
     }
