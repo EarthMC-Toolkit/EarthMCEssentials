@@ -16,7 +16,7 @@ public class Timers
 
     private static boolean running;
 
-    public static void setRunning(boolean value){
+    private static void setRunning(boolean value){
         running = value;
     }
     public static boolean getRunning(){
@@ -120,11 +120,11 @@ public class Timers
         if (running) return;
         setRunning(true);
 
-        startTownNationInfo(0, 2*60*1000);
-        startResidentInfo(0, 60*1000);
-        startTownless(0, 60*1000);
-        startNearby(0, 10*1000);
-        startQueue(0, 5*1000);
+        startTownNationInfo(0, config.api.townNationInfoInterval * 1000);
+        startResidentInfo(0, config.api.residentInfoInterval * 1000);
+        startTownless(0, config.api.townlessInterval * 1000);
+        startNearby(0, config.api.nearbyInterval * 1000);
+        startQueue(0, config.api.queueInterval * 1000);
     }
 
     public static void stopAll()
@@ -144,11 +144,11 @@ public class Timers
     {
         timer.cancel();
 
-        if (timer.equals(townNationInfo)) startTownNationInfo(0, 2*60*1000);
-        else if (timer.equals(residentInfoTimer)) startResidentInfo(0, 60*1000);
-        else if (timer.equals(townlessTimer)) startTownless(0, 60*1000);
-        else if (timer.equals(nearbyTimer)) startNearby(0, 10*1000);
-        else if (timer.equals(queueTimer)) startQueue(0, 5*1000);
+        if (timer.equals(townNationInfo)) startTownNationInfo(0, config.api.townNationInfoInterval * 1000);
+        else if (timer.equals(residentInfoTimer)) startResidentInfo(0, config.api.residentInfoInterval * 1000);
+        else if (timer.equals(townlessTimer)) startTownless(0, config.api.townlessInterval * 1000);
+        else if (timer.equals(nearbyTimer)) startNearby(0, config.api.nearbyInterval * 1000);
+        else if (timer.equals(queueTimer)) startQueue(0, config.api.queueInterval * 1000);
         else throw new IllegalStateException("Unexpected value: " + timer.getClass().getName());
     }
 

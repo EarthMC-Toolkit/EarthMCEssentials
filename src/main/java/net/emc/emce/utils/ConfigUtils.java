@@ -28,12 +28,13 @@ public class ConfigUtils
 
     public static ConfigBuilder getConfigBuilder()
     {
-        ConfigBuilder builder = ConfigBuilder.create().setTitle(new TranslatableText("EarthMC Essentials Config")).setTransparentBackground(true);
+        ConfigBuilder builder = ConfigBuilder.create().setTitle(new TranslatableText("config_title_name")).setTransparentBackground(true);
 
-        ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("General"));
-        ConfigCategory townless = builder.getOrCreateCategory(new TranslatableText("Townless"));
-        ConfigCategory nearby = builder.getOrCreateCategory(new TranslatableText("Nearby"));
-        ConfigCategory commands = builder.getOrCreateCategory(new TranslatableText("Commands"));        
+        ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("config_category_general"));
+        ConfigCategory townless = builder.getOrCreateCategory(new TranslatableText("config_category_townless"));
+        ConfigCategory nearby = builder.getOrCreateCategory(new TranslatableText("config_category_nearby"));
+        ConfigCategory commands = builder.getOrCreateCategory(new TranslatableText("config_category_commands"));
+        ConfigCategory api = builder.getOrCreateCategory(new TranslatableText("config_category_api"));
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
@@ -229,6 +230,42 @@ public class ConfigUtils
                 .setTooltip(new TranslatableText("The colour of the nation info text."))
                 .setSaveConsumer(newValue -> config.commands.nationInfoTextColour = newValue)
                 .build());
+
+        /* API Intervals
+           Default values are in seconds. */
+
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Townless Interval"), config.api.townlessInterval, 5, 300)
+                .setDefaultValue(60)
+                .setTooltip(new TranslatableText("The interval (in seconds) at which townless data will be updated."))
+                .setSaveConsumer(newValue -> {
+                    config.api.townlessInterval = newValue;
+                    Timers.restartTimer(Timers.townlessTimer);
+                }).build());
+
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Nearby Interval"), config.api.nearbyInterval, 5, 300)
+                .setDefaultValue(10)
+                .setTooltip(new TranslatableText("The interval (in seconds) at which nearby data will be updated."))
+                .setSaveConsumer(newValue -> {
+                    config.api.nearbyInterval = newValue;
+                    Timers.restartTimer(Timers.nearbyTimer);
+                }).build());
+
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Queue Fetch Interval"), config.api.queueInterval, 5, 300)
+                .setDefaultValue(5)
+                .setTooltip(new TranslatableText("The interval (in seconds) at which queue data will be updated."))
+                .setSaveConsumer(newValue -> {
+                    config.api.queueInterval = newValue;
+                    Timers.restartTimer(Timers.queueTimer);
+                }).build());
+
+        // Fetch causes heavy load, best to keep minimum at 30.
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Town/Nation Interval"), config.api.townNationInfoInterval, 30, 300)
+                .setDefaultValue(2*60)
+                .setTooltip(new TranslatableText("The interval (in seconds) at which data about towns and nations will be updated."))
+                .setSaveConsumer(newValue -> {
+                    config.api.townNationInfoInterval = newValue;
+                    Timers.restartTimer(Timers.townNationInfo);
+                }).build());
 
         builder.setSavingRunnable(() -> ConfigUtils.serializeConfig(config));
 

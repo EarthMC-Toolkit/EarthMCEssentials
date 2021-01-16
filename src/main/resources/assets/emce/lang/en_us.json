@@ -34,5 +34,12 @@
     "text_nationinfo_err": "§6EMCE §7> §cNation %s is not registered.",
 
     "text_shared_residents": "Residents: %d",
-    "text_shared_notregistered": "§6EMCE §7> §cResident %s is not registered."
+    "text_shared_notregistered": "§6EMCE §7> §cResident %s is not registered.",
+
+    "config_title_name": "EarthMC Essentials Config",
+    "config_category_general": "General",
+    "config_category_townless": "Townless",
+    "config_category_nearby": "Nearby",
+    "config_category_commands": "Commands",
+    "config_category_api": "API"
 }

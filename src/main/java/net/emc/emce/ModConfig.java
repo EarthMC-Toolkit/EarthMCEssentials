@@ -13,6 +13,7 @@ public class ModConfig implements ConfigData
     public Townless townless = new Townless();
     public Nearby nearby = new Nearby();
     public Commands commands = new Commands();
+    public API api = new API();
 
     public static class General
     {
@@ -64,5 +65,14 @@ public class ModConfig implements ConfigData
         public String townlessTextColour = "LIGHT_PURPLE";
         public String townInfoTextColour = "GREEN";
         public String nationInfoTextColour = "AQUA";
+    }
+
+    public static class API
+    {
+        public int queueInterval = 5;
+        public int nearbyInterval = 10;
+        public int townlessInterval = 60;
+        public int residentInfoInterval = 60;
+        public int townNationInfoInterval = 120;
     }
 }
