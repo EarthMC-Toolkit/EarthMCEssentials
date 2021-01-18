@@ -3,6 +3,7 @@ package net.emc.emce.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.emc.emce.EMCE;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -45,10 +46,10 @@ public class EmcApi
             }
         }
         catch (Exception ignore) {
-            return new JsonArray();
+            return EMCE.townless;
         }
 
-        return new JsonArray();
+        return EMCE.townless;
     }
 
     public static JsonArray getNearby(int xBlocks, int zBlocks)
@@ -95,10 +96,10 @@ public class EmcApi
             }
         }
         catch (Exception ignore) {
-            return new JsonArray();
+            return EMCE.nearby;
         }
 
-        return new JsonArray();
+        return EMCE.nearby;
     }
 
     public static JsonObject getResident(String residentName)
