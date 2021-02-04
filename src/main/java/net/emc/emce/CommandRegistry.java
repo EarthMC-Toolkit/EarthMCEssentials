@@ -12,8 +12,7 @@ import net.emc.emce.commands.TownlessCommand;
 public class CommandRegistry implements ClientCommandPlugin
 {
     @Override
-    public void registerCommands(CommandDispatcher<CottonClientCommandSource> dispatcher)
-    {
+    public void registerCommands(CommandDispatcher<CottonClientCommandSource> dispatcher) {
         TownlessCommand.register(dispatcher);
         NetherCommand.register(dispatcher);
         QueueCommand.register(dispatcher);

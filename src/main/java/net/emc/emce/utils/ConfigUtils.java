@@ -6,28 +6,26 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.ConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.emc.emce.EMCE;
 import net.emc.emce.ModConfig;
 import net.minecraft.text.TranslatableText;
 
 import static net.emc.emce.EMCE.colors;
 import static net.emc.emce.EMCE.config;
 
-public class ConfigUtils
-{
+public class ConfigUtils {
     private ConfigUtils() { }
 
-    public static void serializeConfig(ModConfig config)
-    {
-        try
-        {
+    public static void serializeConfig(ModConfig config) {
+        EMCE.shouldRender = ModUtils.shouldRender();
+        try {
             ((ConfigManager<ModConfig>) AutoConfig.getConfigHolder(ModConfig.class)).getSerializer().serialize(config);
         } catch (ConfigSerializer.SerializationException serializeException) {
             serializeException.printStackTrace();
         }
     }
 
-    public static ConfigBuilder getConfigBuilder()
-    {
+    public static ConfigBuilder getConfigBuilder() {
         ConfigBuilder builder = ConfigBuilder.create().setTitle(new TranslatableText("config_title_name")).setTransparentBackground(true);
 
         ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("config_category_general"));
@@ -51,6 +49,12 @@ public class ConfigUtils
                 .setDefaultValue(true)
                 .setTooltip(new TranslatableText("While enabled, overlays only render while you are on EarthMC."))
                 .setSaveConsumer(newValue -> config.general.emcOnly = newValue)
+                .build());
+
+        general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Disable VoxelMap"), config.general.disableVoxelMap)
+                .setDefaultValue(true)
+                .setTooltip(new TranslatableText("Disables VoxelMap radar and cave mode upon joining a server. Use alongside EMC-Only to only disable on EMC."))
+                .setSaveConsumer(newValue -> config.general.disableVoxelMap = newValue)
                 .build());
 
         // Enable Townless
@@ -175,6 +179,12 @@ public class ConfigUtils
                 .setDefaultValue(colors[11])
                 .setTooltip(new TranslatableText("The colour of the nearby player names."))
                 .setSaveConsumer(newValue -> config.nearby.playerTextColour = newValue)
+                .build());
+
+        nearby.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Player Rank Prefix"), config.nearby.showRank)
+                .setDefaultValue(false)
+                .setTooltip(new TranslatableText("Shows a player's rank as prefix, if enabled."))
+                .setSaveConsumer(newValue -> config.nearby.showRank = newValue)
                 .build());
 
         // Nearby Scale Method

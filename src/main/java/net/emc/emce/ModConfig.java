@@ -15,14 +15,13 @@ public class ModConfig implements ConfigData
     public Commands commands = new Commands();
     public API api = new API();
 
-    public static class General
-    {
+    public static class General {
         public boolean enableMod = true;
         public boolean emcOnly = true;
+        public boolean disableVoxelMap = true;
     }
 
-    public static class Townless
-    {
+    public static class Townless {
         public boolean enabled = true;
         public boolean presetPositions = true;
 
@@ -36,10 +35,9 @@ public class ModConfig implements ConfigData
         public String playerTextColour = "BLUE";
     }
 
-    public static class Nearby
-    {
+    public static class Nearby {
         public boolean enabled = true;
-        public boolean showRank = true;
+        public boolean showRank = false;
         public boolean presetPositions = true;
 
         public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
@@ -60,15 +58,13 @@ public class ModConfig implements ConfigData
         public int zBlocks = 500;
     }
 
-    public static class Commands
-    {
+    public static class Commands {
         public String townlessTextColour = "LIGHT_PURPLE";
         public String townInfoTextColour = "GREEN";
         public String nationInfoTextColour = "AQUA";
     }
 
-    public static class API
-    {
+    public static class API {
         public int queueInterval = 5;
         public int nearbyInterval = 10;
         public int townlessInterval = 60;

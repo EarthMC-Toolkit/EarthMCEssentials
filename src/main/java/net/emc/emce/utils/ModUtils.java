@@ -61,100 +61,81 @@ public class ModUtils
         }
     }
 
-    public static int getStringWidth(String string)
-    {
+    public static int getStringWidth(String string) {
         MinecraftClient client = MinecraftClient.getInstance();
         TextRenderer renderer = client.textRenderer;    
 
         return renderer.getWidth(string);
     }
-    public static int getTextWidth(MutableText text)
-    {
+    public static int getTextWidth(MutableText text) {
         MinecraftClient client = MinecraftClient.getInstance();
         TextRenderer renderer = client.textRenderer;    
 
         return renderer.getWidth(text);
     }
 
-    public static int getStringHeight(String string)
-    {
+    public static int getStringHeight(String string) {
         MinecraftClient client = MinecraftClient.getInstance();
         TextRenderer renderer = client.textRenderer;  
 
         return renderer.getStringBoundedHeight(string, 100000);
     }
 
-    public static int getWindowWidth()
-    {
+    public static int getWindowWidth() {
         MinecraftClient client = MinecraftClient.getInstance();
         return client.getWindow().getScaledWidth();
     }
 
-    public static int getWindowHeight()
-    {
+    public static int getWindowHeight() {
         MinecraftClient client = MinecraftClient.getInstance();
         return client.getWindow().getScaledHeight();
     }
 
-    public static int getLongestElement(JsonArray array)
-    {
+    public static int getLongestElement(JsonArray array) {
         if (array.size() == 0) return 0;
 
         int longestElement = 0;     
-        for (int i = 0; i < array.size(); i++)
-        {
+        for (int i = 0; i < array.size(); i++) {
             JsonObject currentObj = (JsonObject) array.get(i);
             int currentWidth = getStringWidth(currentObj.get("name").getAsString());
             longestElement = Math.max(currentWidth, longestElement);
         }
-
         return longestElement;
     }
 
-    public static int getArrayHeight(JsonArray array)
-    {
+    public static int getArrayHeight(JsonArray array) {
         if (array.size() == 0) return 0;
 
         int totalLength = 0;
-        for (int i = 0; i < array.size(); i++)
-        {
+        for (int i = 0; i < array.size(); i++) {
             JsonObject currentObj = (JsonObject) array.get(i);
             totalLength += getStringHeight(currentObj.get("name").getAsString());
         }
-
         return totalLength;
     }
 
-    public static int getTownlessArrayHeight(JsonArray array, int maxLength)
-    {
+    public static int getTownlessArrayHeight(JsonArray array, int maxLength) {
         if (array.size() == 0) return 0;
 
         int totalLength = 0;
-        for (int i = 0; i < array.size(); i++)
-        {
-            if (i >= maxLength && maxLength != 0)
-            {
+        for (int i = 0; i < array.size(); i++) {
+            if (i >= maxLength && maxLength != 0) {
                 String maxLengthString = "And " + (array.size()-i) + " more...";
                 totalLength += getStringHeight(maxLengthString);
                 return totalLength-10;
-            }
-            else
-            {
+            } else {
                 JsonObject currentObj = (JsonObject) array.get(i);
                 totalLength += getStringHeight(currentObj.get("name").getAsString());
             }
         }
-
         return totalLength;
     }
 
-    public static int getNearbyLongestElement(JsonArray array)
-    {
+    public static int getNearbyLongestElement(JsonArray array) {
         if (array.size() == 0 || client.player == null) return 0;
 
         int longestElement = 0;
-        for (int i = 0; i < array.size(); i++)
-        {
+        for (int i = 0; i < array.size(); i++) {
             JsonObject currentObj = (JsonObject) array.get(i);
             if (currentObj.get("name").getAsString().equals(clientName))
                 continue;
@@ -172,30 +153,24 @@ public class ModUtils
             MutableText nearbyText = new TranslatableText(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
-
         return longestElement;
     }
 
-    public static int getStatusEffectOffset(Collection<StatusEffectInstance> statusEffectInstances)
-    {
+    public static int getStatusEffectOffset(Collection<StatusEffectInstance> statusEffectInstances) {
         if (statusEffectInstances.isEmpty()) return 16;
 
         int offset = 0;
 
-        for (StatusEffectInstance statusEffectInstance : statusEffectInstances)
-        {
-            if (statusEffectInstance.shouldShowIcon())
-            {
+        for (StatusEffectInstance statusEffectInstance : statusEffectInstances) {
+            if (statusEffectInstance.shouldShowIcon()) {
                 if (statusEffectInstance.getEffectType().isBeneficial()) offset = Math.max(offset, 36);
                 else offset = 64;
             }
         }
-
         return offset;
     }
 
-    public static boolean shouldRender()
-    {
+    public static boolean shouldRender() {
         String serverName = getServerName();
 
         // Uses endsWith because EMC has 2 valid IPs (earthmc.net & play.earthmc.net)
@@ -207,16 +182,13 @@ public class ModUtils
         return true;
     }
 
-    public static String getServerName()
-    {
+    public static String getServerName() {
         String serverName = "";
 
-        try
-        {
+        try {
             ServerInfo serverInfo = client.getCurrentServerEntry();
 
-            if (serverInfo != null)
-            {
+            if (serverInfo != null) {
                 if (serverInfo.isLocal())
                     serverName = serverInfo.name;
                 else
@@ -226,8 +198,7 @@ public class ModUtils
                 serverName = "Realms";
             else if (client.isInSingleplayer())
                 serverName = "Singleplayer";
-            else
-            {
+            else {
                 ClientPlayNetworkHandler clientPlayNetworkHandler = client.getNetworkHandler();
                 ClientConnection clientConnection = null;
 
@@ -242,13 +213,10 @@ public class ModUtils
                     serverName = socketAddress.getHostName();
                 }
             }
-        }
-        catch (Exception exception)
-        {
+        } catch (Exception exception) {
             System.out.println("EMC Essentials: Error getting serverName");
             exception.printStackTrace();
         }
-
         return serverName;
     }
 }

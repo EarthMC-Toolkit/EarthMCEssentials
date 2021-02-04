@@ -6,29 +6,25 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+import net.emc.emce.PlayerMessaging;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import static net.emc.emce.EMCE.*;
 import static net.emc.emce.utils.Timers.*;
 
-public class InfoCommands
-{
-    public static void registerTownInfoCommand(CommandDispatcher<CottonClientCommandSource> dispatcher)
-    {
+public class InfoCommands {
+    public static void registerTownInfoCommand(CommandDispatcher<CottonClientCommandSource> dispatcher) {
         dispatcher.register(ArgumentBuilders.literal("towninfo").then(
-            ArgumentBuilders.argument("townName", StringArgumentType.string()).executes(c ->
-            {
+            ArgumentBuilders.argument("townName", StringArgumentType.string()).executes(c -> {
                 String townName = StringArgumentType.getString(c, "townName");
                 JsonObject townObject = new JsonObject();
                 JsonArray towns = allTowns;
 
-                for (int i  = 0; i < towns.size(); i++)
-                {
+                for (int i  = 0; i < towns.size(); i++) {
                     JsonObject town = (JsonObject) towns.get(i);
 
-                    if (town.get("name").getAsString().toLowerCase().equals(townName.toLowerCase()))
-                    {
+                    if (town.get("name").getAsString().toLowerCase().equals(townName.toLowerCase())) {
                         townObject = town;
                         break;
                     }
@@ -91,12 +87,10 @@ public class InfoCommands
             String nationName = StringArgumentType.getString(c, "nationName");
             JsonObject nationObject = new JsonObject();
 
-            for (int i = 0; i < allNations.size(); i++)
-            {
+            for (int i = 0; i < allNations.size(); i++) {
                 JsonObject nation = (JsonObject) allNations.get(i);
 
-                if (nation.get("name").getAsString().toLowerCase().equals(nationName.toLowerCase()))
-                {
+                if (nation.get("name").getAsString().toLowerCase().equals(nationName.toLowerCase())) {
                     nationObject = nation;
                     break;
                 }
@@ -104,7 +98,7 @@ public class InfoCommands
 
             CottonClientCommandSource source = c.getSource();
             if (!nationObject.has("name"))
-                source.sendFeedback(new TranslatableText("text_nationinfo_err", nationName).formatted(Formatting.RED));
+                PlayerMessaging.sendMessage("text_nationinfo_err", Formatting.RED, true);
             else {
                 Formatting nationInfoTextColour = Formatting.byName(config.commands.nationInfoTextColour);
 
@@ -117,13 +111,12 @@ public class InfoCommands
             }
 
             return 1;
-        })).executes(c ->
-        {
+        })).executes(c -> {
             CottonClientCommandSource source = c.getSource();
             restartTimer(residentInfoTimer); // Makes sure clientNationName isn't delayed.
 
-            if (clientNationName.equals("")) 
-                source.sendFeedback(new TranslatableText("text_shared_notregistered", clientName).formatted(Formatting.RED));
+            if (clientNationName.equals(""))
+                PlayerMessaging.sendMessage("text_shared_notregistered", Formatting.RED, true, clientName);
             else {
                 JsonObject nationObject = new JsonObject();
                 JsonArray nations = allNations;

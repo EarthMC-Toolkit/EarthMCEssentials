@@ -10,16 +10,15 @@ import java.util.TimerTask;
 import static net.emc.emce.EMCE.*;
 import static net.emc.emce.utils.EmcApi.*;
 
-public class Timers
-{
+public class Timers {
     public static Timer queueTimer, nearbyTimer, townlessTimer, residentInfoTimer, townNationInfo;
 
     private static boolean running;
 
-    private static void setRunning(boolean value){
+    private static void setRunning(boolean value) {
         running = value;
     }
-    public static boolean getRunning(){
+    public static boolean getRunning() {
         return running;
     }
 
@@ -50,7 +49,6 @@ public class Timers
                 if (!config.general.enableMod && nearby.size() == 0) return;
                 if (config.nearby.enabled)
                     nearby = getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
-                    nearbySurrounding = getNearby(32, 32);
             }
         }, delay, period);
     }
@@ -95,16 +93,13 @@ public class Timers
         }, delay, period);
     }
 
-    public static void startResidentInfo(int delay, int period)
-    {
+    public static void startResidentInfo(int delay, int period) {
         setRunning(true);
         residentInfoTimer = new Timer("residentInfo", true);
 
-        residentInfoTimer.scheduleAtFixedRate(new TimerTask()
-        {
+        residentInfoTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 JsonObject resident = getResident(clientName);
 
                 if (resident.has("name")) {
@@ -115,8 +110,7 @@ public class Timers
         }, delay, period);
     }
 
-    public static void startAll()
-    {
+    public static void startAll() {
         if (running) return;
         setRunning(true);
 
@@ -127,8 +121,7 @@ public class Timers
         startQueue(0, config.api.queueInterval * 1000);
     }
 
-    public static void stopAll()
-    {
+    public static void stopAll() {
         if (!running) return;
 
         townNationInfo.cancel();
@@ -140,8 +133,10 @@ public class Timers
         setRunning(false);
     }
 
-    public static void restartTimer(Timer timer)
-    {
+    public static void restartTimer(Timer timer) {
+        if (!running)
+            return;
+        
         timer.cancel();
 
         if (timer.equals(townNationInfo)) startTownNationInfo(0, config.api.townNationInfoInterval * 1000);
@@ -152,8 +147,7 @@ public class Timers
         else throw new IllegalStateException("Unexpected value: " + timer.getClass().getName());
     }
 
-    public static void restartAll()
-    {
+    public static void restartAll() {
         stopAll();
         startAll();
     }
