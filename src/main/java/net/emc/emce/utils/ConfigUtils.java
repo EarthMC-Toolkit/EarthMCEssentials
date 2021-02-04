@@ -8,6 +8,7 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.emc.emce.EMCE;
 import net.emc.emce.ModConfig;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.TranslatableText;
 
 import static net.emc.emce.EMCE.colors;
@@ -51,11 +52,12 @@ public class ConfigUtils {
                 .setSaveConsumer(newValue -> config.general.emcOnly = newValue)
                 .build());
 
-        general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Disable VoxelMap"), config.general.disableVoxelMap)
-                .setDefaultValue(true)
-                .setTooltip(new TranslatableText("Disables VoxelMap radar and cave mode upon joining a server. Use alongside EMC-Only to only disable on EMC."))
-                .setSaveConsumer(newValue -> config.general.disableVoxelMap = newValue)
-                .build());
+        if (FabricLoader.getInstance().isModLoaded("voxelmap"))
+                general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Disable 'Illegal' VoxelMap Features"), config.general.disableVoxelMap)
+                        .setDefaultValue(true)
+                        .setTooltip(new TranslatableText("Disables VoxelMap radar and cave mode upon joining a server. Use alongside EMC-Only to only disable on EMC."))
+                        .setSaveConsumer(newValue -> config.general.disableVoxelMap = newValue)
+                        .build());
 
         // Enable Townless
         townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Enabled"), config.townless.enabled)

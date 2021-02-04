@@ -2,6 +2,7 @@ package net.emc.emce.mixin;
 
 import net.emc.emce.EMCE;
 import net.emc.emce.utils.ModUtils;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.text.LiteralText;
@@ -26,7 +27,7 @@ public class ClientPlayNetworkHandlerMixin {
         boolean shouldRender = ModUtils.shouldRender();
         EMCE.shouldRender = shouldRender;
 
-        if (shouldRender && config.general.disableVoxelMap && !client.isInSingleplayer()) {
+        if (shouldRender && config.general.disableVoxelMap && !client.isInSingleplayer() && FabricLoader.getInstance().isModLoaded("voxelmap") && config.general.enableMod) {
             client.player.sendMessage(new LiteralText("§3 §6 §3 §6 §3 §6 §d§3 §6 §3 §6 §3 §6 §e"), false);
         }
 
