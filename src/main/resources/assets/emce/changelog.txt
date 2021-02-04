@@ -58,3 +58,10 @@ v1.3.0 (Jan 15 2021)
 - Fixed town info colour "reset" button setting to blue instead of default green
 - Fixed "not registered" error when player joins a town or town joins a nation. (By adding restartTimer() before command logic)
 - Cotton-Client-Commands is now included in the main jar to complement the mod :)
+
+v1.3.1 (Feb 4 2021)
+- Lots of backend code cleanup.
+- Added a missing config option for showing a player's rank in nearby.
+- Added a new config option: Disable VoxelMap. Disables cave mode & radar if enabled.
+- Fix a crash that can happen when changing config setting on the main menu.
+- Removed townless invite nearby command.
