@@ -2,4 +2,4 @@
 A mod providing info on the EarthMC Minecraft server.
 
 ### How to Install
-The installation guide has been moved to [the wiki](https://github.com/Warriorrrr/EarthMCEssentials/wiki/Home-Page#installation-guide).
+The installation guide has been moved to [the wiki](https://github.com/Warriorrrr/EarthMCEssentials/wiki).
