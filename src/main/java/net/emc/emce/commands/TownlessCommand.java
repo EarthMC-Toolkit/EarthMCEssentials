@@ -8,7 +8,6 @@ import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.emc.emce.PlayerMessaging;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.Timers;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import static net.emc.emce.EMCE.townless;
@@ -26,10 +25,10 @@ public class TownlessCommand {
                 townlessString.append(currentPlayer.get("name").getAsString()).append(", ");
             }
 
-            c.getSource().sendFeedback(new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting));
+            PlayerMessaging.sendMessage("text_townless_header", townlessTextFormatting, false, townless.size());
             
             if (townless.size() > 0)
-                c.getSource().sendFeedback(new TranslatableText(townlessString.toString()).formatted(townlessTextFormatting));
+                PlayerMessaging.sendMessage(townlessString.toString(), townlessTextFormatting, false);
                 
             return 1;
         }).then(ArgumentBuilders.literal("inviteAll").executes(c -> {
@@ -46,17 +45,17 @@ public class TownlessCommand {
 
                 client.player.sendChatMessage("/towny:town invite " + townlessString);
 
-                c.getSource().sendFeedback(new TranslatableText("msg_townless_sent", townless.size()).formatted(Formatting.AQUA));
+                PlayerMessaging.sendMessage("msg_townless_sent", Formatting.AQUA, true, townless.size());
             } else
                 PlayerMessaging.sendMessage("msg_townless_invite_err", Formatting.RED, true);
             return 1;
         })).then(ArgumentBuilders.literal("refresh").executes(c -> {
             Timers.restartTimer(Timers.townlessTimer);
-            PlayerMessaging.sendMessage("msg_townless_refresh", Formatting.BLUE, true);
+            PlayerMessaging.sendMessage("msg_townless_refresh", Formatting.AQUA, true);
             return 1;
         })).then(ArgumentBuilders.literal("clear").executes(c -> {
             townless = new JsonArray();
-            PlayerMessaging.sendMessage("msg_townless_clear", Formatting.BLUE, true);
+            PlayerMessaging.sendMessage("msg_townless_clear", Formatting.AQUA, true);
             return 1;
         })));
     }

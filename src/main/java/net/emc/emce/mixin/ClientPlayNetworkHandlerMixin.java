@@ -30,8 +30,8 @@ public class ClientPlayNetworkHandlerMixin {
         EMCE.shouldRender = shouldRender;
 
         if (shouldRender && config.general.disableVoxelMap && !client.isInSingleplayer() && FabricLoader.getInstance().isModLoaded("voxelmap") && config.general.enableMod) {
-            PlayerMessaging.sendMessage("msg_voxelmap_disabled", Formatting.BLUE, true);
-            client.player.sendMessage(new LiteralText("§3 §6 §3 §6 §3 §6 §d§3 §6 §3 §6 §3 §6 §e"), false);  
+            client.player.sendMessage(new LiteralText("§3 §6 §3 §6 §3 §6 §d§3 §6 §3 §6 §3 §6 §e"), false);
+            PlayerMessaging.sendMessage("msg_voxelmap_disabled", Formatting.AQUA, true);
         }
 
         // If the timers aren't running, start them.

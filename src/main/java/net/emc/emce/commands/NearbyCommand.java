@@ -43,12 +43,12 @@ public class NearbyCommand {
         }).then(ArgumentBuilders.literal("refresh").executes(c ->
         {
             Timers.restartTimer(Timers.nearbyTimer);
-            PlayerMessaging.sendMessage("msg_nearby_refresh", Formatting.BLUE, true);
+            PlayerMessaging.sendMessage("msg_nearby_refresh", Formatting.AQUA, true);
             return 1;
         })).then(ArgumentBuilders.literal("clear").executes(c ->
         {
             nearby = new JsonArray();
-            PlayerMessaging.sendMessage("msg_nearby_clear", Formatting.BLUE, true);
+            PlayerMessaging.sendMessage("msg_nearby_clear", Formatting.AQUA, true);
             return 1;
         })));
     }

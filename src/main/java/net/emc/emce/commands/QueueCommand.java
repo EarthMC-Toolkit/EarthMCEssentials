@@ -14,7 +14,7 @@ public class QueueCommand {
             if (queue == null)
                 PlayerMessaging.sendMessage("msg_queue_err", Formatting.RED, true);
             else
-                PlayerMessaging.sendMessage("msg_queue_success", Formatting.BLUE, true, queue);
+                PlayerMessaging.sendMessage("msg_queue_success", Formatting.AQUA, true, queue);
 
             return 1;
         }));
