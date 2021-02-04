@@ -223,7 +223,7 @@ public class ConfigUtils {
         }
 
         // Townless Information Colour
-        commands.addEntry(entryBuilder.startSelector(new TranslatableText("Town Info Colour"), colors, config.commands.townlessTextColour)
+        commands.addEntry(entryBuilder.startSelector(new TranslatableText("Townless Info Colour"), colors, config.commands.townlessTextColour)
                 .setDefaultValue("LIGHT_PURPLE")
                 .setTooltip(new TranslatableText("The colour of the townless players text."))
                 .setSaveConsumer(newValue -> config.commands.townlessTextColour = newValue)
