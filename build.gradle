@@ -15,7 +15,6 @@ repositories {
         name = 'CottonMC'
         url = 'https://server.bbkr.space/artifactory/libs-release'
     }
-	jcenter()
 }
 
 dependencies {
@@ -33,13 +32,13 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-	modApi("me.sargunvohra.mcmods:autoconfig1u:3.2.2") {
+	modApi("me.sargunvohra.mcmods:autoconfig1u:3.3.1") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
 	// Libraries to include in remapJar
 	include "me.shedaniel.cloth:config-2:4.8.3"
-	include "me.sargunvohra.mcmods:autoconfig1u:3.2.2"
+	include "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
 	include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 }
 
