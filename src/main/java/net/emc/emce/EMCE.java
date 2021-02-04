@@ -37,7 +37,9 @@ public class EMCE implements ModInitializer
     public static Screen screen;
     public static ModConfig config;
 
-    public static JsonArray townless, nearby, nearbySurrounding, allNations, allTowns;
+    public static boolean shouldRender = false;
+
+    public static JsonArray townless, nearby, allNations, allTowns;
 
     KeyBinding configKeybind;
 
@@ -73,7 +75,7 @@ public class EMCE implements ModInitializer
         //#region HudRenderCallback
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->
         {
-            if (!config.general.enableMod || !ModUtils.shouldRender()) return;
+            if (!config.general.enableMod || !shouldRender) return;
 
             final TextRenderer renderer = client.textRenderer;
 
