@@ -26,7 +26,10 @@ public class EmcApi {
             ClientPlayerEntity player = client.player;
             
             if (player != null) {
-               JsonArray array = (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/nearby/" + (int) player.getX() + "/" + (int) player.getZ() + "/" + xBlocks + "/" + zBlocks).toString());
+                if (!player.getEntityWorld().getDimension().isBedWorking())
+                    return new JsonArray();
+                
+                JsonArray array = (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/nearby/" + (int) player.getX() + "/" + (int) player.getZ() + "/" + xBlocks + "/" + zBlocks).toString());
 
                 for (int i = 0; i < array.size(); i++) {
                     JsonObject currentObj = (JsonObject) array.get(i);
