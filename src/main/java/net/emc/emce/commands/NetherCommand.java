@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.emc.emce.PlayerMessaging;
+import net.emc.emce.utils.MsgUtils;
 import net.minecraft.util.Formatting;
 
 import static net.emc.emce.EMCE.client;
@@ -20,11 +20,13 @@ public class NetherCommand
 
                 int x = IntegerArgumentType.getInteger(c, "x");
                 int z = IntegerArgumentType.getInteger(c, "z");
-                PlayerMessaging.sendMessage("msg_nether_success", Formatting.GOLD, true, x/8, z/8);
+
+                MsgUtils.SendPlayer("msg_nether_success", false, Formatting.GOLD, true, x/8, z/8);
+
                 return 1;
             })
         ).executes(c -> {
-            PlayerMessaging.sendMessage("msg_nether_err_args", Formatting.RED, true);
+            MsgUtils.SendPlayer("msg_nether_err_args", false, Formatting.RED, true);
             return 1;
         })).executes(c -> {
             int x, z;
@@ -33,11 +35,11 @@ public class NetherCommand
                 x = (int) client.player.getX();
                 z = (int) client.player.getZ();
 
-                PlayerMessaging.sendMessage("msg_nether_owncoords", Formatting.GRAY, true);
-                PlayerMessaging.sendMessage("msg_nether_success", Formatting.GOLD, true, x/8, z/8);
+                MsgUtils.SendPlayer("msg_nether_owncoords", false, Formatting.GRAY, true);
+                MsgUtils.SendPlayer("msg_nether_success", false, Formatting.GOLD, true, x/8, z/8);
             }
             else
-                PlayerMessaging.sendMessage("msg_nether_err_null", Formatting.RED, true);
+                MsgUtils.SendPlayer("msg_nether_err_null", false, Formatting.RED, true);
 
             return 1;
         }));

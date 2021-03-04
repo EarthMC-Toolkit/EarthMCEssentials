@@ -1,13 +1,14 @@
 {
     "mod_prefix": "§6EMCE §7> ",
-
     "msg_voxelmap_disabled": "§bVoxelMap Radar & Cavemode disabled.",
 
     "text_townless_header": "Townless Players [%d]",
     "text_townless_remaining": "And %d more...",
     "msg_townless_none": "§cNo townless players found.",
     "msg_townless_sent": "§bInvites sent to %d players.",
+    "msg_townless_revoked": "§bRevoked %d invites.",
     "msg_townless_invite_err": "Note: Unable to invite, please try again on EarthMC.",
+    "msg_townless_revoke_err": "Note: Unable to revoke, please try again on EarthMC.",
     "msg_townless_refresh": "§bRefreshing townless players...",
     "msg_townless_clear": "§bClearing townless players...",
 

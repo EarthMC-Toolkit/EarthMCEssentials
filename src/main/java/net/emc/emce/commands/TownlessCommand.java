@@ -5,14 +5,12 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.emc.emce.PlayerMessaging;
 import net.emc.emce.utils.ModUtils;
+import net.emc.emce.utils.MsgUtils;
 import net.emc.emce.utils.Timers;
 import net.minecraft.util.Formatting;
 
-import static net.emc.emce.EMCE.townless;
-import static net.emc.emce.EMCE.config;
-import static net.emc.emce.EMCE.client;
+import static net.emc.emce.EMCE.*;
 
 public class TownlessCommand {
     public static void register(CommandDispatcher<CottonClientCommandSource> dispatcher) {
@@ -25,10 +23,10 @@ public class TownlessCommand {
                 townlessString.append(currentPlayer.get("name").getAsString()).append(", ");
             }
 
-            PlayerMessaging.sendMessage("text_townless_header", townlessTextFormatting, false, townless.size());
+            MsgUtils.SendPlayer("text_townless_header", false, townlessTextFormatting, false, townless.size());
             
             if (townless.size() > 0)
-                PlayerMessaging.sendMessage(townlessString.toString(), townlessTextFormatting, false);
+                MsgUtils.SendPlayer(townlessString.toString(), false, townlessTextFormatting, false);
                 
             return 1;
         }).then(ArgumentBuilders.literal("inviteAll").executes(c -> {
@@ -43,19 +41,35 @@ public class TownlessCommand {
                     else townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
                 }
 
-                client.player.sendChatMessage("/towny:town invite " + townlessString);
-
-                PlayerMessaging.sendMessage("msg_townless_sent", Formatting.AQUA, true, townless.size());
+                MsgUtils.SendChat("/towny:town invite " + townlessString);
+                MsgUtils.SendPlayer("msg_townless_sent", false, Formatting.AQUA, true, townless.size());
             } else
-                PlayerMessaging.sendMessage("msg_townless_invite_err", Formatting.RED, true);
+                MsgUtils.SendPlayer("msg_townless_invite_err", false, Formatting.RED, true);
+            return 1;
+        })).then(ArgumentBuilders.literal("revokeAll").executes(c -> {
+            if (client.player == null) return -1;
+
+            if (ModUtils.getServerName().endsWith("earthmc.net")) {
+                StringBuilder townlessString = new StringBuilder();
+
+                for (int i = 0; i < townless.size(); i++) {
+                    JsonObject currentPlayer = (JsonObject) townless.get(i);
+                    if (("/towny:town invite -" + townlessString + currentPlayer.get("name").getAsString()).length() > 256) break;
+                    else townlessString.append("-" + currentPlayer.get("name").getAsString()).append(" ");
+                }
+
+                MsgUtils.SendChat("/towny:town invite " + townlessString);
+                MsgUtils.SendPlayer("msg_townless_revoked", false, Formatting.AQUA, true, townless.size());
+            } else
+                MsgUtils.SendPlayer("msg_townless_revoke_err", false, Formatting.RED, true);
             return 1;
         })).then(ArgumentBuilders.literal("refresh").executes(c -> {
             Timers.restartTimer(Timers.townlessTimer);
-            PlayerMessaging.sendMessage("msg_townless_refresh", Formatting.AQUA, true);
+            MsgUtils.SendPlayer("msg_townless_refresh", false, Formatting.AQUA, true);
             return 1;
         })).then(ArgumentBuilders.literal("clear").executes(c -> {
             townless = new JsonArray();
-            PlayerMessaging.sendMessage("msg_townless_clear", Formatting.AQUA, true);
+            MsgUtils.SendPlayer("msg_townless_clear", false, Formatting.AQUA, true);
             return 1;
         })));
     }

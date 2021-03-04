@@ -6,7 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.emc.emce.PlayerMessaging;
+import net.emc.emce.utils.MsgUtils;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
@@ -98,7 +98,7 @@ public class InfoCommands {
 
             CottonClientCommandSource source = c.getSource();
             if (!nationObject.has("name"))
-                PlayerMessaging.sendMessage("text_nationinfo_err", Formatting.RED, true);
+                MsgUtils.SendPlayer("text_nationinfo_err", false, Formatting.RED, true);
             else {
                 Formatting nationInfoTextColour = Formatting.byName(config.commands.nationInfoTextColour);
 
@@ -116,7 +116,7 @@ public class InfoCommands {
             restartTimer(residentInfoTimer); // Makes sure clientNationName isn't delayed.
 
             if (clientNationName.equals(""))
-                PlayerMessaging.sendMessage("text_shared_notregistered", Formatting.RED, true, clientName);
+                MsgUtils.SendPlayer("text_shared_notregistered", false, Formatting.RED, true, clientName);
             else {
                 JsonObject nationObject = new JsonObject();
                 JsonArray nations = allNations;

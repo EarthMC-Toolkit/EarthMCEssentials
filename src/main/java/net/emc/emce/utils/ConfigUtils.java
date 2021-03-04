@@ -169,58 +169,40 @@ public class ConfigUtils {
                     .build());
         }
 
-        // Nearby Player Text Color
+        // Nearby Header Color
         nearby.addEntry(entryBuilder.startSelector(new TranslatableText("Heading Colour"), colors, config.nearby.headingTextColour)
                 .setDefaultValue(colors[11])
                 .setTooltip(new TranslatableText("The colour of the 'Nearby Players' text."))
                 .setSaveConsumer(newValue -> config.nearby.headingTextColour = newValue)
                 .build());
 
-        // Nearby Player Player Color
+        // Nearby Player Color
         nearby.addEntry(entryBuilder.startSelector(new TranslatableText("Player Colour"), colors, config.nearby.playerTextColour)
                 .setDefaultValue(colors[11])
                 .setTooltip(new TranslatableText("The colour of the nearby player names."))
                 .setSaveConsumer(newValue -> config.nearby.playerTextColour = newValue)
                 .build());
 
+        // Nearby Player Prefix
         nearby.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Player Rank Prefix"), config.nearby.showRank)
                 .setDefaultValue(false)
                 .setTooltip(new TranslatableText("Shows a player's rank as prefix, if enabled."))
                 .setSaveConsumer(newValue -> config.nearby.showRank = newValue)
                 .build());
 
-        // Nearby Scale Method
-        nearby.addEntry(entryBuilder.startEnumSelector(new TranslatableText("Scale Method"), ModUtils.ScaleMethod.class, config.nearby.scaleMethod)
-                .setDefaultValue(ModUtils.ScaleMethod.Proportionate)
-                .setTooltip(new TranslatableText("The method of scaling used for the nearby radius"))
-                .setSaveConsumer(newValue -> config.nearby.scaleMethod = newValue)
+        // Nearby X Blocks
+        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("X Blocks"), config.nearby.xBlocks, 50, 10000)
+                .setDefaultValue(500)
+                .setTooltip(new TranslatableText("The amount of blocks to check on the X axis."))
+                .setSaveConsumer(newValue -> config.nearby.xBlocks = newValue)
                 .build());
 
-        if (config.nearby.scaleMethod == ModUtils.ScaleMethod.Proportionate)
-        {
-            // Nearby Radius (X and Y)
-            nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Radius"), config.nearby.radius, 50, 10000)
-                    .setDefaultValue(500)
-                    .setTooltip(new TranslatableText("The radius (in blocks) to check inside."))
-                    .setSaveConsumer(newValue -> config.nearby.radius = newValue)
-                    .build());
-        }
-        else
-        {
-            // Nearby X Blocks
-            nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("X Blocks"), config.nearby.xBlocks, 50, 10000)
-                    .setDefaultValue(500)
-                    .setTooltip(new TranslatableText("The amount of blocks to check on the X axis."))
-                    .setSaveConsumer(newValue -> config.nearby.xBlocks = newValue)
-                    .build());
-
-            // Nearby Z Blocks
-            nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Z Blocks"), config.nearby.zBlocks, 50, 10000)
-                    .setDefaultValue(500)
-                    .setTooltip(new TranslatableText("The amount of blocks to check on the Z axis."))
-                    .setSaveConsumer(newValue -> config.nearby.zBlocks = newValue)
-                    .build());
-        }
+        // Nearby Z Blocks
+        nearby.addEntry(entryBuilder.startIntSlider(new TranslatableText("Z Blocks"), config.nearby.zBlocks, 50, 10000)
+                .setDefaultValue(500)
+                .setTooltip(new TranslatableText("The amount of blocks to check on the Z axis."))
+                .setSaveConsumer(newValue -> config.nearby.zBlocks = newValue)
+                .build());
 
         // Townless Information Colour
         commands.addEntry(entryBuilder.startSelector(new TranslatableText("Townless Info Colour"), colors, config.commands.townlessTextColour)

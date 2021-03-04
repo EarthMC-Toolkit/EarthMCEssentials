@@ -48,11 +48,6 @@ public class ModConfig implements ConfigData
         public String headingTextColour = "GOLD";
         public String playerTextColour = "GOLD";
 
-        public ModUtils.ScaleMethod scaleMethod = ModUtils.ScaleMethod.Proportionate;
-
-        // Proportionate scaling - both axes must be same.
-        public int radius = 500;
-
         // Independent scaling - each axis can be same or different.
         public int xBlocks = 500;
         public int zBlocks = 500;

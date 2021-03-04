@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.cottonmc.clientcommands.ArgumentBuilders;
 import io.github.cottonmc.clientcommands.CottonClientCommandSource;
-import net.emc.emce.PlayerMessaging;
+import net.emc.emce.utils.MsgUtils;
 import net.emc.emce.utils.Timers;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -22,7 +22,7 @@ public class NearbyCommand {
             Formatting headingFormatting = Formatting.byName(config.nearby.headingTextColour);
             Formatting textFormatting = Formatting.byName(config.nearby.playerTextColour);
 
-            PlayerMessaging.sendMessage("text_nearby_header", headingFormatting, false);
+            MsgUtils.SendPlayer("text_nearby_header", false, headingFormatting, false);
 
             for (int i = 0; i < nearby.size(); i++) {
                 JsonObject currentPlayer = (JsonObject) nearby.get(i);
@@ -36,19 +36,19 @@ public class NearbyCommand {
                     else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
                 }
 
-                PlayerMessaging.sendMessage(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m", textFormatting, false);
+                MsgUtils.SendPlayer(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m", false, textFormatting, false);
             }
 
             return 1;
         }).then(ArgumentBuilders.literal("refresh").executes(c ->
         {
             Timers.restartTimer(Timers.nearbyTimer);
-            PlayerMessaging.sendMessage("msg_nearby_refresh", Formatting.AQUA, true);
+            MsgUtils.SendPlayer("msg_nearby_refresh", false, Formatting.AQUA, true);
             return 1;
         })).then(ArgumentBuilders.literal("clear").executes(c ->
         {
             nearby = new JsonArray();
-            PlayerMessaging.sendMessage("msg_nearby_clear", Formatting.AQUA, true);
+            MsgUtils.SendPlayer("msg_nearby_clear", false, Formatting.AQUA, true);
             return 1;
         })));
     }
