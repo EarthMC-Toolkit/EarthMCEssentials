@@ -79,7 +79,7 @@ public class EmcApi {
         }
     }
 
-    private static StringBuilder getURL(String urlString) throws Exception {
+    private static StringBuilder getURL(String urlString) {
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
