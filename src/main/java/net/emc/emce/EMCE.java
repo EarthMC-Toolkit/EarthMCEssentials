@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import net.emc.emce.utils.ConfigUtils;
-import net.emc.emce.utils.EmcApi;
 import net.emc.emce.utils.ModUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -54,7 +53,7 @@ public class EMCE implements ModInitializer
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                 "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
 
-        townless = EmcApi.getTownless();
+        townless = new JsonArray();
         allNations = new JsonArray();
         allTowns = new JsonArray();
         nearby = new JsonArray(); // 'new' because the client cant be near anyone yet.
