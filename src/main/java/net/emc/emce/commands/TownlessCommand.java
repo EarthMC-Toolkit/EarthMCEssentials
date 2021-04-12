@@ -2,19 +2,17 @@ package net.emc.emce.commands;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mojang.brigadier.CommandDispatcher;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.MsgUtils;
 import net.emc.emce.utils.Timers;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.util.Formatting;
 
 import static net.emc.emce.EMCE.*;
 
 public class TownlessCommand {
-    public static void register(CommandDispatcher<CottonClientCommandSource> dispatcher) {
-        dispatcher.register(ArgumentBuilders.literal("townless").executes(c -> {
+    public static void register() {
+        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("townless").executes(c -> {
             StringBuilder townlessString = new StringBuilder();
             Formatting townlessTextFormatting = Formatting.byName(config.commands.townlessTextColour);
 
@@ -23,13 +21,13 @@ public class TownlessCommand {
                 townlessString.append(currentPlayer.get("name").getAsString()).append(", ");
             }
 
-            MsgUtils.SendPlayer("text_townless_header", false, townlessTextFormatting, false, townless.size());
+            MsgUtils.sendPlayer("text_townless_header", false, townlessTextFormatting, false, townless.size());
             
             if (townless.size() > 0)
-                MsgUtils.SendPlayer(townlessString.toString(), false, townlessTextFormatting, false);
+                MsgUtils.sendPlayer(townlessString.toString(), false, townlessTextFormatting, false);
                 
             return 1;
-        }).then(ArgumentBuilders.literal("inviteAll").executes(c -> {
+        }).then(ClientCommandManager.literal("inviteAll").executes(c -> {
             if (client.player == null) return -1;
 
             if (ModUtils.getServerName().endsWith("earthmc.net")) {
@@ -41,12 +39,12 @@ public class TownlessCommand {
                     else townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
                 }
 
-                MsgUtils.SendChat("/towny:town invite " + townlessString);
-                MsgUtils.SendPlayer("msg_townless_sent", false, Formatting.AQUA, true, townless.size());
+                MsgUtils.sendChat("/towny:town invite " + townlessString);
+                MsgUtils.sendPlayer("msg_townless_sent", false, Formatting.AQUA, true, townless.size());
             } else
-                MsgUtils.SendPlayer("msg_townless_invite_err", false, Formatting.RED, true);
+                MsgUtils.sendPlayer("msg_townless_invite_err", false, Formatting.RED, true);
             return 1;
-        })).then(ArgumentBuilders.literal("revokeAll").executes(c -> {
+        })).then(ClientCommandManager.literal("revokeAll").executes(c -> {
             if (client.player == null) return -1;
 
             if (ModUtils.getServerName().endsWith("earthmc.net")) {
@@ -58,18 +56,18 @@ public class TownlessCommand {
                     else townlessString.append("-" + currentPlayer.get("name").getAsString()).append(" ");
                 }
 
-                MsgUtils.SendChat("/towny:town invite " + townlessString);
-                MsgUtils.SendPlayer("msg_townless_revoked", false, Formatting.AQUA, true, townless.size());
+                MsgUtils.sendChat("/towny:town invite " + townlessString);
+                MsgUtils.sendPlayer("msg_townless_revoked", false, Formatting.AQUA, true, townless.size());
             } else
-                MsgUtils.SendPlayer("msg_townless_revoke_err", false, Formatting.RED, true);
+                MsgUtils.sendPlayer("msg_townless_revoke_err", false, Formatting.RED, true);
             return 1;
-        })).then(ArgumentBuilders.literal("refresh").executes(c -> {
+        })).then(ClientCommandManager.literal("refresh").executes(c -> {
             Timers.restartTimer(Timers.townlessTimer);
-            MsgUtils.SendPlayer("msg_townless_refresh", false, Formatting.AQUA, true);
+            MsgUtils.sendPlayer("msg_townless_refresh", false, Formatting.AQUA, true);
             return 1;
-        })).then(ArgumentBuilders.literal("clear").executes(c -> {
+        })).then(ClientCommandManager.literal("clear").executes(c -> {
             townless = new JsonArray();
-            MsgUtils.SendPlayer("msg_townless_clear", false, Formatting.AQUA, true);
+            MsgUtils.sendPlayer("msg_townless_clear", false, Formatting.AQUA, true);
             return 1;
         })));
     }

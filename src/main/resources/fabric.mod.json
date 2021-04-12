@@ -13,7 +13,6 @@
     "issues": "https://github.com/Warriorrrr/EarthMCEssentials/issues"
   },
 
-  "license": "CC0-1.0",
   "icon": "assets/emce/icon.png",
 
   "environment": "*",
@@ -23,9 +22,6 @@
     ],
     "modmenu": [
       "net.emc.emce.ModMenuIntegration"
-    ],
-    "cotton-client-commands": [
-      "net.emc.emce.CommandRegistry"
     ]
   },
   "mixins": [
@@ -33,7 +29,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": "*",
+    "fabric": ">=0.31.0+1.16",
     "minecraft": "1.16.x"
   },
   "custom": {

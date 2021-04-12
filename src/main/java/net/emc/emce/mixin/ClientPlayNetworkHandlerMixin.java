@@ -27,12 +27,13 @@ public class ClientPlayNetworkHandlerMixin {
 
         boolean shouldRender = ModUtils.shouldRender();
         EMCE.shouldRender = shouldRender;
+        MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC(ModUtils.getServerName()));
 
         if (shouldRender && config.general.enableMod) {
             if (config.general.disableVoxelMap && !client.isInSingleplayer() && FabricLoader.getInstance().isModLoaded("voxelmap")) {
                 if (client.player != null) {
                     client.player.sendMessage(new LiteralText("§3 §6 §3 §6 §3 §6 §d§3 §6 §3 §6 §3 §6 §e"), false);
-                    MsgUtils.SendPlayer("msg_voxelmap_disabled", false, Formatting.AQUA, true);
+                    MsgUtils.sendPlayer("msg_voxelmap_disabled", false, Formatting.AQUA, true);
                 }
             }
         }

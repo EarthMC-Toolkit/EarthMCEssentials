@@ -10,13 +10,6 @@ targetCompatibility = JavaVersion.VERSION_1_8
 version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
-repositories {
-	maven {
-        name = 'CottonMC'
-        url = 'https://server.bbkr.space/artifactory/libs-release'
-    }
-}
-
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -26,7 +19,6 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "io.github.prospector:modmenu:1.14.13+build.19"
-	modImplementation "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 
 	modApi("me.shedaniel.cloth:config-2:4.8.3") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -39,7 +31,6 @@ dependencies {
 	// Libraries to include in remapJar
 	include "me.shedaniel.cloth:config-2:4.8.3"
 	include "me.sargunvohra.mcmods:autoconfig1u:3.3.1"
-	include "io.github.cottonmc:cotton-client-commands:1.0.1+1.16-rc1"
 }
 
 processResources {

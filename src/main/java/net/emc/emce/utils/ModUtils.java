@@ -92,7 +92,7 @@ public class ModUtils
     }
 
     public static int getLongestElement(JsonArray array) {
-        if (array.size() == 0) return 0;
+        if (array == null || array.size() == 0) return 0;
 
         int longestElement = 0;     
         for (int i = 0; i < array.size(); i++) {
@@ -182,6 +182,10 @@ public class ModUtils
         return true;
     }
 
+    public static boolean isConnectedToEMC(String serverName) {
+        return serverName.endsWith("earthmc.net") && !serverName.startsWith("pvp");
+    }
+
     public static String getServerName() {
         String serverName = "";
 
@@ -214,7 +218,7 @@ public class ModUtils
                 }
             }
         } catch (Exception exception) {
-            System.out.println("EMC Essentials: Error getting serverName");
+            MsgUtils.sendDebugMessage("Error getting serverName.");
             exception.printStackTrace();
         }
         return serverName;

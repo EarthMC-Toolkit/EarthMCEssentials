@@ -6,10 +6,12 @@ import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import net.emc.emce.utils.ConfigUtils;
 import net.emc.emce.utils.ModUtils;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,6 +20,8 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
+
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.glfw.GLFW;
 
 public class EMCE implements ModInitializer
@@ -37,6 +41,7 @@ public class EMCE implements ModInitializer
     public static ModConfig config;
 
     public static boolean shouldRender = false;
+    public static boolean debugModeEnabled = false;
 
     public static JsonArray townless, nearby, allNations, allTowns;
 
@@ -45,20 +50,27 @@ public class EMCE implements ModInitializer
     @Override
     public void onInitialize() // Called when Minecraft starts.
     {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+            LogManager.getLogger().error("EMC Essentials is not usable as a server side mod; it can only be used on the client.");
+            return;
+        }
+
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
         configKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Open Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
         colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
-                "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
+                                "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
 
         townless = new JsonArray();
         allNations = new JsonArray();
         allTowns = new JsonArray();
         nearby = new JsonArray(); // 'new' because the client cant be near anyone yet.
 
-        //#region ClientTickEvents
+        //Register client-side commands.
+        Commands.registerCommands();
+
         ClientTickEvents.END_CLIENT_TICK.register(client ->
         {
             // Pressed F4 (Config Menu)
@@ -69,7 +81,6 @@ public class EMCE implements ModInitializer
                 client.openScreen(screen);
 		    }
         });
-        //#endregion
 
         //#region HudRenderCallback
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->

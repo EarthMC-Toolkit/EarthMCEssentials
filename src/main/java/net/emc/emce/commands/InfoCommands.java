@@ -2,11 +2,11 @@ package net.emc.emce.commands;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.cottonmc.clientcommands.ArgumentBuilders;
-import io.github.cottonmc.clientcommands.CottonClientCommandSource;
+
 import net.emc.emce.utils.MsgUtils;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
@@ -14,9 +14,9 @@ import static net.emc.emce.EMCE.*;
 import static net.emc.emce.utils.Timers.*;
 
 public class InfoCommands {
-    public static void registerTownInfoCommand(CommandDispatcher<CottonClientCommandSource> dispatcher) {
-        dispatcher.register(ArgumentBuilders.literal("towninfo").then(
-            ArgumentBuilders.argument("townName", StringArgumentType.string()).executes(c -> {
+    public static void registerTownInfoCommand() {
+        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("towninfo").then(
+            ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
                 String townName = StringArgumentType.getString(c, "townName");
                 JsonObject townObject = new JsonObject();
                 JsonArray towns = allTowns;
@@ -30,9 +30,9 @@ public class InfoCommands {
                     }
                 }
 
-                CottonClientCommandSource source = c.getSource();
+                FabricClientCommandSource source = c.getSource();
                 if (!townObject.has("name")) 
-                    source.sendFeedback(new TranslatableText("text_towninfo_err", clientTownName).formatted(Formatting.RED));
+                    source.sendFeedback(new TranslatableText("text_towninfo_err", townName).formatted(Formatting.RED));
                 else {
                     Formatting townInfoTextColour = Formatting.byName(config.commands.townInfoTextColour);
 
@@ -46,11 +46,11 @@ public class InfoCommands {
                 return 1;
             })
         ).executes(c -> {
-            CottonClientCommandSource source = c.getSource();
+            FabricClientCommandSource source = c.getSource();
             restartTimer(residentInfoTimer); // Makes sure clientTownName isn't delayed.
 
             if (clientTownName.equals(""))
-                source.sendFeedback(new TranslatableText("text_shared_notregistered", clientName).formatted(Formatting.RED));
+                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true);
             else {
                 JsonObject townObject = new JsonObject();
                 JsonArray towns = allTowns;
@@ -80,10 +80,9 @@ public class InfoCommands {
         }));
     }
 
-    public static void registerNationInfoCommand(CommandDispatcher<CottonClientCommandSource> dispatcher)
-    {
-        dispatcher.register(ArgumentBuilders.literal("nationinfo").then(
-            ArgumentBuilders.argument("nationName", StringArgumentType.string()).executes(c -> {
+    public static void registerNationInfoCommand() {
+        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("nationinfo").then(
+            ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
             String nationName = StringArgumentType.getString(c, "nationName");
             JsonObject nationObject = new JsonObject();
 
@@ -96,9 +95,9 @@ public class InfoCommands {
                 }
             }
 
-            CottonClientCommandSource source = c.getSource();
+            FabricClientCommandSource source = c.getSource();
             if (!nationObject.has("name"))
-                MsgUtils.SendPlayer("text_nationinfo_err", false, Formatting.RED, true);
+                MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true);
             else {
                 Formatting nationInfoTextColour = Formatting.byName(config.commands.nationInfoTextColour);
 
@@ -112,11 +111,11 @@ public class InfoCommands {
 
             return 1;
         })).executes(c -> {
-            CottonClientCommandSource source = c.getSource();
+            FabricClientCommandSource source = c.getSource();
             restartTimer(residentInfoTimer); // Makes sure clientNationName isn't delayed.
 
             if (clientNationName.equals(""))
-                MsgUtils.SendPlayer("text_shared_notregistered", false, Formatting.RED, true, clientName);
+                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, clientName);
             else {
                 JsonObject nationObject = new JsonObject();
                 JsonArray nations = allNations;

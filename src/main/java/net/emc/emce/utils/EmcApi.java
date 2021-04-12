@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.emc.emce.EMCE;
+import net.emc.emce.exception.APIException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -15,7 +16,8 @@ public class EmcApi {
     public static JsonArray getTownless() {
         try {
             return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/townlessplayers").toString());
-        } catch (Exception e) {
+        } catch (APIException e) {
+            MsgUtils.sendDebugMessage(e.getMessage(), e);
             return EMCE.townless;
         }
     }
@@ -42,7 +44,8 @@ public class EmcApi {
             } else
                 return EMCE.nearby;
         }
-        catch (Exception ignore) {
+        catch (APIException e) {
+            MsgUtils.sendDebugMessage(e.getMessage(), e);
             return EMCE.nearby;
         }        
     }
@@ -50,7 +53,8 @@ public class EmcApi {
     public static JsonObject getResident(String residentName) {
         try {
             return (JsonObject) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/residents/" + residentName).toString());
-        } catch (Exception e) {
+        } catch (APIException e) {
+            MsgUtils.sendDebugMessage(e.getMessage(), e);
             return new JsonObject();
         }
     }
@@ -58,7 +62,8 @@ public class EmcApi {
     public static JsonArray getTowns() {
         try {
             return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/towns/").toString());
-        } catch (Exception e) {
+        } catch (APIException e) {
+            MsgUtils.sendDebugMessage(e.getMessage(), e);
             return EMCE.allTowns;
         }        
     }
@@ -66,7 +71,8 @@ public class EmcApi {
     public static JsonObject getServerInfo() {
         try {
             return (JsonObject) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/serverinfo/").toString());
-        } catch (Exception e) {
+        } catch (APIException e) {
+            MsgUtils.sendDebugMessage(e.getMessage(), e);
             return new JsonObject();
         }
     }
@@ -74,19 +80,20 @@ public class EmcApi {
     public static JsonArray getNations() {
         try {
             return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/nations/").toString());
-        } catch (Exception e) {
+        } catch (APIException e) {
+            MsgUtils.sendDebugMessage(e.getMessage(), e);
             return EMCE.allNations;
         }
     }
 
-    private static StringBuilder getURL(String urlString) {
+    private static StringBuilder getURL(String urlString) throws APIException {
         try {
             URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
 
-            if (conn.getResponseCode() == 200) {
+            if (connection.getResponseCode() == 200) {
                 StringBuilder inline = new StringBuilder();
                 final Scanner scanner = new Scanner(url.openStream());
 
@@ -97,9 +104,9 @@ public class EmcApi {
 
                 return inline;
             } else
-                throw new Exception("Invalid response code when getting URL");
+                throw new APIException("API returned response code " + connection.getResponseCode() + " for URL: " + urlString);
         } catch (Exception e) {
-            return new StringBuilder();
+            throw new APIException(e.getMessage());
         }
     }
 }

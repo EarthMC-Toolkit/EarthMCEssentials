@@ -65,3 +65,14 @@ v1.3.1 (Feb 4 2021)
 - Added a new config option: Disable VoxelMap. Disables cave mode & radar if enabled.
 - Fix a crash that can happen when changing config setting on the main menu.
 - Removed townless invite nearby command.
+
+v1.4.0 (March 6 2021)
+- PlayerMessaging class improved and refactored.
+- Removed proportionate scaling (not needed)
+- Added /townless revokeAll
+- Formatting related fixes
+- Nearby players is now overworld only.
+
+v1.4.1 (Unknown)
+- Added a debug mode (/toggledebug)
+- Added a warning when the mod is loaded as a server side mod.

@@ -23,6 +23,9 @@
     "msg_nether_err_null": "§cUnable to use your own coordinates! This is rare.",
     "msg_nether_owncoords": "§7No coordinates specified, using your own instead.",
 
+    "msg_debug_enabled": "§bDebug mode §2enabled§b.",
+    "msg_debug_disabled": "§bDebug mode §4disabled§b.",
+
     "msg_queue_err": "§cError fetching queue.",
     "msg_queue_success": "§bCurrent queue size: %d",
 
