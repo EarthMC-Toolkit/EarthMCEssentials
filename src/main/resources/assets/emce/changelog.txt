@@ -73,7 +73,8 @@ v1.4.0 (March 6 2021)
 - Formatting related fixes
 - Nearby players is now overworld only.
 
-v1.4.1 (Unknown)
+v1.5.0 (Jul 26 2021)
 - Added a debug mode (/toggledebug)
 - Fixed rare bug where the mod doesn't consider people to be on EarthMC.
-- Added a new "alerts" module: hear sound alerts when afk/overfishing warning from mcMMO.
+- Updated the mod to 1.17
+- Queue/Townless/Nearby data will no longer update if the game is paused or the game window isn't focused.
