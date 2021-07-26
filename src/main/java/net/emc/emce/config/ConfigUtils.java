@@ -1,4 +1,4 @@
-package net.emc.emce.utils;
+package net.emc.emce.config;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigManager;
@@ -6,19 +6,18 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.ConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.emc.emce.EMCE;
-import net.emc.emce.ModConfig;
+import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.tasks.Timers;
+import net.emc.emce.utils.ModUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.TranslatableText;
-
-import static net.emc.emce.EMCE.colors;
-import static net.emc.emce.EMCE.config;
 
 public class ConfigUtils {
     private ConfigUtils() { }
 
     public static void serializeConfig(ModConfig config) {
-        EMCE.shouldRender = ModUtils.shouldRender();
+        EarthMCEssentials.setShouldRender(ModUtils.shouldRender());
+
         try {
             ((ConfigManager<ModConfig>) AutoConfig.getConfigHolder(ModConfig.class)).getSerializer().serialize(config);
         } catch (ConfigSerializer.SerializationException serializeException) {
@@ -27,6 +26,9 @@ public class ConfigUtils {
     }
 
     public static ConfigBuilder getConfigBuilder() {
+        ModConfig config = EarthMCEssentials.getConfig();
+        String[] colors = EarthMCEssentials.getColors();
+
         ConfigBuilder builder = ConfigBuilder.create().setTitle(new TranslatableText("config_title_name")).setTransparentBackground(true);
 
         ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("config_category_general"));
@@ -51,13 +53,6 @@ public class ConfigUtils {
                 .setTooltip(new TranslatableText("While enabled, overlays only render while you are on EarthMC."))
                 .setSaveConsumer(newValue -> config.general.emcOnly = newValue)
                 .build());
-
-        if (FabricLoader.getInstance().isModLoaded("voxelmap"))
-                general.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Disable 'Illegal' VoxelMap Features"), config.general.disableVoxelMap)
-                        .setDefaultValue(true)
-                        .setTooltip(new TranslatableText("Disables VoxelMap radar and cave mode upon joining a server. Use alongside EMC-Only to only disable on EMC."))
-                        .setSaveConsumer(newValue -> config.general.disableVoxelMap = newValue)
-                        .build());
 
         // Enable Townless
         townless.addEntry(entryBuilder.startBooleanToggle(new TranslatableText("Enabled"), config.townless.enabled)
@@ -228,37 +223,37 @@ public class ConfigUtils {
         /* API Intervals
            Default values are in seconds. */
 
-        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Townless Interval"), config.api.townlessInterval, 5, 300)
-                .setDefaultValue(60)
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Townless Interval"), config.api.townlessInterval, 45, 600)
+                .setDefaultValue(90)
                 .setTooltip(new TranslatableText("The interval (in seconds) at which townless data will be updated."))
                 .setSaveConsumer(newValue -> {
                     config.api.townlessInterval = newValue;
                     Timers.restartTimer(Timers.townlessTimer);
                 }).build());
 
-        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Nearby Interval"), config.api.nearbyInterval, 5, 300)
-                .setDefaultValue(10)
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Nearby Interval"), config.api.nearbyInterval, 20, 600)
+                .setDefaultValue(45)
                 .setTooltip(new TranslatableText("The interval (in seconds) at which nearby data will be updated."))
                 .setSaveConsumer(newValue -> {
                     config.api.nearbyInterval = newValue;
                     Timers.restartTimer(Timers.nearbyTimer);
                 }).build());
 
-        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Queue Fetch Interval"), config.api.queueInterval, 5, 300)
-                .setDefaultValue(5)
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Queue Fetch Interval"), config.api.serverDataInterval, 90, 600)
+                .setDefaultValue(90)
                 .setTooltip(new TranslatableText("The interval (in seconds) at which queue data will be updated."))
                 .setSaveConsumer(newValue -> {
-                    config.api.queueInterval = newValue;
-                    Timers.restartTimer(Timers.queueTimer);
+                    config.api.serverDataInterval = newValue;
+                    Timers.restartTimer(Timers.serverDataTimer);
                 }).build());
 
         // Fetch causes heavy load, best to keep minimum at 30.
-        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Town/Nation Interval"), config.api.townNationInfoInterval, 30, 300)
-                .setDefaultValue(2*60)
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Town/Nation Interval"), config.api.townyDataInterval, 90, 600)
+                .setDefaultValue(120)
                 .setTooltip(new TranslatableText("The interval (in seconds) at which data about towns and nations will be updated."))
                 .setSaveConsumer(newValue -> {
-                    config.api.townNationInfoInterval = newValue;
-                    Timers.restartTimer(Timers.townNationInfo);
+                    config.api.townyDataInterval = newValue;
+                    Timers.restartTimer(Timers.townyData);
                 }).build());
 
         builder.setSavingRunnable(() -> ConfigUtils.serializeConfig(config));

@@ -75,4 +75,5 @@ v1.4.0 (March 6 2021)
 
 v1.4.1 (Unknown)
 - Added a debug mode (/toggledebug)
-- Added a warning when the mod is loaded as a server side mod.
+- Fixed rare bug where the mod doesn't consider people to be on EarthMC.
+- Added a new "alerts" module: hear sound alerts when afk/overfishing warning from mcMMO.

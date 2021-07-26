@@ -3,8 +3,10 @@ package net.emc.emce.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.emc.emce.EMCE;
-import net.emc.emce.exception.APIException;
+import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.object.Resident;
+import net.emc.emce.object.exception.APIException;
+import net.emc.emce.object.ServerData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -12,13 +14,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-public class EmcApi {
+public class EarthMCAPI {
     public static JsonArray getTownless() {
         try {
-            return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/townlessplayers").toString());
+            return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/townlessplayers"));
         } catch (APIException e) {
             MsgUtils.sendDebugMessage(e.getMessage(), e);
-            return EMCE.townless;
+            return new JsonArray();
         }
     }
 
@@ -42,51 +44,51 @@ public class EmcApi {
                 }
                 return array;
             } else
-                return EMCE.nearby;
+                return EarthMCEssentials.getNearbyPlayers();
         }
         catch (APIException e) {
             MsgUtils.sendDebugMessage(e.getMessage(), e);
-            return EMCE.nearby;
+            return EarthMCEssentials.getNearbyPlayers();
         }        
     }
 
-    public static JsonObject getResident(String residentName) {
+    public static Resident getResident(String residentName) {
         try {
-            return (JsonObject) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/residents/" + residentName).toString());
+            return new Resident((JsonObject) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/residents/" + residentName)));
         } catch (APIException e) {
             MsgUtils.sendDebugMessage(e.getMessage(), e);
-            return new JsonObject();
+            return new Resident(residentName);
         }
     }
 
     public static JsonArray getTowns() {
         try {
-            return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/towns/").toString());
+            return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/towns/"));
         } catch (APIException e) {
             MsgUtils.sendDebugMessage(e.getMessage(), e);
-            return EMCE.allTowns;
+            return EarthMCEssentials.getTowns();
         }        
     }
 
-    public static JsonObject getServerInfo() {
+    public static ServerData getServerData() {
         try {
-            return (JsonObject) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/serverinfo/").toString());
+            return new ServerData((JsonObject) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/serverinfo/")));
         } catch (APIException e) {
             MsgUtils.sendDebugMessage(e.getMessage(), e);
-            return new JsonObject();
+            return new ServerData();
         }
     }
 
     public static JsonArray getNations() {
         try {
-            return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/nations/").toString());
+            return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/nations/"));
         } catch (APIException e) {
             MsgUtils.sendDebugMessage(e.getMessage(), e);
-            return EMCE.allNations;
+            return EarthMCEssentials.getNations();
         }
     }
 
-    private static StringBuilder getURL(String urlString) throws APIException {
+    private static String getURL(String urlString) throws APIException {
         try {
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -101,8 +103,9 @@ public class EmcApi {
                     inline.append(scanner.nextLine());
 
                 scanner.close();
+                connection.disconnect();
 
-                return inline;
+                return inline.toString();
             } else
                 throw new APIException("API returned response code " + connection.getResponseCode() + " for URL: " + urlString);
         } catch (Exception e) {

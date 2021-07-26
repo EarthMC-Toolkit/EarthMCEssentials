@@ -1,6 +1,5 @@
 {
     "mod_prefix": "§6EMCE §7> ",
-    "msg_voxelmap_disabled": "§bVoxelMap Radar & Cavemode disabled.",
 
     "text_townless_header": "Townless Players [%d]",
     "text_townless_remaining": "And %d more...",
@@ -34,6 +33,7 @@
     "text_towninfo_area": "Area/Chunks: %s",
     "text_towninfo_location": "Location: %s, %s",
     "text_towninfo_err": "§cTown %s is not registered.",
+    "text_towninfo_not_registered": "§cYour town is not registered.",
 
     "text_nationinfo_header": "Nation Information - %s",
     "text_nationinfo_king": "King: %s",
@@ -41,6 +41,7 @@
     "text_nationinfo_area": "Area: %s",
     "text_nationinfo_towns": "Towns: %s",
     "text_nationinfo_err": "§cNation %s is not registered.",
+    "text_nationinfo_not_registered": "§cYour nation is not registered.",
 
     "text_shared_residents": "Residents: %d",
     "text_shared_notregistered": "§cResident %s is not registered.",

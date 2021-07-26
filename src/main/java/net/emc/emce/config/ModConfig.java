@@ -1,4 +1,4 @@
-package net.emc.emce;
+package net.emc.emce.config;
 
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
@@ -18,7 +18,6 @@ public class ModConfig implements ConfigData
     public static class General {
         public boolean enableMod = true;
         public boolean emcOnly = true;
-        public boolean disableVoxelMap = true;
     }
 
     public static class Townless {
@@ -60,10 +59,9 @@ public class ModConfig implements ConfigData
     }
 
     public static class API {
-        public int queueInterval = 5;
-        public int nearbyInterval = 10;
-        public int townlessInterval = 60;
-        public int residentInfoInterval = 60;
-        public int townNationInfoInterval = 120;
+        public int serverDataInterval = 90;
+        public int nearbyInterval = 20;
+        public int townlessInterval = 45;
+        public int townyDataInterval = 120;
     }
 }

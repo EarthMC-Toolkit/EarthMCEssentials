@@ -1,44 +1,32 @@
 package net.emc.emce.mixin;
 
-import net.emc.emce.EMCE;
+import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.MsgUtils;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
+import net.emc.emce.tasks.Timers;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Formatting;
+import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static net.emc.emce.EMCE.*;
-import static net.emc.emce.utils.Timers.*;
-
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
     @Inject(at = @At("TAIL"), method="onGameJoin")
-    private void onGameJoin(CallbackInfo info) {
-        client = MinecraftClient.getInstance();
-        if (client.player != null) {
-            clientName = client.player.getName().asString();
-        }
+    private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
 
-        boolean shouldRender = ModUtils.shouldRender();
-        EMCE.shouldRender = shouldRender;
-        MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC(ModUtils.getServerName()));
+        ModUtils.updateServerName();
+        EarthMCEssentials.setShouldRender(ModUtils.shouldRender());
+        MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
 
-        if (shouldRender && config.general.enableMod) {
-            if (config.general.disableVoxelMap && !client.isInSingleplayer() && FabricLoader.getInstance().isModLoaded("voxelmap")) {
-                if (client.player != null) {
-                    client.player.sendMessage(new LiteralText("§3 §6 §3 §6 §3 §6 §d§3 §6 §3 §6 §3 §6 §e"), false);
-                    MsgUtils.sendPlayer("msg_voxelmap_disabled", false, Formatting.AQUA, true);
-                }
-            }
-        }
+        Timers.startAll();
+    }
 
-        // If the timers aren't running, start them.
-        if (!getRunning()) startAll();
+    @Inject(at = @At("HEAD"), method="onDisconnect")
+    public void onDisconnect(DisconnectS2CPacket packet, CallbackInfo ci) {
+        Timers.stopAll();
+        ModUtils.setServerName("");
     }
 }

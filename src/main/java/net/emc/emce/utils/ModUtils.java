@@ -2,22 +2,22 @@ package net.emc.emce.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.emc.emce.EarthMCEssentials;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.network.ClientConnection;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
-import static net.emc.emce.EMCE.*;
 
-public class ModUtils
-{
+public class ModUtils {
+    private static String serverName;
+
     public enum ScaleMethod
     {
         Independent,
@@ -78,7 +78,7 @@ public class ModUtils
         MinecraftClient client = MinecraftClient.getInstance();
         TextRenderer renderer = client.textRenderer;  
 
-        return renderer.getStringBoundedHeight(string, 100000);
+        return renderer.getStringBoundedHeight(string, 10000);
     }
 
     public static int getWindowWidth() {
@@ -96,8 +96,7 @@ public class ModUtils
 
         int longestElement = 0;     
         for (int i = 0; i < array.size(); i++) {
-            JsonObject currentObj = (JsonObject) array.get(i);
-            int currentWidth = getStringWidth(currentObj.get("name").getAsString());
+            int currentWidth = getStringWidth(array.get(i).getAsJsonObject().get("name").getAsString());
             longestElement = Math.max(currentWidth, longestElement);
         }
         return longestElement;
@@ -107,10 +106,9 @@ public class ModUtils
         if (array.size() == 0) return 0;
 
         int totalLength = 0;
-        for (int i = 0; i < array.size(); i++) {
-            JsonObject currentObj = (JsonObject) array.get(i);
-            totalLength += getStringHeight(currentObj.get("name").getAsString());
-        }
+        for (int i = 0; i < array.size(); i++)
+            totalLength += getStringHeight(array.get(i).getAsJsonObject().get("name").getAsString());
+
         return totalLength;
     }
 
@@ -124,28 +122,27 @@ public class ModUtils
                 totalLength += getStringHeight(maxLengthString);
                 return totalLength-10;
             } else {
-                JsonObject currentObj = (JsonObject) array.get(i);
-                totalLength += getStringHeight(currentObj.get("name").getAsString());
+                totalLength += getStringHeight(array.get(i).getAsJsonObject().get("name").getAsString());
             }
         }
         return totalLength;
     }
 
-    public static int getNearbyLongestElement(JsonArray array) {
-        if (array.size() == 0 || client.player == null) return 0;
+    public static int getNearbyLongestElement(JsonArray nearbyResidents) {
+        if (nearbyResidents.size() == 0) return 0;
 
         int longestElement = 0;
-        for (int i = 0; i < array.size(); i++) {
-            JsonObject currentObj = (JsonObject) array.get(i);
-            if (currentObj.get("name").getAsString().equals(clientName))
+        for (int i = 0; i < nearbyResidents.size(); i++) {
+            JsonObject currentObj = nearbyResidents.get(i).getAsJsonObject();
+            if (currentObj.get("name").getAsString().equals(EarthMCEssentials.getClientResident().getName()))
                 continue;
 
-            int distance = Math.abs(currentObj.get("x").getAsInt() - (int) client.player.getX()) +
-                           Math.abs(currentObj.get("z").getAsInt() - (int) client.player.getZ());
+            int distance = Math.abs(currentObj.get("x").getAsInt() - (int) EarthMCEssentials.getClient().player.getX()) +
+                           Math.abs(currentObj.get("z").getAsInt() - (int) EarthMCEssentials.getClient().player.getZ());
 
             String prefix = "";
 
-            if (config.nearby.showRank) {
+            if (EarthMCEssentials.getConfig().nearby.showRank) {
                 if (!currentObj.has("town")) prefix = "(Townless) ";
                 else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
             }
@@ -171,26 +168,24 @@ public class ModUtils
     }
 
     public static boolean shouldRender() {
-        String serverName = getServerName();
-
         // Uses endsWith because EMC has 2 valid IPs (earthmc.net & play.earthmc.net)
-        if (!serverName.endsWith("earthmc.net") && config.general.emcOnly)
+        if (!serverName.contains("earthmc.net") && EarthMCEssentials.getConfig().general.emcOnly)
             return false;
-        else if ((serverName.equals("Singleplayer") || serverName.equals("Realms")) && config.general.emcOnly)
+        else if ((serverName.equals("singleplayer") || serverName.equals("realms")) && EarthMCEssentials.getConfig().general.emcOnly)
             return false;
 
         return true;
     }
 
-    public static boolean isConnectedToEMC(String serverName) {
-        return serverName.endsWith("earthmc.net") && !serverName.startsWith("pvp");
+    public static boolean isConnectedToEMC() {
+        return serverName.toLowerCase().contains("earthmc.net");
     }
 
     public static String getServerName() {
         String serverName = "";
 
         try {
-            ServerInfo serverInfo = client.getCurrentServerEntry();
+            ServerInfo serverInfo = EarthMCEssentials.getClient().getCurrentServerEntry();
 
             if (serverInfo != null) {
                 if (serverInfo.isLocal())
@@ -198,29 +193,29 @@ public class ModUtils
                 else
                     serverName = serverInfo.address;
             }
-            else if (client.isConnectedToRealms())
+            else if (EarthMCEssentials.getClient().isConnectedToRealms())
                 serverName = "Realms";
-            else if (client.isInSingleplayer())
+            else if (EarthMCEssentials.getClient().isInSingleplayer())
                 serverName = "Singleplayer";
             else {
-                ClientPlayNetworkHandler clientPlayNetworkHandler = client.getNetworkHandler();
-                ClientConnection clientConnection = null;
+                ClientPlayNetworkHandler clientPlayNetworkHandler = EarthMCEssentials.getClient().getNetworkHandler();
 
                 if (clientPlayNetworkHandler != null) {
-                    clientConnection = clientPlayNetworkHandler.getConnection();
-                }
-
-                InetSocketAddress socketAddress;
-
-                if (clientConnection != null) {
-                    socketAddress = (InetSocketAddress) clientConnection.getAddress();
-                    serverName = socketAddress.getHostName();
+                    return ((InetSocketAddress) clientPlayNetworkHandler.getConnection().getAddress()).getHostName();
                 }
             }
         } catch (Exception exception) {
-            MsgUtils.sendDebugMessage("Error getting serverName.");
-            exception.printStackTrace();
+            MsgUtils.sendDebugMessage("Error getting serverName.", exception);
         }
+
         return serverName;
+    }
+
+    public static void updateServerName() {
+        serverName = getServerName().toLowerCase();
+    }
+
+    public static void setServerName(String serverName) {
+        ModUtils.serverName = serverName;
     }
 }

@@ -1,11 +1,10 @@
 package net.emc.emce.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.MsgUtils;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.util.Formatting;
-
-import static net.emc.emce.EMCE.client;
 
 public class NetherCommand 
 {
@@ -28,9 +27,9 @@ public class NetherCommand
             })).executes(c -> {
                 int x, z;
 
-                if (client.player != null) {
-                    x = (int) client.player.getX();
-                    z = (int) client.player.getZ();
+                if (EarthMCEssentials.getClient().player != null) {
+                    x = (int) EarthMCEssentials.getClient().player.getX();
+                    z = (int) EarthMCEssentials.getClient().player.getZ();
 
                     MsgUtils.sendPlayer("msg_nether_owncoords", false, Formatting.GRAY, true);
                     MsgUtils.sendPlayer("msg_nether_success", false, Formatting.GOLD, true, x/8, z/8);

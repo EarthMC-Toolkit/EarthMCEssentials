@@ -1,8 +1,7 @@
-package net.emc.emce;
+package net.emc.emce.config;
 
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
-import net.emc.emce.utils.ConfigUtils;
 
 public class ModMenuIntegration implements ModMenuApi {
     @Override
