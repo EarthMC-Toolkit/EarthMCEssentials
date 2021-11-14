@@ -36,7 +36,7 @@ public class EarthMCAPI {
                 JsonArray array = (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/nearby/" +
                         (int) player.getX() + "/" +
                         (int) player.getZ() + "/" +
-                        xBlocks + "/" + zBlocks).toString());
+                        xBlocks + "/" + zBlocks));
 
                 for (int i = 0; i < array.size(); i++) {
                     JsonObject currentObj = (JsonObject) array.get(i);

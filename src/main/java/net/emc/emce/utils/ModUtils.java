@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.emc.emce.EarthMCEssentials;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -18,8 +17,7 @@ import java.util.Collection;
 public class ModUtils {
     private static String serverName;
 
-    public enum ScaleMethod
-    {
+    public enum ScaleMethod {
         Independent,
         Proportionate
     }
@@ -62,23 +60,14 @@ public class ModUtils {
     }
 
     public static int getStringWidth(String string) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        TextRenderer renderer = client.textRenderer;    
-
-        return renderer.getWidth(string);
+        return MinecraftClient.getInstance().textRenderer.getWidth(string);
     }
     public static int getTextWidth(MutableText text) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        TextRenderer renderer = client.textRenderer;    
-
-        return renderer.getWidth(text);
+        return MinecraftClient.getInstance().textRenderer.getWidth(text);
     }
 
     public static int getStringHeight(String string) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        TextRenderer renderer = client.textRenderer;  
-
-        return renderer.getStringBoundedHeight(string, 10000);
+        return MinecraftClient.getInstance().textRenderer.getWrappedLinesHeight(string, 1000);
     }
 
     public static int getWindowWidth() {
@@ -134,7 +123,7 @@ public class ModUtils {
         int longestElement = 0;
         for (int i = 0; i < nearbyResidents.size(); i++) {
             JsonObject currentObj = nearbyResidents.get(i).getAsJsonObject();
-            if (currentObj.get("name").getAsString().equals(EarthMCEssentials.getClientResident().getName()))
+            if (EarthMCEssentials.getClientResident() != null && currentObj.get("name").getAsString().equals(EarthMCEssentials.getClientResident().getName()))
                 continue;
 
             int distance = Math.abs(currentObj.get("x").getAsInt() - (int) EarthMCEssentials.getClient().player.getX()) +
