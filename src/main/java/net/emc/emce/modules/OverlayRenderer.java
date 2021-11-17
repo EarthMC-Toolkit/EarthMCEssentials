@@ -281,7 +281,7 @@ public class OverlayRenderer {
                         int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
                                 Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 
-                        if (currentPlayer.get("name").getAsString().equals(EarthMCEssentials.getClientResident().getName()))
+                        if (EarthMCEssentials.getClientResident() != null && currentPlayer.get("name").getAsString().equals(EarthMCEssentials.getClientResident().getName()))
                             continue;
 
                         String prefix = "";
