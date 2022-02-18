@@ -1,8 +1,8 @@
 package net.emc.emce;
 
 import com.google.gson.JsonArray;
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.emc.emce.commands.*;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.OverlayRenderer;

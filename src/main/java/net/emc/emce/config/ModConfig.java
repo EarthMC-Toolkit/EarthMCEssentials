@@ -1,9 +1,9 @@
 package net.emc.emce.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
-import net.emc.emce.utils.ModUtils;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import net.emc.emce.utils.ModUtils.State;
 
 @Config(name = "emc-essentials")
 public class ModConfig implements ConfigData
@@ -24,7 +24,7 @@ public class ModConfig implements ConfigData
         public boolean enabled = true;
         public boolean presetPositions = true;
 
-        public ModUtils.State positionState = ModUtils.State.TOP_LEFT;
+        public State positionState = State.TOP_LEFT;
 
         public int xPos = 1;
         public int yPos = 16;
@@ -39,7 +39,7 @@ public class ModConfig implements ConfigData
         public boolean showRank = false;
         public boolean presetPositions = true;
 
-        public ModUtils.State positionState = ModUtils.State.TOP_RIGHT;
+        public State positionState = State.TOP_RIGHT;
 
         public int xPos = 100;
         public int yPos = 16;

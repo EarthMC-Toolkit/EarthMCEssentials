@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.ModUtils;
+import net.emc.emce.utils.ModUtils.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -21,8 +22,8 @@ public class OverlayRenderer {
 
         ModConfig config = EarthMCEssentials.getConfig();
 
-        ModUtils.State townlessState = config.townless.positionState;
-        ModUtils.State nearbyState = config.nearby.positionState;
+        State townlessState = config.townless.positionState;
+        State nearbyState = config.nearby.positionState;
 
         JsonArray townless = EarthMCEssentials.getTownless();
         JsonArray nearby = EarthMCEssentials.getNearbyPlayers();
@@ -277,7 +278,7 @@ public class OverlayRenderer {
                     if (client.player == null) return;
 
                     for (int i = 0; i < nearby.size(); i++) {
-                        JsonObject currentPlayer = (JsonObject) nearby.get(i);
+                        JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
                         int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
                                 Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 

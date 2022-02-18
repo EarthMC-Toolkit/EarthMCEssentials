@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "emc-essentials",
   "version": "${version}",
-    "name": "EarthMCEssentials",
+  "name": "EarthMCEssentials",
   "description": "A mod providing info on the EarthMC Minecraft server.",
   "authors": [
     "Owen77Stubbs",
@@ -29,8 +29,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.31.0+1.16",
-    "minecraft": ">=1.16.0"
+    "fabric": "*",
+    "minecraft": ">=1.17.1"
   },
   "custom": {
     "modmenu:clientsideOnly": true

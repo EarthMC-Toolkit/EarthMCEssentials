@@ -1,19 +1,18 @@
 package net.emc.emce.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigManager;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.ConfigSerializer;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigManager;
+import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.tasks.Timers;
 import net.emc.emce.utils.ModUtils;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.TranslatableText;
 
 public class ConfigUtils {
-    private ConfigUtils() { }
+    private ConfigUtils() {}
 
     public static void serializeConfig(ModConfig config) {
         EarthMCEssentials.setShouldRender(ModUtils.shouldRender());
