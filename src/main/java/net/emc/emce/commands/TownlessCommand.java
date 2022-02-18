@@ -1,77 +1,73 @@
 package net.emc.emce.commands;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.MsgUtils;
-import net.emc.emce.tasks.Timers;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Formatting;
 
 public class TownlessCommand {
     public static void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("townless").executes(c -> {
             StringBuilder townlessString = new StringBuilder();
-            Formatting townlessTextFormatting = Formatting.byName(EarthMCEssentials.getConfig().commands.townlessTextColour);
+            Formatting townlessTextFormatting = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.townlessTextColour);
 
-            for (int i = 0; i < EarthMCEssentials.getTownless().size(); i++) {
-                JsonObject currentPlayer = EarthMCEssentials.getTownless().get(i).getAsJsonObject();
-                townlessString.append(currentPlayer.get("name").getAsString()).append(", ");
-            }
+            for (String townlessPlayer : EarthMCEssentials.instance().getTownless())
+                townlessString.append(townlessPlayer).append(", ");
 
-            MsgUtils.sendPlayer("text_townless_header", false, townlessTextFormatting, false, EarthMCEssentials.getTownless().size());
+            MsgUtils.sendPlayer("text_townless_header", false, townlessTextFormatting, false, EarthMCEssentials.instance().getTownless().size());
             
-            if (EarthMCEssentials.getTownless().size() > 0)
+            if (EarthMCEssentials.instance().getTownless().size() > 0)
                 MsgUtils.sendPlayer(townlessString.toString(), false, townlessTextFormatting, false);
                 
             return 1;
         }).then(ClientCommandManager.literal("inviteAll").executes(c -> {
-            if (EarthMCEssentials.getClient().player == null)
+            if (MinecraftClient.getInstance().player == null)
                 return -1;
 
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
 
-                for (int i = 0; i < EarthMCEssentials.getTownless().size(); i++) {
-                    JsonObject currentPlayer = EarthMCEssentials.getTownless().get(i).getAsJsonObject();
-                    if (("/towny:town invite " + townlessString + currentPlayer.get("name").getAsString()).length() > 256)
+                for (String townlessPlayer : EarthMCEssentials.instance().getTownless()) {
+                    if (("/towny:town invite " + townlessString + " " + townlessPlayer).length() > 256)
                         break;
                     else
-                        townlessString.append(currentPlayer.get("name").getAsString()).append(" ");
+                        townlessString.append(townlessPlayer).append(" ");
                 }
 
                 MsgUtils.sendChat("/towny:town invite " + townlessString);
-                MsgUtils.sendPlayer("msg_townless_sent", false, Formatting.AQUA, true, EarthMCEssentials.getTownless().size());
+                MsgUtils.sendPlayer("msg_townless_sent", false, Formatting.AQUA, true, EarthMCEssentials.instance().getTownless().size());
             } else
                 MsgUtils.sendPlayer("msg_townless_invite_err", false, Formatting.RED, true);
             return 1;
         })).then(ClientCommandManager.literal("revokeAll").executes(c -> {
-            if (EarthMCEssentials.getClient().player == null)
+            if (MinecraftClient.getInstance().player == null)
                 return -1;
 
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
 
-                for (int i = 0; i < EarthMCEssentials.getTownless().size(); i++) {
-                    JsonObject currentPlayer = EarthMCEssentials.getTownless().get(i).getAsJsonObject();
-                    if (("/towny:town invite -" + townlessString + currentPlayer.get("name").getAsString()).length() > 256)
+                for (String townlessPlayer : EarthMCEssentials.instance().getTownless()) {
+                    if (("/towny:town invite -" + townlessString + " " + townlessPlayer).length() > 256)
                         break;
                     else
-                        townlessString.append("-").append(currentPlayer.get("name").getAsString()).append(" ");
+                        townlessString.append("-").append(townlessPlayer).append(" ");
                 }
 
                 MsgUtils.sendChat("/towny:town invite " + townlessString);
-                MsgUtils.sendPlayer("msg_townless_revoked", false, Formatting.AQUA, true, EarthMCEssentials.getTownless().size());
+                MsgUtils.sendPlayer("msg_townless_revoked", false, Formatting.AQUA, true, EarthMCEssentials.instance().getTownless().size());
             } else
                 MsgUtils.sendPlayer("msg_townless_revoke_err", false, Formatting.RED, true);
             return 1;
         })).then(ClientCommandManager.literal("refresh").executes(c -> {
-            Timers.restartTimer(Timers.townlessTimer);
+            EarthMCAPI.getTownless().thenAccept(EarthMCEssentials.instance()::setTownlessResidents);
             MsgUtils.sendPlayer("msg_townless_refresh", false, Formatting.AQUA, true);
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {
-            EarthMCEssentials.setTownlessResidents(new JsonArray());
+            EarthMCEssentials.instance().setTownlessResidents(new JsonArray());
             MsgUtils.sendPlayer("msg_townless_clear", false, Formatting.AQUA, true);
             return 1;
         })));

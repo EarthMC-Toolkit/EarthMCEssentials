@@ -3,7 +3,6 @@ package net.emc.emce.mixin;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.MsgUtils;
-import net.emc.emce.tasks.Timers;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
@@ -18,15 +17,15 @@ public class ClientPlayNetworkHandlerMixin {
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
 
         ModUtils.updateServerName();
-        EarthMCEssentials.setShouldRender(ModUtils.shouldRender());
+        EarthMCEssentials.instance().setShouldRender(ModUtils.shouldRender());
         MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
 
-        Timers.startAll();
+        EarthMCEssentials.instance().scheduler().start();
     }
 
     @Inject(at = @At("HEAD"), method="onDisconnect")
     public void onDisconnect(DisconnectS2CPacket packet, CallbackInfo ci) {
-        Timers.stopAll();
+        EarthMCEssentials.instance().scheduler().stop();
         ModUtils.setServerName("");
     }
 }

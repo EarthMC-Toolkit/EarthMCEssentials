@@ -1,6 +1,8 @@
 package net.emc.emce;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.emc.emce.commands.*;
@@ -9,35 +11,47 @@ import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.object.Resident;
 import net.emc.emce.object.ServerData;
 import net.emc.emce.config.ConfigUtils;
+import net.emc.emce.tasks.TaskScheduler;
+import net.emc.emce.utils.MsgUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class EarthMCEssentials implements ModInitializer {
 
-    private static final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
+    private static EarthMCEssentials instance;
 
-    private static Resident client;
-    private static ModConfig config;
-    private static boolean shouldRender = false;
-    private static boolean debugModeEnabled = false;
+    private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 
-    private static JsonArray townlessResidents;
-    private static JsonArray nearbyPlayers;
-    private static JsonArray nations;
-    private static JsonArray towns;
-    private static ServerData serverData;
+    private Resident client;
+    private ModConfig config;
+    private boolean shouldRender = false;
+    private boolean debugModeEnabled = false;
+
+    private final List<String> townlessResidents = new ArrayList<>();
+    private JsonArray nearbyPlayers;
+    private final Map<String, JsonObject> nations = new HashMap<>();
+    private final Map<String, JsonObject> towns = new HashMap<>();
+    private ServerData serverData;
 
     KeyBinding configKeybinding;
+
+    private final TaskScheduler scheduler = new TaskScheduler();
 
     private static final String[] colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
                                                     "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
@@ -45,15 +59,14 @@ public class EarthMCEssentials implements ModInitializer {
     @Override
     public void onInitialize() {
 
+        instance = this;
+
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
         configKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("Open Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
-        townlessResidents = new JsonArray();
         nearbyPlayers = new JsonArray();
-        nations = new JsonArray();
-        towns = new JsonArray();
 
         // Register client-sided commands.
         InfoCommands.registerNationInfoCommand();
@@ -76,83 +89,106 @@ public class EarthMCEssentials implements ModInitializer {
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> OverlayRenderer.render(matrixStack));
     }
 
-    public static MinecraftClient getClient() {
-        return MinecraftClient.getInstance();
-    }
-
-    public static Resident getClientResident() {
+    public Resident getClientResident() {
         return client;
     }
 
-    public static void setClientResident(Resident clientResident) {
+    public void setClientResident(Resident clientResident) {
         client = clientResident;
     }
 
-    public static ModConfig getConfig() {
+    public ModConfig getConfig() {
         return config;
     }
 
-    public static String[] getColors() {
+    public String[] getColors() {
         return colors;
     }
 
-    public static boolean shouldRender() {
+    public boolean shouldRender() {
         return shouldRender;
     }
 
-    public static boolean isDebugModeEnabled() {
+    public boolean isDebugModeEnabled() {
         return debugModeEnabled;
     }
 
-    public static JsonArray getTownless() {
+    public List<String> getTownless() {
         return townlessResidents;
     }
 
-    public static JsonArray getNations() {
+    public Map<String, JsonObject> getNations() {
         return nations;
     }
 
-    public static JsonArray getTowns() {
+    public Map<String, JsonObject> getTowns() {
         return towns;
     }
 
-    public static JsonArray getNearbyPlayers() {
+    public JsonArray getNearbyPlayers() {
         return nearbyPlayers;
     }
 
-    public static void setDebugModeEnabled(boolean debugModeEnabled) {
-        EarthMCEssentials.debugModeEnabled = debugModeEnabled;
+    public void setDebugModeEnabled(boolean debugModeEnabled) {
+        EarthMCEssentials.instance().debugModeEnabled = debugModeEnabled;
     }
 
-    public static void setShouldRender(boolean shouldRender) {
-        EarthMCEssentials.shouldRender = shouldRender;
+    public void setShouldRender(boolean shouldRender) {
+        EarthMCEssentials.instance().shouldRender = shouldRender;
     }
 
-    public static ServerData getServerData() {
+    public ServerData getServerData() {
         return serverData;
     }
 
-    public static void setServerData(ServerData serverData) {
-        EarthMCEssentials.serverData = serverData;
+    public void setServerData(ServerData serverData) {
+        EarthMCEssentials.instance().serverData = serverData;
     }
 
-    public static void setNations(JsonArray nations) {
-        EarthMCEssentials.nations = nations;
+    public void setNations(JsonArray nations) {
+        this.nations.clear();
+
+        for (JsonElement nation : nations) {
+            JsonObject object = nation.getAsJsonObject();
+
+            this.nations.put(object.get("name").getAsString().toLowerCase(Locale.ROOT), object);
+        }
+
+        MsgUtils.sendDebugMessage("Updated nations, array size: " + this.nations.size());
     }
 
-    public static void setNearbyPlayers(JsonArray nearbyPlayers) {
-        EarthMCEssentials.nearbyPlayers = nearbyPlayers;
+    public void setNearbyPlayers(JsonArray nearbyPlayers) {
+        EarthMCEssentials.instance().nearbyPlayers = nearbyPlayers;
     }
 
-    public static void setTowns(JsonArray towns) {
-        EarthMCEssentials.towns = towns;
+    public void setTowns(@NotNull JsonArray towns) {
+        this.towns.clear();
+
+        for (JsonElement town : towns) {
+            JsonObject object = town.getAsJsonObject();
+
+            this.towns.put(object.get("name").getAsString().toLowerCase(Locale.ROOT), object);
+        }
+
+        MsgUtils.sendDebugMessage("Updated towns, array size: " + this.towns.size());
     }
 
-    public static void setTownlessResidents(JsonArray townlessResidents) {
-        EarthMCEssentials.townlessResidents = townlessResidents;
+    public void setTownlessResidents(@NotNull JsonArray townlessResidents) {
+        this.townlessResidents.clear();
+
+        for (JsonElement townlessResident : townlessResidents)
+            this.townlessResidents.add(townlessResident.getAsJsonObject().get("name").getAsString());
     }
 
-    public static Logger getLogger() {
+    public Logger logger() {
         return logger;
+    }
+
+    public TaskScheduler scheduler() {
+        return scheduler;
+    }
+
+    public static EarthMCEssentials instance() {
+        return instance;
     }
 }

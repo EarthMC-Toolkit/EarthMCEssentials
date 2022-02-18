@@ -7,7 +7,6 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.emc.emce.EarthMCEssentials;
-import net.emc.emce.tasks.Timers;
 import net.emc.emce.utils.ModUtils;
 import net.minecraft.text.TranslatableText;
 
@@ -15,7 +14,7 @@ public class ConfigUtils {
     private ConfigUtils() {}
 
     public static void serializeConfig(ModConfig config) {
-        EarthMCEssentials.setShouldRender(ModUtils.shouldRender());
+        EarthMCEssentials.instance().setShouldRender(ModUtils.shouldRender());
 
         try {
             ((ConfigManager<ModConfig>) AutoConfig.getConfigHolder(ModConfig.class)).getSerializer().serialize(config);
@@ -25,8 +24,8 @@ public class ConfigUtils {
     }
 
     public static ConfigBuilder getConfigBuilder() {
-        ModConfig config = EarthMCEssentials.getConfig();
-        String[] colors = EarthMCEssentials.getColors();
+        ModConfig config = EarthMCEssentials.instance().getConfig();
+        String[] colors = EarthMCEssentials.instance().getColors();
 
         ConfigBuilder builder = ConfigBuilder.create().setTitle(new TranslatableText("config_title_name")).setTransparentBackground(true);
 
@@ -222,38 +221,26 @@ public class ConfigUtils {
         /* API Intervals
            Default values are in seconds. */
 
-        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Townless Interval"), config.api.townlessInterval, 45, 600)
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Townless Interval"), config.api.townlessInterval, 30, 600)
                 .setDefaultValue(90)
                 .setTooltip(new TranslatableText("The interval (in seconds) at which townless data will be updated."))
-                .setSaveConsumer(newValue -> {
-                    config.api.townlessInterval = newValue;
-                    Timers.restartTimer(Timers.townlessTimer);
-                }).build());
+                .setSaveConsumer(newValue -> config.api.townlessInterval = newValue).build());
 
-        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Nearby Interval"), config.api.nearbyInterval, 20, 600)
+        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Nearby Interval"), config.api.nearbyInterval, 15, 600)
                 .setDefaultValue(45)
                 .setTooltip(new TranslatableText("The interval (in seconds) at which nearby data will be updated."))
-                .setSaveConsumer(newValue -> {
-                    config.api.nearbyInterval = newValue;
-                    Timers.restartTimer(Timers.nearbyTimer);
-                }).build());
+                .setSaveConsumer(newValue -> config.api.nearbyInterval = newValue).build());
 
         api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Queue Fetch Interval"), config.api.serverDataInterval, 90, 600)
                 .setDefaultValue(90)
                 .setTooltip(new TranslatableText("The interval (in seconds) at which queue data will be updated."))
-                .setSaveConsumer(newValue -> {
-                    config.api.serverDataInterval = newValue;
-                    Timers.restartTimer(Timers.serverDataTimer);
-                }).build());
+                .setSaveConsumer(newValue -> config.api.serverDataInterval = newValue).build());
 
         // Fetch causes heavy load, best to keep minimum at 30.
         api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Town/Nation Interval"), config.api.townyDataInterval, 90, 600)
                 .setDefaultValue(120)
                 .setTooltip(new TranslatableText("The interval (in seconds) at which data about towns and nations will be updated."))
-                .setSaveConsumer(newValue -> {
-                    config.api.townyDataInterval = newValue;
-                    Timers.restartTimer(Timers.townyData);
-                }).build());
+                .setSaveConsumer(newValue -> config.api.townyDataInterval = newValue).build());
 
         builder.setSavingRunnable(() -> ConfigUtils.serializeConfig(config));
 

@@ -9,9 +9,11 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.List;
 
 
 public class ModUtils {
@@ -91,6 +93,15 @@ public class ModUtils {
         return longestElement;
     }
 
+    public static int getLongestElement(@NotNull Collection<String> collection) {
+        int longestElement = 0;
+
+        for (String string : collection)
+            longestElement = Math.max(longestElement, getStringHeight(string));
+
+        return longestElement;
+    }
+
     public static int getArrayHeight(JsonArray array) {
         if (array.size() == 0) return 0;
 
@@ -101,17 +112,19 @@ public class ModUtils {
         return totalLength;
     }
 
-    public static int getTownlessArrayHeight(JsonArray array, int maxLength) {
-        if (array.size() == 0) return 0;
+    public static int getTownlessArrayHeight(List<String> townless, int maxLength) {
+        if (townless.size() == 0) return 0;
 
         int totalLength = 0;
-        for (int i = 0; i < array.size(); i++) {
+        for (int i = 0; i < townless.size(); i++) {
+            String name = townless.get(i);
+
             if (i >= maxLength && maxLength != 0) {
-                String maxLengthString = "And " + (array.size()-i) + " more...";
+                String maxLengthString = "And " + name + " more...";
                 totalLength += getStringHeight(maxLengthString);
                 return totalLength-10;
             } else {
-                totalLength += getStringHeight(array.get(i).getAsJsonObject().get("name").getAsString());
+                totalLength += getStringHeight(name);
             }
         }
         return totalLength;
@@ -123,15 +136,15 @@ public class ModUtils {
         int longestElement = 0;
         for (int i = 0; i < nearbyResidents.size(); i++) {
             JsonObject currentObj = nearbyResidents.get(i).getAsJsonObject();
-            if (EarthMCEssentials.getClientResident() != null && currentObj.get("name").getAsString().equals(EarthMCEssentials.getClientResident().getName()))
+            if (EarthMCEssentials.instance().getClientResident() != null && currentObj.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
                 continue;
 
-            int distance = Math.abs(currentObj.get("x").getAsInt() - (int) EarthMCEssentials.getClient().player.getX()) +
-                           Math.abs(currentObj.get("z").getAsInt() - (int) EarthMCEssentials.getClient().player.getZ());
+            int distance = Math.abs(currentObj.get("x").getAsInt() - MinecraftClient.getInstance().player.getBlockX()) +
+                           Math.abs(currentObj.get("z").getAsInt() - MinecraftClient.getInstance().player.getBlockZ());
 
             String prefix = "";
 
-            if (EarthMCEssentials.getConfig().nearby.showRank) {
+            if (EarthMCEssentials.instance().getConfig().nearby.showRank) {
                 if (!currentObj.has("town")) prefix = "(Townless) ";
                 else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
             }
@@ -158,23 +171,23 @@ public class ModUtils {
 
     public static boolean shouldRender() {
         // Uses endsWith because EMC has 2 valid IPs (earthmc.net & play.earthmc.net)
-        if (!serverName.contains("earthmc.net") && EarthMCEssentials.getConfig().general.emcOnly)
+        if (!serverName.contains("earthmc.net") && EarthMCEssentials.instance().getConfig().general.emcOnly)
             return false;
-        else if ((serverName.equals("singleplayer") || serverName.equals("realms")) && EarthMCEssentials.getConfig().general.emcOnly)
+        else if ((serverName.equals("singleplayer") || serverName.equals("realms")) && EarthMCEssentials.instance().getConfig().general.emcOnly)
             return false;
 
         return true;
     }
 
     public static boolean isConnectedToEMC() {
-        return serverName.toLowerCase().contains("earthmc.net");
+        return serverName.toLowerCase().endsWith("earthmc.net");
     }
 
     public static String getServerName() {
         String serverName = "";
 
         try {
-            ServerInfo serverInfo = EarthMCEssentials.getClient().getCurrentServerEntry();
+            ServerInfo serverInfo = MinecraftClient.getInstance().getCurrentServerEntry();
 
             if (serverInfo != null) {
                 if (serverInfo.isLocal())
@@ -182,12 +195,12 @@ public class ModUtils {
                 else
                     serverName = serverInfo.address;
             }
-            else if (EarthMCEssentials.getClient().isConnectedToRealms())
+            else if (MinecraftClient.getInstance().isConnectedToRealms())
                 serverName = "Realms";
-            else if (EarthMCEssentials.getClient().isInSingleplayer())
+            else if (MinecraftClient.getInstance().isInSingleplayer())
                 serverName = "Singleplayer";
             else {
-                ClientPlayNetworkHandler clientPlayNetworkHandler = EarthMCEssentials.getClient().getNetworkHandler();
+                ClientPlayNetworkHandler clientPlayNetworkHandler = MinecraftClient.getInstance().getNetworkHandler();
 
                 if (clientPlayNetworkHandler != null) {
                     return ((InetSocketAddress) clientPlayNetworkHandler.getConnection().getAddress()).getHostName();

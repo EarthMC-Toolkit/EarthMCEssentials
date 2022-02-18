@@ -13,20 +13,22 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
+import java.util.List;
+
 public class OverlayRenderer {
     public static void render(MatrixStack matrixStack) {
-        if (!EarthMCEssentials.getConfig().general.enableMod || !EarthMCEssentials.shouldRender())
+        if (!EarthMCEssentials.instance().getConfig().general.enableMod || !EarthMCEssentials.instance().shouldRender())
             return;
 
-        final TextRenderer renderer = EarthMCEssentials.getClient().textRenderer;
+        final TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 
-        ModConfig config = EarthMCEssentials.getConfig();
+        ModConfig config = EarthMCEssentials.instance().getConfig();
 
         State townlessState = config.townless.positionState;
         State nearbyState = config.nearby.positionState;
 
-        JsonArray townless = EarthMCEssentials.getTownless();
-        JsonArray nearby = EarthMCEssentials.getNearbyPlayers();
+        List<String> townless = EarthMCEssentials.instance().getTownless();
+        JsonArray nearby = EarthMCEssentials.instance().getNearbyPlayers();
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (client.player == null)
@@ -43,21 +45,21 @@ public class OverlayRenderer {
                 // Draw heading.
                 renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
 
-                if (EarthMCEssentials.getTownless().size() > 0) {
+                if (EarthMCEssentials.instance().getTownless().size() > 0) {
                     int index = 0;
-                    for (int i = 0; i < townless.size(); i++) {
+                    for (String name : townless) {
                         Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour);
 
                         if (config.townless.maxLength >= 1) {
                             if (index >= config.townless.maxLength) {
-                                MutableText remainingText = new TranslatableText("text_townless_remaining", EarthMCEssentials.getTownless().size()-index).formatted(playerTextFormatting);
+                                MutableText remainingText = new TranslatableText("text_townless_remaining", EarthMCEssentials.instance().getTownless().size()-index).formatted(playerTextFormatting);
                                 renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
                                 break;
                             }
                             index++;
                         }
 
-                        MutableText playerName = new TranslatableText(townless.get(i).getAsJsonObject().get("name").getAsString()).formatted(playerTextFormatting);
+                        MutableText playerName = new TranslatableText(name).formatted(playerTextFormatting);
                         renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
 
                         // Add offset for the next player.
@@ -68,7 +70,7 @@ public class OverlayRenderer {
                 int townlessLongest, nearbyLongest;
 
                 townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
-                nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
+                nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
 
                 switch(townlessState)
                 {
@@ -142,7 +144,7 @@ public class OverlayRenderer {
                             }
                         }
 
-                        MutableText playerName = new TranslatableText(townless.get(i).getAsJsonObject().get("name").getAsString()).formatted(playerTextFormatting);
+                        MutableText playerName = new TranslatableText(townless.get(i)).formatted(playerTextFormatting);
 
                         renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + i*10, 16777215);
                     }
@@ -170,7 +172,7 @@ public class OverlayRenderer {
                         int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
                                 Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 
-                        if (currentPlayer.get("name").getAsString().equals(EarthMCEssentials.getClientResident().getName()))
+                        if (currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
                             continue;
 
                         Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
@@ -185,7 +187,7 @@ public class OverlayRenderer {
             } else {
                 int nearbyLongest, townlessLongest;
 
-                nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
+                nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
                 townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
 
                 switch (nearbyState) {
@@ -282,7 +284,7 @@ public class OverlayRenderer {
                         int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
                                 Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 
-                        if (EarthMCEssentials.getClientResident() != null && currentPlayer.get("name").getAsString().equals(EarthMCEssentials.getClientResident().getName()))
+                        if (EarthMCEssentials.instance().getClientResident() != null && currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
                             continue;
 
                         String prefix = "";

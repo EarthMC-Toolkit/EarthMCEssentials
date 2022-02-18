@@ -8,10 +8,10 @@ import net.minecraft.util.Formatting;
 public class QueueCommand {
     public static void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("queuesize").executes(source -> {
-            if (EarthMCEssentials.getServerData() == null)
+            if (EarthMCEssentials.instance().getServerData() == null)
                 MsgUtils.sendPlayer("msg_queue_err", false, Formatting.RED, true);
             else
-                MsgUtils.sendPlayer("msg_queue_success", false, Formatting.AQUA, true, EarthMCEssentials.getServerData().getQueue());
+                MsgUtils.sendPlayer("msg_queue_success", false, Formatting.AQUA, true, EarthMCEssentials.instance().getServerData().getQueue());
             return 1;
         }));
     }
