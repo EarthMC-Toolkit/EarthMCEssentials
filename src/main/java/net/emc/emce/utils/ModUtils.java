@@ -170,17 +170,14 @@ public class ModUtils {
     }
 
     public static boolean shouldRender() {
-        // Uses endsWith because EMC has 2 valid IPs (earthmc.net & play.earthmc.net)
-        if (!serverName.contains("earthmc.net") && EarthMCEssentials.instance().getConfig().general.emcOnly)
+        if (!isConnectedToEMC() && EarthMCEssentials.instance().getConfig().general.emcOnly)
             return false;
-        else if ((serverName.equals("singleplayer") || serverName.equals("realms")) && EarthMCEssentials.instance().getConfig().general.emcOnly)
-            return false;
-
-        return true;
+        else
+            return (!serverName.equals("singleplayer") && !serverName.equals("realms")) || !EarthMCEssentials.instance().getConfig().general.emcOnly;
     }
 
     public static boolean isConnectedToEMC() {
-        return serverName.toLowerCase().endsWith("earthmc.net");
+        return serverName.toLowerCase().contains("earthmc.net");
     }
 
     public static String getServerName() {

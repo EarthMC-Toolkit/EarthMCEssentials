@@ -2,17 +2,14 @@ package net.emc.emce;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.emc.emce.commands.*;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.object.Resident;
-import net.emc.emce.object.ServerData;
 import net.emc.emce.config.ConfigUtils;
 import net.emc.emce.tasks.TaskScheduler;
-import net.emc.emce.utils.MsgUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -27,10 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class EarthMCEssentials implements ModInitializer {
 
@@ -45,9 +39,6 @@ public class EarthMCEssentials implements ModInitializer {
 
     private final List<String> townlessResidents = new ArrayList<>();
     private JsonArray nearbyPlayers;
-    private final Map<String, JsonObject> nations = new HashMap<>();
-    private final Map<String, JsonObject> towns = new HashMap<>();
-    private ServerData serverData;
 
     KeyBinding configKeybinding;
 
@@ -117,14 +108,6 @@ public class EarthMCEssentials implements ModInitializer {
         return townlessResidents;
     }
 
-    public Map<String, JsonObject> getNations() {
-        return nations;
-    }
-
-    public Map<String, JsonObject> getTowns() {
-        return towns;
-    }
-
     public JsonArray getNearbyPlayers() {
         return nearbyPlayers;
     }
@@ -137,40 +120,8 @@ public class EarthMCEssentials implements ModInitializer {
         EarthMCEssentials.instance().shouldRender = shouldRender;
     }
 
-    public ServerData getServerData() {
-        return serverData;
-    }
-
-    public void setServerData(ServerData serverData) {
-        EarthMCEssentials.instance().serverData = serverData;
-    }
-
-    public void setNations(JsonArray nations) {
-        this.nations.clear();
-
-        for (JsonElement nation : nations) {
-            JsonObject object = nation.getAsJsonObject();
-
-            this.nations.put(object.get("name").getAsString().toLowerCase(Locale.ROOT), object);
-        }
-
-        MsgUtils.sendDebugMessage("Updated nations, array size: " + this.nations.size());
-    }
-
     public void setNearbyPlayers(JsonArray nearbyPlayers) {
         EarthMCEssentials.instance().nearbyPlayers = nearbyPlayers;
-    }
-
-    public void setTowns(@NotNull JsonArray towns) {
-        this.towns.clear();
-
-        for (JsonElement town : towns) {
-            JsonObject object = town.getAsJsonObject();
-
-            this.towns.put(object.get("name").getAsString().toLowerCase(Locale.ROOT), object);
-        }
-
-        MsgUtils.sendDebugMessage("Updated towns, array size: " + this.towns.size());
     }
 
     public void setTownlessResidents(@NotNull JsonArray townlessResidents) {

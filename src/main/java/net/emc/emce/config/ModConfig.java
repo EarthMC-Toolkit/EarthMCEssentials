@@ -3,6 +3,7 @@ package net.emc.emce.config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.ModUtils.State;
 
 @Config(name = "emc-essentials")
@@ -63,5 +64,9 @@ public class ModConfig implements ConfigData
         public int nearbyInterval = 20;
         public int townlessInterval = 45;
         public int townyDataInterval = 120;
+    }
+
+    public static ModConfig instance() {
+        return EarthMCEssentials.instance().getConfig();
     }
 }

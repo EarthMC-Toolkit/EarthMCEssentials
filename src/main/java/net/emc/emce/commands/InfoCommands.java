@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.caches.NationDataCache;
+import net.emc.emce.caches.TownDataCache;
 import net.emc.emce.utils.MsgUtils;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
@@ -19,13 +21,15 @@ public class InfoCommands {
             ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
                 String townName = StringArgumentType.getString(c, "townName");
 
-                JsonObject townObject = EarthMCEssentials.instance().getTowns().get(townName.toLowerCase(Locale.ROOT));
+                TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
+                    JsonObject townObject = towns.get(townName.toLowerCase(Locale.ROOT));
 
-                if (townObject == null)
-                    MsgUtils.sendPlayer("text_towninfo_err", false, Formatting.RED, true, townName);
-                else {
-                    sendTownInfo(townObject, c.getSource());
-                }
+                    if (townObject == null)
+                        MsgUtils.sendPlayer("text_towninfo_err", false, Formatting.RED, true, townName);
+                    else {
+                        sendTownInfo(townObject, c.getSource());
+                    }
+                });
 
                 return 1;
             })
@@ -40,13 +44,15 @@ public class InfoCommands {
             if (EarthMCEssentials.instance().getClientResident().getTown().equals("") || EarthMCEssentials.instance().getClientResident().getTown().equals("No Town"))
                 MsgUtils.sendPlayer("text_towninfo_not_registered", false, Formatting.RED, true);
             else {
-                JsonObject townObject = EarthMCEssentials.instance().getTowns().get(EarthMCEssentials.instance().getClientResident().getTown().toLowerCase(Locale.ROOT));
+                TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
+                    JsonObject townObject = towns.get(EarthMCEssentials.instance().getClientResident().getTown().toLowerCase(Locale.ROOT));
 
-                if (townObject == null)
-                    source.sendFeedback(new TranslatableText("text_towninfo_err", EarthMCEssentials.instance().getClientResident().getTown()).formatted(Formatting.RED));
-                else {
-                    sendTownInfo(townObject, source);
-                }
+                    if (townObject == null)
+                        source.sendFeedback(new TranslatableText("text_towninfo_err", EarthMCEssentials.instance().getClientResident().getTown()).formatted(Formatting.RED));
+                    else {
+                        sendTownInfo(townObject, source);
+                    }
+                });
             }
 
             return 1;
@@ -58,13 +64,15 @@ public class InfoCommands {
             ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
             String nationName = StringArgumentType.getString(c, "nationName");
 
-            JsonObject nationObject = EarthMCEssentials.instance().getNations().get(nationName.toLowerCase(Locale.ROOT));
+            NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
+                JsonObject nationObject = nations.get(nationName.toLowerCase(Locale.ROOT));
 
-            if (nationObject == null)
-                MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, nationName);
-            else {
-                sendNationInfo(nationObject, c.getSource());
-            }
+                if (nationObject == null)
+                    MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, nationName);
+                else {
+                    sendNationInfo(nationObject, c.getSource());
+                }
+            });
 
             return 1;
         })).executes(c -> {
@@ -78,13 +86,15 @@ public class InfoCommands {
             if (EarthMCEssentials.instance().getClientResident().getNation().equals("") || EarthMCEssentials.instance().getClientResident().getNation().equals("No Nation"))
                 MsgUtils.sendPlayer("text_nationinfo_not_registered", false, Formatting.RED, true);
             else {
-                JsonObject nationObject = EarthMCEssentials.instance().getNations().get(EarthMCEssentials.instance().getClientResident().getNation().toLowerCase(Locale.ROOT));
+                NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
+                    JsonObject nationObject = nations.get(EarthMCEssentials.instance().getClientResident().getNation().toLowerCase(Locale.ROOT));
 
-                if (nationObject == null)
-                    MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, EarthMCEssentials.instance().getClientResident().getNation());
-                else {
-                    sendNationInfo(nationObject, source);
-                }
+                    if (nationObject == null)
+                        MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, EarthMCEssentials.instance().getClientResident().getNation());
+                    else {
+                        sendNationInfo(nationObject, source);
+                    }
+                });
             }
 
             return 1;

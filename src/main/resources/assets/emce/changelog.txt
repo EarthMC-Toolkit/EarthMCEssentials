@@ -78,3 +78,14 @@ v1.5.0 (Jul 26 2021)
 - Fixed rare bug where the mod doesn't consider people to be on EarthMC.
 - Updated the mod to 1.17
 - Queue/Townless/Nearby data will no longer update if the game is paused or the game window isn't focused.
+
+v1.6.0 (Nov 14 2021)
+- Fixed an issue with players sometimes crashing.
+- Raised the required Minecraft version to 1.17.
+
+v1.6.1 (Feb 22 2022)
+- Added compatibility with version 1.18.
+- Improved memory and API usage by adding a cache system.
+- Improved the speed and reliability of the /towninfo and /nationinfo commands.
+- /townless refresh now works as intended.
+- The 'nearby' text will no longer render if the player is not connected to EarthMC.

@@ -1,11 +1,18 @@
 package net.emc.emce.tasks;
 
 import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.caches.Cache;
+import net.emc.emce.caches.NationDataCache;
+import net.emc.emce.caches.ServerDataCache;
+import net.emc.emce.caches.TownDataCache;
+import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.MsgUtils;
 import net.minecraft.client.MinecraftClient;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,16 +21,23 @@ public class TaskScheduler {
     public ScheduledExecutorService service;
     public boolean townlessRunning;
     public boolean nearbyRunning;
-    public boolean serverDataRunning;
-    public boolean townyDataRunning;
+    public boolean cacheCheckRunning;
+    private static final List<Cache<?>> CACHES = Arrays.asList(NationDataCache.INSTANCE, ServerDataCache.INSTANCE, TownDataCache.INSTANCE);
 
     public void start() {
         service = Executors.newScheduledThreadPool(1);
 
         startTownless();
         startNearby();
-        startServerData();
-        startTownyData();
+        startCacheCheck();
+
+        // Pre-fill townless and nearby player arrays with some data.
+        if (EarthMCEssentials.instance().getConfig().general.enableMod) {
+            if (ModConfig.instance().townless.enabled)
+                EarthMCAPI.getTownless().thenAccept(EarthMCEssentials.instance()::setTownlessResidents);
+            if (ModConfig.instance().nearby.enabled)
+                EarthMCAPI.getNations().thenAccept(EarthMCEssentials.instance()::setNearbyPlayers);
+        }
     }
 
     public void stop() {
@@ -31,8 +45,7 @@ public class TaskScheduler {
 
         townlessRunning = false;
         nearbyRunning = false;
-        serverDataRunning = false;
-        townyDataRunning = false;
+        cacheCheckRunning = false;
     }
 
     private void startTownless() {
@@ -63,32 +76,14 @@ public class TaskScheduler {
         }, 0, Math.max(EarthMCEssentials.instance().getConfig().api.nearbyInterval, 15), TimeUnit.SECONDS);
     }
 
-    private void startServerData() {
-        serverDataRunning = true;
+    private void startCacheCheck() {
+        cacheCheckRunning = true;
 
         service.scheduleAtFixedRate(() -> {
-            if (serverDataRunning && EarthMCEssentials.instance().getConfig().general.enableMod && shouldRun()) {
-                MsgUtils.sendDebugMessage("Starting server data task.");
-                EarthMCAPI.getServerData().thenAccept(serverData -> {
-                    EarthMCEssentials.instance().setServerData(serverData);
-                    MsgUtils.sendDebugMessage("Finished server data task.");
-                });
-            }
-        }, 0, Math.max(EarthMCEssentials.instance().getConfig().api.serverDataInterval, 90), TimeUnit.SECONDS);
-    }
-
-    private void startTownyData() {
-        townyDataRunning = true;
-
-        service.scheduleAtFixedRate(() -> {
-            if (townyDataRunning && EarthMCEssentials.instance().getConfig().general.enableMod && shouldRun()) {
-                EarthMCAPI.getTowns().thenAccept(EarthMCEssentials.instance()::setTowns);
-                EarthMCAPI.getNations().thenAccept(EarthMCEssentials.instance()::setNations);
-
-                if (MinecraftClient.getInstance().player != null)
-                    EarthMCAPI.getResident(MinecraftClient.getInstance().player.getName().asString()).thenAccept(EarthMCEssentials.instance()::setClientResident);
-            }
-        }, 0, Math.max(EarthMCEssentials.instance().getConfig().api.townyDataInterval, 90), TimeUnit.SECONDS);
+            for (Cache<?> cache : CACHES)
+                if (cache.needsUpdate())
+                    cache.clearCache();
+        }, 0, 5, TimeUnit.MINUTES);
     }
 
     private boolean shouldRun() {

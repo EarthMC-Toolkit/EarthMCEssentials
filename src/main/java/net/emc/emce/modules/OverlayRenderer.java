@@ -152,7 +152,7 @@ public class OverlayRenderer {
             }
         }
 
-        if (config.nearby.enabled) {
+        if (config.nearby.enabled && ModUtils.isConnectedToEMC()) {
             if (!config.nearby.presetPositions) // Not using preset positions
             {
                 // Position of the first player, who determines where the list will be.
