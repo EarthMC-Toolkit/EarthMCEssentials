@@ -136,6 +136,9 @@ public class ModUtils {
         int longestElement = 0;
         for (int i = 0; i < nearbyResidents.size(); i++) {
             JsonObject currentObj = nearbyResidents.get(i).getAsJsonObject();
+            if (currentObj.get("name") == null || currentObj.get("x") == null || currentObj.get("z") == null)
+                continue;
+
             if (EarthMCEssentials.instance().getClientResident() != null && currentObj.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
                 continue;
 
