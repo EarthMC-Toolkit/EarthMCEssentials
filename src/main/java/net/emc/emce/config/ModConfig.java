@@ -63,13 +63,13 @@ public class ModConfig implements ConfigData
         public int nearbyInterval = 20;
         public int townlessInterval = 45;
 
-        public String domain = "http://earthmcstats.sly.io";
-        public String townlessRoute = "/api/townlessplayers/";
-        public String nationsRoute = "/api/nations/";
-        public String townsRoute = "/api/towns/";
-        public String residentsRoute = "/api/residents/";
-        public String nearbyRoute = "/api/nearby/";
-        public String serverInfoRoute = "/api/serverinfo/";
+        public String apiDomain = "http://earthmcstats.sly.io/api/v1/";
+        public String townlessRoute = "townlessplayers/";
+        public String nationsRoute = "nations/";
+        public String townsRoute = "towns/";
+        public String residentsRoute = "residents/";
+        public String nearbyRoute = "nearby/";
+        public String serverInfoRoute = "serverinfo/";
     }
 
     public static ModConfig instance() {

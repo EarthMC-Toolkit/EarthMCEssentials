@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.config.ModConfig;
 import net.emc.emce.object.Resident;
 import net.emc.emce.object.exception.APIException;
 import net.emc.emce.object.ServerData;
@@ -19,12 +20,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class EarthMCAPI {
     private static final HttpClient client = HttpClient.newHttpClient();
-    private config = EarthMCEssentials.instance().getConfig();
 
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.townlessRoute));
+                return (JsonArray) new JsonParser().parse(getURL(ModConfig.instance().api.apiDomain + ModConfig.instance().api.townlessRoute));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -33,7 +33,7 @@ public class EarthMCAPI {
     }
 
     public static CompletableFuture<JsonArray> getNearby() {
-        return getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
+        return getNearby(ModConfig.instance().nearby.xBlocks, ModConfig.instance().nearby.zBlocks);
     }
 
     public static CompletableFuture<JsonArray> getNearby(int xBlocks, int zBlocks) {
@@ -46,7 +46,7 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().isBedWorking())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.nearbyRoute +
+                    JsonArray array = (JsonArray) new JsonParser().parse(getURL(ModConfig.instance().api.apiDomain + ModConfig.instance().api.nearbyRoute +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
@@ -69,7 +69,7 @@ public class EarthMCAPI {
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new Resident((JsonObject) new JsonParser().parse(getURL(config.api.domain + config.api.residentsRoute + residentName)));
+                return new Resident((JsonObject) new JsonParser().parse(getURL(ModConfig.instance().api.apiDomain + ModConfig.instance().api.residentsRoute + residentName)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
@@ -80,7 +80,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTowns() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.townsRoute));
+                return (JsonArray) new JsonParser().parse(getURL(ModConfig.instance().api.apiDomain + ModConfig.instance().api.townsRoute));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -91,7 +91,7 @@ public class EarthMCAPI {
     public static CompletableFuture<ServerData> getServerData() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new ServerData((JsonObject) new JsonParser().parse(getURL(config.api.domain + config.api.serverInfoRoute)));
+                return new ServerData((JsonObject) new JsonParser().parse(getURL(ModConfig.instance().api.apiDomain + ModConfig.instance().api.serverInfoRoute)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new ServerData();
@@ -102,7 +102,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.nationsRoute));
+                return (JsonArray) new JsonParser().parse(getURL(ModConfig.instance().api.apiDomain + ModConfig.instance().api.nationsRoute));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
