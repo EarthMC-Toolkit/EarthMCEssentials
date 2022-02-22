@@ -19,11 +19,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class EarthMCAPI {
     private static final HttpClient client = HttpClient.newHttpClient();
+    private config = EarthMCEssentials.instance().getConfig();
 
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/townlessplayers"));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.townlessRoute));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -32,7 +33,7 @@ public class EarthMCAPI {
     }
 
     public static CompletableFuture<JsonArray> getNearby() {
-        return getNearby(EarthMCEssentials.instance().getConfig().nearby.xBlocks, EarthMCEssentials.instance().getConfig().nearby.zBlocks);
+        return getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
     }
 
     public static CompletableFuture<JsonArray> getNearby(int xBlocks, int zBlocks) {
@@ -45,7 +46,7 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().isBedWorking())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/nearby/" +
+                    JsonArray array = (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.nearbyRoute +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
@@ -68,7 +69,7 @@ public class EarthMCAPI {
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new Resident((JsonObject) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/residents/" + residentName)));
+                return new Resident((JsonObject) new JsonParser().parse(getURL(config.api.domain + config.api.residentsRoute + residentName)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
@@ -79,7 +80,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTowns() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/towns/"));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.townsRoute));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -90,7 +91,7 @@ public class EarthMCAPI {
     public static CompletableFuture<ServerData> getServerData() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new ServerData((JsonObject) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/serverinfo/")));
+                return new ServerData((JsonObject) new JsonParser().parse(getURL(config.api.domain + config.api.serverInfoRoute)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new ServerData();
@@ -101,7 +102,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/nations/"));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.nationsRoute));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
