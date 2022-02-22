@@ -23,7 +23,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/townlessplayers"));
+                return (JsonArray) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/townlessplayers"));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -45,7 +45,7 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().isBedWorking())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/nearby/" +
+                    JsonArray array = (JsonArray) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/nearby/" +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
@@ -68,7 +68,7 @@ public class EarthMCAPI {
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new Resident((JsonObject) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/residents/" + residentName)));
+                return new Resident((JsonObject) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/residents/" + residentName)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
@@ -79,7 +79,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTowns() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/towns/"));
+                return (JsonArray) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/towns/"));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -90,7 +90,7 @@ public class EarthMCAPI {
     public static CompletableFuture<ServerData> getServerData() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new ServerData((JsonObject) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/serverinfo/")));
+                return new ServerData((JsonObject) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/serverinfo/")));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new ServerData();
@@ -101,7 +101,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL("http://earthmc-api.herokuapp.com/nations/"));
+                return (JsonArray) new JsonParser().parse(getURL("http://earthmcstats.sly.io/api/nations/"));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
