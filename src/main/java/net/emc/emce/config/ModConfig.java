@@ -60,10 +60,8 @@ public class ModConfig implements ConfigData
     }
 
     public static class API {
-        public int serverDataInterval = 90;
         public int nearbyInterval = 20;
         public int townlessInterval = 45;
-        public int townyDataInterval = 120;
     }
 
     public static ModConfig instance() {

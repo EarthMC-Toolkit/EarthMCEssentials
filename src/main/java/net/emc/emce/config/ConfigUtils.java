@@ -231,17 +231,6 @@ public class ConfigUtils {
                 .setTooltip(new TranslatableText("The interval (in seconds) at which nearby data will be updated."))
                 .setSaveConsumer(newValue -> config.api.nearbyInterval = newValue).build());
 
-        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Queue Fetch Interval"), config.api.serverDataInterval, 90, 600)
-                .setDefaultValue(90)
-                .setTooltip(new TranslatableText("The interval (in seconds) at which queue data will be updated."))
-                .setSaveConsumer(newValue -> config.api.serverDataInterval = newValue).build());
-
-        // Fetch causes heavy load, best to keep minimum at 30.
-        api.addEntry(entryBuilder.startIntSlider(new TranslatableText("Town/Nation Interval"), config.api.townyDataInterval, 90, 600)
-                .setDefaultValue(120)
-                .setTooltip(new TranslatableText("The interval (in seconds) at which data about towns and nations will be updated."))
-                .setSaveConsumer(newValue -> config.api.townyDataInterval = newValue).build());
-
         builder.setSavingRunnable(() -> ConfigUtils.serializeConfig(config));
 
         return builder;
