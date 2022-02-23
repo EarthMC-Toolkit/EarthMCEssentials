@@ -60,10 +60,10 @@ public class ModConfig implements ConfigData
     }
 
     public static class API {
-        public int nearbyInterval = 20;
-        public int townlessInterval = 45;
+        public int nearbyInterval = 30;
+        public int townlessInterval = 60;
 
-        public String apiDomain = "http://earthmcstats.sly.io/api/v1/";
+        public String domain = "http://earthmcstats.sly.io/api/v1/";
         public String townlessRoute = "townlessplayers/";
         public String nationsRoute = "nations/";
         public String townsRoute = "towns/";

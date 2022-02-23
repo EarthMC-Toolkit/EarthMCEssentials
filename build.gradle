@@ -5,7 +5,7 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-version = "${project.mod_version}-${project.minecraft_version}+"
+version = "${project.mod_version}-${project.minecraft_version}+" as Object
 group = project.maven_group
 
 repositories {

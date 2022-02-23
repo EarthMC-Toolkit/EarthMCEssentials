@@ -1,6 +1,7 @@
 package net.emc.emce.commands;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.MsgUtils;
@@ -23,8 +24,13 @@ public class NearbyCommand {
 
             for (int i = 0; i < EarthMCEssentials.instance().getNearbyPlayers().size(); i++) {
                 JsonObject currentPlayer = EarthMCEssentials.instance().getNearbyPlayers().get(i).getAsJsonObject();
-                int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
-                               Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
+
+                JsonElement xElement = currentPlayer.get("x");
+                JsonElement zElement = currentPlayer.get("z");
+                if (xElement == null || zElement == null) continue;
+
+                int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
+                               Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
                 String prefix = "";
 

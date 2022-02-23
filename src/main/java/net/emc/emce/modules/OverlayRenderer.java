@@ -1,6 +1,7 @@
 package net.emc.emce.modules;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
@@ -276,13 +277,20 @@ public class OverlayRenderer {
                 // Draw heading.
                 renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);
 
-                if (nearby.size() >= 1) {
+                if (nearby.size() >= 1)
+                {
                     if (client.player == null) return;
 
-                    for (int i = 0; i < nearby.size(); i++) {
+                    for (int i = 0; i < nearby.size(); i++)
+                    {
                         JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
-                        int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
-                                Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
+
+                        JsonElement xElement = currentPlayer.get("x");
+                        JsonElement zElement = currentPlayer.get("z");
+                        if (xElement == null || zElement == null) continue;
+
+                        int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
+                                Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
                         if (EarthMCEssentials.instance().getClientResident() != null && currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
                             continue;

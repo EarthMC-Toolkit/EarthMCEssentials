@@ -43,10 +43,8 @@ public class EarthMCEssentials implements ModInitializer {
     KeyBinding configKeybinding;
 
     private final TaskScheduler scheduler = new TaskScheduler();
-
     private static final String[] colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
-                                                    "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
-
+                                                          "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
     @Override
     public void onInitialize() {
 
@@ -89,7 +87,10 @@ public class EarthMCEssentials implements ModInitializer {
     }
 
     public ModConfig getConfig() {
-        return config;
+        if (config == null)
+            config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+
+       return config;
     }
 
     public String[] getColors() {
@@ -113,15 +114,15 @@ public class EarthMCEssentials implements ModInitializer {
     }
 
     public void setDebugModeEnabled(boolean debugModeEnabled) {
-        EarthMCEssentials.instance().debugModeEnabled = debugModeEnabled;
+        instance.debugModeEnabled = debugModeEnabled;
     }
 
     public void setShouldRender(boolean shouldRender) {
-        EarthMCEssentials.instance().shouldRender = shouldRender;
+        instance.shouldRender = shouldRender;
     }
 
     public void setNearbyPlayers(JsonArray nearbyPlayers) {
-        EarthMCEssentials.instance().nearbyPlayers = nearbyPlayers;
+        instance.nearbyPlayers = nearbyPlayers;
     }
 
     public void setTownlessResidents(@NotNull JsonArray townlessResidents) {

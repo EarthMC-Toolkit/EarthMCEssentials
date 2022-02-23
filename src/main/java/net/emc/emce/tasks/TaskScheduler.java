@@ -22,20 +22,22 @@ public class TaskScheduler {
     public boolean townlessRunning;
     public boolean nearbyRunning;
     public boolean cacheCheckRunning;
+
     private static final List<Cache<?>> CACHES = Arrays.asList(NationDataCache.INSTANCE, ServerDataCache.INSTANCE, TownDataCache.INSTANCE);
 
     public void start() {
         service = Executors.newScheduledThreadPool(1);
+        final ModConfig config = ModConfig.instance();
 
         startTownless();
         startNearby();
         startCacheCheck();
 
         // Pre-fill townless and nearby player arrays with some data.
-        if (EarthMCEssentials.instance().getConfig().general.enableMod) {
-            if (ModConfig.instance().townless.enabled)
+        if (config.general.enableMod) {
+            if (config.townless.enabled)
                 EarthMCAPI.getTownless().thenAccept(EarthMCEssentials.instance()::setTownlessResidents);
-            if (ModConfig.instance().nearby.enabled)
+            if (config.nearby.enabled)
                 EarthMCAPI.getNations().thenAccept(EarthMCEssentials.instance()::setNearbyPlayers);
         }
     }
@@ -50,30 +52,32 @@ public class TaskScheduler {
 
     private void startTownless() {
         townlessRunning = true;
+        final ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
-            if (townlessRunning && EarthMCEssentials.instance().getConfig().general.enableMod && EarthMCEssentials.instance().getConfig().townless.enabled && shouldRun()) {
+            if (townlessRunning && config.general.enableMod && config.townless.enabled && shouldRun()) {
                 MsgUtils.sendDebugMessage("Starting townless task.");
                 EarthMCAPI.getTownless().thenAccept(townless -> {
                     EarthMCEssentials.instance().setTownlessResidents(townless);
                     MsgUtils.sendDebugMessage("Finished townless task.");
                 });
             }
-        }, 0, Math.max(EarthMCEssentials.instance().getConfig().api.townlessInterval, 30), TimeUnit.SECONDS);
+        }, 0, Math.max(config.api.townlessInterval, 30), TimeUnit.SECONDS);
     }
 
     private void startNearby() {
         nearbyRunning = true;
+        final ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
-            if (nearbyRunning && ModUtils.isConnectedToEMC() && EarthMCEssentials.instance().getConfig().general.enableMod && EarthMCEssentials.instance().getConfig().nearby.enabled && shouldRun()) {
+            if (nearbyRunning && ModUtils.isConnectedToEMC() && config.general.enableMod && config.nearby.enabled && shouldRun()) {
                 MsgUtils.sendDebugMessage("Starting nearby task.");
                 EarthMCAPI.getNearby().thenAccept(nearby -> {
                     EarthMCEssentials.instance().setNearbyPlayers(nearby);
                     MsgUtils.sendDebugMessage("Finished nearby task.");
                 });
             }
-        }, 0, Math.max(EarthMCEssentials.instance().getConfig().api.nearbyInterval, 15), TimeUnit.SECONDS);
+        }, 0, Math.max(config.api.nearbyInterval, 15), TimeUnit.SECONDS);
     }
 
     private void startCacheCheck() {
