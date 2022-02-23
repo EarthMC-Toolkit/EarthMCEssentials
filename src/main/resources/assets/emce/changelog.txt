@@ -83,7 +83,7 @@ v1.6.0 (Nov 14 2021)
 - Fixed an issue with players sometimes crashing.
 - Raised the required Minecraft version to 1.17.
 
-v1.6.1 (Feb 22 2022)
+v1.6.1 (Feb 23 2022)
 - Added compatibility with version 1.18.
 - Improved memory and API usage by adding a cache system.
 - Improved the speed and reliability of the /towninfo and /nationinfo commands.
