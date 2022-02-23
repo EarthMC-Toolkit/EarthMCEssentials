@@ -37,8 +37,8 @@ public class TaskScheduler {
         if (config.general.enableMod) {
             if (config.townless.enabled)
                 EarthMCAPI.getTownless().thenAccept(EarthMCEssentials.instance()::setTownlessResidents);
-            if (config.nearby.enabled)
-                EarthMCAPI.getNations().thenAccept(EarthMCEssentials.instance()::setNearbyPlayers);
+            if (config.nearby.enabled && ModUtils.isConnectedToEMC())
+                EarthMCAPI.getNearby().thenAccept(EarthMCEssentials.instance()::setNearbyPlayers);
         }
     }
 

@@ -19,15 +19,17 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
 
 public class EarthMCAPI {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ModConfig config = ModConfig.instance();
+    public static final Pattern urlSchemePattern = Pattern.compile("^[a-z][a-z0-9+\\-.]*://");
 
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.townless));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.townless));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -49,7 +51,7 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().isBedWorking())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.nearby +
+                    JsonArray array = (JsonArray) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.nearby +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
@@ -72,7 +74,7 @@ public class EarthMCAPI {
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new Resident((JsonObject) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.resident + residentName)));
+                return new Resident((JsonObject) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.resident + residentName)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
@@ -83,7 +85,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTowns() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.towns));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.towns));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -94,7 +96,7 @@ public class EarthMCAPI {
     public static CompletableFuture<ServerData> getServerData() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new ServerData((JsonObject) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.serverInfo)));
+                return new ServerData((JsonObject) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.serverInfo)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new ServerData();
@@ -105,7 +107,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.nations));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.nations));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();

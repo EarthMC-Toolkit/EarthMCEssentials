@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.object.Colors;
+import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils.State;
 
 @Config(name = "emc-essentials")
@@ -117,11 +118,25 @@ public class ModConfig implements ConfigData
         public int townlessInterval = 60;
 
         @ConfigEntry.Gui.CollapsibleObject
-        @Comment("Configures routes for the API. Do not touch unless you know what you're doing!")
-        public RouteSettings routes = new RouteSettings();
+        @Comment("Main settings for the API. Do not touch unless you know what you're doing!")
+        public Main main = new Main();
 
-        public static class RouteSettings {
+        @ConfigEntry.Gui.CollapsibleObject
+        @Comment("Configures routes for the API. Do not touch unless you know what you're doing!")
+        public Routes routes = new Routes();
+
+        public static class Main {
             public String domain = "http://earthmcstats.sly.io/api/v1/";
+
+            public String domain() {
+                if (!EarthMCAPI.urlSchemePattern.matcher(domain).find())
+                    return "http://" + domain;
+                else
+                    return domain;
+            }
+        }
+
+        public static class Routes {
             public String townless = "townlessplayers/";
             public String nations = "nations/";
             public String towns = "towns/";

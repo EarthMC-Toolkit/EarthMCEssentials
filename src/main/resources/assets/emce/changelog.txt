@@ -89,3 +89,4 @@ v1.6.1 (Feb 23 2022)
 - Improved the speed and reliability of the /towninfo and /nationinfo commands.
 - /townless refresh now works as intended.
 - The 'nearby' text will no longer render if the player is not connected to EarthMC.
+- Fixed a ton of crash bugs.

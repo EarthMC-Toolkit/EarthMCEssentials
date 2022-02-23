@@ -84,7 +84,8 @@
     "text.autoconfig.emc-essentials.option.api.nearbyInterval": "Nearby Interval",
 
     "text.autoconfig.emc-essentials.option.api.routes": "API Routes",
-    "text.autoconfig.emc-essentials.option.api.routes.domain": "API Domain",
+    "text.autoconfig.emc-essentials.option.api.main": "Main",
+    "text.autoconfig.emc-essentials.option.api.main.domain": "API Domain",
     "text.autoconfig.emc-essentials.option.api.routes.townless": "Townless Route",
     "text.autoconfig.emc-essentials.option.api.routes.nations": "Nations Route",
     "text.autoconfig.emc-essentials.option.api.routes.towns": "Towns Route",
