@@ -17,7 +17,7 @@ EarthMC Essentials is a mod designed as an add-on for [EarthMC](https://earthmc.
 #### Here's how to install the mod (For brand new users):
 
 1. Download the [latest release](https://github.com/Warriorrrr/EarthMCEssentials/releases/latest)
-2. If you haven't already, download [fabric](https://fabricmc.net/use/) ([Fabric installation guide](https://fabricmc.net/wiki/install))
+2. If you haven't already, download the Fabric Loader and API via [this](https://fabricmc.net/wiki/player:tutorials:install_mcl:windows) guide.
 3. Make sure that you have the mod jar, and the Fabric API jar in your Minecraft mods folder, and launch the game
 
 ### Support
