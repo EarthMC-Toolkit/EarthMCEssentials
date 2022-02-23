@@ -15,7 +15,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 public class EarthMCAPI {
@@ -25,7 +27,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.townlessRoute));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.townless));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -47,7 +49,7 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().isBedWorking())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.nearbyRoute +
+                    JsonArray array = (JsonArray) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.nearby +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
@@ -70,7 +72,7 @@ public class EarthMCAPI {
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new Resident((JsonObject) new JsonParser().parse(getURL(config.api.domain + config.api.residentsRoute + residentName)));
+                return new Resident((JsonObject) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.resident + residentName)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
@@ -81,7 +83,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTowns() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.townsRoute));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.towns));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -92,7 +94,7 @@ public class EarthMCAPI {
     public static CompletableFuture<ServerData> getServerData() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new ServerData((JsonObject) new JsonParser().parse(getURL(config.api.domain + config.api.serverInfoRoute)));
+                return new ServerData((JsonObject) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.serverInfo)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new ServerData();
@@ -103,7 +105,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.domain + config.api.nationsRoute));
+                return (JsonArray) new JsonParser().parse(getURL(config.api.routes.domain + config.api.routes.nations));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -116,10 +118,16 @@ public class EarthMCAPI {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(urlString))
                     .header("Accept", "application/json")
+                    .timeout(Duration.ofSeconds(5))
                     .GET()
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            final HttpResponse<String> response;
+            try {
+                response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            } catch (HttpTimeoutException e) {
+                throw new APIException("API did not return any data after 5 seconds for URL '" + urlString + "'.");
+            }
 
             if (response.statusCode() != 200)
                 throw new APIException("API returned response code " + response.statusCode() + " for URL: " + urlString);

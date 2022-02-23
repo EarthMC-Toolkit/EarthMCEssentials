@@ -40,7 +40,7 @@ public class OverlayRenderer {
                 // Position of the first player, who determines where the list will be.
                 int townlessPlayerOffset = config.townless.yPos;
 
-                Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
+                Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
                 MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
 
                 // Draw heading.
@@ -49,7 +49,7 @@ public class OverlayRenderer {
                 if (EarthMCEssentials.instance().getTownless().size() > 0) {
                     int index = 0;
                     for (String name : townless) {
-                        Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour);
+                        Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
                         if (config.townless.maxLength >= 1) {
                             if (index >= config.townless.maxLength) {
@@ -123,32 +123,25 @@ public class OverlayRenderer {
                     }
                 }
 
-                Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour);
+                Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
                 MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
 
                 // Draw heading.
                 renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
 
-                if (townless.size() >= 1)
-                {
-                    for (int i = 0; i < townless.size(); i++)
-                    {
-                        Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour);
+                int rendered = 0;
+                for (String townlessName : townless) {
+                    Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
-                        if (config.townless.maxLength >= 1)
-                        {
-                            if (i >= config.townless.maxLength)
-                            {
-                                MutableText remainingText = new TranslatableText("text_townless_remaining", townless.size()-i).formatted(playerTextFormatting);
-                                renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + i*10, 16777215);
-                                break;
-                            }
-                        }
-
-                        MutableText playerName = new TranslatableText(townless.get(i)).formatted(playerTextFormatting);
-
-                        renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + i*10, 16777215);
+                    if (config.townless.maxLength > 0 && rendered >= config.townless.maxLength) {
+                        MutableText remainingText = new TranslatableText("text_townless_remaining", townless.size() - rendered).formatted(playerTextFormatting);
+                        renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + rendered*10, 16777215);
+                        break;
                     }
+
+                    MutableText playerName = new TranslatableText(townlessName).formatted(playerTextFormatting);
+
+                    renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + rendered++*10, 16777215);
                 }
             }
         }
@@ -159,7 +152,7 @@ public class OverlayRenderer {
                 // Position of the first player, who determines where the list will be.
                 int nearbyPlayerOffset = config.nearby.yPos;
 
-                Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour);
+                Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
                 MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
 
                 // Draw heading.
@@ -176,7 +169,7 @@ public class OverlayRenderer {
                         if (currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
                             continue;
 
-                        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
+                        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
                         MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString(), distance).formatted(playerTextFormatting);
 
                         renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
@@ -271,7 +264,7 @@ public class OverlayRenderer {
                     }
                 }
 
-                Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour);
+                Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
                 MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
 
                 // Draw heading.
@@ -302,7 +295,7 @@ public class OverlayRenderer {
                             else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
                         }
 
-                        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour);
+                        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
                         MutableText playerText = new TranslatableText(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(playerTextFormatting);
 
                         renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, 16777215);

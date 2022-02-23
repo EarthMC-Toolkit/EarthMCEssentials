@@ -46,10 +46,49 @@
     "text_shared_residents": "Residents: %d",
     "text_shared_notregistered": "§cResident %s is not registered.",
 
-    "config_title_name": "EarthMC Essentials Config",
-    "config_category_general": "General",
-    "config_category_townless": "Townless",
-    "config_category_nearby": "Nearby",
-    "config_category_commands": "Commands",
-    "config_category_api": "API"
+    "text.autoconfig.emc-essentials.title": "EarthMC Essentials Config",
+
+    "text.autoconfig.emc-essentials.category.General": "General",
+    "text.autoconfig.emc-essentials.option.general.enableMod": "Enable Mod",
+    "text.autoconfig.emc-essentials.option.general.emcOnly": "EarthMC Only",
+
+    "text.autoconfig.emc-essentials.category.Townless": "Townless",
+    "text.autoconfig.emc-essentials.option.townless.enabled": "Enabled",
+    "text.autoconfig.emc-essentials.option.townless.presetPositions": "Use Preset Positions",
+    "text.autoconfig.emc-essentials.option.townless.positionState": "Preset Position",
+    "text.autoconfig.emc-essentials.option.townless.xPos": "Horizontal Position (X)",
+    "text.autoconfig.emc-essentials.option.townless.yPos": "Vertical Position (Y)",
+    "text.autoconfig.emc-essentials.option.townless.headingTextColour": "Heading Colour",
+    "text.autoconfig.emc-essentials.option.townless.playerTextColour": "Player Colour",
+    "text.autoconfig.emc-essentials.option.townless.maxLength": "Maximum Length",
+
+    "text.autoconfig.emc-essentials.category.Nearby": "Nearby",
+    "text.autoconfig.emc-essentials.option.nearby.enabled": "Enabled",
+    "text.autoconfig.emc-essentials.option.nearby.showRank": "Show Rank",
+    "text.autoconfig.emc-essentials.option.nearby.presetPositions": "Use Preset Positions",
+    "text.autoconfig.emc-essentials.option.nearby.positionState": "Preset Position",
+    "text.autoconfig.emc-essentials.option.nearby.xPos": "Horizontal Position (X)",
+    "text.autoconfig.emc-essentials.option.nearby.yPos": "Vertical Position (Y)",
+    "text.autoconfig.emc-essentials.option.nearby.headingTextColour": "Heading Colour",
+    "text.autoconfig.emc-essentials.option.nearby.playerTextColour": "Heading Colour",
+    "text.autoconfig.emc-essentials.option.nearby.xBlocks": "X Blocks",
+    "text.autoconfig.emc-essentials.option.nearby.zBlocks": "Z Blocks",
+
+    "text.autoconfig.emc-essentials.category.Commands": "Commands",
+    "text.autoconfig.emc-essentials.option.commands.townlessTextColour": "Townless Text Colour",
+    "text.autoconfig.emc-essentials.option.commands.townInfoTextColour": "Town Text Colour",
+    "text.autoconfig.emc-essentials.option.commands.nationInfoTextColour": "Nation Text Colour",
+
+    "text.autoconfig.emc-essentials.category.API": "API",
+    "text.autoconfig.emc-essentials.option.api.townlessInterval": "Townless Interval",
+    "text.autoconfig.emc-essentials.option.api.nearbyInterval": "Nearby Interval",
+
+    "text.autoconfig.emc-essentials.option.api.routes": "API Routes",
+    "text.autoconfig.emc-essentials.option.api.routes.domain": "API Domain",
+    "text.autoconfig.emc-essentials.option.api.routes.townless": "Townless Route",
+    "text.autoconfig.emc-essentials.option.api.routes.nations": "Nations Route",
+    "text.autoconfig.emc-essentials.option.api.routes.towns": "Towns Route",
+    "text.autoconfig.emc-essentials.option.api.routes.resident": "Resident Route",
+    "text.autoconfig.emc-essentials.option.api.routes.nearby": "Nearby Route",
+    "text.autoconfig.emc-essentials.option.api.routes.serverInfo": "Server Info Route"
 }

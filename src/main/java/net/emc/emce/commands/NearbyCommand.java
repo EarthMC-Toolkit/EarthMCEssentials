@@ -17,8 +17,8 @@ public class NearbyCommand {
             if (client.player == null)
                 return -1;
 
-            Formatting headingFormatting = Formatting.byName(EarthMCEssentials.instance().getConfig().nearby.headingTextColour);
-            Formatting textFormatting = Formatting.byName(EarthMCEssentials.instance().getConfig().nearby.playerTextColour);
+            Formatting headingFormatting = Formatting.byName(EarthMCEssentials.instance().getConfig().nearby.headingTextColour.name());
+            Formatting textFormatting = Formatting.byName(EarthMCEssentials.instance().getConfig().nearby.playerTextColour.name());
 
             MsgUtils.sendPlayer("text_nearby_header", false, headingFormatting, false);
 

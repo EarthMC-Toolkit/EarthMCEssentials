@@ -102,7 +102,7 @@ public class InfoCommands {
     }
 
     private static void sendTownInfo(JsonObject townObject, FabricClientCommandSource source) {
-        Formatting townInfoTextColour = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.townInfoTextColour);
+        Formatting townInfoTextColour = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.townInfoTextColour.name());
 
         source.sendFeedback(new TranslatableText("text_towninfo_header", townObject.get("name").getAsString()).formatted(townInfoTextColour));
         source.sendFeedback(new TranslatableText("text_towninfo_mayor", townObject.get("mayor").getAsString()).formatted(townInfoTextColour));
@@ -112,7 +112,7 @@ public class InfoCommands {
     }
 
     private static void sendNationInfo(JsonObject nationObject, FabricClientCommandSource source) {
-        Formatting nationInfoTextColour = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.nationInfoTextColour);
+        Formatting nationInfoTextColour = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.nationInfoTextColour.name());
 
         source.sendFeedback(new TranslatableText("text_nationinfo_header", nationObject.get("name").getAsString()).formatted(nationInfoTextColour));
         source.sendFeedback(new TranslatableText("text_nationinfo_king", nationObject.get("king").getAsString()).formatted(nationInfoTextColour));

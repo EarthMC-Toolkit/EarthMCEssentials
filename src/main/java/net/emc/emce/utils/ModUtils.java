@@ -17,7 +17,7 @@ import java.util.List;
 
 
 public class ModUtils {
-    private static String serverName;
+    private static @NotNull String serverName = "";
 
     public enum ScaleMethod {
         Independent,
@@ -183,7 +183,7 @@ public class ModUtils {
         return serverName.toLowerCase().contains("earthmc.net");
     }
 
-    public static String getServerName() {
+    public static @NotNull String getServerName() {
         String serverName = "";
 
         try {
@@ -217,7 +217,7 @@ public class ModUtils {
         serverName = getServerName().toLowerCase();
     }
 
-    public static void setServerName(String serverName) {
+    public static void setServerName(@NotNull String serverName) {
         ModUtils.serverName = serverName;
     }
 }

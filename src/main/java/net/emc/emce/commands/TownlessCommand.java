@@ -13,7 +13,7 @@ public class TownlessCommand {
     public static void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("townless").executes(c -> {
             StringBuilder townlessString = new StringBuilder();
-            Formatting townlessTextFormatting = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.townlessTextColour);
+            Formatting townlessTextFormatting = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.townlessTextColour.name());
 
             for (String townlessPlayer : EarthMCEssentials.instance().getTownless())
                 townlessString.append(townlessPlayer).append(", ");

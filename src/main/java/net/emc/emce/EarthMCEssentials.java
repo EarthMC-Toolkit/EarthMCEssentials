@@ -8,7 +8,6 @@ import net.emc.emce.commands.*;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.object.Resident;
-import net.emc.emce.config.ConfigUtils;
 import net.emc.emce.tasks.TaskScheduler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -43,8 +42,7 @@ public class EarthMCEssentials implements ModInitializer {
     KeyBinding configKeybinding;
 
     private final TaskScheduler scheduler = new TaskScheduler();
-    private static final String[] colors = new String[] { "BLUE", "DARK_BLUE", "GREEN", "DARK_GREEN", "AQUA", "DARK_AQUA", "RED", "DARK_RED",
-                                                          "LIGHT_PURPLE", "DARK_PURPLE", "YELLOW", "GOLD", "GRAY", "DARK_GRAY", "BLACK", "WHITE" };
+
     @Override
     public void onInitialize() {
 
@@ -69,7 +67,7 @@ public class EarthMCEssentials implements ModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // Pressed F4 (Config Menu)
             if (configKeybinding.wasPressed()) {
-                Screen screen = ConfigUtils.getConfigBuilder().build();
+                Screen screen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
 
                 client.setScreen(screen);
 		    }
@@ -91,10 +89,6 @@ public class EarthMCEssentials implements ModInitializer {
             config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
        return config;
-    }
-
-    public String[] getColors() {
-        return colors;
     }
 
     public boolean shouldRender() {
