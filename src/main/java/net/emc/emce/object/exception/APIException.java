@@ -1,6 +1,9 @@
 package net.emc.emce.object.exception;
 
+import java.io.Serial;
+
 public class APIException extends Exception {
+    @Serial
     private static final long serialVersionUID = -3129573277546383741L;
 
     public APIException() {

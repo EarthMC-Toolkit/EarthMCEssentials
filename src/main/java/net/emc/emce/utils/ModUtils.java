@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ModUtils {
@@ -142,7 +143,7 @@ public class ModUtils {
             if (EarthMCEssentials.instance().getClientResident() != null && currentObj.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
                 continue;
 
-            int distance = Math.abs(currentObj.get("x").getAsInt() - MinecraftClient.getInstance().player.getBlockX()) +
+            int distance = Math.abs(currentObj.get("x").getAsInt() - Objects.requireNonNull(MinecraftClient.getInstance().player).getBlockX()) +
                            Math.abs(currentObj.get("z").getAsInt() - MinecraftClient.getInstance().player.getBlockZ());
 
             String prefix = "";

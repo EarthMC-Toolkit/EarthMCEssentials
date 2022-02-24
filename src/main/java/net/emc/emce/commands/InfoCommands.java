@@ -14,6 +14,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import java.util.Locale;
+import java.util.Objects;
 
 public class InfoCommands {
     public static void registerTownInfoCommand() {
@@ -37,7 +38,7 @@ public class InfoCommands {
             FabricClientCommandSource source = c.getSource();
 
             if (EarthMCEssentials.instance().getClientResident() == null) {
-                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, MinecraftClient.getInstance().player.getName());
+                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
                 return 1;
             }
 
@@ -79,7 +80,7 @@ public class InfoCommands {
             FabricClientCommandSource source = c.getSource();
 
             if (EarthMCEssentials.instance().getClientResident() == null) {
-                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, MinecraftClient.getInstance().player.getName());
+                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
                 return 1;
             }
 
