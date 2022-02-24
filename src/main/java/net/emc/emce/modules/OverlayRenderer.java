@@ -9,6 +9,7 @@ import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.ModUtils.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
@@ -17,10 +18,18 @@ import net.minecraft.util.Formatting;
 import java.util.Iterator;
 import java.util.List;
 
-public class OverlayRenderer {
-    public static void render(MatrixStack matrixStack) {
-        if (!EarthMCEssentials.instance().getConfig().general.enableMod || !EarthMCEssentials.instance().shouldRender())
-            return;
+@SuppressWarnings("ConstantConditions")
+public class OverlayRenderer
+{
+    public static void renderOnScreenClose(MinecraftClient client, Screen screen)
+    {
+        
+    }
+
+    public static void renderOnTick(MatrixStack matrixStack)
+    {
+        if (!EarthMCEssentials.instance().getConfig().general.enableMod
+             || !EarthMCEssentials.instance().shouldRender()) return;
 
         final TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 
@@ -33,11 +42,12 @@ public class OverlayRenderer {
         JsonArray nearby = EarthMCEssentials.instance().getNearbyPlayers();
         MinecraftClient client = MinecraftClient.getInstance();
 
-        if (client.player == null)
-            return;
+        if (client.player == null) return;
 
-        if (config.townless.enabled) {
-            if (!config.townless.presetPositions) {
+        if (config.townless.enabled)
+        {
+            if (!config.townless.presetPositions)
+            {
                 // Position of the first player, who determines where the list will be.
                 int townlessPlayerOffset = config.townless.yPos;
 

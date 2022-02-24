@@ -9,12 +9,12 @@ EarthMC Essentials is a mod designed as an add-on for [EarthMC](https://earthmc.
   - Use /townless inviteAll to quickly invite townless people to your town!
 - Overlays
   - Townless overlay: All online townless players are shown on your screen.
-  - Nearby players overlay: Tired of checking the dynmap for players near you 24/7? See anyone who's close to you, in-game.
+  - Nearby players overlay: Tired of checking the dynmap for players near you 24/7? See anyone whose close to you, in-game.
 - Fully configurable
   - Pressing f4 (default) opens up the configuration screen.
 
 ### Installation Guide
-#### Here's how to install the mod (For brand new users):
+#### Here's how to install the mod (For brand-new users):
 
 1. Download the [latest release](https://github.com/Warriorrrr/EarthMCEssentials/releases/latest)
 2. If you haven't already, download the Fabric Loader and API via [this](https://fabricmc.net/wiki/player:tutorials:install_mcl:windows) guide.

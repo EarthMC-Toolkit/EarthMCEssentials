@@ -5,37 +5,39 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
+import java.util.Objects;
+
 public class MsgUtils {
     public static void sendPlayer(String message, boolean actionBar, Formatting formatting, boolean prefixed) {
         if (prefixed)
-            MinecraftClient.getInstance().player.sendMessage(new TranslatableText("mod_prefix").append(new TranslatableText(message).formatted(formatting)), actionBar);
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendMessage(new TranslatableText("mod_prefix").append(new TranslatableText(message).formatted(formatting)), actionBar);
         else
-            MinecraftClient.getInstance().player.sendMessage(new TranslatableText(message).formatted(formatting), actionBar);
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendMessage(new TranslatableText(message).formatted(formatting), actionBar);
     }
 
     public static void sendPlayer(String message, boolean actionBar, Formatting formatting, boolean prefixed, Object... args) {
         if (prefixed)
-            MinecraftClient.getInstance().player.sendMessage(new TranslatableText("mod_prefix").append(new TranslatableText(message, args).formatted(formatting)), actionBar);
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendMessage(new TranslatableText("mod_prefix").append(new TranslatableText(message, args).formatted(formatting)), actionBar);
         else
-            MinecraftClient.getInstance().player.sendMessage(new TranslatableText(message, args).formatted(formatting), actionBar);
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendMessage(new TranslatableText(message, args).formatted(formatting), actionBar);
     }
 
     public static void sendSystem(String message, Formatting formatting, boolean prefixed) {
         if (prefixed)
-            MinecraftClient.getInstance().player.sendSystemMessage(new TranslatableText("mod_prefix").append(new TranslatableText(message).formatted(formatting)), MinecraftClient.getInstance().player.getUuid());
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendSystemMessage(new TranslatableText("mod_prefix").append(new TranslatableText(message).formatted(formatting)), MinecraftClient.getInstance().player.getUuid());
         else
-            MinecraftClient.getInstance().player.sendSystemMessage(new TranslatableText(message).formatted(formatting), MinecraftClient.getInstance().player.getUuid());
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendSystemMessage(new TranslatableText(message).formatted(formatting), MinecraftClient.getInstance().player.getUuid());
     }
 
     public static void sendSystem(String message, Formatting formatting, boolean prefixed, Object... args) {
         if (prefixed)
-            MinecraftClient.getInstance().player.sendSystemMessage(new TranslatableText("mod_prefix").append(new TranslatableText(message, args).formatted(formatting)), MinecraftClient.getInstance().player.getUuid());
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendSystemMessage(new TranslatableText("mod_prefix").append(new TranslatableText(message, args).formatted(formatting)), MinecraftClient.getInstance().player.getUuid());
         else
-            MinecraftClient.getInstance().player.sendSystemMessage(new TranslatableText(message, args).formatted(formatting), MinecraftClient.getInstance().player.getUuid());
+            Objects.requireNonNull(MinecraftClient.getInstance().player).sendSystemMessage(new TranslatableText(message, args).formatted(formatting), MinecraftClient.getInstance().player.getUuid());
     }
 
     public static void sendChat(String message) {
-        MinecraftClient.getInstance().player.sendChatMessage(message);
+        Objects.requireNonNull(MinecraftClient.getInstance().player).sendChatMessage(message);
     }
 
     public static void sendDebugMessage(String message) {

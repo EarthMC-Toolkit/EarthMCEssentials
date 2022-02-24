@@ -13,6 +13,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -64,16 +65,20 @@ public class EarthMCEssentials implements ModInitializer {
         ToggleDebugCommand.register();
         TownlessCommand.register();
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            // Pressed F4 (Config Menu)
+        // Every tick, see if we are pressing F4.
+        ClientTickEvents.END_CLIENT_TICK.register(client ->
+        {
             if (configKeybinding.wasPressed()) {
                 Screen screen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
-
                 client.setScreen(screen);
 		    }
         });
 
-        HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> OverlayRenderer.render(matrixStack));
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) ->
+                OverlayRenderer.renderOnScreenClose(client, screen));
+
+        HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->
+                OverlayRenderer.renderOnTick(matrixStack));
     }
 
     public Resident getClientResident() {
