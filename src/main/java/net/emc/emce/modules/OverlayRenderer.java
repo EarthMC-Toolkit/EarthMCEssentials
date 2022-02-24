@@ -14,6 +14,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class OverlayRenderer {
@@ -46,9 +47,14 @@ public class OverlayRenderer {
                 // Draw heading.
                 renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
 
-                if (EarthMCEssentials.instance().getTownless().size() > 0) {
+                if (EarthMCEssentials.instance().getTownless().size() > 0)
+                {
                     int index = 0;
-                    for (String name : townless) {
+                    Iterator<String> it = townless.iterator();
+
+                    while (it.hasNext())
+                    {
+                        String name = it.next();
                         Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
                         if (config.townless.maxLength >= 1) {
@@ -130,7 +136,11 @@ public class OverlayRenderer {
                 renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
 
                 int rendered = 0;
-                for (String townlessName : townless) {
+                Iterator<String> it = townless.iterator();
+
+                while (it.hasNext())
+                {
+                    String townlessName = it.next();
                     Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
                     if (config.townless.maxLength > 0 && rendered >= config.townless.maxLength) {
