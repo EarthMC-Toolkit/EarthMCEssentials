@@ -23,7 +23,10 @@ public class OverlayRenderer
 {
     public static void renderOnScreenClose(MinecraftClient client, Screen screen)
     {
-        
+        // Verify we haven't got a screen open
+        if (screen == null) {
+            // Set townless/nearby states?
+        }
     }
 
     public static void renderOnTick(MatrixStack matrixStack)
