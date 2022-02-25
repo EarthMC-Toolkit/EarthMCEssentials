@@ -39,7 +39,7 @@ public class OverlayRenderer
         Render();
     }
 
-    private static void Init()
+    public static void Init()
     {
         client = MinecraftClient.getInstance();
 
@@ -55,8 +55,10 @@ public class OverlayRenderer
 
     public static void UpdateStates()
     {
-        // Can't update states without getting longest element
+        // Fail-safe
         if (townless == null || nearby == null) return;
+
+        Init();
 
         UpdateTownlessState();
         UpdateNearbyState();
@@ -64,8 +66,6 @@ public class OverlayRenderer
 
     public static void Render()
     {
-        Init();
-
         if (client.player == null || !config.general.enableMod || !EarthMCEssentials.instance().shouldRender()) {
             System.out.println("Cannot render, returning..");
             return;
