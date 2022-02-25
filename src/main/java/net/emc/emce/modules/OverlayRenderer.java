@@ -44,7 +44,7 @@ public class OverlayRenderer
         client = MinecraftClient.getInstance();
 
         renderer = MinecraftClient.getInstance().textRenderer;
-        config = EarthMCEssentials.instance().getConfig();
+        config = ModConfig.instance();
 
         townlessState = config.townless.positionState;
         nearbyState = config.nearby.positionState;
@@ -58,27 +58,23 @@ public class OverlayRenderer
         // Fail-safe
         if (townless == null || nearby == null) return;
 
-        Init();
-
         UpdateTownlessState();
         UpdateNearbyState();
     }
 
     public static void Render()
     {
-        if (client.player == null || !config.general.enableMod || !EarthMCEssentials.instance().shouldRender()) {
+        if (client == null || client.player == null || !config.general.enableMod || !EarthMCEssentials.instance().shouldRender()) {
             System.out.println("Cannot render, returning..");
             return;
         }
 
-        if (config.townless.enabled)
-        {
+        if (config.townless.enabled) {
             if (!config.townless.presetPositions) RenderTownless();
             else UpdateTownlessState();
         }
 
-        if (config.nearby.enabled && ModUtils.isConnectedToEMC())
-        {
+        if (config.nearby.enabled && ModUtils.isConnectedToEMC()) {
             if (!config.nearby.presetPositions) RenderNearby();
             else UpdateNearbyState();
         }
