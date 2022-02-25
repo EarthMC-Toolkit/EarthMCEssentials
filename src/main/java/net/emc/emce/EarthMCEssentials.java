@@ -76,7 +76,7 @@ public class EarthMCEssentials implements ModInitializer {
         });
 
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->
-                OverlayRenderer.SetMatrixStack(matrixStack));
+                OverlayRenderer.Render(matrixStack));
 
         ScreenEvents.BEFORE_INIT.register((client, newScreen, scaledWidth, scaledHeight) ->
                 OverlayRenderer.UpdateStates());
