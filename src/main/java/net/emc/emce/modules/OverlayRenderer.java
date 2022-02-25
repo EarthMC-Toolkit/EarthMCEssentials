@@ -9,7 +9,6 @@ import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.ModUtils.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
@@ -17,285 +16,320 @@ import net.minecraft.util.Formatting;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
-@SuppressWarnings("ConstantConditions")
 public class OverlayRenderer
 {
-    public static void renderOnScreenClose(MinecraftClient client, Screen screen)
+    private static MinecraftClient client;
+
+    private static State townlessState;
+    private static State nearbyState;
+
+    private static List<String> townless;
+    private static JsonArray nearby;
+
+    private static ModConfig config;
+    private static TextRenderer renderer;
+
+    private static MatrixStack matrixStack;
+
+    public static void SetMatrixStack(MatrixStack ms)
     {
-        // Verify we haven't got a screen open
-        if (screen == null) {
-            // Set townless/nearby states?
-        }
+        matrixStack = ms;
+        Render();
     }
 
-    public static void renderOnTick(MatrixStack matrixStack)
+    private static void Init()
     {
-        if (!EarthMCEssentials.instance().getConfig().general.enableMod
-             || !EarthMCEssentials.instance().shouldRender()) return;
+        client = MinecraftClient.getInstance();
 
-        final TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+        renderer = MinecraftClient.getInstance().textRenderer;
+        config = EarthMCEssentials.instance().getConfig();
 
-        ModConfig config = EarthMCEssentials.instance().getConfig();
+        townlessState = config.townless.positionState;
+        nearbyState = config.nearby.positionState;
 
-        State townlessState = config.townless.positionState;
-        State nearbyState = config.nearby.positionState;
+        townless = EarthMCEssentials.instance().getTownless();
+        nearby = EarthMCEssentials.instance().getNearbyPlayers();
+    }
 
-        List<String> townless = EarthMCEssentials.instance().getTownless();
-        JsonArray nearby = EarthMCEssentials.instance().getNearbyPlayers();
-        MinecraftClient client = MinecraftClient.getInstance();
+    public static void UpdateStates()
+    {
+        // Can't update states without getting longest element
+        if (townless == null || nearby == null) return;
 
-        if (client.player == null) return;
+        UpdateTownlessState();
+        UpdateNearbyState();
+    }
+
+    public static void Render()
+    {
+        Init();
+
+        if (client.player == null || !config.general.enableMod || !EarthMCEssentials.instance().shouldRender()) {
+            System.out.println("Cannot render, returning..");
+            return;
+        }
 
         if (config.townless.enabled)
         {
-            if (!config.townless.presetPositions)
+            if (!config.townless.presetPositions) RenderTownless();
+            else UpdateTownlessState();
+        }
+
+        if (config.nearby.enabled && ModUtils.isConnectedToEMC())
+        {
+            if (!config.nearby.presetPositions) RenderNearby();
+            else UpdateNearbyState();
+        }
+    }
+
+    public static void RenderTownless()
+    {
+        // Position of the first player, who determines where the list will be.
+        int townlessPlayerOffset = config.townless.yPos;
+
+        Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
+        MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
+
+        // Draw heading.
+        renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
+
+        if (EarthMCEssentials.instance().getTownless().size() > 0)
+        {
+            int index = 0;
+            Iterator<String> it = townless.iterator();
+
+            while (it.hasNext())
             {
-                // Position of the first player, who determines where the list will be.
-                int townlessPlayerOffset = config.townless.yPos;
+                String name = it.next();
+                Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
-                Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-                MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
-
-                // Draw heading.
-                renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
-
-                if (EarthMCEssentials.instance().getTownless().size() > 0)
-                {
-                    int index = 0;
-                    Iterator<String> it = townless.iterator();
-
-                    while (it.hasNext())
-                    {
-                        String name = it.next();
-                        Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
-
-                        if (config.townless.maxLength >= 1) {
-                            if (index >= config.townless.maxLength) {
-                                MutableText remainingText = new TranslatableText("text_townless_remaining", EarthMCEssentials.instance().getTownless().size()-index).formatted(playerTextFormatting);
-                                renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
-                                break;
-                            }
-                            index++;
-                        }
-
-                        MutableText playerName = new TranslatableText(name).formatted(playerTextFormatting);
-                        renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
-
-                        // Add offset for the next player.
-                        townlessPlayerOffset += 10;
-                    }
-                }
-            } else { // No advanced positioning, use preset states.
-                int townlessLongest, nearbyLongest;
-
-                townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
-                nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
-
-                switch (townlessState) {
-                    case TOP_MIDDLE -> {
-                        if (nearbyState.equals(State.TOP_MIDDLE))
-                            townlessState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2);
-                        else
-                            townlessState.setX(ModUtils.getWindowWidth() / 2 - townlessLongest / 2);
-
-                        townlessState.setY(16);
-                    }
-                    case TOP_RIGHT -> {
-                        townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
-                        townlessState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
-                    }
-                    case LEFT -> {
-                        townlessState.setX(5);
-                        townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
-                    }
-                    case RIGHT -> {
-                        townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
-                        townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
-                    }
-                    case BOTTOM_RIGHT -> {
-                        townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
-                        townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
-                    }
-                    case BOTTOM_LEFT -> {
-                        townlessState.setX(5);
-                        townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
-                    }
-                    default -> // Defaults to top left
-                    {
-                        townlessState.setX(5);
-                        townlessState.setY(16);
-                    }
-                }
-
-                Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-                MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
-
-                // Draw heading.
-                renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
-
-                int rendered = 0;
-                Iterator<String> it = townless.iterator();
-
-                while (it.hasNext())
-                {
-                    String townlessName = it.next();
-                    Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
-
-                    if (config.townless.maxLength > 0 && rendered >= config.townless.maxLength) {
-                        MutableText remainingText = new TranslatableText("text_townless_remaining", townless.size() - rendered).formatted(playerTextFormatting);
-                        renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + rendered*10, 16777215);
+                if (config.townless.maxLength >= 1) {
+                    if (index >= config.townless.maxLength) {
+                        MutableText remainingText = new TranslatableText("text_townless_remaining", EarthMCEssentials.instance().getTownless().size()-index).formatted(playerTextFormatting);
+                        renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
                         break;
                     }
-
-                    MutableText playerName = new TranslatableText(townlessName).formatted(playerTextFormatting);
-
-                    renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + rendered++*10, 16777215);
+                    index++;
                 }
+
+                MutableText playerName = new TranslatableText(name).formatted(playerTextFormatting);
+                renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
+
+                // Add offset for the next player.
+                townlessPlayerOffset += 10;
+            }
+        }
+    }
+
+    private static void UpdateTownlessState()
+    {
+        // No advanced positioning, use preset states.
+        int townlessLongest, nearbyLongest;
+
+        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
+
+        switch (townlessState) {
+            case TOP_MIDDLE -> {
+                if (nearbyState.equals(State.TOP_MIDDLE))
+                    townlessState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2);
+                else
+                    townlessState.setX(ModUtils.getWindowWidth() / 2 - townlessLongest / 2);
+
+                townlessState.setY(16);
+            }
+            case TOP_RIGHT -> {
+                townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
+                townlessState.setY(ModUtils.getStatusEffectOffset(Objects.requireNonNull(client.player).getStatusEffects()));
+            }
+            case LEFT -> {
+                townlessState.setX(5);
+                townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
+            }
+            case RIGHT -> {
+                townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
+                townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
+            }
+            case BOTTOM_RIGHT -> {
+                townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
+                townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
+            }
+            case BOTTOM_LEFT -> {
+                townlessState.setX(5);
+                townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
+            }
+            default -> // Defaults to top left
+            {
+                townlessState.setX(5);
+                townlessState.setY(16);
             }
         }
 
-        if (config.nearby.enabled && ModUtils.isConnectedToEMC()) {
-            if (!config.nearby.presetPositions) // Not using preset positions
+        Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
+        MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
+
+        // Draw heading.
+        renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
+
+        int rendered = 0;
+        Iterator<String> it = townless.iterator();
+
+        while (it.hasNext())
+        {
+            String townlessName = it.next();
+            Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
+
+            if (config.townless.maxLength > 0 && rendered >= config.townless.maxLength) {
+                MutableText remainingText = new TranslatableText("text_townless_remaining", townless.size() - rendered).formatted(playerTextFormatting);
+                renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + rendered*10, 16777215);
+                break;
+            }
+
+            MutableText playerName = new TranslatableText(townlessName).formatted(playerTextFormatting);
+
+            renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + rendered++*10, 16777215);
+        }
+    }
+
+    public static void RenderNearby(){
+        // Position of the first player, who determines where the list will be.
+        int nearbyPlayerOffset = config.nearby.yPos;
+
+        Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
+        MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
+
+        // Draw heading.
+        renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
+
+        if (nearby.size() >= 1) {
+            if (client.player == null) return;
+
+            for (int i = 0; i < nearby.size(); i++) {
+                JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
+                int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
+                        Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
+
+                if (currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
+                    continue;
+
+                Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
+                MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString(), distance).formatted(playerTextFormatting);
+
+                renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
+
+                // Add offset for the next player.
+                nearbyPlayerOffset += 10;
+            }
+        }
+    }
+
+    private static void UpdateNearbyState(){
+        int nearbyLongest, townlessLongest;
+
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
+        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
+
+        switch (nearbyState) {
+            case TOP_MIDDLE -> {
+                if (townlessState.equals(State.TOP_MIDDLE)) {
+                    nearbyState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 + townlessLongest + 5);
+                    nearbyState.setY(townlessState.getY());
+                } else {
+                    nearbyState.setX(ModUtils.getWindowWidth() / 2 - nearbyLongest / 2);
+                    nearbyState.setY(16);
+                }
+            }
+            case TOP_RIGHT -> {
+                if (townlessState.equals(State.TOP_RIGHT))
+                    nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                else
+                    nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
+
+                if (client.player != null)
+                    nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
+            }
+            case LEFT -> {
+                if (townlessState.equals(State.LEFT)) {
+                    nearbyState.setX(townlessLongest + 10);
+                    nearbyState.setY(townlessState.getY());
+                } else {
+                    nearbyState.setX(5);
+                    nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
+                }
+            }
+            case RIGHT -> {
+                if (townlessState.equals(State.RIGHT)) {
+                    nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                    nearbyState.setY(townlessState.getY());
+                } else {
+                    nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
+                    nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
+                }
+            }
+            case BOTTOM_RIGHT -> {
+                if (townlessState.equals(State.BOTTOM_RIGHT)) {
+                    nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                    nearbyState.setY(townlessState.getY());
+                } else {
+                    nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 15);
+                    nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
+                }
+            }
+            case BOTTOM_LEFT -> {
+                if (townlessState.equals(State.BOTTOM_LEFT)) {
+                    nearbyState.setX(townlessLongest + 15);
+                    nearbyState.setY(townlessState.getY());
+                } else {
+                    nearbyState.setX(5);
+                    nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
+                }
+            }
+            default -> // Defaults to top left
             {
-                // Position of the first player, who determines where the list will be.
-                int nearbyPlayerOffset = config.nearby.yPos;
+                if (townlessState.equals(State.TOP_LEFT)) nearbyState.setX(townlessLongest + 15);
+                else nearbyState.setX(5);
 
-                Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-                MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
+                nearbyState.setY(16);
+            }
+        }
 
-                // Draw heading.
-                renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
+        Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
+        MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
 
-                if (nearby.size() >= 1) {
-                    if (client.player == null) return;
+        // Draw heading.
+        renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);
 
-                    for (int i = 0; i < nearby.size(); i++) {
-                        JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
-                        int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
-                                Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
+        if (nearby.size() >= 1)
+        {
+            if (client.player == null) return;
 
-                        if (currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
-                            continue;
+            for (int i = 0; i < nearby.size(); i++)
+            {
+                JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
 
-                        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
-                        MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString(), distance).formatted(playerTextFormatting);
+                JsonElement xElement = currentPlayer.get("x");
+                JsonElement zElement = currentPlayer.get("z");
+                if (xElement == null || zElement == null) continue;
 
-                        renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
+                int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
+                        Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
-                        // Add offset for the next player.
-                        nearbyPlayerOffset += 10;
-                    }
-                }
-            } else {
-                int nearbyLongest, townlessLongest;
+                if (EarthMCEssentials.instance().getClientResident() != null && currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
+                    continue;
 
-                nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
-                townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
+                String prefix = "";
 
-                switch (nearbyState) {
-                    case TOP_MIDDLE -> {
-                        if (townlessState.equals(State.TOP_MIDDLE)) {
-                            nearbyState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 + townlessLongest + 5);
-                            nearbyState.setY(townlessState.getY());
-                        } else {
-                            nearbyState.setX(ModUtils.getWindowWidth() / 2 - nearbyLongest / 2);
-                            nearbyState.setY(16);
-                        }
-                    }
-                    case TOP_RIGHT -> {
-                        if (townlessState.equals(State.TOP_RIGHT))
-                            nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                        else
-                            nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
-
-                        if (client.player != null)
-                            nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
-                    }
-                    case LEFT -> {
-                        if (townlessState.equals(State.LEFT)) {
-                            nearbyState.setX(townlessLongest + 10);
-                            nearbyState.setY(townlessState.getY());
-                        } else {
-                            nearbyState.setX(5);
-                            nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
-                        }
-                    }
-                    case RIGHT -> {
-                        if (townlessState.equals(State.RIGHT)) {
-                            nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                            nearbyState.setY(townlessState.getY());
-                        } else {
-                            nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
-                            nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
-                        }
-                    }
-                    case BOTTOM_RIGHT -> {
-                        if (townlessState.equals(State.BOTTOM_RIGHT)) {
-                            nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                            nearbyState.setY(townlessState.getY());
-                        } else {
-                            nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 15);
-                            nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
-                        }
-                    }
-                    case BOTTOM_LEFT -> {
-                        if (townlessState.equals(State.BOTTOM_LEFT)) {
-                            nearbyState.setX(townlessLongest + 15);
-                            nearbyState.setY(townlessState.getY());
-                        } else {
-                            nearbyState.setX(5);
-                            nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
-                        }
-                    }
-                    default -> // Defaults to top left
-                    {
-                        if (townlessState.equals(State.TOP_LEFT))
-                            nearbyState.setX(townlessLongest + 15);
-                        else
-                            nearbyState.setX(5);
-
-                        nearbyState.setY(16);
-                    }
+                if (config.nearby.showRank) {
+                    if (!currentPlayer.has("town")) prefix = "(Townless) ";
+                    else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
                 }
 
-                Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-                MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
+                Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
+                MutableText playerText = new TranslatableText(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(playerTextFormatting);
 
-                // Draw heading.
-                renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);
-
-                if (nearby.size() >= 1)
-                {
-                    if (client.player == null) return;
-
-                    for (int i = 0; i < nearby.size(); i++)
-                    {
-                        JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
-
-                        JsonElement xElement = currentPlayer.get("x");
-                        JsonElement zElement = currentPlayer.get("z");
-                        if (xElement == null || zElement == null) continue;
-
-                        int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
-                                Math.abs(zElement.getAsInt() - (int) client.player.getZ());
-
-                        if (EarthMCEssentials.instance().getClientResident() != null && currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
-                            continue;
-
-                        String prefix = "";
-
-                        if (config.nearby.showRank) {
-                            if (!currentPlayer.has("town")) prefix = "(Townless) ";
-                            else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
-                        }
-
-                        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
-                        MutableText playerText = new TranslatableText(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(playerTextFormatting);
-
-                        renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, 16777215);
-                    }
-                }
+                renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, 16777215);
             }
         }
     }

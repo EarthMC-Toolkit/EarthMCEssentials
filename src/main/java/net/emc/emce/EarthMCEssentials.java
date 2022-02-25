@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.emc.emce.commands.*;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.OverlayRenderer;
@@ -14,10 +15,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ public class EarthMCEssentials implements ModInitializer {
 
     private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 
-    private Resident client;
+    private Resident clientResident;
     private ModConfig config;
     private boolean shouldRender = false;
     private boolean debugModeEnabled = false;
@@ -69,24 +70,35 @@ public class EarthMCEssentials implements ModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client ->
         {
             if (configKeybinding.wasPressed()) {
-                Screen screen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
-                client.setScreen(screen);
+                Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
+                client.setScreen(configScreen);
 		    }
         });
 
-        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) ->
-                OverlayRenderer.renderOnScreenClose(client, screen));
-
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->
-                OverlayRenderer.renderOnTick(matrixStack));
+                OverlayRenderer.SetMatrixStack(matrixStack));
+
+        ScreenEvents.BEFORE_INIT.register((client, newScreen, scaledWidth, scaledHeight) ->
+                OverlayRenderer.UpdateStates());
+
+        ScreenEvents.AFTER_INIT.register((client, newScreen, scaledWidth, scaledHeight) ->
+        {
+            if (newScreen instanceof ClothConfigScreen)
+            {
+                ScreenExtensions configSE = ScreenExtensions.getExtensions(newScreen);
+
+                configSE.fabric_getRemoveEvent().register(screen ->
+                        OverlayRenderer.UpdateStates());
+            }
+        });
     }
 
     public Resident getClientResident() {
-        return client;
+        return clientResident;
     }
 
-    public void setClientResident(Resident clientResident) {
-        client = clientResident;
+    public void setClientResident(Resident res) {
+        clientResident = res;
     }
 
     public ModConfig getConfig() {
@@ -122,6 +134,8 @@ public class EarthMCEssentials implements ModInitializer {
 
     public void setNearbyPlayers(JsonArray nearbyPlayers) {
         instance.nearbyPlayers = nearbyPlayers;
+
+        OverlayRenderer.Render();
     }
 
     public void setTownlessResidents(@NotNull JsonArray townlessResidents) {
@@ -129,6 +143,8 @@ public class EarthMCEssentials implements ModInitializer {
 
         for (JsonElement townlessResident : townlessResidents)
             this.townlessResidents.add(townlessResident.getAsJsonObject().get("name").getAsString());
+
+        OverlayRenderer.Render();
     }
 
     public Logger logger() {
