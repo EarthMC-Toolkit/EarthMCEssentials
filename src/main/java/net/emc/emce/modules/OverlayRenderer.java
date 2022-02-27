@@ -14,6 +14,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +26,8 @@ public class OverlayRenderer
     private static State townlessState;
     private static State nearbyState;
 
-    private static List<String> townless;
-    private static JsonArray nearby;
+    private static List<String> townless = new ArrayList<>();
+    private static JsonArray nearby = new JsonArray();
 
     private static ModConfig config;
     private static TextRenderer renderer;
@@ -37,13 +38,18 @@ public class OverlayRenderer
     {
         client = MinecraftClient.getInstance();
         renderer = client.textRenderer;
-
         config = ModConfig.instance();
 
-        townless = EarthMCEssentials.instance().getTownless();
-        nearby = EarthMCEssentials.instance().getNearbyPlayers();
+        townlessState = config.townless.positionState;
+        nearbyState = config.nearby.positionState;
+    }
 
-        UpdateStates();
+    public static void SetTownless(List<String> townlessResidents) {
+        townless = townlessResidents;
+    }
+
+    public static void SetNearby(JsonArray nearbyPlayers) {
+        nearby = nearbyPlayers;
     }
 
     public static void UpdateStates()
@@ -51,28 +57,22 @@ public class OverlayRenderer
         // Fail-safe
         if (townless == null || nearby == null) return;
 
-        config = ModConfig.instance();
-
         UpdateTownlessState();
         UpdateNearbyState();
     }
 
     public static void Render(MatrixStack ms)
     {
+        if (client == null || client.player == null || !config.general.enableMod || !EarthMCEssentials.instance().shouldRender())
+            return;
+
         matrixStack = ms;
 
-        if (client == null || client.player == null || !config.general.enableMod || !EarthMCEssentials.instance().shouldRender()) {
-            System.out.println("Cannot render, returning..");
-            return;
-        }
-
-        if (config.townless.enabled) {
+        if (config.townless.enabled)
             RenderTownless(config.townless.presetPositions);
-        }
 
-        if (config.nearby.enabled && ModUtils.isConnectedToEMC()) {
+        if (config.nearby.enabled && ModUtils.isConnectedToEMC())
             RenderNearby(config.nearby.presetPositions);
-        }
     }
 
     private static void RenderTownless(boolean usingPreset)
@@ -100,7 +100,6 @@ public class OverlayRenderer
                 }
 
                 MutableText playerName = new TranslatableText(townlessName).formatted(playerTextFormatting);
-
                 renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + rendered++*10, 16777215);
             }
         }
@@ -146,8 +145,6 @@ public class OverlayRenderer
 
     private static void UpdateTownlessState()
     {
-        townlessState = config.townless.positionState;
-
         // No advanced positioning, use preset states.
         int townlessLongest, nearbyLongest;
 
@@ -269,8 +266,6 @@ public class OverlayRenderer
 
     private static void UpdateNearbyState()
     {
-        nearbyState = config.nearby.positionState;
-
         int nearbyLongest, townlessLongest;
 
         nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));

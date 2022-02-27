@@ -2,35 +2,42 @@ package net.emc.emce.config;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.autoconfig.annotation.Config.Gui.Background;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.BoundedDiscrete;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.object.Colors;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils.State;
 
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.*;
+
 @Config(name = "emc-essentials")
-@Config.Gui.Background(value = "cloth-config2:transparent")
+@Background(value = "cloth-config2:transparent")
 public class ModConfig implements ConfigData
 {
-    @ConfigEntry.Category("General")
-    @ConfigEntry.Gui.TransitiveObject()
+    @Category("General")
+    @TransitiveObject()
     public General general = new General();
 
-    @ConfigEntry.Category("Townless")
-    @ConfigEntry.Gui.TransitiveObject()
+    @Category("Townless")
+    @TransitiveObject()
     public Townless townless = new Townless();
 
-    @ConfigEntry.Category("Nearby")
-    @ConfigEntry.Gui.TransitiveObject()
+    @Category("Nearby")
+    @TransitiveObject()
     public Nearby nearby = new Nearby();
 
-    @ConfigEntry.Category("Commands")
-    @ConfigEntry.Gui.TransitiveObject()
+    @Category("Commands")
+    @TransitiveObject()
     public Commands commands = new Commands();
 
-    @ConfigEntry.Category("API")
-    @ConfigEntry.Gui.TransitiveObject()
+    @Category("API")
+    @TransitiveObject()
     public API api = new API();
 
     public static class General {
@@ -48,7 +55,7 @@ public class ModConfig implements ConfigData
         @Comment("Toggles the use of preset positions, uses sliders if off.")
         public boolean presetPositions = true;
 
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         @Comment("The position of the Townless info.")
         public State positionState = State.TOP_LEFT;
 
@@ -57,10 +64,10 @@ public class ModConfig implements ConfigData
         @Comment("Note: Only used if Use Preset Positions is off.")
         public int yPos = 16;
 
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         @Comment("The colour of the 'Townless Players' text.")
         public Colors headingTextColour = Colors.BLUE;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         @Comment("The colour of the townless player names.")
         public Colors playerTextColour = Colors.BLUE;
     }
@@ -73,7 +80,7 @@ public class ModConfig implements ConfigData
         @Comment("Toggles the use of preset positions, uses sliders if off.")
         public boolean presetPositions = true;
 
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         public State positionState = State.TOP_RIGHT;
 
         @Comment("The horizontal position on the HUD.")
@@ -81,47 +88,47 @@ public class ModConfig implements ConfigData
         @Comment("The vertical position on the HUD.")
         public int yPos = 16;
 
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         @Comment("The colour of the 'Nearby Players' text.")
         public Colors headingTextColour = Colors.GOLD;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         @Comment("The colour of nearby player' names.")
         public Colors playerTextColour = Colors.GOLD;
 
         // Independent scaling - each axis can be same or different.
         @Comment("The amount of blocks to check on the X axis.")
-        @ConfigEntry.BoundedDiscrete(min = 50, max = 10000)
+        @BoundedDiscrete(min = 50, max = 10000)
         public int xBlocks = 500;
-        @ConfigEntry.BoundedDiscrete(min = 50, max = 10000)
+        @BoundedDiscrete(min = 50, max = 10000)
         @Comment("The amount of blocks to check on the Z axis.")
         public int zBlocks = 500;
     }
 
     public static class Commands {
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         @Comment("The colour of the townless players text.")
         public Colors townlessTextColour = Colors.LIGHT_PURPLE;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         @Comment("The colour of the town info text.")
         public Colors townInfoTextColour = Colors.GREEN;
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @EnumHandler(option = BUTTON)
         @Comment("The colour of the nation info text.")
         public Colors nationInfoTextColour = Colors.AQUA;
     }
 
     public static class API {
         @Comment("The interval (in seconds) at which townless data will be updated.")
-        @ConfigEntry.BoundedDiscrete(min = 15, max = 600)
+        @BoundedDiscrete(min = 15, max = 600)
         public int nearbyInterval = 30;
         @Comment("The interval (in seconds) at which nearby data will be updated.")
-        @ConfigEntry.BoundedDiscrete(min = 30, max = 600)
+        @BoundedDiscrete(min = 30, max = 600)
         public int townlessInterval = 60;
 
-        @ConfigEntry.Gui.CollapsibleObject
+        @CollapsibleObject
         @Comment("Main settings for the API. Do not touch unless you know what you're doing!")
         public Main main = new Main();
 
-        @ConfigEntry.Gui.CollapsibleObject
+        @CollapsibleObject
         @Comment("Configures routes for the API. Do not touch unless you know what you're doing!")
         public Routes routes = new Routes();
 

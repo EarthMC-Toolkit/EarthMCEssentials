@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import static net.minecraft.client.MinecraftClient.getInstance;
 
 public class ModUtils {
     private static @NotNull String serverName = "";
@@ -63,23 +64,23 @@ public class ModUtils {
     }
 
     public static int getStringWidth(String string) {
-        return MinecraftClient.getInstance().textRenderer.getWidth(string);
+        return getInstance().textRenderer.getWidth(string);
     }
     public static int getTextWidth(MutableText text) {
-        return MinecraftClient.getInstance().textRenderer.getWidth(text);
+        return getInstance().textRenderer.getWidth(text);
     }
 
     public static int getStringHeight(String string) {
-        return MinecraftClient.getInstance().textRenderer.getWrappedLinesHeight(string, 1000);
+        return getInstance().textRenderer.getWrappedLinesHeight(string, 1000);
     }
 
     public static int getWindowWidth() {
-        MinecraftClient client = MinecraftClient.getInstance();
+        MinecraftClient client = getInstance();
         return client.getWindow().getScaledWidth();
     }
 
     public static int getWindowHeight() {
-        MinecraftClient client = MinecraftClient.getInstance();
+        MinecraftClient client = getInstance();
         return client.getWindow().getScaledHeight();
     }
 
@@ -143,8 +144,8 @@ public class ModUtils {
             if (EarthMCEssentials.instance().getClientResident() != null && currentObj.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
                 continue;
 
-            int distance = Math.abs(currentObj.get("x").getAsInt() - Objects.requireNonNull(MinecraftClient.getInstance().player).getBlockX()) +
-                           Math.abs(currentObj.get("z").getAsInt() - MinecraftClient.getInstance().player.getBlockZ());
+            int distance = Math.abs(currentObj.get("x").getAsInt() - Objects.requireNonNull(getInstance().player).getBlockX()) +
+                           Math.abs(currentObj.get("z").getAsInt() - getInstance().player.getBlockZ());
 
             String prefix = "";
 
@@ -188,7 +189,7 @@ public class ModUtils {
         String serverName = "";
 
         try {
-            ServerInfo serverInfo = MinecraftClient.getInstance().getCurrentServerEntry();
+            ServerInfo serverInfo = getInstance().getCurrentServerEntry();
 
             if (serverInfo != null) {
                 if (serverInfo.isLocal())
@@ -196,12 +197,12 @@ public class ModUtils {
                 else
                     serverName = serverInfo.address;
             }
-            else if (MinecraftClient.getInstance().isConnectedToRealms())
+            else if (getInstance().isConnectedToRealms())
                 serverName = "Realms";
-            else if (MinecraftClient.getInstance().isInSingleplayer())
+            else if (getInstance().isInSingleplayer())
                 serverName = "Singleplayer";
             else {
-                ClientPlayNetworkHandler clientPlayNetworkHandler = MinecraftClient.getInstance().getNetworkHandler();
+                ClientPlayNetworkHandler clientPlayNetworkHandler = getInstance().getNetworkHandler();
 
                 if (clientPlayNetworkHandler != null) {
                     return ((InetSocketAddress) clientPlayNetworkHandler.getConnection().getAddress()).getHostName();

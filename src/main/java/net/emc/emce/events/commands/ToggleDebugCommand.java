@@ -1,5 +1,5 @@
 
-package net.emc.emce.commands;
+package net.emc.emce.events.commands;
 
 import net.emc.emce.EarthMCEssentials;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;

@@ -1,4 +1,4 @@
-package net.emc.emce.commands;
+package net.emc.emce.events.commands;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.StringArgumentType;

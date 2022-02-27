@@ -1,4 +1,4 @@
-package net.emc.emce.commands;
+package net.emc.emce.events.commands;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

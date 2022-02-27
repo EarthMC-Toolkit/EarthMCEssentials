@@ -1,6 +1,8 @@
 package net.emc.emce.mixin;
 
 import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.modules.OverlayRenderer;
+import net.emc.emce.utils.EventRegistry;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.MsgUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -20,7 +22,12 @@ public class ClientPlayNetworkHandlerMixin {
         EarthMCEssentials.instance().setShouldRender(ModUtils.shouldRender());
         MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
 
+        OverlayRenderer.Init();
         EarthMCEssentials.instance().scheduler().start();
+
+        OverlayRenderer.UpdateStates();
+        EventRegistry.RegisterScreen();
+        EventRegistry.RegisterHud();
     }
 
     @Inject(at = @At("HEAD"), method="onDisconnect")

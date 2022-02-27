@@ -1,4 +1,4 @@
-package net.emc.emce.commands;
+package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.emc.emce.utils.MsgUtils;

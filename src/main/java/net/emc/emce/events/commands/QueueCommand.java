@@ -1,4 +1,4 @@
-package net.emc.emce.commands;
+package net.emc.emce.events.commands;
 
 import net.emc.emce.caches.ServerDataCache;
 import net.emc.emce.utils.MsgUtils;
