@@ -7,16 +7,18 @@ import net.minecraft.util.Formatting;
 
 import net.emc.emce.utils.MsgUtils;
 
+import static net.emc.emce.EarthMCEssentials.instance;
+
 public class ToggleDebugCommand {
     public static void register() {
         ClientCommandManager.DISPATCHER.register(
             ClientCommandManager.literal("toggledebug").executes(c -> {
-                if (EarthMCEssentials.instance().isDebugModeEnabled()) {
+                if (instance().isDebugModeEnabled()) {
                     MsgUtils.sendPlayer("msg_debug_disabled", false, Formatting.AQUA, true);
-                    EarthMCEssentials.instance().setDebugModeEnabled(false);
+                    instance().setDebugModeEnabled(false);
                 } else {
                     MsgUtils.sendPlayer("msg_debug_enabled", false, Formatting.AQUA, true);
-                    EarthMCEssentials.instance().setDebugModeEnabled(true);
+                    instance().setDebugModeEnabled(true);
                 }
 
                 return 1;

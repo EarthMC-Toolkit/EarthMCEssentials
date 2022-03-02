@@ -117,11 +117,11 @@ public class ModConfig implements ConfigData
     }
 
     public static class API {
-        @Comment("The interval (in seconds) at which townless data will be updated.")
-        @BoundedDiscrete(min = 15, max = 600)
-        public int nearbyInterval = 30;
         @Comment("The interval (in seconds) at which nearby data will be updated.")
-        @BoundedDiscrete(min = 30, max = 600)
+        @BoundedDiscrete(min = 10, max = 120)
+        public int nearbyInterval = 20;
+        @Comment("The interval (in seconds) at which townless data will be updated.")
+        @BoundedDiscrete(min = 30, max = 300)
         public int townlessInterval = 60;
 
         @CollapsibleObject
@@ -133,13 +133,11 @@ public class ModConfig implements ConfigData
         public Routes routes = new Routes();
 
         public static class Main {
-            public String domain = "http://earthmcstats.sly.io/api/v1/";
+            public String domain = "http://earthmcstats.ddns.net/api/v1/";
 
             public String domain() {
-                if (!EarthMCAPI.urlSchemePattern.matcher(domain).find())
-                    return "http://" + domain;
-                else
-                    return domain;
+                if (!EarthMCAPI.urlSchemePattern.matcher(domain).find()) return "http://" + domain;
+                else return domain;
             }
         }
 

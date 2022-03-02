@@ -3,7 +3,6 @@ package net.emc.emce.events.commands;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.NationDataCache;
 import net.emc.emce.caches.TownDataCache;
 import net.emc.emce.utils.MsgUtils;
@@ -15,6 +14,8 @@ import net.minecraft.util.Formatting;
 
 import java.util.Locale;
 import java.util.Objects;
+
+import static net.emc.emce.EarthMCEssentials.instance;
 
 public class InfoCommands {
     public static void registerTownInfoCommand() {
@@ -37,19 +38,19 @@ public class InfoCommands {
         ).executes(c -> {
             FabricClientCommandSource source = c.getSource();
 
-            if (EarthMCEssentials.instance().getClientResident() == null) {
+            if (instance().getClientResident() == null) {
                 MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
                 return 1;
             }
 
-            if (EarthMCEssentials.instance().getClientResident().getTown().equals("") || EarthMCEssentials.instance().getClientResident().getTown().equals("No Town"))
+            if (instance().getClientResident().getTown().equals("") || instance().getClientResident().getTown().equals("No Town"))
                 MsgUtils.sendPlayer("text_towninfo_not_registered", false, Formatting.RED, true);
             else {
                 TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
-                    JsonObject townObject = towns.get(EarthMCEssentials.instance().getClientResident().getTown().toLowerCase(Locale.ROOT));
+                    JsonObject townObject = towns.get(instance().getClientResident().getTown().toLowerCase(Locale.ROOT));
 
                     if (townObject == null)
-                        source.sendFeedback(new TranslatableText("text_towninfo_err", EarthMCEssentials.instance().getClientResident().getTown()).formatted(Formatting.RED));
+                        source.sendFeedback(new TranslatableText("text_towninfo_err", instance().getClientResident().getTown()).formatted(Formatting.RED));
                     else {
                         sendTownInfo(townObject, source);
                     }
@@ -79,19 +80,19 @@ public class InfoCommands {
         })).executes(c -> {
             FabricClientCommandSource source = c.getSource();
 
-            if (EarthMCEssentials.instance().getClientResident() == null) {
+            if (instance().getClientResident() == null) {
                 MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
                 return 1;
             }
 
-            if (EarthMCEssentials.instance().getClientResident().getNation().equals("") || EarthMCEssentials.instance().getClientResident().getNation().equals("No Nation"))
+            if (instance().getClientResident().getNation().equals("") || instance().getClientResident().getNation().equals("No Nation"))
                 MsgUtils.sendPlayer("text_nationinfo_not_registered", false, Formatting.RED, true);
             else {
                 NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
-                    JsonObject nationObject = nations.get(EarthMCEssentials.instance().getClientResident().getNation().toLowerCase(Locale.ROOT));
+                    JsonObject nationObject = nations.get(instance().getClientResident().getNation().toLowerCase(Locale.ROOT));
 
                     if (nationObject == null)
-                        MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, EarthMCEssentials.instance().getClientResident().getNation());
+                        MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, instance().getClientResident().getNation());
                     else {
                         sendNationInfo(nationObject, source);
                     }
@@ -103,7 +104,7 @@ public class InfoCommands {
     }
 
     private static void sendTownInfo(JsonObject townObject, FabricClientCommandSource source) {
-        Formatting townInfoTextColour = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.townInfoTextColour.name());
+        Formatting townInfoTextColour = Formatting.byName(instance().getConfig().commands.townInfoTextColour.name());
 
         source.sendFeedback(new TranslatableText("text_towninfo_header", townObject.get("name").getAsString()).formatted(townInfoTextColour));
         source.sendFeedback(new TranslatableText("text_towninfo_mayor", townObject.get("mayor").getAsString()).formatted(townInfoTextColour));
@@ -113,7 +114,7 @@ public class InfoCommands {
     }
 
     private static void sendNationInfo(JsonObject nationObject, FabricClientCommandSource source) {
-        Formatting nationInfoTextColour = Formatting.byName(EarthMCEssentials.instance().getConfig().commands.nationInfoTextColour.name());
+        Formatting nationInfoTextColour = Formatting.byName(instance().getConfig().commands.nationInfoTextColour.name());
 
         source.sendFeedback(new TranslatableText("text_nationinfo_header", nationObject.get("name").getAsString()).formatted(nationInfoTextColour));
         source.sendFeedback(new TranslatableText("text_nationinfo_king", nationObject.get("king").getAsString()).formatted(nationInfoTextColour));
