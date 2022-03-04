@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,7 +32,7 @@ public class EarthMCEssentials implements ModInitializer {
     private boolean shouldRender = false;
     private boolean debugModeEnabled = false;
 
-    private List<String> townlessResidents = new CopyOnWriteArrayList<>();
+    private final List<String> townlessResidents = new CopyOnWriteArrayList<>();
     private JsonArray nearbyPlayers = new JsonArray();
 
     public static KeyBinding configKeybinding;
