@@ -16,6 +16,7 @@ import net.minecraft.util.Formatting;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class OverlayRenderer
 {
@@ -25,6 +26,7 @@ public class OverlayRenderer
     private static State nearbyState;
 
     private static JsonArray nearby = new JsonArray();
+    private static List<String> townless = new CopyOnWriteArrayList<>();
 
     private static ModConfig config;
     private static TextRenderer renderer;
@@ -45,14 +47,14 @@ public class OverlayRenderer
         nearby = nearbyPlayers;
     }
 
-    public static List<String> townless() {
-        return EarthMCEssentials.instance().getTownless();
+    public static void SetTownless(List<String> townlessResidents) {
+        townless = new CopyOnWriteArrayList<>(townlessResidents);
     }
 
     public static void UpdateStates()
     {
         // Fail-safe
-        if (townless() == null || nearby == null || client == null || client.player == null) return;
+        if (townless == null || nearby == null || client == null || client.player == null) return;
 
         UpdateTownlessState();
         UpdateNearbyState();
@@ -77,13 +79,13 @@ public class OverlayRenderer
         if (usingPreset)
         {
             Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-            MutableText townlessText = new TranslatableText("text_townless_header", townless().size()).formatted(townlessTextFormatting);
+            MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
 
             int rendered = 0;
-            Iterator<String> it = townless().iterator();
+            Iterator<String> it = townless.iterator();
 
             while (it.hasNext())
             {
@@ -91,7 +93,7 @@ public class OverlayRenderer
                 Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
                 if (config.townless.maxLength > 0 && rendered >= config.townless.maxLength) {
-                    MutableText remainingText = new TranslatableText("text_townless_remaining", townless().size() - rendered).formatted(playerTextFormatting);
+                    MutableText remainingText = new TranslatableText("text_townless_remaining", townless.size() - rendered).formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + rendered*10, 16777215);
                     break;
                 }
@@ -106,15 +108,15 @@ public class OverlayRenderer
             int townlessPlayerOffset = config.townless.yPos;
 
             Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-            MutableText townlessText = new TranslatableText("text_townless_header", townless().size()).formatted(townlessTextFormatting);
+            MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
 
-            if (EarthMCEssentials.instance().getTownless().size() > 0)
+            if (townless.size() > 0)
             {
                 int index = 0;
-                Iterator<String> it = townless().iterator();
+                Iterator<String> it = townless.iterator();
 
                 while (it.hasNext())
                 {
@@ -123,7 +125,7 @@ public class OverlayRenderer
 
                     if (config.townless.maxLength >= 1) {
                         if (index >= config.townless.maxLength) {
-                            MutableText remainingText = new TranslatableText("text_townless_remaining", EarthMCEssentials.instance().getTownless().size()-index).formatted(playerTextFormatting);
+                            MutableText remainingText = new TranslatableText("text_townless_remaining",townless.size()-index).formatted(playerTextFormatting);
                             renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
                             break;
                         }
@@ -145,7 +147,7 @@ public class OverlayRenderer
         // No advanced positioning, use preset states.
         int townlessLongest, nearbyLongest;
 
-        townlessLongest = Math.max(ModUtils.getLongestElement(townless()), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless().size())));
+        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
         nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
 
         switch (townlessState) {
@@ -163,19 +165,19 @@ public class OverlayRenderer
             }
             case LEFT -> {
                 townlessState.setX(5);
-                townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless(), config.townless.maxLength) / 2);
+                townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
             }
             case RIGHT -> {
                 townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
-                townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless(), config.townless.maxLength) / 2);
+                townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
             }
             case BOTTOM_RIGHT -> {
                 townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
-                townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless(), config.townless.maxLength) - 22);
+                townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
             }
             case BOTTOM_LEFT -> {
                 townlessState.setX(5);
-                townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless(), config.townless.maxLength) - 22);
+                townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
             }
             default -> // Defaults to top left
             {
@@ -266,7 +268,7 @@ public class OverlayRenderer
         int nearbyLongest, townlessLongest;
 
         nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
-        townlessLongest = Math.max(ModUtils.getLongestElement(townless()), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless().size())));
+        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
 
         switch (nearbyState) {
             case TOP_MIDDLE -> {

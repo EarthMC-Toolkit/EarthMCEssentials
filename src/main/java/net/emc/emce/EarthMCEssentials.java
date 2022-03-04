@@ -20,6 +20,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EarthMCEssentials implements ModInitializer {
 
@@ -32,7 +33,7 @@ public class EarthMCEssentials implements ModInitializer {
     private boolean shouldRender = false;
     private boolean debugModeEnabled = false;
 
-    private List<String> townlessResidents = new ArrayList<>();
+    private List<String> townlessResidents = new CopyOnWriteArrayList<>();
     private JsonArray nearbyPlayers = new JsonArray();
 
     public static KeyBinding configKeybinding;
@@ -99,18 +100,16 @@ public class EarthMCEssentials implements ModInitializer {
     }
 
     public void setTownlessResidents(@NotNull JsonArray array) {
+        // Make sure there is data to add.
+        if (array.size() < 1) return;
+
         townlessResidents.clear();
 
-        ArrayList<String> tempList = new ArrayList<>();
-
-        // Make sure there is data to add.
-        if (array.size() > 0) {
-            for (JsonElement townlessResident : array) {
-                tempList.add(townlessResident.getAsJsonObject().get("name").getAsString());
-            }
+        for (JsonElement townlessResident : array) {
+            townlessResidents.add(townlessResident.getAsJsonObject().get("name").getAsString());
         }
 
-        townlessResidents = tempList;
+        OverlayRenderer.SetTownless(townlessResidents);
     }
 
     public Logger logger() {
