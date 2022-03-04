@@ -32,7 +32,7 @@ public class EarthMCEssentials implements ModInitializer {
     private boolean shouldRender = false;
     private boolean debugModeEnabled = false;
 
-    private final List<String> townlessResidents = new ArrayList<>();
+    private List<String> townlessResidents = new ArrayList<>();
     private JsonArray nearbyPlayers = new JsonArray();
 
     public static KeyBinding configKeybinding;
@@ -98,16 +98,19 @@ public class EarthMCEssentials implements ModInitializer {
         OverlayRenderer.SetNearby(nearbyPlayers);
     }
 
-    public void setTownlessResidents(@NotNull JsonArray townlessResidents) {
-        this.townlessResidents.clear();
+    public void setTownlessResidents(@NotNull JsonArray array) {
+        townlessResidents.clear();
 
-        if (townlessResidents.size() > 0)
-        {
-            for (JsonElement townlessResident : townlessResidents)
-                this.townlessResidents.add(townlessResident.getAsJsonObject().get("name").getAsString());
+        ArrayList<String> tempList = new ArrayList<>();
+
+        // Make sure there is data to add.
+        if (array.size() > 0) {
+            for (JsonElement townlessResident : array) {
+                tempList.add(townlessResident.getAsJsonObject().get("name").getAsString());
+            }
         }
 
-        OverlayRenderer.SetTownless(this.townlessResidents);
+        townlessResidents = tempList;
     }
 
     public Logger logger() {

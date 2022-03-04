@@ -14,10 +14,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class ClientPlayNetworkHandlerMixin {
+public class ClientPlayNetworkHandlerMixin
+{
     @Inject(at = @At("TAIL"), method="onGameJoin")
-    private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-
+    private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
+    {
         ModUtils.updateServerName();
         EarthMCEssentials.instance().setShouldRender(ModUtils.shouldRender());
         MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
@@ -31,7 +32,8 @@ public class ClientPlayNetworkHandlerMixin {
     }
 
     @Inject(at = @At("HEAD"), method="onDisconnect")
-    public void onDisconnect(DisconnectS2CPacket packet, CallbackInfo ci) {
+    public void onDisconnect(DisconnectS2CPacket packet, CallbackInfo ci)
+    {
         EarthMCEssentials.instance().scheduler().stop();
         ModUtils.setServerName("");
     }
