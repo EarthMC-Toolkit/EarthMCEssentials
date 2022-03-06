@@ -5,8 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
+import net.emc.emce.object.NewsData;
+import net.emc.emce.object.NewsState;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.ModUtils.State;
+import net.emc.emce.utils.MsgUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -25,8 +28,9 @@ public class OverlayRenderer
     private static State townlessState;
     private static State nearbyState;
 
-    private static JsonArray nearby = new JsonArray();
     private static List<String> townless = new CopyOnWriteArrayList<>();
+    private static final NewsData news = new NewsData();
+    private static int currentNewsID = 0;
 
     private static ModConfig config;
     private static TextRenderer renderer;
@@ -43,8 +47,8 @@ public class OverlayRenderer
         nearbyState = config.nearby.positionState;
     }
 
-    public static void SetNearby(JsonArray nearbyPlayers) {
-        nearby = nearbyPlayers;
+    public static JsonArray nearby() {
+        return EarthMCEssentials.instance().getNearbyPlayers();
     }
 
     public static void SetTownless(List<String> townlessResidents) {
@@ -54,7 +58,7 @@ public class OverlayRenderer
     public static void UpdateStates()
     {
         // Fail-safe
-        if (townless == null || nearby == null || client == null || client.player == null) return;
+        if (townless == null || nearby() == null || client == null || client.player == null) return;
 
         UpdateTownlessState();
         UpdateNearbyState();
@@ -72,6 +76,18 @@ public class OverlayRenderer
 
         if (config.nearby.enabled && ModUtils.isConnectedToEMC())
             RenderNearby(config.nearby.presetPositions);
+    }
+
+    public static void RenderNews(NewsState pos, NewsData news)
+    {
+        if (news.getID() == currentNewsID) return;
+        currentNewsID = news.getID();
+
+        switch(pos)
+        {
+            case CHAT -> MsgUtils.sendPlayer(news.getMsg(), false, Formatting.AQUA, false);
+            case ACTION_BAR -> MsgUtils.sendPlayer(news.getMsg(), true, Formatting.AQUA, false);
+        }
     }
 
     private static void RenderTownless(boolean usingPreset)
@@ -148,7 +164,7 @@ public class OverlayRenderer
         int townlessLongest, nearbyLongest;
 
         townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby().size())));
 
         switch (townlessState) {
             case TOP_MIDDLE -> {
@@ -192,18 +208,18 @@ public class OverlayRenderer
         if (usingPreset)
         {
             Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-            MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
+            MutableText nearbyText = new TranslatableText("text_nearby_header", nearby().size()).formatted(nearbyTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);
 
-            if (nearby.size() >= 1)
+            if (nearby().size() >= 1)
             {
                 if (client.player == null) return;
 
-                for (int i = 0; i < nearby.size(); i++)
+                for (int i = 0; i < nearby().size(); i++)
                 {
-                    JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
+                    JsonObject currentPlayer = nearby().get(i).getAsJsonObject();
 
                     JsonElement xElement = currentPlayer.get("x");
                     JsonElement zElement = currentPlayer.get("z");
@@ -235,16 +251,16 @@ public class OverlayRenderer
             int nearbyPlayerOffset = config.nearby.yPos;
 
             Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-            MutableText nearbyText = new TranslatableText("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
+            MutableText nearbyText = new TranslatableText("text_nearby_header", nearby().size()).formatted(nearbyTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
 
-            if (nearby.size() >= 1) {
+            if (nearby().size() >= 1) {
                 if (client.player == null) return;
 
-                for (int i = 0; i < nearby.size(); i++) {
-                    JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
+                for (int i = 0; i < nearby().size(); i++) {
+                    JsonObject currentPlayer = nearby().get(i).getAsJsonObject();
                     int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
                             Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 
@@ -267,7 +283,7 @@ public class OverlayRenderer
     {
         int nearbyLongest, townlessLongest;
 
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby.size())));
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby().size())));
         townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
 
         switch (nearbyState) {
@@ -295,7 +311,7 @@ public class OverlayRenderer
                     nearbyState.setY(townlessState.getY());
                 } else {
                     nearbyState.setX(5);
-                    nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
+                    nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby()) / 2);
                 }
             }
             case RIGHT -> {
@@ -304,7 +320,7 @@ public class OverlayRenderer
                     nearbyState.setY(townlessState.getY());
                 } else {
                     nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
-                    nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby) / 2);
+                    nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby()) / 2);
                 }
             }
             case BOTTOM_RIGHT -> {
@@ -313,7 +329,7 @@ public class OverlayRenderer
                     nearbyState.setY(townlessState.getY());
                 } else {
                     nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 15);
-                    nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
+                    nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby()) - 10);
                 }
             }
             case BOTTOM_LEFT -> {
@@ -322,7 +338,7 @@ public class OverlayRenderer
                     nearbyState.setY(townlessState.getY());
                 } else {
                     nearbyState.setX(5);
-                    nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby) - 10);
+                    nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby()) - 10);
                 }
             }
             default -> // Defaults to top left

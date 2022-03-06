@@ -1,10 +1,9 @@
 package net.emc.emce.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
+import net.emc.emce.object.NewsData;
 import net.emc.emce.object.Resident;
 import net.emc.emce.object.exception.APIException;
 import net.emc.emce.object.ServerData;
@@ -111,6 +110,17 @@ public class EarthMCAPI {
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
+            }
+        });
+    }
+
+    public static CompletableFuture<NewsData> getNews() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return new NewsData((JsonObject) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.news)));
+            } catch (APIException e) {
+                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                return new NewsData();
             }
         });
     }

@@ -11,6 +11,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.object.Colors;
+import net.emc.emce.object.NewsState;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils.State;
 
@@ -31,6 +32,10 @@ public class ModConfig implements ConfigData
     @Category("Nearby")
     @TransitiveObject()
     public Nearby nearby = new Nearby();
+
+    @Category("News")
+    @TransitiveObject()
+    public News news = new News();
 
     @Category("Commands")
     @TransitiveObject()
@@ -104,6 +109,15 @@ public class ModConfig implements ConfigData
         public int zBlocks = 500;
     }
 
+    public static class News {
+        @Comment("Toggles news on or off.")
+        public boolean enabled = true;
+
+        @EnumHandler(option = BUTTON)
+        @Comment("The position of where news will be shown.")
+        public NewsState position = NewsState.ACTION_BAR;
+    }
+
     public static class Commands {
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the townless players text.")
@@ -120,9 +134,14 @@ public class ModConfig implements ConfigData
         @Comment("The interval (in seconds) at which nearby data will be updated.")
         @BoundedDiscrete(min = 10, max = 120)
         public int nearbyInterval = 20;
+
         @Comment("The interval (in seconds) at which townless data will be updated.")
         @BoundedDiscrete(min = 30, max = 300)
         public int townlessInterval = 60;
+
+        @Comment("The interval (in seconds) at which news data will be updated.")
+        @BoundedDiscrete(min = 10, max = 180)
+        public int newsInterval = 60;
 
         @CollapsibleObject
         @Comment("Main settings for the API. Do not touch unless you know what you're doing!")
@@ -133,11 +152,14 @@ public class ModConfig implements ConfigData
         public Routes routes = new Routes();
 
         public static class Main {
-            public String domain = "http://earthmcstats.ddns.net/api/v1/";
+            public String domain = "http://earthmcstats.ddns.net/api/";
+            public String version = "v1";
 
             public String domain() {
-                if (!EarthMCAPI.urlSchemePattern.matcher(domain).find()) return "http://" + domain;
-                else return domain;
+                String domainWithVersion = domain + version + "/";
+
+                if (!EarthMCAPI.urlSchemePattern.matcher(domain).find()) return "http://" + domainWithVersion;
+                else return domainWithVersion;
             }
         }
 
@@ -148,6 +170,7 @@ public class ModConfig implements ConfigData
             public String resident = "residents/";
             public String nearby = "nearby/";
             public String serverInfo = "serverinfo/";
+            public String news = "news/";
         }
     }
 

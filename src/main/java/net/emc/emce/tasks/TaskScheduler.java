@@ -22,6 +22,7 @@ public class TaskScheduler {
     public boolean townlessRunning;
     public boolean nearbyRunning;
     public boolean cacheCheckRunning;
+    public boolean newsRunning;
 
     private static final List<Cache<?>> CACHES = Arrays.asList(NationDataCache.INSTANCE, ServerDataCache.INSTANCE, TownDataCache.INSTANCE);
 
@@ -31,6 +32,7 @@ public class TaskScheduler {
 
         startTownless();
         startNearby();
+        startNews();
         startCacheCheck();
 
         // Pre-fill townless and nearby player arrays with some data.
@@ -47,6 +49,7 @@ public class TaskScheduler {
 
         townlessRunning = false;
         nearbyRunning = false;
+        newsRunning = false;
         cacheCheckRunning = false;
     }
 
@@ -77,7 +80,22 @@ public class TaskScheduler {
                     MsgUtils.sendDebugMessage("Finished nearby task.");
                 });
             }
-        }, 0, Math.max(config.api.nearbyInterval, 15), TimeUnit.SECONDS);
+        }, 0, Math.max(config.api.nearbyInterval, 10), TimeUnit.SECONDS);
+    }
+
+    private void startNews() {
+        newsRunning = true;
+        final ModConfig config = ModConfig.instance();
+
+        service.scheduleAtFixedRate(() -> {
+            if (newsRunning && config.general.enableMod && config.news.enabled && shouldRun()) {
+                MsgUtils.sendDebugMessage("Starting news task.");
+                EarthMCAPI.getNews().thenAccept(news -> {
+                    EarthMCEssentials.instance().setNews(news);
+                    MsgUtils.sendDebugMessage("Finished news task.");
+                });
+            }
+        }, 0, Math.max(config.api.newsInterval, 10), TimeUnit.SECONDS);
     }
 
     private void startCacheCheck() {

@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.OverlayRenderer;
+import net.emc.emce.object.NewsData;
 import net.emc.emce.object.Resident;
 import net.emc.emce.tasks.TaskScheduler;
 import net.emc.emce.utils.EventRegistry;
@@ -34,6 +35,7 @@ public class EarthMCEssentials implements ModInitializer {
 
     private final List<String> townlessResidents = new CopyOnWriteArrayList<>();
     private JsonArray nearbyPlayers = new JsonArray();
+    private NewsData newsData = new NewsData();
 
     public static KeyBinding configKeybinding;
 
@@ -93,9 +95,13 @@ public class EarthMCEssentials implements ModInitializer {
         this.shouldRender = shouldRender;
     }
 
+    public void setNews(NewsData nd) {
+        this.newsData = nd;
+        OverlayRenderer.RenderNews(config.news.position, nd);
+    }
+
     public void setNearbyPlayers(JsonArray nearbyPlayers) {
         this.nearbyPlayers = nearbyPlayers;
-        OverlayRenderer.SetNearby(nearbyPlayers);
     }
 
     public void setTownlessResidents(@NotNull JsonArray array) {
