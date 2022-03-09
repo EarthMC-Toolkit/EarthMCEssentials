@@ -97,7 +97,7 @@ public class EarthMCEssentials implements ModInitializer {
 
     public void setNews(NewsData nd) {
         this.newsData = nd;
-        OverlayRenderer.RenderNews(config.news.position, nd);
+        OverlayRenderer.SendNews(config.news.position, nd);
     }
 
     public void setNearbyPlayers(JsonArray nearbyPlayers) {

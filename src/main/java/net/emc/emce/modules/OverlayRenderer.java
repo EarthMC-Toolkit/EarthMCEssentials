@@ -78,7 +78,7 @@ public class OverlayRenderer
             RenderNearby(config.nearby.presetPositions);
     }
 
-    public static void RenderNews(NewsState pos, NewsData news)
+    public static void SendNews(NewsState pos, NewsData news)
     {
         if (news.getID() == currentNewsID) return;
         currentNewsID = news.getID();
