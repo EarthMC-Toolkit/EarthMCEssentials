@@ -35,7 +35,7 @@ public class TaskScheduler {
         startNews();
         startCacheCheck();
 
-        // Pre-fill townless and nearby player arrays with some data.
+        // Pre-fill data.
         if (config.general.enableMod) {
             if (config.townless.enabled)
                 EarthMCAPI.getTownless().thenAccept(EarthMCEssentials.instance()::setTownlessResidents);

@@ -7,6 +7,7 @@ import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.object.NewsData;
 import net.emc.emce.object.NewsState;
+import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.ModUtils.State;
 import net.emc.emce.utils.MsgUtils;
@@ -45,6 +46,11 @@ public class OverlayRenderer
 
         townlessState = config.townless.positionState;
         nearbyState = config.nearby.positionState;
+
+        EarthMCAPI.getResident(client.player.getName().getString()).thenAccept(res -> {
+            EarthMCEssentials.instance().setClientResident(res);
+            MsgUtils.sendDebugMessage("Finished setting client's resident info.");
+        });
     }
 
     public static JsonArray nearby() {
@@ -223,12 +229,15 @@ public class OverlayRenderer
 
                     JsonElement xElement = currentPlayer.get("x");
                     JsonElement zElement = currentPlayer.get("z");
+                    String currentPlayerName = currentPlayer.get("name").getAsString();
+
                     if (xElement == null || zElement == null) continue;
 
                     int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
                             Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
-                    if (EarthMCEssentials.instance().getClientResident() != null && currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
+                    if (EarthMCEssentials.instance().getClientResident() != null &&
+                        currentPlayerName.equals(EarthMCEssentials.instance().getClientResident().getName()))
                         continue;
 
                     String prefix = "";
@@ -239,7 +248,7 @@ public class OverlayRenderer
                     }
 
                     Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
-                    MutableText playerText = new TranslatableText(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m").formatted(playerTextFormatting);
+                    MutableText playerText = new TranslatableText(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
 
                     renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, 16777215);
                 }
@@ -261,14 +270,16 @@ public class OverlayRenderer
 
                 for (int i = 0; i < nearby().size(); i++) {
                     JsonObject currentPlayer = nearby().get(i).getAsJsonObject();
+                    String currentPlayerName = currentPlayer.get("name").getAsString();
+
                     int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
                             Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
 
-                    if (currentPlayer.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
+                    if (currentPlayerName.equals(EarthMCEssentials.instance().getClientResident().getName()))
                         continue;
 
                     Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
-                    MutableText playerText = new TranslatableText(currentPlayer.get("name").getAsString(), distance).formatted(playerTextFormatting);
+                    MutableText playerText = new TranslatableText(currentPlayerName, distance).formatted(playerTextFormatting);
 
                     renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
 
