@@ -1,17 +1,20 @@
 # EarthMC Essentials
-A mod providing info on the EarthMC Minecraft server.
+A mod for the EarthMC Minecraft server, providing info on people, places and more.
+Our data is acquired from our [API](https://github.com/Owen77Stubbs/EarthMC-API) and client info.
 
-### About
+### What Can It Do?
 
-EarthMC Essentials is a mod designed as an add-on for [EarthMC](https://earthmc.net/) with features such as:
+EMCE is a mod designed as an add-on for [EarthMC](https://earthmc.net/) with features such as:
 - Commands
   - /queuesize, /nationinfo, /towninfo, /townless & /nearby.
   - Use /townless inviteAll to quickly invite townless people to your town!
-- Overlays
-  - Townless overlay: All online townless players are shown on your screen.
-  - Nearby players overlay: Tired of checking the dynmap for players near you 24/7? See anyone whose close to you, in-game.
-- Fully configurable
-  - Pressing f4 (default) opens up the configuration screen.
+- On-Screen Info
+  - Townless - All online townless players are shown on your screen.
+  - Nearby - See anyone whose close to you without checking the dynmap! Configurable options include: radius, rank and distance.
+  - News - Sometimes it's hard to keep up with the news. EMCE sends news to your action bar (or chat) as soon as it is reported.
+- Config screen (F4)
+  - API Intervals - Set the rate at which you want data to be updated
+  - Data - Toggle on/off, screen x/y position, text colors, radius and more.
 
 ### Installation Guide
 #### Here's how to install the mod (For brand-new users):
