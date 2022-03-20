@@ -1,6 +1,6 @@
 # EarthMC Essentials
-A mod for the EarthMC Minecraft server, providing info on people, places and more.
-Our data is acquired from our [API](https://github.com/Owen77Stubbs/EarthMC-API) and client info.
+A mod for the EarthMC Minecraft server, providing info on people, places and more.<br>
+*All data is acquired from our [API](https://github.com/Owen77Stubbs/EarthMC-API) in conjuction with info from the Minecraft client.*
 
 ### What Can It Do?
 
@@ -25,6 +25,5 @@ EMCE is a mod designed as an add-on for [EarthMC](https://earthmc.net/) with fea
 
 ### Support
 
-If you have any problems with installing, you can get support in the mods section of our Discord [here](https://discord.gg/MteFjeBprS)
-
+If you have any problems with installing, you can get support in the mods section of our Discord [here](https://discord.gg/MteFjeBprS)<br>
 If you encounter a bug, report it in the #mod-bugs channel in our discord above, or create an issue on the [Issue Tracker](https://github.com/Warriorrrr/EarthMCEssentials)
