@@ -90,3 +90,19 @@ v1.6.1 (Feb 23 2022)
 - /townless refresh now works as intended.
 - The 'nearby' text will no longer render if the player is not connected to EarthMC.
 - Fixed a ton of crash bugs.
+
+v1.7.0 (March 9 2022)
+- Recent news will now be displayed on either the chat or action bar (configurable in F4) when reported in EMCL.
+- Version is now separated from the domain under API. (When changing version, the / is not required for this field)
+- Changed min, max and default values for some fields in the config.
+- Fixed crash 'ConcurrentModificationException' by iterating over a townless copy instead of directly.
+- Fixed an error that would occur exiting the game as the player would be null.
+- Decreased amount of events that fire every tick by only firing when needed, this should help improve performance.
+- Registering HUD and Screen events now done on join (instead of launch) to prevent null exceptions.
+- Lots of other backend QoL that should help keep the mod stable. (Fail-safes, unneeded calls etc.)
+
+v1.7.1 (March 20 2022)
+- Fixed a 'NullPointerException' crash affecting nearby when using a custom position.
+- Fixed missing rank and distance of nearby players when using a custom position.
+- Re-logging is no longer required for the position of nearby to update.
+- Both townless and nearby positions update when data is set, meaning they will no longer clip out of screen.
