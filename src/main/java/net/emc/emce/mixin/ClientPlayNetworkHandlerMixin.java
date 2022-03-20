@@ -26,7 +26,6 @@ public class ClientPlayNetworkHandlerMixin
         OverlayRenderer.Init();
         EarthMCEssentials.instance().scheduler().start();
 
-        OverlayRenderer.UpdateStates();
         EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
     }

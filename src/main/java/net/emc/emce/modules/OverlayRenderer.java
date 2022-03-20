@@ -7,7 +7,6 @@ import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.object.NewsData;
 import net.emc.emce.object.NewsState;
-import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.ModUtils.State;
 import net.emc.emce.utils.MsgUtils;
@@ -47,10 +46,7 @@ public class OverlayRenderer
         townlessState = config.townless.positionState;
         nearbyState = config.nearby.positionState;
 
-        EarthMCAPI.getResident(client.player.getName().getString()).thenAccept(res -> {
-            EarthMCEssentials.instance().setClientResident(res);
-            MsgUtils.sendDebugMessage("Finished setting client's resident info.");
-        });
+        UpdateStates(true, true);
     }
 
     public static JsonArray nearby() {
@@ -61,13 +57,13 @@ public class OverlayRenderer
         townless = new CopyOnWriteArrayList<>(townlessResidents);
     }
 
-    public static void UpdateStates()
+    public static void UpdateStates(boolean updateTownless, boolean updateNearby)
     {
         // Fail-safe
         if (townless == null || nearby() == null || client == null || client.player == null) return;
 
-        UpdateTownlessState();
-        UpdateNearbyState();
+        if (updateTownless) UpdateTownlessState();
+        if (updateNearby) UpdateNearbyState();
     }
 
     public static void Render(MatrixStack ms)
@@ -229,16 +225,13 @@ public class OverlayRenderer
 
                     JsonElement xElement = currentPlayer.get("x");
                     JsonElement zElement = currentPlayer.get("z");
-                    String currentPlayerName = currentPlayer.get("name").getAsString();
-
                     if (xElement == null || zElement == null) continue;
+
+                    String currentPlayerName = currentPlayer.get("name").getAsString();
+                    if (currentPlayerName.equals(client.player.getName().getString())) continue;
 
                     int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
                             Math.abs(zElement.getAsInt() - (int) client.player.getZ());
-
-                    if (EarthMCEssentials.instance().getClientResident() != null &&
-                        currentPlayerName.equals(EarthMCEssentials.instance().getClientResident().getName()))
-                        continue;
 
                     String prefix = "";
 
@@ -270,16 +263,26 @@ public class OverlayRenderer
 
                 for (int i = 0; i < nearby().size(); i++) {
                     JsonObject currentPlayer = nearby().get(i).getAsJsonObject();
+
+                    JsonElement xElement = currentPlayer.get("x");
+                    JsonElement zElement = currentPlayer.get("z");
+                    if (xElement == null || zElement == null) continue;
+
                     String currentPlayerName = currentPlayer.get("name").getAsString();
+                    if (currentPlayerName.equals(client.player.getName().getString())) continue;
 
-                    int distance = Math.abs(currentPlayer.get("x").getAsInt() - (int) client.player.getX()) +
-                            Math.abs(currentPlayer.get("z").getAsInt() - (int) client.player.getZ());
+                    int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
+                            Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
-                    if (currentPlayerName.equals(EarthMCEssentials.instance().getClientResident().getName()))
-                        continue;
+                    String prefix = "";
+
+                    if (config.nearby.showRank) {
+                        if (!currentPlayer.has("town")) prefix = "(Townless) ";
+                        else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
+                    }
 
                     Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
-                    MutableText playerText = new TranslatableText(currentPlayerName, distance).formatted(playerTextFormatting);
+                    MutableText playerText = new TranslatableText(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
 
                     renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
 

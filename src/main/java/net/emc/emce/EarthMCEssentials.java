@@ -102,6 +102,7 @@ public class EarthMCEssentials implements ModInitializer {
 
     public void setNearbyPlayers(JsonArray nearbyPlayers) {
         this.nearbyPlayers = nearbyPlayers;
+        OverlayRenderer.UpdateStates(false, true);
     }
 
     public void setTownlessResidents(@NotNull JsonArray array) {
@@ -115,6 +116,7 @@ public class EarthMCEssentials implements ModInitializer {
         }
 
         OverlayRenderer.SetTownless(townlessResidents);
+        OverlayRenderer.UpdateStates(true, false);
     }
 
     public Logger logger() {

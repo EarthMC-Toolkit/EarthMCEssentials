@@ -17,7 +17,7 @@ public class ScreenInit
         instance = this;
 
         ScreenEvents.BEFORE_INIT.register((client, newScreen, scaledWidth, scaledHeight) ->
-                OverlayRenderer.UpdateStates());
+                OverlayRenderer.UpdateStates(true, true));
 
         ScreenEvents.AFTER_INIT.register(ScreenInit::afterInit);
     }
@@ -25,11 +25,13 @@ public class ScreenInit
     private static void afterInit(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
         if (newScreen instanceof ClothConfigScreen) {
             ScreenExtensions configSE = ScreenExtensions.getExtensions(newScreen);
-
-            configSE.fabric_getRemoveEvent().register(screen ->
-                    OverlayRenderer.UpdateStates());
+            configSE.fabric_getRemoveEvent().register(ScreenInit::Refresh);
 
             configOpen = false;
         }
+    }
+
+    private static void Refresh(Screen screen) {
+        OverlayRenderer.Init();
     }
 }
