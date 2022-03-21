@@ -1,4 +1,8 @@
-# EarthMC Essentials
+# EarthMC Essentials 
+![Downloads](https://img.shields.io/github/downloads/EarthMC-Stats/EarthMCEssentials/total) 
+![Activity](https://shields.io/github/commit-activity/m/EarthMC-Stats/EarthMCEssentials)
+<a href="https://discord.gg/jRJ2G4StEX"><img src="https://img.shields.io/discord/670058560767655950?logo=discord">
+             
 A mod for the EarthMC Minecraft server, providing info on people, places and more.<br>
 *All data is acquired from our [API](https://github.com/Owen77Stubbs/EarthMC-API) in conjuction with info from the Minecraft client.*
 
