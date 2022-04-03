@@ -58,7 +58,7 @@ public class TaskScheduler {
         final ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
-            if (townlessRunning && config.general.enableMod && config.townless.enabled && shouldRun()) {
+            if (townlessRunning && config.general.enableMod && shouldRun()) {
                 MsgUtils.sendDebugMessage("Starting townless task.");
                 EarthMCAPI.getTownless().thenAccept(townless -> {
                     EarthMCEssentials.instance().setTownlessResidents(townless);
@@ -73,7 +73,7 @@ public class TaskScheduler {
         final ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
-            if (nearbyRunning && ModUtils.isConnectedToEMC() && config.general.enableMod && config.nearby.enabled && shouldRun()) {
+            if (nearbyRunning && ModUtils.isConnectedToEMC() && config.general.enableMod && shouldRun()) {
                 MsgUtils.sendDebugMessage("Starting nearby task.");
                 EarthMCAPI.getNearby().thenAccept(nearby -> {
                     EarthMCEssentials.instance().setNearbyPlayers(nearby);
