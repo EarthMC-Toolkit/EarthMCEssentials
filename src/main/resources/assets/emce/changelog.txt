@@ -106,3 +106,6 @@ v1.7.1 (March 20 2022)
 - Fixed missing rank and distance of nearby players when using a custom position.
 - Re-logging is no longer required for the position of nearby to update.
 - Both townless and nearby positions update when data is set, meaning they will no longer clip out of screen.
+
+v1.7.2 (April 3 2022)
+- Fixed issue where disabling townless and nearby overlays would cause their data to stop updating.
