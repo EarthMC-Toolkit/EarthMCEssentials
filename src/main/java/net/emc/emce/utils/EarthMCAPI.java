@@ -28,7 +28,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.townless));
+                return (JsonArray) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.townless));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -50,7 +50,7 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().isBedWorking())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.nearby +
+                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.nearby +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
@@ -73,7 +73,7 @@ public class EarthMCAPI {
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new Resident((JsonObject) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.resident + residentName)));
+                return new Resident((JsonObject) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.resident + residentName)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
@@ -84,7 +84,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTowns() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.towns));
+                return (JsonArray) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.towns));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -95,7 +95,7 @@ public class EarthMCAPI {
     public static CompletableFuture<ServerData> getServerData() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new ServerData((JsonObject) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.serverInfo)));
+                return new ServerData((JsonObject) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.serverInfo)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new ServerData();
@@ -106,7 +106,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.nations));
+                return (JsonArray) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.nations));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -117,7 +117,7 @@ public class EarthMCAPI {
     public static CompletableFuture<NewsData> getNews() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new NewsData((JsonObject) new JsonParser().parse(getURL(config.api.main.domain() + config.api.routes.news)));
+                return new NewsData((JsonObject) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.news)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new NewsData();
