@@ -21,12 +21,16 @@ EMCE is a mod designed as an add-on for [EarthMC](https://earthmc.net/) with fea
   - API Intervals - Set the rate at which you want data to be updated
   - Data - Toggle on/off, screen x/y position, text colors, radius and more.
 
-### Installation Guide
-#### Here's how to install the mod (For brand-new users):
-
+### How To Install
+#### First Time Installation
 1. Download the [latest release](https://github.com/Warriorrrr/EarthMCEssentials/releases/latest)
 2. If you haven't already, download the Fabric Loader and API via [this](https://fabricmc.net/wiki/player:tutorials:install_mcl:windows) guide.
-3. Make sure that you have the mod jar, and the Fabric API jar in your Minecraft mods folder, and launch the game
+3. Make sure that you have both EMCE and the Fabric API jars inside `%AppData%/Roaming/.minecraft/mods/` and launch the game!
+
+#### Re-Installation
+1. Head to the [releases page](https://github.com/Warriorrrr/EarthMCEssentials/releases) and find the latest version suitable for your MC version.
+2. Make sure you also have the correct [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files) for your MC version.
+3. Delete any existing versions of EMCE or the Fabric API, place the new ones in and launch MC :)
 
 ### Support
 
