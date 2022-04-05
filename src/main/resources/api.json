@@ -1,0 +1,12 @@
+"domain": "https://earthmc-api.herokuapp.com",
+"routes": {
+  "townless": "townlessplayers",
+  "players": "allplayers",
+  "residents": "residents",
+  "towns": "towns",
+  "nations": "nations",
+  "alliances": "alliances",
+  "news": "news",
+  "serverData": "serverinfo",
+  "nearby": "nearby"
+}
