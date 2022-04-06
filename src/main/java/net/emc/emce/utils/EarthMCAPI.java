@@ -154,8 +154,11 @@ public class EarthMCAPI {
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
 
-        MsgUtils.sendDebugMessage("GETTING ROUTE - " + apiData.getDomain() + route + "/");
-        return apiData.getDomain() + route + "/";
+        route = apiData.getDomain() + route + "/";
+        MsgUtils.sendDebugMessage("GETTING ROUTE - " + route);
+        System.out.println("GETTING ROUTE - " + route);
+
+        return route;
     }
 
     private static String getURL(String urlString) throws APIException {

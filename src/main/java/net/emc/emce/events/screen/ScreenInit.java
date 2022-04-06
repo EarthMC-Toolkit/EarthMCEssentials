@@ -9,11 +9,9 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class ScreenInit
 {
-    private static boolean configOpen;
+    private static boolean configOpen = false;
 
     public ScreenInit() {
-        configOpen = false;
-
         ScreenEvents.BEFORE_INIT.register((client, newScreen, scaledWidth, scaledHeight) ->
                 OverlayRenderer.UpdateStates(true, true));
 
@@ -29,7 +27,7 @@ public class ScreenInit
             ScreenExtensions configSE = ScreenExtensions.getExtensions(newScreen);
             configSE.fabric_getRemoveEvent().register(ScreenInit::Refresh);
 
-            configOpen = false;
+            setConfigOpen(false);
         }
     }
 }

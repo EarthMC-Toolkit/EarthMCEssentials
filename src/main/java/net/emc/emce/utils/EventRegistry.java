@@ -31,8 +31,7 @@ public class EventRegistry
 
     public static void RegisterClientTick() {
         // Every tick, see if we are pressing F4.
-        ClientTickEvents.END_CLIENT_TICK.register(client ->
-        {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (EarthMCEssentials.configKeybinding.wasPressed())
             {
                 Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();

@@ -52,6 +52,7 @@ public class EarthMCEssentials implements ModInitializer {
         configKeybinding = KeyBindingHelper.registerKeyBinding(new
                 KeyBinding("Open Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
+        instance().scheduler().start();
         EventRegistry.RegisterClientTick();
         EventRegistry.RegisterCommands();
     }

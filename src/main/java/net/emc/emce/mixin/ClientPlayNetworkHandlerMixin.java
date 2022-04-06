@@ -25,7 +25,6 @@ public class ClientPlayNetworkHandlerMixin
         MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
 
         OverlayRenderer.Init();
-        instance().scheduler().start();
 
         EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
