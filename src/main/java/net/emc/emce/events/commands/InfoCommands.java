@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 
 import net.emc.emce.caches.NationDataCache;
 import net.emc.emce.caches.TownDataCache;
+import net.emc.emce.object.Resident;
 import net.emc.emce.utils.MsgUtils;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
@@ -26,34 +27,32 @@ public class InfoCommands {
                 TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
                     JsonObject townObject = towns.get(townName.toLowerCase(Locale.ROOT));
 
-                    if (townObject == null)
-                        MsgUtils.sendPlayer("text_towninfo_err", false, Formatting.RED, true, townName);
-                    else {
-                        sendTownInfo(townObject, c.getSource());
-                    }
+                    if (townObject == null) MsgUtils.sendPlayer("text_towninfo_err", false, Formatting.RED, true, townName);
+                    else sendTownInfo(townObject, c.getSource());
                 });
 
                 return 1;
             })
         ).executes(c -> {
             FabricClientCommandSource source = c.getSource();
+            Resident clientResident = instance().getClientResident();
 
-            if (instance().getClientResident() == null) {
-                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
+            if (clientResident == null) {
+                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED,
+                                    true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
                 return 1;
             }
 
-            if (instance().getClientResident().getTown().equals("") || instance().getClientResident().getTown().equals("No Town"))
+            String townName = clientResident.getTown();
+            if (townName.equals("") || townName.equals("No Town"))
                 MsgUtils.sendPlayer("text_towninfo_not_registered", false, Formatting.RED, true);
             else {
                 TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
-                    JsonObject townObject = towns.get(instance().getClientResident().getTown().toLowerCase(Locale.ROOT));
+                    JsonObject townObject = towns.get(townName.toLowerCase(Locale.ROOT));
 
-                    if (townObject == null)
-                        source.sendFeedback(new TranslatableText("text_towninfo_err", instance().getClientResident().getTown()).formatted(Formatting.RED));
-                    else {
-                        sendTownInfo(townObject, source);
-                    }
+                    if (townObject == null) source.sendFeedback(
+                            new TranslatableText("text_towninfo_err", townName).formatted(Formatting.RED));
+                    else sendTownInfo(townObject, source);
                 });
             }
 
@@ -69,33 +68,30 @@ public class InfoCommands {
             NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
                 JsonObject nationObject = nations.get(nationName.toLowerCase(Locale.ROOT));
 
-                if (nationObject == null)
-                    MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, nationName);
-                else {
-                    sendNationInfo(nationObject, c.getSource());
-                }
+                if (nationObject == null) MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, nationName);
+                else sendNationInfo(nationObject, c.getSource());
             });
 
             return 1;
         })).executes(c -> {
             FabricClientCommandSource source = c.getSource();
+            Resident clientResident = instance().getClientResident();
 
-            if (instance().getClientResident() == null) {
-                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED, true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
+            if (clientResident == null) {
+                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED,
+                        true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
                 return 1;
             }
 
-            if (instance().getClientResident().getNation().equals("") || instance().getClientResident().getNation().equals("No Nation"))
+            String nationName = clientResident.getNation();
+            if (nationName.equals("") || nationName.equals("No Nation"))
                 MsgUtils.sendPlayer("text_nationinfo_not_registered", false, Formatting.RED, true);
             else {
                 NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
-                    JsonObject nationObject = nations.get(instance().getClientResident().getNation().toLowerCase(Locale.ROOT));
+                    JsonObject nationObject = nations.get(nationName.toLowerCase(Locale.ROOT));
 
-                    if (nationObject == null)
-                        MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, instance().getClientResident().getNation());
-                    else {
-                        sendNationInfo(nationObject, source);
-                    }
+                    if (nationObject == null) MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, nationName);
+                    else sendNationInfo(nationObject, source);
                 });
             }
 
