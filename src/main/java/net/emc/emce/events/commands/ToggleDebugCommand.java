@@ -1,10 +1,8 @@
 
 package net.emc.emce.events.commands;
 
-import net.emc.emce.EarthMCEssentials;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.util.Formatting;
-
 import net.emc.emce.utils.MsgUtils;
 
 import static net.emc.emce.EarthMCEssentials.instance;

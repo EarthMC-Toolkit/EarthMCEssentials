@@ -84,19 +84,9 @@
     "text.autoconfig.emc-essentials.option.commands.nationInfoTextColour": "Nation Text Colour",
 
     "text.autoconfig.emc-essentials.category.API": "API",
-    "text.autoconfig.emc-essentials.option.api.townlessInterval": "Townless Interval",
-    "text.autoconfig.emc-essentials.option.api.nearbyInterval": "Nearby Interval",
-    "text.autoconfig.emc-essentials.option.api.newsInterval": "News Interval",
-
-    "text.autoconfig.emc-essentials.option.api.routes": "API Routes",
-    "text.autoconfig.emc-essentials.option.api.main": "Main",
-    "text.autoconfig.emc-essentials.option.api.main.domain": "API Domain",
-    "text.autoconfig.emc-essentials.option.api.main.version": "API Version",
-    "text.autoconfig.emc-essentials.option.api.routes.townless": "Townless Route",
-    "text.autoconfig.emc-essentials.option.api.routes.nations": "Nations Route",
-    "text.autoconfig.emc-essentials.option.api.routes.towns": "Towns Route",
-    "text.autoconfig.emc-essentials.option.api.routes.resident": "Resident Route",
-    "text.autoconfig.emc-essentials.option.api.routes.nearby": "Nearby Route",
-    "text.autoconfig.emc-essentials.option.api.routes.news": "News Route",
-    "text.autoconfig.emc-essentials.option.api.routes.serverInfo": "Server Info Route"
+    "text.autoconfig.emc-essentials.option.api.version": "Version",
+    "text.autoconfig.emc-essentials.option.api.intervals": "Intervals",
+    "text.autoconfig.emc-essentials.option.api.intervals.townless": "Townless",
+    "text.autoconfig.emc-essentials.option.api.intervals.nearby": "Nearby",
+    "text.autoconfig.emc-essentials.option.api.intervals.news": "News"
 }

@@ -65,7 +65,7 @@ public class TaskScheduler {
                     MsgUtils.sendDebugMessage("Finished townless task.");
                 });
             }
-        }, 0, Math.max(config.api.townlessInterval, 30), TimeUnit.SECONDS);
+        }, 0, Math.max(config.api.intervals.townless, 30), TimeUnit.SECONDS);
     }
 
     private void startNearby() {
@@ -80,7 +80,7 @@ public class TaskScheduler {
                     MsgUtils.sendDebugMessage("Finished nearby task.");
                 });
             }
-        }, 0, Math.max(config.api.nearbyInterval, 10), TimeUnit.SECONDS);
+        }, 0, Math.max(config.api.intervals.nearby, 10), TimeUnit.SECONDS);
     }
 
     private void startNews() {
@@ -95,7 +95,7 @@ public class TaskScheduler {
                     MsgUtils.sendDebugMessage("Finished news task.");
                 });
             }
-        }, 0, Math.max(config.api.newsInterval, 10), TimeUnit.SECONDS);
+        }, 0, Math.max(config.api.intervals.news, 10), TimeUnit.SECONDS);
     }
 
     private void startCacheCheck() {

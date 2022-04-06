@@ -3,16 +3,15 @@ package net.emc.emce.config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.Config.Gui.Background;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.BoundedDiscrete;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
-import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.object.Colors;
 import net.emc.emce.object.NewsState;
-import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils.State;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.*;
@@ -131,46 +130,25 @@ public class ModConfig implements ConfigData
     }
 
     public static class API {
-        @Comment("The interval (in seconds) at which nearby data will be updated.")
-        @BoundedDiscrete(min = 10, max = 120)
-        public int nearbyInterval = 20;
+        @Comment("The version of the API to request data from.")
+        public String version = "v1";
 
-        @Comment("The interval (in seconds) at which townless data will be updated.")
-        @BoundedDiscrete(min = 30, max = 300)
-        public int townlessInterval = 60;
+        @ConfigEntry.Gui.CollapsibleObject
+        @Comment("Configure the rate (in seconds) at which different data will be updated.")
+        public Intervals intervals = new Intervals();
 
-        @Comment("The interval (in seconds) at which news data will be updated.")
-        @BoundedDiscrete(min = 10, max = 180)
-        public int newsInterval = 60;
+        public static class Intervals {
+            @Comment("Fairly harmless on performance, can be lowered without much overhead.")
+            @BoundedDiscrete(min = 30, max = 300)
+            public int townless = 60;
 
-        @CollapsibleObject
-        @Comment("Main settings for the API. Do not touch unless you know what you're doing!")
-        public Main main = new Main();
+            @Comment("Small but frequent payload, if you don't rely on it much, turn it up.")
+            @BoundedDiscrete(min = 10, max = 120)
+            public int nearby = 20;
 
-        @CollapsibleObject
-        @Comment("Configures routes for the API. Do not touch unless you know what you're doing!")
-        public Routes routes = new Routes();
-
-        public static class Main {
-            public String domain = "http://earthmcstats.ddns.net/api/";
-            public String version = "v1";
-
-            public String domain() {
-                String domainWithVersion = domain + version + "/";
-
-                if (!EarthMCAPI.urlSchemePattern.matcher(domain).find()) return "http://" + domainWithVersion;
-                else return domainWithVersion;
-            }
-        }
-
-        public static class Routes {
-            public String townless = "townlessplayers/";
-            public String nations = "nations/";
-            public String towns = "towns/";
-            public String resident = "residents/";
-            public String nearby = "nearby/";
-            public String serverInfo = "serverinfo/";
-            public String news = "news/";
+            @Comment("Very small payload and you won't need to turn this up in most situations.")
+            @BoundedDiscrete(min = 10, max = 180)
+            public int news = 60;
         }
     }
 

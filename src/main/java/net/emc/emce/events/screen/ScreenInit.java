@@ -9,18 +9,20 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class ScreenInit
 {
-    public static boolean configOpen = false;
-    public static ScreenInit instance;
+    private static boolean configOpen;
 
-    public ScreenInit()
-    {
-        instance = this;
+    public ScreenInit() {
+        configOpen = false;
 
         ScreenEvents.BEFORE_INIT.register((client, newScreen, scaledWidth, scaledHeight) ->
                 OverlayRenderer.UpdateStates(true, true));
 
         ScreenEvents.AFTER_INIT.register(ScreenInit::afterInit);
     }
+
+    public boolean configOpen() { return configOpen; }
+    public static void setConfigOpen(boolean value) { configOpen = value; }
+    private static void Refresh(Screen screen) { OverlayRenderer.Init(); }
 
     private static void afterInit(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
         if (newScreen instanceof ClothConfigScreen) {
@@ -29,9 +31,5 @@ public class ScreenInit
 
             configOpen = false;
         }
-    }
-
-    private static void Refresh(Screen screen) {
-        OverlayRenderer.Init();
     }
 }

@@ -3,7 +3,6 @@ package net.emc.emce.events.commands;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.MsgUtils;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.client.MinecraftClient;

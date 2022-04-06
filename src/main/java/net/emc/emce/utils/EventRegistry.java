@@ -12,8 +12,7 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class EventRegistry
 {
-    public static void RegisterCommands()
-    {
+    public static void RegisterCommands() {
         // Register client-sided commands.
         InfoCommands.registerNationInfoCommand();
         InfoCommands.registerTownInfoCommand();
@@ -25,14 +24,12 @@ public class EventRegistry
         //AllianceCommand.register();
     }
 
-    public static void RegisterScreen()
-    {
+    public static void RegisterScreen() {
         // Constructor automatically sets up the screen event listeners.
         new ScreenInit();
     }
 
-    public static void RegisterClientTick()
-    {
+    public static void RegisterClientTick() {
         // Every tick, see if we are pressing F4.
         ClientTickEvents.END_CLIENT_TICK.register(client ->
         {
@@ -40,13 +37,12 @@ public class EventRegistry
             {
                 Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
                 client.setScreen(configScreen);
-                ScreenInit.instance.configOpen = true;
+                ScreenInit.setConfigOpen(true);
             }
         });
     }
 
-    public static void RegisterHud()
-    {
+    public static void RegisterHud() {
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->
                 OverlayRenderer.Render(matrixStack));
     }

@@ -3,10 +3,8 @@ package net.emc.emce.utils;
 import com.google.gson.*;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
-import net.emc.emce.object.NewsData;
-import net.emc.emce.object.Resident;
+import net.emc.emce.object.*;
 import net.emc.emce.object.exception.APIException;
-import net.emc.emce.object.ServerData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -24,11 +22,12 @@ public class EarthMCAPI {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ModConfig config = ModConfig.instance();
     public static final Pattern urlSchemePattern = Pattern.compile("^[a-z][a-z0-9+\\-.]*://");
+    public static APIData apiData;
 
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.townless));
+                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.TOWNLESS)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -50,7 +49,7 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().isBedWorking())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.nearby +
+                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NEARBY) +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
@@ -73,7 +72,7 @@ public class EarthMCAPI {
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new Resident((JsonObject) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.resident + residentName)));
+                return new Resident((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.RESIDENTS) + residentName)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
@@ -84,7 +83,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getTowns() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.towns));
+                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.TOWNS)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -95,7 +94,7 @@ public class EarthMCAPI {
     public static CompletableFuture<ServerData> getServerData() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new ServerData((JsonObject) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.serverInfo)));
+                return new ServerData((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.SERVER_INFO))));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new ServerData();
@@ -106,7 +105,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.nations));
+                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NATIONS)));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -117,12 +116,46 @@ public class EarthMCAPI {
     public static CompletableFuture<NewsData> getNews() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new NewsData((JsonObject) JsonParser.parseString(getURL(config.api.main.domain() + config.api.routes.news)));
+                return new NewsData((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.NEWS))));
             } catch (APIException e) {
                 MsgUtils.sendDebugMessage(e.getMessage(), e);
                 return new NewsData();
             }
         });
+    }
+
+    public static CompletableFuture<APIData> API() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return new APIData((JsonObject) JsonParser.parseString(
+                    getURL("https://raw.githubusercontent.com/EarthMC-Stats/EarthMCEssentials" +
+                           "/main/src/main/resources/api.json")));
+            } catch (APIException e) {
+                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                return new APIData();
+            }
+        });
+    }
+
+    public static String getRoute(APIRoute routeType) {
+        API().thenAccept(data -> apiData = data);
+        String route;
+
+        switch(routeType) {
+            case TOWNLESS -> route = apiData.routes.townless;
+            case NATIONS -> route = apiData.routes.nations;
+            case RESIDENTS -> route = apiData.routes.residents;
+            case PLAYERS -> route = apiData.routes.players;
+            case TOWNS -> route = apiData.routes.towns;
+            case ALLIANCES -> route = apiData.routes.alliances;
+            case NEARBY -> route = apiData.routes.nearby;
+            case SERVER_INFO -> route = apiData.routes.serverInfo;
+            case NEWS -> route = apiData.routes.news;
+            default -> throw new IllegalStateException("Unexpected value: " + routeType);
+        }
+
+        MsgUtils.sendDebugMessage("GETTING ROUTE - " + apiData.getDomain() + route + "/");
+        return apiData.getDomain() + route + "/";
     }
 
     private static String getURL(String urlString) throws APIException {

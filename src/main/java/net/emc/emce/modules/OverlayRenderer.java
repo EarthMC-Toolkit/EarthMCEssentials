@@ -85,8 +85,7 @@ public class OverlayRenderer
         if (news.getID() == currentNewsID) return;
         currentNewsID = news.getID();
 
-        switch(pos)
-        {
+        switch(pos) {
             case CHAT -> MsgUtils.sendPlayer(news.getMsg(), false, Formatting.AQUA, false);
             case ACTION_BAR -> MsgUtils.sendPlayer(news.getMsg(), true, Formatting.AQUA, false);
         }

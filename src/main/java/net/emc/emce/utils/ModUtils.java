@@ -2,8 +2,6 @@ package net.emc.emce.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.emc.emce.EarthMCEssentials;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -16,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import static net.emc.emce.EarthMCEssentials.instance;
 import static net.minecraft.client.MinecraftClient.getInstance;
 
 public class ModUtils {
@@ -26,8 +25,7 @@ public class ModUtils {
         Proportionate
     }
 
-    public enum State
-    {
+    public enum State {
         BOTTOM_LEFT(0, 0),
         BOTTOM_RIGHT(0, 0),
         LEFT(0, 0),
@@ -63,26 +61,12 @@ public class ModUtils {
         }
     }
 
-    public static int getStringWidth(String string) {
-        return getInstance().textRenderer.getWidth(string);
-    }
-    public static int getTextWidth(MutableText text) {
-        return getInstance().textRenderer.getWidth(text);
-    }
+    public static int getStringWidth(String string) { return getInstance().textRenderer.getWidth(string); }
+    public static int getTextWidth(MutableText text) { return getInstance().textRenderer.getWidth(text); }
+    public static int getStringHeight(String string) { return getInstance().textRenderer.getWrappedLinesHeight(string, 1000); }
 
-    public static int getStringHeight(String string) {
-        return getInstance().textRenderer.getWrappedLinesHeight(string, 1000);
-    }
-
-    public static int getWindowWidth() {
-        MinecraftClient client = getInstance();
-        return client.getWindow().getScaledWidth();
-    }
-
-    public static int getWindowHeight() {
-        MinecraftClient client = getInstance();
-        return client.getWindow().getScaledHeight();
-    }
+    public static int getWindowWidth() { return getInstance().getWindow().getScaledWidth(); }
+    public static int getWindowHeight() { return getInstance().getWindow().getScaledHeight(); }
 
     public static int getLongestElement(JsonArray array) {
         if (array == null || array.size() == 0) return 0;
@@ -92,6 +76,7 @@ public class ModUtils {
             int currentWidth = getStringWidth(array.get(i).getAsJsonObject().get("name").getAsString());
             longestElement = Math.max(currentWidth, longestElement);
         }
+
         return longestElement;
     }
 
@@ -129,6 +114,7 @@ public class ModUtils {
                 totalLength += getStringHeight(name);
             }
         }
+
         return totalLength;
     }
 
@@ -138,18 +124,16 @@ public class ModUtils {
         int longestElement = 0;
         for (int i = 0; i < nearbyResidents.size(); i++) {
             JsonObject currentObj = nearbyResidents.get(i).getAsJsonObject();
-            if (currentObj.get("name") == null || currentObj.get("x") == null || currentObj.get("z") == null)
-                continue;
-
-            if (EarthMCEssentials.instance().getClientResident() != null && currentObj.get("name").getAsString().equals(EarthMCEssentials.instance().getClientResident().getName()))
-                continue;
+            if (currentObj.get("name") == null || currentObj.get("x") == null || currentObj.get("z") == null) continue;
+            if (instance().getClientResident() != null && currentObj.get("name").getAsString()
+                    .equals(instance().getClientResident().getName())) continue;
 
             int distance = Math.abs(currentObj.get("x").getAsInt() - Objects.requireNonNull(getInstance().player).getBlockX()) +
                            Math.abs(currentObj.get("z").getAsInt() - getInstance().player.getBlockZ());
 
             String prefix = "";
 
-            if (EarthMCEssentials.instance().getConfig().nearby.showRank) {
+            if (instance().getConfig().nearby.showRank) {
                 if (!currentObj.has("town")) prefix = "(Townless) ";
                 else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
             }
@@ -157,6 +141,7 @@ public class ModUtils {
             MutableText nearbyText = new TranslatableText(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
+
         return longestElement;
     }
 
@@ -164,26 +149,22 @@ public class ModUtils {
         if (statusEffectInstances.isEmpty()) return 16;
 
         int offset = 0;
-
         for (StatusEffectInstance statusEffectInstance : statusEffectInstances) {
             if (statusEffectInstance.shouldShowIcon()) {
                 if (statusEffectInstance.getEffectType().isBeneficial()) offset = Math.max(offset, 36);
                 else offset = 64;
             }
         }
+
         return offset;
     }
 
     public static boolean shouldRender() {
-        if (!isConnectedToEMC() && EarthMCEssentials.instance().getConfig().general.emcOnly)
-            return false;
-        else
-            return (!serverName.equals("singleplayer") && !serverName.equals("realms")) || !EarthMCEssentials.instance().getConfig().general.emcOnly;
+        if (!isConnectedToEMC() && instance().getConfig().general.emcOnly) return false;
+        else return (!serverName.equals("singleplayer") && !serverName.equals("realms")) || !instance().getConfig().general.emcOnly;
     }
 
-    public static boolean isConnectedToEMC() {
-        return serverName.toLowerCase().contains("earthmc.net");
-    }
+    public static boolean isConnectedToEMC() { return serverName.toLowerCase().contains("earthmc.net"); }
 
     public static @NotNull String getServerName() {
         String serverName = "";
@@ -215,9 +196,7 @@ public class ModUtils {
         return serverName;
     }
 
-    public static void updateServerName() {
-        serverName = getServerName().toLowerCase();
-    }
+    public static void updateServerName() { serverName = getServerName().toLowerCase(); }
 
     public static void setServerName(@NotNull String serverName) {
         ModUtils.serverName = serverName;

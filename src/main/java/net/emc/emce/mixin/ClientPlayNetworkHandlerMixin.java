@@ -1,6 +1,5 @@
 package net.emc.emce.mixin;
 
-import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.utils.EventRegistry;
 import net.emc.emce.utils.ModUtils;
@@ -13,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static net.emc.emce.EarthMCEssentials.instance;
+
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin
 {
@@ -20,11 +21,11 @@ public class ClientPlayNetworkHandlerMixin
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
     {
         ModUtils.updateServerName();
-        EarthMCEssentials.instance().setShouldRender(ModUtils.shouldRender());
+        instance().setShouldRender(ModUtils.shouldRender());
         MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
 
         OverlayRenderer.Init();
-        EarthMCEssentials.instance().scheduler().start();
+        instance().scheduler().start();
 
         EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
@@ -33,7 +34,7 @@ public class ClientPlayNetworkHandlerMixin
     @Inject(at = @At("HEAD"), method="onDisconnect")
     public void onDisconnect(DisconnectS2CPacket packet, CallbackInfo ci)
     {
-        EarthMCEssentials.instance().scheduler().stop();
+        instance().scheduler().stop();
         ModUtils.setServerName("");
     }
 }
