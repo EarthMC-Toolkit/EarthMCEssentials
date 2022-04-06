@@ -20,6 +20,7 @@ public class ToggleDebugCommand {
                 }
 
                 return 1;
-            }));
+            })
+        );
     }
 }
