@@ -1,7 +1,11 @@
 package net.emc.emce.events.commands;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.sun.jna.StringArray;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.caches.TownDataCache;
@@ -44,6 +48,8 @@ public class AllianceCommand {
     private static void sendAllianceInfo(JsonObject allianceObj, FabricClientCommandSource source) {
         Formatting allianceInfoTextColour = Formatting.byName(instance().getConfig().commands.allianceInfoTextColour.name());
 
+        System.out.println(allianceObj);
+
         source.sendFeedback(createText("text_alliance_header", allianceObj, "allianceName", allianceInfoTextColour, "rank"));
         source.sendFeedback(createText("text_alliance_leader", allianceObj, "leaderName", allianceInfoTextColour));
         source.sendFeedback(createText("text_alliance_type", allianceObj, "type", allianceInfoTextColour));
@@ -55,10 +61,23 @@ public class AllianceCommand {
     }
 
     private static Text createText(String langKey, JsonObject obj, String key, Formatting formatting) {
+        JsonElement value = obj.get(key);
+
+        if (key == "nations") MsgUtils.sendDebugMessage(obj.getAsJsonArray(key).getAsString());
+        if (obj.get(key).isJsonArray()) {
+            return new TranslatableText(langKey, value.getAsJsonArray().getAsString()).formatted(formatting);
+        }
+
         return new TranslatableText(langKey, obj.get(key).getAsString()).formatted(formatting);
     }
 
     private static Text createText(String langKey, JsonObject obj, String key, Formatting formatting, String option) {
-        return new TranslatableText(langKey, obj.get(key).getAsString(), obj.get(option).getAsString()).formatted(formatting);
+        JsonElement value = obj.get(key);
+
+        if (obj.get(key).isJsonArray()) {
+            return new TranslatableText(langKey, value.getAsJsonArray().getAsString(), obj.get(option).getAsString()).formatted(formatting);
+        }
+
+        return new TranslatableText(langKey, value.getAsString(), obj.get(option).getAsString()).formatted(formatting);
     }
 }
