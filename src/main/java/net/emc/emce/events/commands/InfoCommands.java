@@ -3,23 +3,34 @@ package net.emc.emce.events.commands;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
+import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.NationDataCache;
 import net.emc.emce.caches.TownDataCache;
 import net.emc.emce.object.Resident;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.object.Translation;
+import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.platform.fabric.FabricClientAudiences;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
 
 import java.util.Locale;
-import java.util.Objects;
-
-import static net.emc.emce.EarthMCEssentials.instance;
 
 public class InfoCommands {
-    public static void registerTownInfoCommand() {
+    private final EarthMCEssentials instance;
+
+    public InfoCommands(EarthMCEssentials instance) {
+        this.instance = instance;
+    }
+
+    public void register() {
+        registerTownInfoCommand();
+        registerNationInfoCommand();
+    }
+
+    public void registerTownInfoCommand() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("towninfo").then(
             ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
                 String townName = StringArgumentType.getString(c, "townName");
@@ -27,32 +38,34 @@ public class InfoCommands {
                 TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
                     JsonObject townObject = towns.get(townName.toLowerCase(Locale.ROOT));
 
-                    if (townObject == null) MsgUtils.sendPlayer("text_towninfo_err", false, Formatting.RED, true, townName);
-                    else sendTownInfo(townObject, c.getSource());
+                    if (townObject == null)
+                        Messaging.sendPrefixedMessage(Translation.of("text_towninfo_err", townName));
+                    else
+                        sendTownInfo(townObject);
                 });
 
                 return 1;
             })
         ).executes(c -> {
             FabricClientCommandSource source = c.getSource();
-            Resident clientResident = instance().getClientResident();
+            Resident clientResident = instance.getClientResident();
 
             if (clientResident == null) {
-                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED,
-                                    true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
+                Messaging.sendMessage(Translation.of("text_shared_notregistered", MinecraftClient.getInstance().player.getName()));
                 return 1;
             }
 
             String townName = clientResident.getTown();
             if (townName.equals("") || townName.equals("No Town"))
-                MsgUtils.sendPlayer("text_towninfo_not_registered", false, Formatting.RED, true);
+                Messaging.sendMessage(Translation.of("text_towninfo_not_registered"));
             else {
                 TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
                     JsonObject townObject = towns.get(townName.toLowerCase(Locale.ROOT));
 
-                    if (townObject == null) source.sendFeedback(
-                            new TranslatableText("text_towninfo_err", townName).formatted(Formatting.RED));
-                    else sendTownInfo(townObject, source);
+                    if (townObject == null)
+                        Messaging.sendMessage(Translation.of("text_towninfo_err"));
+                    else
+                        sendTownInfo(townObject);
                 });
             }
 
@@ -60,7 +73,7 @@ public class InfoCommands {
         }));
     }
 
-    public static void registerNationInfoCommand() {
+    public void registerNationInfoCommand() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("nationinfo").then(
             ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
             String nationName = StringArgumentType.getString(c, "nationName");
@@ -68,30 +81,33 @@ public class InfoCommands {
             NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
                 JsonObject nationObject = nations.get(nationName.toLowerCase(Locale.ROOT));
 
-                if (nationObject == null) MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, nationName);
-                else sendNationInfo(nationObject, c.getSource());
+                if (nationObject == null)
+                    Messaging.sendPrefixedMessage(Translation.of("text_nationinfo_err"));
+                else
+                    sendNationInfo(nationObject);
             });
 
             return 1;
         })).executes(c -> {
             FabricClientCommandSource source = c.getSource();
-            Resident clientResident = instance().getClientResident();
+            Resident clientResident = instance.getClientResident();
 
             if (clientResident == null) {
-                MsgUtils.sendPlayer("text_shared_notregistered", false, Formatting.RED,
-                        true, Objects.requireNonNull(MinecraftClient.getInstance().player).getName());
+                Messaging.sendPrefixedMessage(Translation.of("text_shared_notregistered", MinecraftClient.getInstance().player.getName()));
                 return 1;
             }
 
             String nationName = clientResident.getNation();
             if (nationName.equals("") || nationName.equals("No Nation"))
-                MsgUtils.sendPlayer("text_nationinfo_not_registered", false, Formatting.RED, true);
+                Messaging.sendPrefixedMessage(Translation.of("text_nationinfo_not_registered"));
             else {
                 NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
                     JsonObject nationObject = nations.get(nationName.toLowerCase(Locale.ROOT));
 
-                    if (nationObject == null) MsgUtils.sendPlayer("text_nationinfo_err", false, Formatting.RED, true, nationName);
-                    else sendNationInfo(nationObject, source);
+                    if (nationObject == null)
+                        Messaging.sendPrefixedMessage(Translation.of("text_nationinfo_err"));
+                    else
+                        sendNationInfo(nationObject);
                 });
             }
 
@@ -99,24 +115,26 @@ public class InfoCommands {
         }));
     }
 
-    private static void sendTownInfo(JsonObject townObject, FabricClientCommandSource source) {
-        Formatting townInfoTextColour = Formatting.byName(instance().getConfig().commands.townInfoTextColour.name());
+    private void sendTownInfo(JsonObject townObject) {
+        NamedTextColor color = instance.getConfig().commands.townInfoTextColour.named();
+        Audience audience = FabricClientAudiences.of().audience();
 
-        source.sendFeedback(new TranslatableText("text_towninfo_header", townObject.get("name").getAsString()).formatted(townInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_towninfo_mayor", townObject.get("mayor").getAsString()).formatted(townInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_shared_area", townObject.get("area").getAsString()).formatted(townInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_shared_residents", townObject.get("residents").getAsJsonArray().size()).formatted(townInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_towninfo_location", townObject.get("x").getAsString(), townObject.get("z").getAsString()).formatted(townInfoTextColour));
+        audience.sendMessage(Translation.of("text_towninfo_header", townObject.get("name").getAsString()).color(color));
+        audience.sendMessage(Translation.of("text_towninfo_mayor", townObject.get("mayor").getAsString()).color(color));
+        audience.sendMessage(Translation.of("text_shared_area", townObject.get("area").getAsString()).color(color));
+        audience.sendMessage(Translation.of("text_shared_residents", townObject.get("residents").getAsJsonArray().size()).color(color));
+        audience.sendMessage(Translation.of("text_towninfo_location", townObject.get("x").getAsString(), townObject.get("z").getAsString()).color(color));
     }
 
-    private static void sendNationInfo(JsonObject nationObject, FabricClientCommandSource source) {
-        Formatting nationInfoTextColour = Formatting.byName(instance().getConfig().commands.nationInfoTextColour.name());
+    private void sendNationInfo(JsonObject nationObject) {
+        NamedTextColor color = instance.getConfig().commands.nationInfoTextColour.named();
+        Audience audience = FabricClientAudiences.of().audience();
 
-        source.sendFeedback(new TranslatableText("text_nationinfo_header", nationObject.get("name").getAsString()).formatted(nationInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_nationinfo_king", nationObject.get("king").getAsString()).formatted(nationInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_nationinfo_capital", nationObject.get("capitalName").getAsString()).formatted(nationInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_shared_area", nationObject.get("area").getAsString()).formatted(nationInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_shared_residents", nationObject.get("residents").getAsJsonArray().size()).formatted(nationInfoTextColour));
-        source.sendFeedback(new TranslatableText("text_nationinfo_towns", nationObject.get("towns").getAsJsonArray().size()).formatted(nationInfoTextColour));
+        audience.sendMessage(Translation.of("text_nationinfo_header", nationObject.get("name").getAsString()).color(color));
+        audience.sendMessage(Translation.of("text_nationinfo_king", nationObject.get("king").getAsString()).color(color));
+        audience.sendMessage(Translation.of("text_nationinfo_capital", nationObject.get("capitalName").getAsString()).color(color));
+        audience.sendMessage(Translation.of("text_shared_area", nationObject.get("area").getAsString()).color(color));
+        audience.sendMessage(Translation.of("text_shared_residents", nationObject.get("residents").getAsJsonArray().size()).color(color));
+        audience.sendMessage(Translation.of("text_nationinfo_towns", nationObject.get("towns").getAsJsonArray().size()).color(color));
     }
 }

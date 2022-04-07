@@ -10,18 +10,16 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.gui.screen.Screen;
 
-public class EventRegistry
-{
-    public static void RegisterCommands() {
+public class EventRegistry {
+    public static void RegisterCommands(EarthMCEssentials instance) {
         // Register client-sided commands.
-        InfoCommands.registerNationInfoCommand();
-        InfoCommands.registerTownInfoCommand();
-        NearbyCommand.register();
-        NetherCommand.register();
-        QueueCommand.register();
-        ToggleDebugCommand.register();
-        TownlessCommand.register();
-        AllianceCommand.register();
+        new InfoCommands(instance).register();
+        new NearbyCommand(instance).register();
+        new NetherCommand().register();
+        new QueueCommand().register();
+        new ToggleDebugCommand().register();
+        new TownlessCommand(instance).register();
+        new AllianceCommand(instance).register();
     }
 
     public static void RegisterScreen() {

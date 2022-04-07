@@ -3,7 +3,7 @@ package net.emc.emce.mixin;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.utils.EventRegistry;
 import net.emc.emce.utils.ModUtils;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.utils.Messaging;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
@@ -22,7 +22,7 @@ public class ClientPlayNetworkHandlerMixin
     {
         ModUtils.updateServerName();
         instance().setShouldRender(ModUtils.shouldRender());
-        MsgUtils.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
+        Messaging.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
 
         OverlayRenderer.Init();
 

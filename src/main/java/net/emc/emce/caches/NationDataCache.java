@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.emc.emce.utils.EarthMCAPI;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.utils.Messaging;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class NationDataCache extends Cache<Map<String, JsonObject>> {
                     this.cachedData.put(object.get("name").getAsString().toLowerCase(Locale.ROOT), object);
                 }
 
-                MsgUtils.sendDebugMessage("Updated nations, array size: " + this.cachedData.size());
+                Messaging.sendDebugMessage("Updated nations, array size: " + this.cachedData.size());
                 this.update();
             }
 

@@ -1,29 +1,28 @@
 package net.emc.emce.events.commands;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.sun.jna.StringArray;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
-import net.emc.emce.caches.TownDataCache;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.platform.fabric.FabricClientAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 import java.util.Locale;
-import java.util.Objects;
-
-import static net.emc.emce.EarthMCEssentials.instance;
 
 public class AllianceCommand {
-    public static void register() {
+    private final EarthMCEssentials instance;
+
+    public AllianceCommand(EarthMCEssentials instance) {
+        this.instance = instance;
+    }
+
+    public void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("alliance").then(
                 ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
                     String allianceName = StringArgumentType.getString(c, "allianceName");
@@ -32,49 +31,46 @@ public class AllianceCommand {
                     AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
                         JsonObject allianceObject = alliances.get(allianceName.toLowerCase(Locale.ROOT));
 
-                        if (allianceObject == null) MsgUtils.sendPlayer("text_alliance_err", false, Formatting.RED, true, allianceName);
-                        else sendAllianceInfo(allianceObject, c.getSource());
+                        if (allianceObject == null)
+                            Messaging.sendMessage(Component.translatable("text_alliance_err").color(NamedTextColor.RED));
+                        else
+                            sendAllianceInfo(allianceObject);
                     });
 
                     return 1;
                 })
-        ).executes(c -> {
-            FabricClientCommandSource source = c.getSource();
-
-            return 1;
-        }));
+        ));
     }
 
-    private static void sendAllianceInfo(JsonObject allianceObj, FabricClientCommandSource source) {
-        Formatting allianceInfoTextColour = Formatting.byName(instance().getConfig().commands.allianceInfoTextColour.name());
+    private void sendAllianceInfo(JsonObject allianceObj) {
+        NamedTextColor color = instance.getConfig().commands.allianceInfoTextColour.named();
+        Audience client = FabricClientAudiences.of().audience();
 
-        source.sendFeedback(createText("text_alliance_header", allianceObj, "allianceName", allianceInfoTextColour, "rank"));
-        source.sendFeedback(createText("text_alliance_leader", allianceObj, "leaderName", allianceInfoTextColour));
-        source.sendFeedback(createText("text_alliance_type", allianceObj, "type", allianceInfoTextColour));
-        source.sendFeedback(createText("text_shared_area", allianceObj, "area", allianceInfoTextColour));
-        source.sendFeedback(createText("text_alliance_towns", allianceObj, "towns", allianceInfoTextColour));
-        source.sendFeedback(createText("text_alliance_nations", allianceObj, "nations", allianceInfoTextColour));
-        source.sendFeedback(createText("text_shared_residents", allianceObj, "residents", allianceInfoTextColour));
-        source.sendFeedback(createText("text_alliance_discord", allianceObj, "discordInvite", allianceInfoTextColour));
+        client.sendMessage(createText("text_alliance_header", allianceObj, "allianceName", color, "rank"));
+        client.sendMessage(createText("text_alliance_leader", allianceObj, "leaderName", color));
+        client.sendMessage(createText("text_alliance_type", allianceObj, "type", color));
+        client.sendMessage(createText("text_shared_area", allianceObj, "area", color));
+        client.sendMessage(createText("text_alliance_towns", allianceObj, "towns", color));
+        client.sendMessage(createText("text_alliance_nations", allianceObj, "nations", color));
+        client.sendMessage(createText("text_shared_residents", allianceObj, "residents", color));
+        client.sendMessage(createText("text_alliance_discord", allianceObj, "discordInvite", color));
     }
 
-    private static Text createText(String langKey, JsonObject obj, String key, Formatting formatting) {
+    private Component createText(String langKey, JsonObject obj, String key, TextColor color) {
         JsonElement value = obj.get(key);
 
-        if (value.isJsonArray()) {
-            return new TranslatableText(langKey, value.getAsJsonArray().size()).formatted(formatting);
-        }
+        if (value.isJsonArray())
+            return Component.translatable(langKey, Component.text(value.getAsJsonArray().size())).color(color);
 
-        return new TranslatableText(langKey, value.getAsString()).formatted(formatting);
+        return Component.translatable(langKey, Component.text(value.getAsString())).color(color);
     }
 
-    private static Text createText(String langKey, JsonObject obj, String key, Formatting formatting, String option) {
+    private Component createText(String langKey, JsonObject obj, String key, TextColor color, String option) {
         JsonElement value = obj.get(key);
 
-        if (value.isJsonArray()) {
-            return new TranslatableText(langKey, value.getAsJsonArray().size(), obj.get(option).getAsString()).formatted(formatting);
-        }
+        if (value.isJsonArray())
+            return Component.translatable(langKey, Component.text(value.getAsJsonArray().size()), Component.translatable(obj.get(option).getAsString())).color(color);
 
-        return new TranslatableText(langKey, value.getAsString(), obj.get(option).getAsString()).formatted(formatting);
+        return Component.translatable(langKey, Component.text(value.getAsString()), Component.text(obj.get(option).getAsString())).color(color);
     }
 }

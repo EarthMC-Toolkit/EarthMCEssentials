@@ -42,8 +42,7 @@ public class EarthMCEssentials implements ModInitializer {
     private final TaskScheduler scheduler = new TaskScheduler();
 
     @Override
-    public void onInitialize()
-    {
+    public void onInitialize() {
         instance = this;
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
@@ -54,7 +53,7 @@ public class EarthMCEssentials implements ModInitializer {
 
         instance().scheduler().start();
         EventRegistry.RegisterClientTick();
-        EventRegistry.RegisterCommands();
+        EventRegistry.RegisterCommands(this);
     }
 
     public Resident getClientResident() {
@@ -98,7 +97,7 @@ public class EarthMCEssentials implements ModInitializer {
 
     public void setNews(NewsData nd) {
         this.newsData = nd;
-        OverlayRenderer.SendNews(config.news.position, nd);
+        OverlayRenderer.sendNews(config.news.position, nd);
     }
 
     public void setNearbyPlayers(JsonArray nearbyPlayers) {

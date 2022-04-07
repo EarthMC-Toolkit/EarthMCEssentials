@@ -29,7 +29,7 @@ public class EarthMCAPI {
             try {
                 return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.TOWNLESS)));
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
             }
         });
@@ -63,7 +63,7 @@ public class EarthMCAPI {
                 } else
                     return EarthMCEssentials.instance().getNearbyPlayers();
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return EarthMCEssentials.instance().getNearbyPlayers();
             }
         });
@@ -74,7 +74,7 @@ public class EarthMCAPI {
             try {
                 return new Resident((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.RESIDENTS) + residentName)));
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
             }
         });
@@ -85,7 +85,7 @@ public class EarthMCAPI {
             try {
                 return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.TOWNS)));
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
             }
         });
@@ -96,7 +96,7 @@ public class EarthMCAPI {
             try {
                 return new ServerData((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.SERVER_INFO))));
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return new ServerData();
             }
         });
@@ -107,7 +107,7 @@ public class EarthMCAPI {
             try {
                 return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NATIONS)));
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
             }
         });
@@ -118,7 +118,7 @@ public class EarthMCAPI {
             try {
                 return new NewsData((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.NEWS))));
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return new NewsData();
             }
         });
@@ -129,7 +129,7 @@ public class EarthMCAPI {
             try {
                 return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ALLIANCES)));
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
             }
         });
@@ -142,7 +142,7 @@ public class EarthMCAPI {
                     getURL("https://raw.githubusercontent.com/EarthMC-Stats/EarthMCEssentials" +
                            "/main/src/main/resources/api.json")));
             } catch (APIException e) {
-                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage(e.getMessage(), e);
                 return new APIData();
             }
         });
@@ -166,7 +166,7 @@ public class EarthMCAPI {
         }
 
         route = apiData.getDomain() + route + "/";
-        MsgUtils.sendDebugMessage("GETTING ROUTE - " + route);
+        Messaging.sendDebugMessage("GETTING ROUTE - " + route);
 
         return route;
     }
