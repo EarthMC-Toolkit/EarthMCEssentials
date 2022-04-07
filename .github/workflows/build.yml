@@ -1,0 +1,25 @@
+name: Gradle Build
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: ['17']
+      fail-fast: true
+    name: Java (Temurin) ${{ matrix.java }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          cache: 'gradle'
+      - name: Test Build
+        uses: Geometrically/fabric-test-runner@v1
+        with:
+          minecraftVersion: 1.18.2
+          runBuildTest: true
+          runServerTest: true
