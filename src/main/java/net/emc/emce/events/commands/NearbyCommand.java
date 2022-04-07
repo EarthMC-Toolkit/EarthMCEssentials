@@ -11,12 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.client.MinecraftClient;
 
-public class NearbyCommand {
-    private final EarthMCEssentials instance;
-
-    public NearbyCommand(EarthMCEssentials instance) {
-        this.instance = instance;
-    }
+public record NearbyCommand(EarthMCEssentials instance) {
 
     public void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("nearby").executes(c -> {
@@ -37,7 +32,7 @@ public class NearbyCommand {
                 if (xElement == null || zElement == null) continue;
 
                 int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
-                               Math.abs(zElement.getAsInt() - (int) client.player.getZ());
+                        Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
                 Component prefix = Component.empty();
 

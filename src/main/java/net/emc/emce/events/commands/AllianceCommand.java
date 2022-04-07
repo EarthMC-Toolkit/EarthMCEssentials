@@ -15,12 +15,8 @@ import net.kyori.adventure.text.format.TextColor;
 
 import java.util.Locale;
 
-public class AllianceCommand {
-    private final EarthMCEssentials instance;
 
-    public AllianceCommand(EarthMCEssentials instance) {
-        this.instance = instance;
-    }
+public record AllianceCommand(EarthMCEssentials instance) {
 
     public void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("alliance").then(

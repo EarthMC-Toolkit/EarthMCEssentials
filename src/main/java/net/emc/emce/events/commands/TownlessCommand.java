@@ -11,12 +11,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 
-public class TownlessCommand {
-    private final EarthMCEssentials instance;
+public record TownlessCommand(EarthMCEssentials instance) {
 
-    public TownlessCommand(EarthMCEssentials instance) {
-        this.instance = instance;
-    }
     public void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("townless").executes(c -> {
             NamedTextColor color = instance.getConfig().commands.townlessTextColour.named();

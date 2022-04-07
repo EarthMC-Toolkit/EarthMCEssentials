@@ -18,12 +18,7 @@ import net.minecraft.client.MinecraftClient;
 
 import java.util.Locale;
 
-public class InfoCommands {
-    private final EarthMCEssentials instance;
-
-    public InfoCommands(EarthMCEssentials instance) {
-        this.instance = instance;
-    }
+public record InfoCommands(EarthMCEssentials instance) {
 
     public void register() {
         registerTownInfoCommand();
@@ -32,20 +27,20 @@ public class InfoCommands {
 
     public void registerTownInfoCommand() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("towninfo").then(
-            ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
-                String townName = StringArgumentType.getString(c, "townName");
+                ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
+                    String townName = StringArgumentType.getString(c, "townName");
 
-                TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
-                    JsonObject townObject = towns.get(townName.toLowerCase(Locale.ROOT));
+                    TownDataCache.INSTANCE.getCache().thenAccept(towns -> {
+                        JsonObject townObject = towns.get(townName.toLowerCase(Locale.ROOT));
 
-                    if (townObject == null)
-                        Messaging.sendPrefixedMessage(Translation.of("text_towninfo_err", townName));
-                    else
-                        sendTownInfo(townObject);
-                });
+                        if (townObject == null)
+                            Messaging.sendPrefixedMessage(Translation.of("text_towninfo_err", townName));
+                        else
+                            sendTownInfo(townObject);
+                    });
 
-                return 1;
-            })
+                    return 1;
+                })
         ).executes(c -> {
             FabricClientCommandSource source = c.getSource();
             Resident clientResident = instance.getClientResident();
@@ -75,20 +70,20 @@ public class InfoCommands {
 
     public void registerNationInfoCommand() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("nationinfo").then(
-            ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
-            String nationName = StringArgumentType.getString(c, "nationName");
+                ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
+                    String nationName = StringArgumentType.getString(c, "nationName");
 
-            NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
-                JsonObject nationObject = nations.get(nationName.toLowerCase(Locale.ROOT));
+                    NationDataCache.INSTANCE.getCache().thenAccept(nations -> {
+                        JsonObject nationObject = nations.get(nationName.toLowerCase(Locale.ROOT));
 
-                if (nationObject == null)
-                    Messaging.sendPrefixedMessage(Translation.of("text_nationinfo_err"));
-                else
-                    sendNationInfo(nationObject);
-            });
+                        if (nationObject == null)
+                            Messaging.sendPrefixedMessage(Translation.of("text_nationinfo_err"));
+                        else
+                            sendNationInfo(nationObject);
+                    });
 
-            return 1;
-        })).executes(c -> {
+                    return 1;
+                })).executes(c -> {
             FabricClientCommandSource source = c.getSource();
             Resident clientResident = instance.getClientResident();
 
