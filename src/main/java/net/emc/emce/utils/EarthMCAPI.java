@@ -124,6 +124,17 @@ public class EarthMCAPI {
         });
     }
 
+    public static CompletableFuture<JsonArray> getAlliances() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ALLIANCES)));
+            } catch (APIException e) {
+                MsgUtils.sendDebugMessage(e.getMessage(), e);
+                return new JsonArray();
+            }
+        });
+    }
+
     public static CompletableFuture<APIData> API() {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -156,7 +167,6 @@ public class EarthMCAPI {
 
         route = apiData.getDomain() + route + "/";
         MsgUtils.sendDebugMessage("GETTING ROUTE - " + route);
-        System.out.println("GETTING ROUTE - " + route);
 
         return route;
     }

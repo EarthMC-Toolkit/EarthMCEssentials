@@ -21,7 +21,7 @@ public class EventRegistry
         QueueCommand.register();
         ToggleDebugCommand.register();
         TownlessCommand.register();
-        //AllianceCommand.register();
+        AllianceCommand.register();
     }
 
     public static void RegisterScreen() {

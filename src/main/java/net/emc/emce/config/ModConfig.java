@@ -121,12 +121,18 @@ public class ModConfig implements ConfigData
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the townless players text.")
         public Colors townlessTextColour = Colors.LIGHT_PURPLE;
+
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the town info text.")
         public Colors townInfoTextColour = Colors.GREEN;
+
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the nation info text.")
         public Colors nationInfoTextColour = Colors.AQUA;
+
+        @EnumHandler(option = BUTTON)
+        @Comment("The colour of the alliance info text.")
+        public Colors allianceInfoTextColour = Colors.GOLD;
     }
 
     public static class API {

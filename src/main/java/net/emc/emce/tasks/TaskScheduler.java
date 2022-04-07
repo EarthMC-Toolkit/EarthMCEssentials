@@ -1,9 +1,6 @@
 package net.emc.emce.tasks;
 
-import net.emc.emce.caches.Cache;
-import net.emc.emce.caches.NationDataCache;
-import net.emc.emce.caches.ServerDataCache;
-import net.emc.emce.caches.TownDataCache;
+import net.emc.emce.caches.*;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils;
@@ -26,7 +23,12 @@ public class TaskScheduler {
     public boolean cacheCheckRunning;
     public boolean newsRunning;
 
-    private static final List<Cache<?>> CACHES = Arrays.asList(NationDataCache.INSTANCE, ServerDataCache.INSTANCE, TownDataCache.INSTANCE);
+    private static final List<Cache<?>> CACHES = Arrays.asList(
+            NationDataCache.INSTANCE,
+            ServerDataCache.INSTANCE,
+            TownDataCache.INSTANCE,
+            AllianceDataCache.INSTANCE
+    );
 
     public void start() {
         ModConfig config = ModConfig.instance();

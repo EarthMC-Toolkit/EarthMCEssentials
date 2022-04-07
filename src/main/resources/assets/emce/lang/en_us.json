@@ -30,7 +30,6 @@
 
     "text_towninfo_header": "Town Information - %s",
     "text_towninfo_mayor": "Mayor: %s",
-    "text_towninfo_area": "Area/Chunks: %s",
     "text_towninfo_location": "Location: %s, %s",
     "text_towninfo_err": "§cTown %s is not registered.",
     "text_towninfo_not_registered": "§cYour town is not registered.",
@@ -43,6 +42,15 @@
     "text_nationinfo_err": "§cNation %s is not registered.",
     "text_nationinfo_not_registered": "§cYour nation is not registered.",
 
+    "text_alliance_header": "Alliance Information - %s - #%s",
+    "text_alliance_leader": "Leader(s): %s",
+    "text_alliance_type": "Type: %s",
+    "text_alliance_towns": "Towns: %s",
+    "text_alliance_nations": "Nations: %s",
+    "text_alliance_discord": "Discord: %s",
+    "text_alliance_err": "§Alliance %s is not registered.",
+
+    "text_shared_area": "Area: %s",
     "text_shared_residents": "Residents: %d",
     "text_shared_notregistered": "§cResident %s is not registered.",
 
@@ -82,6 +90,7 @@
     "text.autoconfig.emc-essentials.option.commands.townlessTextColour": "Townless Text Colour",
     "text.autoconfig.emc-essentials.option.commands.townInfoTextColour": "Town Text Colour",
     "text.autoconfig.emc-essentials.option.commands.nationInfoTextColour": "Nation Text Colour",
+    "text.autoconfig.emc-essentials.option.commands.allianceInfoTextColour": "Alliance Text Colour",
 
     "text.autoconfig.emc-essentials.category.API": "API",
     "text.autoconfig.emc-essentials.option.api.version": "Version",
