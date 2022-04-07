@@ -12,7 +12,6 @@ import net.emc.emce.tasks.TaskScheduler;
 import net.emc.emce.utils.EventRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.apache.logging.log4j.LogManager;
