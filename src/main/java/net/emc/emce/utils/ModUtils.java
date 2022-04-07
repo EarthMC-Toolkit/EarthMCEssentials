@@ -190,7 +190,7 @@ public class ModUtils {
                 }
             }
         } catch (Exception exception) {
-            MsgUtils.sendDebugMessage("Error getting serverName.", exception);
+            Messaging.sendDebugMessage("Error getting serverName.", exception);
         }
 
         return serverName;

@@ -4,7 +4,7 @@ import net.emc.emce.caches.*;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.utils.Messaging;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.Arrays;
@@ -64,10 +64,10 @@ public class TaskScheduler {
 
         service.scheduleAtFixedRate(() -> {
             if (townlessRunning && shouldRun()) {
-                MsgUtils.sendDebugMessage("Starting townless task.");
+                Messaging.sendDebugMessage("Starting townless task.");
                 EarthMCAPI.getTownless().thenAccept(townless -> {
                     instance().setTownlessResidents(townless);
-                    MsgUtils.sendDebugMessage("Finished townless task.");
+                    Messaging.sendDebugMessage("Finished townless task.");
                 });
             }
         }, 30, Math.max(config.api.intervals.townless, 30), TimeUnit.SECONDS);
@@ -79,10 +79,10 @@ public class TaskScheduler {
 
         service.scheduleAtFixedRate(() -> {
             if (nearbyRunning && ModUtils.isConnectedToEMC() && shouldRun()) {
-                MsgUtils.sendDebugMessage("Starting nearby task.");
+                Messaging.sendDebugMessage("Starting nearby task.");
                 EarthMCAPI.getNearby().thenAccept(nearby -> {
                     instance().setNearbyPlayers(nearby);
-                    MsgUtils.sendDebugMessage("Finished nearby task.");
+                    Messaging.sendDebugMessage("Finished nearby task.");
                 });
             }
         }, 10, Math.max(config.api.intervals.nearby, 10), TimeUnit.SECONDS);
@@ -94,10 +94,10 @@ public class TaskScheduler {
 
         service.scheduleAtFixedRate(() -> {
             if (newsRunning && config.news.enabled && shouldRun()) {
-                MsgUtils.sendDebugMessage("Starting news task.");
+                Messaging.sendDebugMessage("Starting news task.");
                 EarthMCAPI.getNews().thenAccept(news -> {
                     instance().setNews(news);
-                    MsgUtils.sendDebugMessage("Finished news task.");
+                    Messaging.sendDebugMessage("Finished news task.");
                 });
             }
         }, 10, Math.max(config.api.intervals.news, 10), TimeUnit.SECONDS);

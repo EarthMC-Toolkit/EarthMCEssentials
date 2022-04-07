@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.emc.emce.utils.EarthMCAPI;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.utils.Messaging;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -27,7 +27,7 @@ public class TownDataCache extends Cache<Map<String, JsonObject>> {
                     this.cachedData.put(object.get("name").getAsString().toLowerCase(Locale.ROOT), object);
                 }
 
-                MsgUtils.sendDebugMessage("Updated towns, array size: " + this.cachedData.size());
+                Messaging.sendDebugMessage("Updated towns, array size: " + this.cachedData.size());
                 this.update();
             }
 

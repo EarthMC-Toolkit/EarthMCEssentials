@@ -9,7 +9,9 @@ import net.emc.emce.object.NewsData;
 import net.emc.emce.object.NewsState;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.ModUtils.State;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.utils.Messaging;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -80,14 +82,13 @@ public class OverlayRenderer
             RenderNearby(config.nearby.presetPositions);
     }
 
-    public static void SendNews(NewsState pos, NewsData news)
-    {
+    public static void sendNews(NewsState pos, NewsData news) {
         if (news.getID() == currentNewsID) return;
         currentNewsID = news.getID();
 
         switch(pos) {
-            case CHAT -> MsgUtils.sendPlayer(news.getMsg(), false, Formatting.AQUA, false);
-            case ACTION_BAR -> MsgUtils.sendPlayer(news.getMsg(), true, Formatting.AQUA, false);
+            case CHAT -> Messaging.sendMessage(Component.text(news.getMsg(), NamedTextColor.AQUA));
+            case ACTION_BAR -> Messaging.sendActionBar(Component.text(news.getMsg(), NamedTextColor.AQUA));
         }
     }
 

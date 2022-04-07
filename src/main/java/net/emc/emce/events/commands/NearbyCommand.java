@@ -3,28 +3,34 @@ package net.emc.emce.events.commands;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.object.Translation;
+import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-
-import static net.emc.emce.EarthMCEssentials.instance;
 
 public class NearbyCommand {
-    public static void register() {
+    private final EarthMCEssentials instance;
+
+    public NearbyCommand(EarthMCEssentials instance) {
+        this.instance = instance;
+    }
+
+    public void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("nearby").executes(c -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player == null)
                 return -1;
 
-            Formatting headingFormatting = Formatting.byName(instance().getConfig().nearby.headingTextColour.name());
-            Formatting textFormatting = Formatting.byName(instance().getConfig().nearby.playerTextColour.name());
+            TextColor headingColor = instance.getConfig().nearby.headingTextColour.named();
+            TextColor textColor = instance.getConfig().nearby.playerTextColour.named();
 
-            MsgUtils.sendPlayer("text_nearby_header", false, headingFormatting, false);
+            Messaging.sendMessage(Translation.of("text_nearby_header").color(headingColor));
 
-            for (int i = 0; i < instance().getNearbyPlayers().size(); i++) {
-                JsonObject currentPlayer = instance().getNearbyPlayers().get(i).getAsJsonObject();
+            for (int i = 0; i < instance.getNearbyPlayers().size(); i++) {
+                JsonObject currentPlayer = instance.getNearbyPlayers().get(i).getAsJsonObject();
 
                 JsonElement xElement = currentPlayer.get("x");
                 JsonElement zElement = currentPlayer.get("z");
@@ -33,27 +39,29 @@ public class NearbyCommand {
                 int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
                                Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
-                String prefix = "";
+                Component prefix = Component.empty();
 
-                if (instance().getConfig().nearby.showRank) {
-                    if (!currentPlayer.has("town")) prefix = new TranslatableText("text_nearby_rank_townless").toString();
-                    else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
+                if (instance.getConfig().nearby.showRank) {
+                    if (!currentPlayer.has("town"))
+                        prefix = Translation.of("text_nearby_rank_townless");
+                    else
+                        prefix = Component.text("(" + currentPlayer.get("rank").getAsString() + ") ");
                 }
 
-                MsgUtils.sendPlayer(prefix + currentPlayer.get("name").getAsString() + ": " + distance + "m", false, textFormatting, false);
+                Messaging.sendMessage(Component.empty().append(prefix.append(Component.text(currentPlayer.get("name").getAsString() + ": " + distance + "m").color(textColor))));
             }
 
             return 1;
         }).then(ClientCommandManager.literal("refresh").executes(c -> {
-            instance().scheduler().stop();
-            instance().scheduler().start();
+            instance.scheduler().stop();
+            instance.scheduler().start();
 
-            MsgUtils.sendPlayer("msg_nearby_refresh", false, Formatting.AQUA, true);
+            Messaging.sendMessage(Translation.of("msg_nearby_refresh"));
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {
-            instance().setNearbyPlayers(new JsonArray());
+            instance.setNearbyPlayers(new JsonArray());
 
-            MsgUtils.sendPlayer("msg_nearby_clear", false, Formatting.AQUA, true);
+            Messaging.sendMessage(Translation.of("msg_nearby_clear"));
             return 1;
         })));
     }

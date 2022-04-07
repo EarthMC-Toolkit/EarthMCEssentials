@@ -1,18 +1,19 @@
 package net.emc.emce.events.commands;
 
 import net.emc.emce.caches.ServerDataCache;
-import net.emc.emce.utils.MsgUtils;
+import net.emc.emce.object.Translation;
+import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.minecraft.util.Formatting;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class QueueCommand {
-    public static void register() {
+    public void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("queuesize").executes(source -> {
             ServerDataCache.INSTANCE.getCache().thenAccept(serverData -> {
                 if (serverData == null)
-                    MsgUtils.sendPlayer("msg_queue_err", false, Formatting.RED, true);
+                    Messaging.sendMessage(Translation.of("msg_queue_err"));
                 else
-                    MsgUtils.sendPlayer("msg_queue_success", false, Formatting.AQUA, true, serverData.getQueue());
+                    Messaging.sendMessage(Translation.of("msg_queue_success", serverData.getQueue()).color(NamedTextColor.AQUA));
             });
 
             return 1;
