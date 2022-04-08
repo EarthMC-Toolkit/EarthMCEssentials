@@ -1,7 +1,5 @@
 package net.emc.emce.mixin;
 
-import net.emc.emce.modules.OverlayRenderer;
-import net.emc.emce.utils.EventRegistry;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.Messaging;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -23,11 +21,6 @@ public class ClientPlayNetworkHandlerMixin
         ModUtils.updateServerName();
         instance().setShouldRender(ModUtils.shouldRender());
         Messaging.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
-
-        OverlayRenderer.Init();
-
-        EventRegistry.RegisterScreen();
-        EventRegistry.RegisterHud();
     }
 
     @Inject(at = @At("HEAD"), method="onDisconnect")

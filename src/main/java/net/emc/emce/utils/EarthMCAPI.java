@@ -1,9 +1,14 @@
 package net.emc.emce.utils;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.emc.emce.EarthMCEssentials;
-import net.emc.emce.config.ModConfig;
-import net.emc.emce.object.*;
+import net.emc.emce.object.APIData;
+import net.emc.emce.object.APIRoute;
+import net.emc.emce.object.NewsData;
+import net.emc.emce.object.Resident;
+import net.emc.emce.object.ServerData;
 import net.emc.emce.object.exception.APIException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -16,12 +21,9 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Pattern;
 
 public class EarthMCAPI {
     private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ModConfig config = ModConfig.instance();
-    public static final Pattern urlSchemePattern = Pattern.compile("^[a-z][a-z0-9+\\-.]*://");
     public static APIData apiData;
 
     public static CompletableFuture<JsonArray> getTownless() {
@@ -36,7 +38,7 @@ public class EarthMCAPI {
     }
 
     public static CompletableFuture<JsonArray> getNearby() {
-        return getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
+        return getNearby(EarthMCEssentials.instance().getConfig().nearby.xBlocks, EarthMCEssentials.instance().getConfig().nearby.zBlocks);
     }
 
     public static CompletableFuture<JsonArray> getNearby(int xBlocks, int zBlocks) {
@@ -149,21 +151,20 @@ public class EarthMCAPI {
     }
 
     public static String getRoute(APIRoute routeType) {
+        // TODO: Do this once on startup
         API().thenAccept(data -> apiData = data);
-        String route;
 
-        switch(routeType) {
-            case TOWNLESS -> route = apiData.routes.townless;
-            case NATIONS -> route = apiData.routes.nations;
-            case RESIDENTS -> route = apiData.routes.residents;
-            case PLAYERS -> route = apiData.routes.players;
-            case TOWNS -> route = apiData.routes.towns;
-            case ALLIANCES -> route = apiData.routes.alliances;
-            case NEARBY -> route = apiData.routes.nearby;
-            case SERVER_INFO -> route = apiData.routes.serverInfo;
-            case NEWS -> route = apiData.routes.news;
-            default -> throw new IllegalStateException("Unexpected value: " + routeType);
-        }
+        String route = switch(routeType) {
+            case TOWNLESS -> apiData.routes.townless;
+            case NATIONS -> apiData.routes.nations;
+            case RESIDENTS -> apiData.routes.residents;
+            case PLAYERS -> apiData.routes.players;
+            case TOWNS -> apiData.routes.towns;
+            case ALLIANCES -> apiData.routes.alliances;
+            case NEARBY -> apiData.routes.nearby;
+            case SERVER_INFO -> apiData.routes.serverInfo;
+            case NEWS -> apiData.routes.news;
+        };
 
         route = apiData.getDomain() + route + "/";
         Messaging.sendDebugMessage("GETTING ROUTE - " + route);

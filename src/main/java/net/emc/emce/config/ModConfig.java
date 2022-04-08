@@ -18,8 +18,7 @@ import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.Enu
 
 @Config(name = "emc-essentials")
 @Background(value = "cloth-config2:transparent")
-public class ModConfig implements ConfigData
-{
+public class ModConfig implements ConfigData {
     @Category("General")
     @TransitiveObject()
     public General general = new General();

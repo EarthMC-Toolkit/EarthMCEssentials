@@ -17,10 +17,10 @@ public record TownlessCommand(EarthMCEssentials instance) {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("townless").executes(c -> {
             NamedTextColor color = instance.getConfig().commands.townlessTextColour.named();
 
-            Messaging.sendMessage(Translation.of("text_townless_header", instance.getTownless().size()).color(color));
+            Messaging.sendMessage(Translation.of("text_townless_header", instance.getTownlessPlayers().size()).color(color));
 
-            if (instance.getTownless().size() > 0)
-                Messaging.sendMessage(Component.text(String.join(", ", instance.getTownless()), color));
+            if (instance.getTownlessPlayers().size() > 0)
+                Messaging.sendMessage(Component.text(String.join(", ", instance.getTownlessPlayers()), color));
 
             return 1;
         }).then(ClientCommandManager.literal("inviteAll").executes(c -> {
@@ -30,7 +30,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
 
-                for (String townlessPlayer : instance.getTownless()) {
+                for (String townlessPlayer : instance.getTownlessPlayers()) {
                     if (("/towny:town invite " + townlessString + " " + townlessPlayer).length() > 256)
                         break;
                     else
@@ -38,7 +38,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
                 }
 
                 Messaging.performCommand("/towny:town invite " + townlessString);
-                Messaging.sendPrefixedMessage(Translation.of("msg_townless_sent", instance.getTownless().size()));
+                Messaging.sendPrefixedMessage(Translation.of("msg_townless_sent", instance.getTownlessPlayers().size()));
             } else
                 Messaging.sendPrefixedMessage(Translation.of("msg_townless_invite_err"));
             return 1;
@@ -49,7 +49,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
 
-                for (String townlessPlayer : instance.getTownless()) {
+                for (String townlessPlayer : instance.getTownlessPlayers()) {
                     if (("/towny:town invite -" + townlessString + " " + townlessPlayer).length() > 256)
                         break;
                     else
@@ -57,7 +57,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
                 }
 
                 Messaging.performCommand("/towny:town invite " + townlessString);
-                Messaging.sendPrefixedMessage(Translation.of("msg_townless_revoked", instance.getTownless().size()));
+                Messaging.sendPrefixedMessage(Translation.of("msg_townless_revoked", instance.getTownlessPlayers().size()));
             } else
                 Messaging.sendPrefixedMessage(Translation.of("msg_townless_revoke_err"));
             return 1;
