@@ -87,7 +87,7 @@ public class OverlayRenderer
         currentNewsID = news.getID();
 
         switch(pos) {
-            case CHAT -> Messaging.sendMessage(Component.text(news.getMsg(), NamedTextColor.AQUA));
+            case CHAT -> Messaging.send(Component.text(news.getMsg(), NamedTextColor.AQUA));
             case ACTION_BAR -> Messaging.sendActionBar(Component.text(news.getMsg(), NamedTextColor.AQUA));
         }
     }

@@ -16,12 +16,12 @@ public class NetherCommand {
                     int x = IntegerArgumentType.getInteger(c, "x");
                     int z = IntegerArgumentType.getInteger(c, "z");
 
-                    Messaging.sendMessage(Translation.of("msg_nether_success", x/8, z/8));
+                    Messaging.send(Translation.of("msg_nether_success", x/8, z/8));
 
                     return 1;
                 })
             ).executes(c -> {
-                Messaging.sendMessage(Translation.of("msg_nether_err_args"));
+                Messaging.send(Translation.of("msg_nether_err_args"));
                 return 1;
             })).executes(c -> {
                 int x, z;
@@ -30,11 +30,10 @@ public class NetherCommand {
                     x = MinecraftClient.getInstance().player.getBlockX();
                     z = MinecraftClient.getInstance().player.getBlockZ();
 
-                    Messaging.sendPrefixedMessage(Translation.of("msg_nether_owncoords"));
-                    Messaging.sendPrefixedMessage(Translation.of("msg_nether_success", x/8, z/8));
+                    Messaging.sendPrefixed(Translation.of("msg_nether_owncoords"));
+                    Messaging.sendPrefixed(Translation.of("msg_nether_success", x/8, z/8));
                 }
-                else
-                    Messaging.sendMessage(Translation.of("msg_nether_err_null"));
+                else Messaging.send(Translation.of("msg_nether_err_null"));
 
                 return 1;
             })

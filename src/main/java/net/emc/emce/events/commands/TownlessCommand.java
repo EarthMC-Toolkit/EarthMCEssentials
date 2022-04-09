@@ -17,57 +17,59 @@ public record TownlessCommand(EarthMCEssentials instance) {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("townless").executes(c -> {
             NamedTextColor color = instance.getConfig().commands.townlessTextColour.named();
 
-            Messaging.sendMessage(Translation.of("text_townless_header", instance.getTownless().size()).color(color));
+            Messaging.send(Messaging.create("text_townless_header", color, instance.getTownless().size()));
 
             if (instance.getTownless().size() > 0)
-                Messaging.sendMessage(Component.text(String.join(", ", instance.getTownless()), color));
+                Messaging.send(Component.text(String.join(", ", instance.getTownless()), color));
 
             return 1;
         }).then(ClientCommandManager.literal("inviteAll").executes(c -> {
-            if (MinecraftClient.getInstance().player == null)
-                return -1;
+            if (MinecraftClient.getInstance().player == null) return -1;
+            NamedTextColor townlessTextColour = instance.getConfig().commands.townlessTextColour.named();
 
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
 
                 for (String townlessPlayer : instance.getTownless()) {
-                    if (("/towny:town invite " + townlessString + " " + townlessPlayer).length() > 256)
-                        break;
-                    else
-                        townlessString.append(townlessPlayer).append(" ");
+                    if (("/towny:town invite " + townlessString + " " + townlessPlayer).length() > 256) break;
+                    else townlessString.append(townlessPlayer).append(" ");
                 }
 
                 Messaging.performCommand("/towny:town invite " + townlessString);
-                Messaging.sendPrefixedMessage(Translation.of("msg_townless_sent", instance.getTownless().size()));
-            } else
-                Messaging.sendPrefixedMessage(Translation.of("msg_townless_invite_err"));
+                Messaging.sendPrefixed(Messaging.create("msg_townless_sent", townlessTextColour,
+                        Component.text(instance.getTownless().size()).color(NamedTextColor.WHITE)));
+            }
+            else Messaging.sendPrefixed(Translation.of("msg_townless_invite_err"));
+
             return 1;
         })).then(ClientCommandManager.literal("revokeAll").executes(c -> {
-            if (MinecraftClient.getInstance().player == null)
-                return -1;
+            if (MinecraftClient.getInstance().player == null) return -1;
+            NamedTextColor townlessTextColour = instance.getConfig().commands.townlessTextColour.named();
 
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
 
                 for (String townlessPlayer : instance.getTownless()) {
-                    if (("/towny:town invite -" + townlessString + " " + townlessPlayer).length() > 256)
-                        break;
-                    else
-                        townlessString.append("-").append(townlessPlayer).append(" ");
+                    if (("/towny:town invite -" + townlessString + " " + townlessPlayer).length() > 256) break;
+                    else townlessString.append("-").append(townlessPlayer).append(" ");
                 }
 
                 Messaging.performCommand("/towny:town invite " + townlessString);
-                Messaging.sendPrefixedMessage(Translation.of("msg_townless_revoked", instance.getTownless().size()));
-            } else
-                Messaging.sendPrefixedMessage(Translation.of("msg_townless_revoke_err"));
+                Messaging.sendPrefixed(Messaging.create("msg_townless_revoked", townlessTextColour,
+                        Component.text(instance.getTownless().size()).color(NamedTextColor.WHITE)));
+            }
+            else Messaging.sendPrefixed(Translation.of("msg_townless_revoke_err"));
+
             return 1;
         })).then(ClientCommandManager.literal("refresh").executes(c -> {
             EarthMCAPI.getTownless().thenAccept(instance::setTownlessResidents);
-            Messaging.sendPrefixedMessage(Translation.of("msg_townless_refresh"));
+            Messaging.sendPrefixed(Translation.of("msg_townless_refresh"));
+
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {
             instance.setTownlessResidents(new JsonArray());
-            Messaging.sendPrefixedMessage(Translation.of("msg_townless_clear"));
+            Messaging.sendPrefixed(Translation.of("msg_townless_clear"));
+
             return 1;
         })));
     }

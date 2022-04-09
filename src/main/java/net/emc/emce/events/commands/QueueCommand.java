@@ -10,10 +10,8 @@ public class QueueCommand {
     public void register() {
         ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("queuesize").executes(source -> {
             ServerDataCache.INSTANCE.getCache().thenAccept(serverData -> {
-                if (serverData == null)
-                    Messaging.sendMessage(Translation.of("msg_queue_err"));
-                else
-                    Messaging.sendMessage(Translation.of("msg_queue_success", serverData.getQueue()).color(NamedTextColor.AQUA));
+                if (serverData == null) Messaging.send(Translation.of("msg_queue_err"));
+                else Messaging.send(Messaging.create("msg_queue_success", NamedTextColor.AQUA, serverData.getQueue()));
             });
 
             return 1;

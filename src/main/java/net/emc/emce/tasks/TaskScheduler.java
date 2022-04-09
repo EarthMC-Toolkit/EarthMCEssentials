@@ -17,11 +17,7 @@ import static net.emc.emce.EarthMCEssentials.instance;
 
 public class TaskScheduler {
     public ScheduledExecutorService service;
-
-    public boolean townlessRunning;
-    public boolean nearbyRunning;
-    public boolean cacheCheckRunning;
-    public boolean newsRunning;
+    public boolean townlessRunning, nearbyRunning, cacheCheckRunning, newsRunning;
 
     private static final List<Cache<?>> CACHES = Arrays.asList(
             NationDataCache.INSTANCE,

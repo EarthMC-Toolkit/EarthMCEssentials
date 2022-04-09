@@ -49,7 +49,7 @@
     "text_alliance_towns": "Towns: %s",
     "text_alliance_nations": "Nations: %s",
     "text_alliance_discord": "Discord: %s",
-    "text_alliance_err": "§Alliance %s is not registered.",
+    "text_alliance_err": "§cAlliance %s is not registered.",
 
     "text_shared_area": "Area: %s",
     "text_shared_residents": "Residents: %d",
