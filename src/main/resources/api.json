@@ -1,14 +1,14 @@
 {
   "domain": "https://earthmc-api.herokuapp.com",
   "routes": {
-    "townless": "townlessplayers",
-    "players": "allplayers",
-    "residents": "residents",
-    "towns": "towns",
-    "nations": "nations",
-    "alliances": "alliances",
-    "news": "news",
-    "serverData": "serverinfo",
-    "nearby": "nearby"
+    "townless": "nova/townlessplayers",
+    "players": "nova/allplayers",
+    "residents": "nova/residents",
+    "towns": "nova/towns",
+    "nations": "nova/nations",
+    "alliances": "nova/alliances",
+    "news": "nova/news",
+    "serverData": "nova/serverinfo",
+    "nearby": "nova/nearby"
   }
 }
