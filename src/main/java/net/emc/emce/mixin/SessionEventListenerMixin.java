@@ -25,14 +25,12 @@ public abstract class SessionEventListenerMixin {
 
     @Inject(at = @At("TAIL"), method="onStartGameSession")
     public void onStartGameSession(CallbackInfo ci) {
-        // Check API if client in Nova, if not, check Aurora, if not, assume in Queue.
         String clientName = client.player.getName().asString();
-        if (playerOnline("nova", clientName)) {
-            APIData.setMap("nova");
-            return;
-        }
-        if (playerOnline("aurora", clientName)) APIData.setMap("aurora");
-        
         instance().setShouldRender(ModUtils.shouldRender());
+
+        if (playerOnline("aurora", clientName) || playerOnline("nova", clientName))
+            return;
+
+        instance().setShouldRender(false);
     }
 }
