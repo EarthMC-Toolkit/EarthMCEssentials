@@ -3,7 +3,8 @@
   "package": "net.emc.emce.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ClientPlayNetworkHandlerMixin"
+    "ClientPlayNetworkHandlerMixin",
+    "SessionEventListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -22,7 +22,7 @@ public class EarthMCAPI {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ModConfig config = ModConfig.instance();
     public static final Pattern urlSchemePattern = Pattern.compile("^[a-z][a-z0-9+\\-.]*://");
-    public static APIData apiData;
+    public static APIData apiData = new APIData();
 
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
@@ -76,6 +76,17 @@ public class EarthMCAPI {
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
+            }
+        });
+    }
+
+    public static CompletableFuture<JsonObject> getOnlinePlayer(String playerName) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS) + playerName)).getAsJsonObject();
+            } catch (APIException e) {
+                Messaging.sendDebugMessage(e.getMessage(), e);
+                return new JsonObject();
             }
         });
     }
@@ -148,15 +159,20 @@ public class EarthMCAPI {
         });
     }
 
-    public static String getRoute(APIRoute routeType) {
+    public static void fetchRoutes() {
         API().thenAccept(data -> apiData = data);
+    }
+
+    public static String getRoute(APIRoute routeType) {
+        fetchRoutes();
         String route;
 
         switch(routeType) {
             case TOWNLESS -> route = apiData.routes.townless;
             case NATIONS -> route = apiData.routes.nations;
             case RESIDENTS -> route = apiData.routes.residents;
-            case PLAYERS -> route = apiData.routes.players;
+            case ALL_PLAYERS -> route = apiData.routes.allPlayers;
+            case ONLINE_PLAYERS -> route = apiData.routes.onlinePlayers;
             case TOWNS -> route = apiData.routes.towns;
             case ALLIANCES -> route = apiData.routes.alliances;
             case NEARBY -> route = apiData.routes.nearby;
@@ -169,6 +185,13 @@ public class EarthMCAPI {
         Messaging.sendDebugMessage("GETTING ROUTE - " + route);
 
         return route;
+    }
+
+    public static boolean playerOnline(String map, String pName) {
+        APIData.setMap(map);
+        JsonObject player = getOnlinePlayer(pName).join();
+
+        return player.has("name");
     }
 
     private static String getURL(String urlString) throws APIException {
