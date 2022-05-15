@@ -1,0 +1,6 @@
+{
+  "domain": "earthmc-api.herokuapp.com/api/"
+  "routes": {
+    "townless": "townlessplayers"
+  }
+}
