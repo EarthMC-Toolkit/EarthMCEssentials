@@ -189,9 +189,9 @@ public class EarthMCAPI {
 
     public static boolean playerOnline(String map, String pName) {
         APIData.setMap(map);
-        
+
         JsonElement player = getOnlinePlayer(pName).join().get("name");
-        return player.isJsonNull() && player.getAsString().equals(pName);
+        return player != null && player.getAsString().equals(pName);
     }
 
     private static String getURL(String urlString) throws APIException {

@@ -58,8 +58,10 @@ public class TaskScheduler {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
         executor.schedule(() -> {
-            if (playerOnline("aurora", clientName) || playerOnline("nova", clientName)) return;
-            instance().setShouldRender(false);
+            if (!playerOnline("aurora", clientName)) {
+                if (playerOnline("nova", clientName)) return;
+                instance().setShouldRender(false);
+            }
         }, 3, TimeUnit.SECONDS);
     }
 
