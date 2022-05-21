@@ -6,7 +6,7 @@ import net.emc.emce.config.ModConfig;
 public class APIData {
     private final String domain;
     public Routes routes = new Routes();
-    public static String mapName = "aurora";
+    public static String mapName;
 
     public static class Routes {
         public String townless;
@@ -28,7 +28,7 @@ public class APIData {
         String dom = object.get("domain").getAsString();
         String ver = ModConfig.instance().api.version;
 
-        domain = dom + "/api/" + ver + "/" + mapName + "/";
+        domain = dom + "/api/" + ver + "/";
 
         JsonObject routesObj = object.get("routes").getAsJsonObject();
 

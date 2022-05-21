@@ -163,8 +163,8 @@ public class EarthMCAPI {
     }
 
     public static String getRoute(APIRoute routeType) {
-        if (APIData.mapName.equals("nova")) fetchNova().thenAccept(data -> apiData = data);
-        else fetchAurora().thenAccept(data -> apiData = data);
+        if (APIData.mapName.equals("aurora")) fetchAurora().thenAccept(data -> apiData = data);
+        else fetchNova().thenAccept(data -> apiData = data);
 
         String route;
 
@@ -190,9 +190,7 @@ public class EarthMCAPI {
     public static boolean playerOnline(String map, String pName) {
         APIData.setMap(map);
         JsonObject player = getOnlinePlayer(pName).join();
-        Messaging.sendDebugMessage(player.getAsString());
-
-        return player.has("name");
+        return player.get("name").toString().equals(pName);
     }
 
     private static String getURL(String urlString) throws APIException {

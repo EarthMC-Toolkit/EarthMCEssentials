@@ -60,7 +60,7 @@ public class TaskScheduler {
         executor.schedule(() -> {
             if (playerOnline("aurora", clientName) || playerOnline("nova", clientName)) return;
             instance().setShouldRender(false);
-        }, 5, TimeUnit.SECONDS);
+        }, 3, TimeUnit.SECONDS);
     }
 
     private void startTownless() {
