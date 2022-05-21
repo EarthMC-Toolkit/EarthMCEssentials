@@ -16,7 +16,6 @@ public class APIData {
         public String allPlayers;
         public String onlinePlayers;
         public String nearby;
-        public String serverInfo;
         public String news;
         public String alliances;
     }
@@ -40,7 +39,6 @@ public class APIData {
         routes.allPlayers = routesObj.get("allplayers").getAsString();
         routes.onlinePlayers = routesObj.get("onlineplayers").getAsString();
         routes.nearby = routesObj.get("nearby").getAsString();
-        routes.serverInfo = routesObj.get("serverData").getAsString();
         routes.news = routesObj.get("news").getAsString();
         routes.alliances = routesObj.get("alliances").getAsString();
     }
@@ -55,7 +53,6 @@ public class APIData {
         routes.allPlayers = "";
         routes.onlinePlayers = "";
         routes.nearby = "";
-        routes.serverInfo = "";
         routes.news = "";
         routes.alliances = "";
     }

@@ -9,6 +9,5 @@ public enum APIRoute {
     TOWNS,
     NATIONS,
     ALLIANCES,
-    SERVER_INFO,
     NEWS
 }

@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
+import static net.emc.emce.utils.EarthMCAPI.playerOnline;
 
 public class TaskScheduler {
     public ScheduledExecutorService service;
@@ -21,7 +22,6 @@ public class TaskScheduler {
 
     private static final List<Cache<?>> CACHES = Arrays.asList(
             NationDataCache.INSTANCE,
-            ServerDataCache.INSTANCE,
             TownDataCache.INSTANCE,
             AllianceDataCache.INSTANCE
     );
@@ -52,6 +52,15 @@ public class TaskScheduler {
         nearbyRunning = false;
         newsRunning = false;
         cacheCheckRunning = false;
+    }
+
+    public void startMapCheck(String clientName) {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
+        executor.schedule(() -> {
+            if (playerOnline("aurora", clientName) || playerOnline("nova", clientName)) return;
+            instance().setShouldRender(false);
+        }, 5, TimeUnit.SECONDS);
     }
 
     private void startTownless() {

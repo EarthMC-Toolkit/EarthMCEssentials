@@ -22,6 +22,7 @@ public class EarthMCAPI {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ModConfig config = ModConfig.instance();
     public static final Pattern urlSchemePattern = Pattern.compile("^[a-z][a-z0-9+\\-.]*://");
+
     public static APIData apiData = new APIData();
 
     public static CompletableFuture<JsonArray> getTownless() {
@@ -102,17 +103,6 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<ServerData> getServerData() {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return new ServerData((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.SERVER_INFO))));
-            } catch (APIException e) {
-                Messaging.sendDebugMessage(e.getMessage(), e);
-                return new ServerData();
-            }
-        });
-    }
-
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -146,7 +136,7 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<APIData> API() {
+    public static CompletableFuture<APIData> fetchNova() {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return new APIData((JsonObject) JsonParser.parseString(
@@ -159,12 +149,23 @@ public class EarthMCAPI {
         });
     }
 
-    public static void fetchRoutes() {
-        API().thenAccept(data -> apiData = data);
+    public static CompletableFuture<APIData> fetchAurora() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return new APIData((JsonObject) JsonParser.parseString(
+                        getURL("https://raw.githubusercontent.com/EarthMC-Stats/EarthMCEssentials" +
+                                "/main/src/main/resources/aurora_api.json")));
+            } catch (APIException e) {
+                Messaging.sendDebugMessage(e.getMessage(), e);
+                return new APIData();
+            }
+        });
     }
 
     public static String getRoute(APIRoute routeType) {
-        fetchRoutes();
+        if (APIData.mapName.equals("nova")) fetchNova().thenAccept(data -> apiData = data);
+        else fetchAurora().thenAccept(data -> apiData = data);
+
         String route;
 
         switch(routeType) {
@@ -176,7 +177,6 @@ public class EarthMCAPI {
             case TOWNS -> route = apiData.routes.towns;
             case ALLIANCES -> route = apiData.routes.alliances;
             case NEARBY -> route = apiData.routes.nearby;
-            case SERVER_INFO -> route = apiData.routes.serverInfo;
             case NEWS -> route = apiData.routes.news;
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
@@ -190,6 +190,7 @@ public class EarthMCAPI {
     public static boolean playerOnline(String map, String pName) {
         APIData.setMap(map);
         JsonObject player = getOnlinePlayer(pName).join();
+        Messaging.sendDebugMessage(player.getAsString());
 
         return player.has("name");
     }

@@ -28,7 +28,7 @@ import static net.emc.emce.utils.EarthMCAPI.*;
 public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(at = @At("TAIL"), method="onGameJoin")
-    private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) throws InterruptedException {
+    private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
         ModUtils.updateServerName();
         Messaging.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
 
@@ -36,8 +36,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
         EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
-
-        Thread.sleep(3000); // Extra time for dynmap to add the client.
     }
 
     @Inject(at = @At("HEAD"), method="onDisconnect")

@@ -3,7 +3,9 @@ package net.emc.emce.mixin;
 import com.mojang.bridge.game.GameSession;
 import net.emc.emce.object.APIData;
 import net.emc.emce.object.APIRoute;
+import net.emc.emce.tasks.TaskScheduler;
 import net.emc.emce.utils.EarthMCAPI;
+import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.MinecraftClientGame;
@@ -26,11 +28,9 @@ public abstract class SessionEventListenerMixin {
     @Inject(at = @At("TAIL"), method="onStartGameSession")
     public void onStartGameSession(CallbackInfo ci) {
         String clientName = client.player.getName().asString();
+        Messaging.sendDebugMessage("Clients name is " + clientName);
+
         instance().setShouldRender(ModUtils.shouldRender());
-
-        if (playerOnline("aurora", clientName) || playerOnline("nova", clientName))
-            return;
-
-        instance().setShouldRender(false);
+        instance().scheduler().startMapCheck(clientName);
     }
 }

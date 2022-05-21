@@ -9,7 +9,6 @@
     "nations": "nova/nations",
     "alliances": "nova/alliances",
     "news": "nova/news",
-    "serverData": "nova/serverinfo",
     "nearby": "nova/nearby"
   }
 }

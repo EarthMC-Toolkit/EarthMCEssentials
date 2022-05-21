@@ -1,0 +1,14 @@
+{
+  "domain": "https://earthmc-api.herokuapp.com",
+  "routes": {
+    "townless": "aurora/townlessplayers",
+    "allplayers": "aurora/allplayers",
+    "onlineplayers": "aurora/onlineplayers",
+    "residents": "aurora/residents",
+    "towns": "aurora/towns",
+    "nations": "aurora/nations",
+    "alliances": "aurora/alliances",
+    "news": "aurora/news",
+    "nearby": "aurora/nearby"
+  }
+}
