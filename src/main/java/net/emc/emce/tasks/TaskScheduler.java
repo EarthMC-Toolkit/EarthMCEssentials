@@ -2,6 +2,7 @@ package net.emc.emce.tasks;
 
 import net.emc.emce.caches.*;
 import net.emc.emce.config.ModConfig;
+import net.emc.emce.object.APIData;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.Messaging;
@@ -14,6 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
+import static net.emc.emce.utils.EarthMCAPI.apiData;
 import static net.emc.emce.utils.EarthMCAPI.playerOnline;
 
 public class TaskScheduler {
@@ -58,11 +60,11 @@ public class TaskScheduler {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
         executor.schedule(() -> {
-            if (!playerOnline("aurora", clientName)) {
-                if (playerOnline("nova", clientName)) return;
-                instance().setShouldRender(false);
-            }
-        }, 3, TimeUnit.SECONDS);
+            if (playerOnline("nova", clientName)) return;
+            if (playerOnline("aurora", clientName)) return;
+
+            instance().setShouldRender(false);
+        }, 5, TimeUnit.SECONDS);
     }
 
     private void startTownless() {
