@@ -29,8 +29,14 @@ public abstract class SessionEventListenerMixin {
     public void onStartGameSession(CallbackInfo ci) {
         String clientName = client.player.getName().asString();
         Messaging.sendDebugMessage("Clients name is " + clientName);
+        instance().sessionCounter++;
+    }
 
-        instance().setShouldRender(ModUtils.shouldRender());
-        instance().scheduler().startMapCheck(clientName);
+    @Inject(at = @At("TAIL"), method="onLeaveGameSession")
+    public void onLeaveGameSession(CallbackInfo ci) {
+        instance().sessionCounter = 0;
+        instance().scheduler().setHasMap(null);
+
+        ModUtils.setServerName("");
     }
 }

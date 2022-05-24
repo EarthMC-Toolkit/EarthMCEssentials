@@ -1,7 +1,6 @@
 package net.emc.emce.utils;
 
 import com.google.gson.*;
-import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.object.*;
 import net.emc.emce.object.exception.APIException;
@@ -16,14 +15,20 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
+
+import static net.emc.emce.EarthMCEssentials.instance;
 
 public class EarthMCAPI {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final ModConfig config = ModConfig.instance();
     public static final Pattern urlSchemePattern = Pattern.compile("^[a-z][a-z0-9+\\-.]*://");
 
-    public static APIData apiData = new APIData();
+    public static APIData auroraData = new APIData();
+    public static APIData novaData = new APIData();
+    public static JsonObject player = new JsonObject();
 
     public static CompletableFuture<JsonArray> getTownless() {
         return CompletableFuture.supplyAsync(() -> {
@@ -62,10 +67,10 @@ public class EarthMCAPI {
                     }
                     return array;
                 } else
-                    return EarthMCEssentials.instance().getNearbyPlayers();
+                    return instance().getNearbyPlayers();
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
-                return EarthMCEssentials.instance().getNearbyPlayers();
+                return instance().getNearbyPlayers();
             }
         });
     }
@@ -81,11 +86,12 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<JsonObject> getOnlinePlayer(String playerName) {
+    public static CompletableFuture<JsonElement> getOnlinePlayer(String playerName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS) + playerName)).getAsJsonObject();
+                return JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS) + playerName));
             } catch (APIException e) {
+                System.out.println(e.getMessage());
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonObject();
             }
@@ -154,7 +160,7 @@ public class EarthMCAPI {
             try {
                 return new APIData((JsonObject) JsonParser.parseString(
                         getURL("https://raw.githubusercontent.com/EarthMC-Stats/EarthMCEssentials" +
-                                "/main/src/main/resources/aurora_api.json")));
+                               "/main/src/main/resources/aurora_api.json")));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new APIData();
@@ -163,35 +169,53 @@ public class EarthMCAPI {
     }
 
     public static String getRoute(APIRoute routeType) {
-        if (APIData.mapName.equals("aurora")) fetchAurora().thenAccept(data -> apiData = data);
-        else fetchNova().thenAccept(data -> apiData = data);
-
         String route;
+        APIData data;
+
+        if (instance().mapName.equals("aurora")) data = auroraData;
+        else data = novaData;
 
         switch(routeType) {
-            case TOWNLESS -> route = apiData.routes.townless;
-            case NATIONS -> route = apiData.routes.nations;
-            case RESIDENTS -> route = apiData.routes.residents;
-            case ALL_PLAYERS -> route = apiData.routes.allPlayers;
-            case ONLINE_PLAYERS -> route = apiData.routes.onlinePlayers;
-            case TOWNS -> route = apiData.routes.towns;
-            case ALLIANCES -> route = apiData.routes.alliances;
-            case NEARBY -> route = apiData.routes.nearby;
-            case NEWS -> route = apiData.routes.news;
+            case TOWNLESS -> route = data.routes.townless;
+            case NATIONS -> route = data.routes.nations;
+            case RESIDENTS -> route = data.routes.residents;
+            case ALL_PLAYERS -> route = data.routes.allPlayers;
+            case ONLINE_PLAYERS -> route = data.routes.onlinePlayers;
+            case TOWNS -> route = data.routes.towns;
+            case ALLIANCES -> route = data.routes.alliances;
+            case NEARBY -> route = data.routes.nearby;
+            case NEWS -> route = data.routes.news;
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
 
-        route = apiData.getDomain() + route + "/";
+        route = data.getDomain() + route + "/";
         Messaging.sendDebugMessage("GETTING ROUTE - " + route);
 
         return route;
     }
 
-    public static boolean playerOnline(String map, String pName) {
-        APIData.setMap(map);
+    public static String clientName() {
+        return MinecraftClient.getInstance().player.getName().asString();
+    }
 
-        JsonElement player = getOnlinePlayer(pName).join().get("name");
-        return player != null && player.getAsString().equals(pName);
+    public static void fetchMaps() {
+        fetchAurora().thenAccept(data -> auroraData = data);
+        fetchNova().thenAccept(data -> {
+            novaData = data;
+            instance().scheduler().initMap();
+        });
+    }
+
+    public static boolean playerOnline(String map) {
+        instance().mapName = map;
+
+        JsonObject player = (JsonObject) getOnlinePlayer(clientName()).join();
+        System.out.println("Has name: " + player.has("name"));
+
+        boolean online = player.has("name") && player.get("name").getAsString().equals(clientName());
+
+        System.out.println("Online in " + map + ": " + online);
+        return online;
     }
 
     private static String getURL(String urlString) throws APIException {
@@ -200,8 +224,7 @@ public class EarthMCAPI {
                     .uri(URI.create(urlString))
                     .header("Accept", "application/json")
                     .timeout(Duration.ofSeconds(5))
-                    .GET()
-                    .build();
+                    .GET().build();
 
             final HttpResponse<String> response;
             try {
@@ -210,7 +233,8 @@ public class EarthMCAPI {
                 throw new APIException("API did not return any data after 5 seconds for URL '" + urlString + "'.");
             }
 
-            if (response.statusCode() != 200)
+            System.out.println(response.body());
+            if (response.statusCode() != 200 && response.statusCode() != 304)
                 throw new APIException("API returned response code " + response.statusCode() + " for URL: " + urlString);
 
             return response.body();

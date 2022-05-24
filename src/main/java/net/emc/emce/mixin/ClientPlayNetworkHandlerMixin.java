@@ -3,6 +3,7 @@ package net.emc.emce.mixin;
 import com.mojang.bridge.game.GameSession;
 import com.mojang.bridge.launcher.SessionEventListener;
 import net.emc.emce.modules.OverlayRenderer;
+import net.emc.emce.tasks.TaskScheduler;
 import net.emc.emce.utils.EventRegistry;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.Messaging;
@@ -36,11 +37,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
         EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
-    }
 
-    @Inject(at = @At("HEAD"), method="onDisconnect")
-    public void onDisconnect(DisconnectS2CPacket packet, CallbackInfo ci) {
-        instance().scheduler().stop();
-        ModUtils.setServerName("");
+        // Not in queue
+        if (instance().sessionCounter > 1) {
+            instance().setShouldRender(ModUtils.shouldRender());
+            fetchMaps();
+        }
     }
 }

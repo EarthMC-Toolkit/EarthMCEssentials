@@ -6,7 +6,6 @@ import net.emc.emce.config.ModConfig;
 public class APIData {
     private final String domain;
     public Routes routes = new Routes();
-    public static String mapName;
 
     public static class Routes {
         public String townless;
@@ -18,10 +17,6 @@ public class APIData {
         public String nearby;
         public String news;
         public String alliances;
-    }
-
-    public static void setMap(String name) {
-        mapName = name;
     }
 
     public APIData(JsonObject object) {

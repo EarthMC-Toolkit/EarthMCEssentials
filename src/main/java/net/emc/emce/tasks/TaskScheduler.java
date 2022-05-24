@@ -15,12 +15,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
-import static net.emc.emce.utils.EarthMCAPI.apiData;
-import static net.emc.emce.utils.EarthMCAPI.playerOnline;
+import static net.emc.emce.utils.EarthMCAPI.*;
 
 public class TaskScheduler {
     public ScheduledExecutorService service;
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning, newsRunning;
+    public boolean hasMap = false;
 
     private static final List<Cache<?>> CACHES = Arrays.asList(
             NationDataCache.INSTANCE,
@@ -30,7 +30,6 @@ public class TaskScheduler {
 
     public void start() {
         ModConfig config = ModConfig.instance();
-        service = Executors.newScheduledThreadPool(2);
 
         // Pre-fill data.
         if (config.general.enableMod) {
@@ -56,15 +55,27 @@ public class TaskScheduler {
         cacheCheckRunning = false;
     }
 
-    public void startMapCheck(String clientName) {
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    public void initMap() {
+        service = Executors.newScheduledThreadPool(2);
+        service.scheduleAtFixedRate(() -> {
+            if (hasMap) return;
 
-        executor.schedule(() -> {
-            if (playerOnline("nova", clientName)) return;
-            if (playerOnline("aurora", clientName)) return;
+            if (playerOnline("aurora")) setHasMap("aurora");
+            else if (playerOnline("nova")) setHasMap("nova");
+            else setHasMap(null);
+        }, 5, 10, TimeUnit.SECONDS);
+    }
 
-            instance().setShouldRender(false);
-        }, 5, TimeUnit.SECONDS);
+    public void setHasMap(String map) {
+        if (map == null) {
+            if (!service.isShutdown()) stop();
+            instance().mapName = "aurora";
+            hasMap = false;
+        }
+        else {
+            hasMap = true;
+            start();
+        }
     }
 
     private void startTownless() {

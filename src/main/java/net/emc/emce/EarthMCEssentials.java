@@ -40,6 +40,8 @@ public class EarthMCEssentials implements ModInitializer {
     public static KeyBinding configKeybinding;
 
     private final TaskScheduler scheduler = new TaskScheduler();
+    public int sessionCounter = 0;
+    public String mapName = "aurora";
 
     @Override
     public void onInitialize() {
@@ -51,7 +53,6 @@ public class EarthMCEssentials implements ModInitializer {
         configKeybinding = KeyBindingHelper.registerKeyBinding(new
                 KeyBinding("Open Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
-        instance().scheduler().start();
         EventRegistry.RegisterClientTick();
         EventRegistry.RegisterCommands(this);
     }
