@@ -18,8 +18,7 @@ import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.Enu
 
 @Config(name = "emc-essentials")
 @Background(value = "cloth-config2:transparent")
-public class ModConfig implements ConfigData
-{
+public class ModConfig implements ConfigData {
     @Category("General")
     @TransitiveObject()
     public General general = new General();
@@ -47,8 +46,6 @@ public class ModConfig implements ConfigData
     public static class General {
         @Comment("Toggles the mod on or off.")
         public boolean enableMod = true;
-        @Comment("If enabled, overlays only render while you are on EarthMC.")
-        public boolean emcOnly = true;
     }
 
     public static class Townless {

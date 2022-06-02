@@ -7,8 +7,7 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
-public class ScreenInit
-{
+public class ScreenInit {
     private static boolean configOpen = false;
 
     public ScreenInit() {

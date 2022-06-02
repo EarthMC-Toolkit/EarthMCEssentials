@@ -31,17 +31,16 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(at = @At("TAIL"), method="onGameJoin")
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
         ModUtils.updateServerName();
-        Messaging.sendDebugMessage("Connected to server. Is on EMC: " + ModUtils.isConnectedToEMC());
-
         OverlayRenderer.Init();
 
         EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
 
-        // Not in queue
-        if (instance().sessionCounter > 1) {
-            instance().setShouldRender(ModUtils.shouldRender());
+        // Joining a map
+        if (ModUtils.shouldRender()) {
             fetchMaps();
+            instance().setShouldRender(true);
         }
+        else instance().setShouldRender(false);
     }
 }

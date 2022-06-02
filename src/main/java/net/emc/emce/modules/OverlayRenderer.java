@@ -3,7 +3,6 @@ package net.emc.emce.modules;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.object.NewsData;
 import net.emc.emce.object.NewsState;
@@ -23,24 +22,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class OverlayRenderer
-{
+import static net.emc.emce.EarthMCEssentials.instance;
+
+public class OverlayRenderer {
     private static MinecraftClient client;
-
-    private static State townlessState;
-    private static State nearbyState;
-
+    private static State townlessState, nearbyState;
     private static List<String> townless = new CopyOnWriteArrayList<>();
     private static final NewsData news = new NewsData();
     private static int currentNewsID = 0;
-
     private static ModConfig config;
     private static TextRenderer renderer;
-
     private static MatrixStack matrixStack;
 
-    public static void Init()
-    {
+    public static void Init() {
         client = MinecraftClient.getInstance();
         renderer = client.textRenderer;
         config = ModConfig.instance();
@@ -51,16 +45,20 @@ public class OverlayRenderer
         UpdateStates(true, true);
     }
 
+    public static void Clear() {
+        instance().setNearbyPlayers(new JsonArray());
+        townless = new CopyOnWriteArrayList<>();
+    }
+
     public static JsonArray nearby() {
-        return EarthMCEssentials.instance().getNearbyPlayers();
+        return instance().getNearbyPlayers();
     }
 
     public static void SetTownless(List<String> townlessResidents) {
         townless = new CopyOnWriteArrayList<>(townlessResidents);
     }
 
-    public static void UpdateStates(boolean updateTownless, boolean updateNearby)
-    {
+    public static void UpdateStates(boolean updateTownless, boolean updateNearby) {
         // Fail-safe
         if (townless == null || nearby() == null || client == null || client.player == null) return;
 
@@ -68,18 +66,14 @@ public class OverlayRenderer
         if (updateNearby) UpdateNearbyState();
     }
 
-    public static void Render(MatrixStack ms)
-    {
-        if (client == null || client.player == null || !config.general.enableMod || !EarthMCEssentials.instance().shouldRender())
+    public static void Render(MatrixStack ms) {
+        if (client.player == null || !config.general.enableMod || !instance().shouldRender())
             return;
 
         matrixStack = ms;
 
-        if (config.townless.enabled)
-            RenderTownless(config.townless.presetPositions);
-
-        if (config.nearby.enabled && ModUtils.isConnectedToEMC())
-            RenderNearby(config.nearby.presetPositions);
+        if (config.townless.enabled) RenderTownless(config.townless.presetPositions);
+        if (config.nearby.enabled) RenderNearby(config.nearby.presetPositions);
     }
 
     public static void sendNews(NewsState pos, NewsData news) {
@@ -92,8 +86,7 @@ public class OverlayRenderer
         }
     }
 
-    private static void RenderTownless(boolean usingPreset)
-    {
+    private static void RenderTownless(boolean usingPreset) {
         if (usingPreset)
         {
             Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
@@ -166,7 +159,7 @@ public class OverlayRenderer
         int townlessLongest, nearbyLongest;
 
         townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby().size())));
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby().size())));
 
         switch (townlessState) {
             case TOP_MIDDLE -> {
@@ -297,7 +290,7 @@ public class OverlayRenderer
     {
         int nearbyLongest, townlessLongest;
 
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(EarthMCEssentials.instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby().size())));
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby().size())));
         townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
 
         switch (nearbyState) {

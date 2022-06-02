@@ -160,8 +160,7 @@ public class ModUtils {
     }
 
     public static boolean shouldRender() {
-        if (!isConnectedToEMC() && instance().getConfig().general.emcOnly) return false;
-        else return (!serverName.equals("singleplayer") && !serverName.equals("realms")) || !instance().getConfig().general.emcOnly;
+        return isConnectedToEMC() && instance().sessionCounter > 1;
     }
 
     public static boolean isConnectedToEMC() { return serverName.toLowerCase().contains("earthmc.net"); }

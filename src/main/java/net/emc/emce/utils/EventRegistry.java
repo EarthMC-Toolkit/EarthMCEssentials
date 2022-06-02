@@ -22,8 +22,7 @@ public class EventRegistry {
     }
 
     public static void RegisterScreen() {
-        // Constructor automatically sets up the screen event listeners.
-        new ScreenInit();
+        final ScreenInit screenInit = new ScreenInit();
     }
 
     public static void RegisterClientTick() {
