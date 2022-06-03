@@ -8,7 +8,7 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
   
 ## Features
 #### Commands
-  - `/nationinfo` or `/towninfo` - Displays info on the specified nation or town with extra info compared to `/n` or `/t`.
+  - `/nationinfo` or `/towninfo` - Displays info on the specified nation or town with extra info compared to the regular `/nation` or `/town` commands.
   - `/alliance <name>` - Displays info on the specified alliance.
   - `/townless inviteAll` - Quickly invite all townless players to your town!
 #### On-Screen Info
