@@ -12,6 +12,7 @@ import net.emc.emce.object.NewsData;
 import net.emc.emce.object.Resident;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.apache.logging.log4j.LogManager;
@@ -23,13 +24,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EarthMCEssentials implements ModInitializer {
-
     private static EarthMCEssentials instance;
 
     private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 
-    private Resident clientResident;
-    private ModConfig config;
+    private Resident clientResident = null;
+    private ModConfig config = null;
     private boolean shouldRender = false;
     private boolean debugModeEnabled = false;
 
@@ -48,10 +48,10 @@ public class EarthMCEssentials implements ModInitializer {
         instance = this;
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+        initConfig();
 
-        configKeybinding = KeyBindingHelper.registerKeyBinding(new
-                KeyBinding("Open Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
+        configKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("Open Config Menu",
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
         EventRegistry.RegisterClientTick();
         EventRegistry.RegisterCommands(this);
@@ -65,14 +65,16 @@ public class EarthMCEssentials implements ModInitializer {
         clientResident = res;
     }
 
+    private void initConfig() { config = AutoConfig.getConfigHolder(ModConfig.class).getConfig(); }
     public ModConfig getConfig() {
-        if (config == null)
-            config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-
-       return config;
+        if (config == null) initConfig();
+        return config;
     }
 
     public boolean shouldRender() {
+        if (MinecraftClient.getInstance().player == null || !config.general.enableMod)
+            return false;
+
         return shouldRender;
     }
 
