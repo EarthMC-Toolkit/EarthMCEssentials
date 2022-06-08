@@ -72,7 +72,8 @@ public class EarthMCEssentials implements ModInitializer {
     }
 
     public boolean shouldRender() {
-        if (MinecraftClient.getInstance().player == null || !config.general.enableMod)
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (!config.general.enableMod || client.player == null || client.options.debugEnabled)
             return false;
 
         return shouldRender;
