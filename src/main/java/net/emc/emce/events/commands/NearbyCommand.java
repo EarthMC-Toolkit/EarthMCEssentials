@@ -10,7 +10,6 @@ import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.client.MinecraftClient;
 
 public record NearbyCommand(EarthMCEssentials instance) {

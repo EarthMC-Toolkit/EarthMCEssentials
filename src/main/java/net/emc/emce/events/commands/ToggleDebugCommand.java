@@ -2,8 +2,8 @@
 package net.emc.emce.events.commands;
 
 import net.emc.emce.object.Translation;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.emc.emce.utils.Messaging;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 
 import static net.emc.emce.EarthMCEssentials.instance;
 

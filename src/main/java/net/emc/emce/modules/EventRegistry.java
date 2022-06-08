@@ -5,7 +5,6 @@ import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.events.commands.*;
 import net.emc.emce.events.screen.ScreenInit;
-import net.emc.emce.modules.OverlayRenderer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.gui.screen.Screen;

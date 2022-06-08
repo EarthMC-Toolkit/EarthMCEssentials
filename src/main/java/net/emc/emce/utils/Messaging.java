@@ -1,9 +1,6 @@
 package net.emc.emce.utils;
 
 import net.emc.emce.EarthMCEssentials;
-import net.emc.emce.object.Translation;
-import net.kyori.adventure.audience.MessageType;
-import net.kyori.adventure.platform.fabric.FabricClientAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
@@ -11,7 +8,8 @@ import net.minecraft.client.MinecraftClient;
 import java.util.Collections;
 import java.util.List;
 
-import static net.kyori.adventure.platform.fabric.FabricClientAudiences.*;
+import static net.emc.emce.EarthMCEssentials.instance;
+import static net.kyori.adventure.platform.fabric.FabricClientAudiences.of;
 import static net.kyori.adventure.text.Component.*;
 
 public class Messaging {
@@ -43,15 +41,15 @@ public class Messaging {
     }
 
     public static void sendDebugMessage(String message) {
-        if (EarthMCEssentials.instance().isDebugModeEnabled()) {
+        if (instance().isDebugModeEnabled()) {
             send(translatable("debug_format", text(message).color(NamedTextColor.GRAY)));
 
-            EarthMCEssentials.instance().logger().info(message);
+            instance().logger().info(message);
         }
     }
 
     public static void sendDebugMessage(String message, Exception exception) {
-        if (EarthMCEssentials.instance().isDebugModeEnabled()) {
+        if (instance().isDebugModeEnabled()) {
             sendDebugMessage(message);
             sendDebugMessage(exception.getMessage());
             exception.printStackTrace();

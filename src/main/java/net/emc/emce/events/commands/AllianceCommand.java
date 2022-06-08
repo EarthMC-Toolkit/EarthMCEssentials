@@ -10,17 +10,12 @@ import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.fabric.FabricClientAudiences;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.translation.Translatable;
-import org.w3c.dom.Text;
 
-import java.util.Iterator;
 import java.util.Locale;
 
 public record AllianceCommand(EarthMCEssentials instance) {

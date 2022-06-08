@@ -1,8 +1,14 @@
 package net.emc.emce.utils;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.emc.emce.config.ModConfig;
-import net.emc.emce.object.*;
+import net.emc.emce.object.APIData;
+import net.emc.emce.object.APIRoute;
+import net.emc.emce.object.NewsData;
+import net.emc.emce.object.Resident;
 import net.emc.emce.object.exception.APIException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -15,8 +21,6 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import static net.emc.emce.EarthMCEssentials.instance;

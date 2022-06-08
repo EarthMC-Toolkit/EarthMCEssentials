@@ -14,7 +14,7 @@ import net.emc.emce.object.Colors;
 import net.emc.emce.object.NewsState;
 import net.emc.emce.utils.ModUtils.State;
 
-import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.*;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
 
 @Config(name = "emc-essentials")
 @Background(value = "cloth-config2:transparent")

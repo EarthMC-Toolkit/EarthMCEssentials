@@ -2,7 +2,6 @@ package net.emc.emce.events.commands;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.StringArgumentType;
-
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.NationDataCache;
 import net.emc.emce.caches.TownDataCache;
