@@ -1,4 +1,4 @@
-package net.emc.emce.tasks;
+package net.emc.emce.modules;
 
 import net.emc.emce.caches.*;
 import net.emc.emce.config.ModConfig;

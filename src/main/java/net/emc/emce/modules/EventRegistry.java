@@ -1,4 +1,4 @@
-package net.emc.emce.utils;
+package net.emc.emce.modules;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import net.emc.emce.EarthMCEssentials;
