@@ -93,7 +93,7 @@ public class ModConfig implements ConfigData {
         @Comment("The colour of the 'Nearby Players' text.")
         public Colors headingTextColour = Colors.GOLD;
         @EnumHandler(option = BUTTON)
-        @Comment("The colour of nearby player' names.")
+        @Comment("The colour of nearby players' names.")
         public Colors playerTextColour = Colors.GOLD;
 
         // Independent scaling - each axis can be same or different.
