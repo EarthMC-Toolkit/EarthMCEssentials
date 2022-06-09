@@ -1,4 +1,4 @@
-package net.emc.emce.object.exception;
+package net.emc.emce.objects.exception;
 
 import java.io.Serial;
 

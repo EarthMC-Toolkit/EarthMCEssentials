@@ -1,7 +1,7 @@
 package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.emc.emce.object.Translation;
+import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.client.MinecraftClient;

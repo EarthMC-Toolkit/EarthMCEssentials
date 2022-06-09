@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.emc.emce.EarthMCEssentials;
-import net.emc.emce.object.Translation;
+import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;

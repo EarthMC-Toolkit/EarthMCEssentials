@@ -5,11 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.emc.emce.config.ModConfig;
-import net.emc.emce.object.APIData;
-import net.emc.emce.object.APIRoute;
-import net.emc.emce.object.NewsData;
-import net.emc.emce.object.Resident;
-import net.emc.emce.object.exception.APIException;
+import net.emc.emce.objects.API.APIData;
+import net.emc.emce.objects.API.APIRoute;
+import net.emc.emce.objects.News.NewsData;
+import net.emc.emce.objects.Resident;
+import net.emc.emce.objects.exception.APIException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 

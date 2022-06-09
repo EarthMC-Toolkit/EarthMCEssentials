@@ -1,4 +1,4 @@
-package net.emc.emce.object;
+package net.emc.emce.objects;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;

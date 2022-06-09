@@ -10,8 +10,8 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.emc.emce.EarthMCEssentials;
-import net.emc.emce.object.Colors;
-import net.emc.emce.object.NewsState;
+import net.emc.emce.objects.Colors;
+import net.emc.emce.objects.News.NewsState;
 import net.emc.emce.utils.ModUtils.State;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
@@ -74,11 +74,11 @@ public class ModConfig implements ConfigData {
     }
 
     public static class Nearby {
-        @Comment("Toggles the nearby players overlay on or off.")
+        @Comment("Toggle nearby overlay on or off.")
         public boolean enabled = true;
-        @Comment("Toggles the showing of players ranks before their names.")
+        @Comment("Toggle if players' ranks should show before their name.")
         public boolean showRank = false;
-        @Comment("Toggles the use of preset positions, uses sliders if off.")
+        @Comment("Toggle between a preset or custom position.")
         public boolean presetPositions = true;
 
         @EnumHandler(option = BUTTON)
@@ -106,7 +106,7 @@ public class ModConfig implements ConfigData {
     }
 
     public static class News {
-        @Comment("Toggles news on or off.")
+        @Comment("Toggle news on or off.")
         public boolean enabled = true;
 
         @EnumHandler(option = BUTTON)

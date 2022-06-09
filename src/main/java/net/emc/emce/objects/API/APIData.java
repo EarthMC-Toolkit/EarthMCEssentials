@@ -1,4 +1,4 @@
-package net.emc.emce.object;
+package net.emc.emce.objects.API;
 
 import com.google.gson.JsonObject;
 import net.emc.emce.config.ModConfig;

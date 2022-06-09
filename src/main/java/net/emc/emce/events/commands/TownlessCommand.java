@@ -2,7 +2,7 @@ package net.emc.emce.events.commands;
 
 import com.google.gson.JsonArray;
 import net.emc.emce.EarthMCEssentials;
-import net.emc.emce.object.Translation;
+import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;

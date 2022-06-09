@@ -1,4 +1,4 @@
-package net.emc.emce.object;
+package net.emc.emce.objects;
 
 import com.google.gson.JsonObject;
 

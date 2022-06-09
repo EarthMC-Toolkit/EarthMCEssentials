@@ -1,4 +1,4 @@
-package net.emc.emce.object;
+package net.emc.emce.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
