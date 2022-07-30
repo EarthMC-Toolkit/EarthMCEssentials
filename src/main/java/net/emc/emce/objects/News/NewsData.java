@@ -4,11 +4,14 @@ import com.google.gson.JsonObject;
 
 public class NewsData {
     private final String message;
-    private final int id;
+    private final int id, timestamp;
 
     public NewsData(JsonObject object) {
-        this.message = object == null ? "" : object.get("message").getAsString();
-        this.id = object == null ? 0 : object.get("id").getAsInt();
+        JsonObject elem = object.get("latest") != null ? object.getAsJsonObject() : null;
+        
+        this.message = elem == null ? "" : elem.get("message").getAsString();
+        this.id = elem == null ? 0 : elem.get("id").getAsInt();
+        this.timestamp = elem == null ? 0 : elem.get("timestamp").getAsInt();
     }
 
     public String getMsg() {
@@ -16,5 +19,8 @@ public class NewsData {
     }
     public int getID() {
         return id;
+    }
+    public int getTimestamp() {
+        return timestamp;
     }
 }
