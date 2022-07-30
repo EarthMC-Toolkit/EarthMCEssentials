@@ -10,6 +10,7 @@ import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.ModUtils.State;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -28,7 +29,6 @@ public class OverlayRenderer {
     private static MinecraftClient client;
     private static State townlessState, nearbyState;
     private static List<String> townless = new CopyOnWriteArrayList<>();
-    private static final NewsData news = new NewsData();
     private static int currentNewsID = 0;
     private static ModConfig config;
     private static TextRenderer renderer;
@@ -79,9 +79,10 @@ public class OverlayRenderer {
         if (news.getID() == currentNewsID) return;
         currentNewsID = news.getID();
 
+        TextComponent text = Component.text(news.getMsg(), NamedTextColor.AQUA);
         switch(pos) {
-            case CHAT -> Messaging.send(Component.text(news.getMsg(), NamedTextColor.AQUA));
-            case ACTION_BAR -> Messaging.sendActionBar(Component.text(news.getMsg(), NamedTextColor.AQUA));
+            case CHAT -> Messaging.send(text);
+            case ACTION_BAR -> Messaging.sendActionBar(text);
         }
     }
 

@@ -177,10 +177,8 @@ public class ModUtils {
                 else
                     serverName = serverInfo.address;
             }
-            else if (getInstance().isConnectedToRealms())
-                serverName = "Realms";
-            else if (getInstance().isInSingleplayer())
-                serverName = "Singleplayer";
+            else if (getInstance().isConnectedToRealms()) serverName = "Realms";
+            else if (getInstance().isInSingleplayer()) serverName = "Singleplayer";
             else {
                 ClientPlayNetworkHandler clientPlayNetworkHandler = getInstance().getNetworkHandler();
 

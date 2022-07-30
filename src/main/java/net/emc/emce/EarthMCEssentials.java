@@ -35,7 +35,7 @@ public class EarthMCEssentials implements ModInitializer {
 
     private final List<String> townlessResidents = new CopyOnWriteArrayList<>();
     private JsonArray nearbyPlayers = new JsonArray();
-    private NewsData newsData = new NewsData();
+    private NewsData newsData = new NewsData(null);
 
     public static KeyBinding configKeybinding;
 

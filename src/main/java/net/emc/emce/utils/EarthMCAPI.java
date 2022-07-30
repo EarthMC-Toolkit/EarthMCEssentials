@@ -130,7 +130,7 @@ public class EarthMCAPI {
                 return new NewsData((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.NEWS))));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
-                return new NewsData();
+                return new NewsData(null);
             }
         });
     }
@@ -193,7 +193,7 @@ public class EarthMCAPI {
         }
 
         route = data.getDomain() + route + "/";
-        Messaging.sendDebugMessage("GETTING ROUTE - " + route);
+        Messaging.sendDebugMessage("Requesting endpoint -> " + route);
 
         return route;
     }
@@ -214,12 +214,7 @@ public class EarthMCAPI {
         instance().mapName = map;
 
         JsonObject player = (JsonObject) getOnlinePlayer(clientName()).join();
-        System.out.println("Has name: " + player.has("name"));
-
-        boolean online = player.has("name") && player.get("name").getAsString().equals(clientName());
-
-        System.out.println("Online in " + map + ": " + online);
-        return online;
+        return player.has("name") && player.get("name").getAsString().equals(clientName());
     }
 
     private static String getURL(String urlString) throws APIException {
@@ -234,16 +229,14 @@ public class EarthMCAPI {
             try {
                 response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             } catch (HttpTimeoutException e) {
-                throw new APIException("API did not return any data after 5 seconds for URL '" + urlString + "'.");
+                throw new APIException("Request timed out after 5 seconds.\nEndpoint: " + urlString);
             }
 
             System.out.println(response.body());
             if (response.statusCode() != 200 && response.statusCode() != 304)
-                throw new APIException("API returned response code " + response.statusCode() + " for URL: " + urlString);
+                throw new APIException("API Error! Response code: " + response.statusCode() + "\nEndpoint: " + urlString);
 
             return response.body();
-        } catch (Exception e) {
-            throw new APIException(e.getMessage());
-        }
+        } catch (Exception e) { throw new APIException(e.getMessage()); }
     }
 }

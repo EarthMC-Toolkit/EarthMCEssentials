@@ -20,11 +20,7 @@ public class APIData {
     }
 
     public APIData(JsonObject object) {
-        String dom = object.get("domain").getAsString();
-        String ver = ModConfig.instance().api.version;
-
-        domain = dom + "/api/" + ver + "/";
-
+        domain = object.get("domain").getAsString();
         JsonObject routesObj = object.get("routes").getAsJsonObject();
 
         routes.townless = routesObj.get("townless").getAsString();

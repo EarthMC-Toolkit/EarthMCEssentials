@@ -1,5 +1,5 @@
 {
-  "domain": "https://earthmc-api.herokuapp.com",
+  "domain": "https://emctoolkit.vercel.app/api",
   "routes": {
     "townless": "nova/townlessplayers",
     "allplayers": "nova/allplayers",

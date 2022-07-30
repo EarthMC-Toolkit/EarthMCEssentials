@@ -9,12 +9,10 @@
     "Warriorrr"
   ],
   "contact": {
-    "homepage": "https://github.com/Warriorrrr/EarthMCEssentials",
-    "issues": "https://github.com/Warriorrrr/EarthMCEssentials/issues"
+    "homepage": "https://github.com/EarthMC-Toolkit/EarthMCEssentials",
+    "issues": "https://github.com/EarthMC-Toolkit/EarthMCEssentials/issues"
   },
-
   "icon": "assets/emce/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
