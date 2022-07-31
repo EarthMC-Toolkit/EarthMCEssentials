@@ -43,7 +43,6 @@ public class Messaging {
     public static void sendDebugMessage(String message) {
         if (instance().isDebugModeEnabled()) {
             send(translatable("debug_format", text(message).color(NamedTextColor.GRAY)));
-
             instance().logger().info(message);
         }
     }
@@ -52,6 +51,7 @@ public class Messaging {
         if (instance().isDebugModeEnabled()) {
             sendDebugMessage(message);
             sendDebugMessage(exception.getMessage());
+
             exception.printStackTrace();
         }
     }
