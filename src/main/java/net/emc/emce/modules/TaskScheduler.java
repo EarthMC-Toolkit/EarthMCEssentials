@@ -71,6 +71,7 @@ public class TaskScheduler {
     public void setHasMap(String map) {
         if (map == null) {
             if (!service.isShutdown()) stop();
+
             instance().mapName = "aurora";
             hasMap = false;
         }

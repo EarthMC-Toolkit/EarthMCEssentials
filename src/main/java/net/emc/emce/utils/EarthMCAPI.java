@@ -93,7 +93,7 @@ public class EarthMCAPI {
     public static CompletableFuture<JsonElement> getOnlinePlayer(String playerName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS) + playerName));
+                return JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS) + "/" + playerName));
             } catch (APIException e) {
                 System.out.println(e.getMessage());
                 Messaging.sendDebugMessage(e.getMessage(), e);

@@ -19,8 +19,6 @@ public abstract class SessionEventListenerMixin {
 
     @Inject(at = @At("TAIL"), method="onStartGameSession")
     public void onStartGameSession(CallbackInfo ci) {
-        String clientName = client.player.getName().asString();
-
         instance().sessionCounter++;
         System.out.println("EMCE > Session counter: " + instance().sessionCounter);
     }
