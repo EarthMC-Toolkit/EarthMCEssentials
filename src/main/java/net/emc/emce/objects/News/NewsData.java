@@ -7,7 +7,7 @@ public class NewsData {
     private final int id, timestamp;
 
     public NewsData(JsonObject object) {
-        JsonObject elem = object.get("latest") != null ? object.getAsJsonObject() : null;
+        JsonObject elem = object != null ? object.get("latest").getAsJsonObject() : null;
         
         this.message = elem == null ? "" : elem.get("message").getAsString();
         this.id = elem == null ? 0 : elem.get("id").getAsInt();
