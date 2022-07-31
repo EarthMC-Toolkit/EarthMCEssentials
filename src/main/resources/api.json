@@ -1,5 +1,5 @@
 {
-  "domain": "https://emctoolkit.vercel.app/api",
+  "domain": "https://emctoolkit.vercel.app",
   "routes": {
     "townless": "nova/townlessplayers",
     "allplayers": "nova/allplayers",
