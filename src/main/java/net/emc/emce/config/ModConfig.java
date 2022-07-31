@@ -133,9 +133,6 @@ public class ModConfig implements ConfigData {
     }
 
     public static class API {
-        @Comment("The version of the API to request data from.")
-        public String version = "v1";
-
         @ConfigEntry.Gui.CollapsibleObject
         @Comment("Configure the rate (in seconds) at which different data will be updated.")
         public Intervals intervals = new Intervals();

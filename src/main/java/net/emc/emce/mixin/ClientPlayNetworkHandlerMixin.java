@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.emc.emce.EarthMCEssentials.instance;
-import static net.emc.emce.utils.EarthMCAPI.fetchMaps;
+import static net.emc.emce.utils.EarthMCAPI.fetchEndpoints;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
@@ -26,7 +26,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
         // Joining a map
         if (ModUtils.shouldRender()) {
-            fetchMaps();
+            fetchEndpoints();
             instance().setShouldRender(true);
         }
         else instance().setShouldRender(false);

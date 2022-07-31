@@ -30,8 +30,8 @@ public class EarthMCAPI {
     private static final ModConfig config = ModConfig.instance();
     public static final Pattern urlSchemePattern = Pattern.compile("^[a-z][a-z0-9+\\-.]*://");
 
-    public static APIData auroraData = new APIData();
-    public static APIData novaData = new APIData();
+    public static APIData apiData = new APIData();
+
     public static JsonObject player = new JsonObject();
 
     public static CompletableFuture<JsonArray> getTownless() {
@@ -146,11 +146,11 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<APIData> fetchNova() {
+    public static CompletableFuture<APIData> fetchAPI() {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return new APIData((JsonObject) JsonParser.parseString(
-                    getURL("https://raw.githubusercontent.com/EarthMC-Stats/EarthMCEssentials" +
+                    getURL("https://raw.githubusercontent.com/EarthMC-Toolkit/EarthMCEssentials" +
                            "/main/src/main/resources/api.json")));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
@@ -159,55 +159,37 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<APIData> fetchAurora() {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return new APIData((JsonObject) JsonParser.parseString(
-                        getURL("https://raw.githubusercontent.com/EarthMC-Stats/EarthMCEssentials" +
-                               "/main/src/main/resources/aurora_api.json")));
-            } catch (APIException e) {
-                Messaging.sendDebugMessage(e.getMessage(), e);
-                return new APIData();
-            }
+    public static void fetchEndpoints() {
+        fetchAPI().thenAccept(data -> {
+            apiData = data;
+            instance().scheduler().initMap();
         });
     }
 
     public static String getRoute(APIRoute routeType) {
         String route;
-        APIData data;
-
-        if (instance().mapName.equals("aurora")) data = auroraData;
-        else data = novaData;
 
         switch(routeType) {
-            case TOWNLESS -> route = data.routes.townless;
-            case NATIONS -> route = data.routes.nations;
-            case RESIDENTS -> route = data.routes.residents;
-            case ALL_PLAYERS -> route = data.routes.allPlayers;
-            case ONLINE_PLAYERS -> route = data.routes.onlinePlayers;
-            case TOWNS -> route = data.routes.towns;
-            case ALLIANCES -> route = data.routes.alliances;
-            case NEARBY -> route = data.routes.nearby;
-            case NEWS -> route = data.routes.news;
+            case TOWNLESS -> route = apiData.routes.townless;
+            case NATIONS -> route = apiData.routes.nations;
+            case RESIDENTS -> route = apiData.routes.residents;
+            case ALL_PLAYERS -> route = apiData.routes.allPlayers;
+            case ONLINE_PLAYERS -> route = apiData.routes.onlinePlayers;
+            case TOWNS -> route = apiData.routes.towns;
+            case ALLIANCES -> route = apiData.routes.alliances;
+            case NEARBY -> route = apiData.routes.nearby;
+            case NEWS -> route = apiData.routes.news;
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
 
-        route = data.getDomain() + route + "/";
-        Messaging.sendDebugMessage("Requesting endpoint -> " + route);
+        String endpoint = instance().mapName + route;
+        Messaging.sendDebugMessage("Requesting endpoint -> " + endpoint);
 
-        return route;
+        return apiData.getDomain() + endpoint;
     }
 
     public static String clientName() {
         return MinecraftClient.getInstance().player.getName().asString();
-    }
-
-    public static void fetchMaps() {
-        fetchAurora().thenAccept(data -> auroraData = data);
-        fetchNova().thenAccept(data -> {
-            novaData = data;
-            instance().scheduler().initMap();
-        });
     }
 
     public static boolean playerOnline(String map) {

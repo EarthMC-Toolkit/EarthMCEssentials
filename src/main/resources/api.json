@@ -1,14 +1,14 @@
 {
-  "domain": "https://emctoolkit.vercel.app",
+  "domain": "https://emctoolkit.vercel.app/api/",
   "routes": {
-    "townless": "nova/townlessplayers",
-    "allplayers": "nova/allplayers",
-    "onlineplayers": "nova/onlineplayers",
-    "residents": "nova/residents",
-    "towns": "nova/towns",
-    "nations": "nova/nations",
-    "alliances": "nova/alliances",
-    "news": "nova/news",
-    "nearby": "nova/nearby"
+    "townless": "/townlessplayers",
+    "allplayers": "/allplayers",
+    "onlineplayers": "/onlineplayers",
+    "residents": "/residents",
+    "towns": "/towns",
+    "nations": "/nations",
+    "alliances": "/alliances",
+    "news": "/news",
+    "nearby": "/nearby"
   }
 }
