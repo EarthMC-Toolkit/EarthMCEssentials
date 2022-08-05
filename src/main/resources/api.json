@@ -9,6 +9,6 @@
     "nations": "/nations/",
     "alliances": "/alliances/",
     "news": "/news",
-    "nearby": "/nearby/"
+    "nearby": "/nearby/players/"
   }
 }
