@@ -16,11 +16,11 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
   - Nearby - See anyone whose close to you without checking the dynmap! Configurable options include: radius, rank and distance.
   - News - Sometimes it's hard to keep up with the news. EMCE sends news to your action bar (or chat) as soon as it is reported.
 #### Config screen (F4)
-  - API Intervals - Set the rate at which you want data to be updated
+  - API Intervals - Set the rate at which you want data to be updated.
   - Data - Toggle on/off, screen x/y position, text colors, radius and more.
 
 ## Installation
-1. Download the [latest release](https://github.com/Warriorrrr/EarthMCEssentials/releases/latest)
+1. Download the [latest release](https://github.com/Warriorrrr/EarthMCEssentials/releases/latest).
 2. If you haven't already, download the Fabric Loader and API via [this](https://fabricmc.net/wiki/player:tutorials:install_mcl:windows) guide.
 3. Make sure you also have the correct [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files) for your MC version.
 4. Make sure that you have both EMCE and the Fabric API jars inside `%AppData%/Roaming/.minecraft/mods/` and launch the game!
