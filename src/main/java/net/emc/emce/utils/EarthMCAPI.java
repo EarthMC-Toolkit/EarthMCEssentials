@@ -160,6 +160,8 @@ public class EarthMCAPI {
     }
 
     public static void fetchEndpoints() {
+        Messaging.sendDebugMessage("EMCE > Fetching endpoint URLs");
+
         fetchAPI().thenAccept(data -> {
             apiData = data;
             instance().scheduler().initMap();

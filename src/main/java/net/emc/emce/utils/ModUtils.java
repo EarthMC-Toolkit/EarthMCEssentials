@@ -159,11 +159,9 @@ public class ModUtils {
         return offset;
     }
 
-    public static boolean shouldRender() {
-        return isConnectedToEMC() && instance().sessionCounter > 1;
+    public static boolean isConnectedToEMC() {
+        return serverName.toLowerCase().contains("earthmc.net");
     }
-
-    public static boolean isConnectedToEMC() { return serverName.toLowerCase().contains("earthmc.net"); }
 
     public static @NotNull String getServerName() {
         String serverName = "";
@@ -193,7 +191,9 @@ public class ModUtils {
         return serverName;
     }
 
-    public static void updateServerName() { serverName = getServerName().toLowerCase(); }
+    public static void updateServerName() {
+        serverName = getServerName().toLowerCase();
+    }
 
     public static void setServerName(@NotNull String serverName) {
         ModUtils.serverName = serverName;
