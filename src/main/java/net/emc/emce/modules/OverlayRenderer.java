@@ -16,7 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 
 import java.util.Iterator;
@@ -89,7 +89,7 @@ public class OverlayRenderer {
     private static void RenderTownless(boolean usingPreset) {
         if (usingPreset) {
             Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-            MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
+            MutableText townlessText = new TranslatableTextContent("text_townless_header", townless.size()).formatted(townlessTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
@@ -102,12 +102,12 @@ public class OverlayRenderer {
                 Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
                 if (config.townless.maxLength > 0 && rendered >= config.townless.maxLength) {
-                    MutableText remainingText = new TranslatableText("text_townless_remaining", townless.size() - rendered).formatted(playerTextFormatting);
+                    MutableText remainingText = new TranslatableTextContent("text_townless_remaining", townless.size() - rendered).formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + rendered*10, 16777215);
                     break;
                 }
 
-                MutableText playerName = new TranslatableText(townlessName).formatted(playerTextFormatting);
+                MutableText playerName = new TranslatableTextContent(townlessName).formatted(playerTextFormatting);
                 renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + rendered++*10, 16777215);
             }
         }
@@ -116,7 +116,7 @@ public class OverlayRenderer {
             int townlessPlayerOffset = config.townless.yPos;
 
             Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-            MutableText townlessText = new TranslatableText("text_townless_header", townless.size()).formatted(townlessTextFormatting);
+            MutableText townlessText = new TranslatableTextContent("text_townless_header", townless.size()).formatted(townlessTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
@@ -131,14 +131,14 @@ public class OverlayRenderer {
 
                     if (config.townless.maxLength >= 1) {
                         if (index >= config.townless.maxLength) {
-                            MutableText remainingText = new TranslatableText("text_townless_remaining",townless.size()-index).formatted(playerTextFormatting);
+                            MutableText remainingText = new TranslatableTextContent("text_townless_remaining",townless.size()-index).formatted(playerTextFormatting);
                             renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
                             break;
                         }
                         index++;
                     }
 
-                    MutableText playerName = new TranslatableText(name).formatted(playerTextFormatting);
+                    MutableText playerName = new TranslatableTextContent(name).formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
 
                     // Add offset for the next player.
@@ -151,7 +151,7 @@ public class OverlayRenderer {
     private static void RenderNearby(boolean usingPreset) {
         if (usingPreset) {
             Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-            MutableText nearbyText = new TranslatableText("text_nearby_header", nearby().size()).formatted(nearbyTextFormatting);
+            MutableText nearbyText = new TranslatableTextContent("text_nearby_header", nearby().size()).formatted(nearbyTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);
@@ -180,7 +180,7 @@ public class OverlayRenderer {
                     }
 
                     Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
-                    MutableText playerText = new TranslatableText(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
+                    MutableText playerText = new TranslatableTextContent(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
 
                     renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, 16777215);
                 }
@@ -191,7 +191,7 @@ public class OverlayRenderer {
             int nearbyPlayerOffset = config.nearby.yPos;
 
             Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-            MutableText nearbyText = new TranslatableText("text_nearby_header", nearby().size()).formatted(nearbyTextFormatting);
+            MutableText nearbyText = new TranslatableTextContent("text_nearby_header", nearby().size()).formatted(nearbyTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
@@ -220,7 +220,7 @@ public class OverlayRenderer {
                     }
 
                     Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
-                    MutableText playerText = new TranslatableText(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
+                    MutableText playerText = new TranslatableTextContent(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
 
                     renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
 
@@ -235,8 +235,8 @@ public class OverlayRenderer {
         // No advanced positioning, use preset states.
         int townlessLongest, nearbyLongest;
 
-        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby().size())));
+        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableTextContent("text_townless_header", townless.size())));
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableTextContent("text_nearby_header", nearby().size())));
 
         switch (townlessState) {
             case TOP_MIDDLE -> {
@@ -277,8 +277,8 @@ public class OverlayRenderer {
     private static void UpdateNearbyState() {
         int nearbyLongest, townlessLongest;
 
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableText("text_nearby_header", nearby().size())));
-        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableText("text_townless_header", townless.size())));
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableTextContent("text_nearby_header", nearby().size())));
+        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableTextContent("text_townless_header", townless.size())));
 
         switch (nearbyState) {
             case TOP_MIDDLE -> {

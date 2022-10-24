@@ -66,7 +66,7 @@ public class EarthMCAPI {
 
                     for (int i = 0; i < array.size(); i++) {
                         JsonObject currentObj = (JsonObject) array.get(i);
-                        if (currentObj.get("name").getAsString().equals(client.player.getName().asString()))
+                        if (currentObj.get("name").getAsString().equals(client.player.getName().getContent()))
                             array.remove(i);
                     }
                     return array;
@@ -191,7 +191,7 @@ public class EarthMCAPI {
     }
 
     public static String clientName() {
-        return MinecraftClient.getInstance().player.getName().asString();
+        return MinecraftClient.getInstance().player.getName().getContent();
     }
 
     public static boolean playerOnline(String map) {

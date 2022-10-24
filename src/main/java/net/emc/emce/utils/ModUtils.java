@@ -6,7 +6,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
@@ -138,7 +138,7 @@ public class ModUtils {
                 else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
             }
 
-            MutableText nearbyText = new TranslatableText(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
+            MutableText nearbyText = new TranslatableTextContent(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
 
