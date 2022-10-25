@@ -6,7 +6,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.utils.Messaging;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.fabric.FabricClientAudiences;
 import net.kyori.adventure.text.Component;
@@ -21,25 +22,26 @@ import java.util.Locale;
 public record AllianceCommand(EarthMCEssentials instance) {
 
     public void register() {
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("alliance").then(
-                ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
-                    String allianceName = StringArgumentType.getString(c, "allianceName");
-                    NamedTextColor colour = instance.getConfig().commands.allianceInfoTextColour.named();
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher.register(ClientCommandManager.literal("alliance").then(
+                    ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
+                        String allianceName = StringArgumentType.getString(c, "allianceName");
+                        NamedTextColor colour = instance.getConfig().commands.allianceInfoTextColour.named();
 
-                    // Implement data cache
-                    AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
-                        JsonObject allianceObject = alliances.get(allianceName.toLowerCase(Locale.ROOT));
+                        // Implement data cache
+                        AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
+                            JsonObject allianceObject = alliances.get(allianceName.toLowerCase(Locale.ROOT));
 
-                        if (allianceObject == null) {
-                            Component arg = Component.text(allianceName).color(colour);
-                            Messaging.send(Messaging.create("text_alliance_err", NamedTextColor.RED, arg));
-                        }
-                        else sendAllianceInfo(allianceObject, colour);
-                    });
+                            if (allianceObject == null) {
+                                Component arg = Component.text(allianceName).color(colour);
+                                Messaging.send(Messaging.create("text_alliance_err", NamedTextColor.RED, arg));
+                            } else sendAllianceInfo(allianceObject, colour);
+                        });
 
-                    return 1;
-                })
-        ));
+                        return 1;
+                    })
+            ));
+        });
     }
 
     private void sendAllianceInfo(JsonObject allianceObj, NamedTextColor colour) {

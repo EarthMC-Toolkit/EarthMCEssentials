@@ -8,8 +8,7 @@ import net.emc.emce.caches.TownDataCache;
 import net.emc.emce.objects.Resident;
 import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.Messaging;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.*;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.fabric.FabricClientAudiences;
 import net.kyori.adventure.text.Component;
@@ -26,54 +25,58 @@ public record InfoCommands(EarthMCEssentials instance) {
     }
 
     public void registerTownInfoCommand() {
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("towninfo").then(
-                ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
-                    String townName = StringArgumentType.getString(c, "townName");
-                    trySendTown(townName);
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher.register(ClientCommandManager.literal("towninfo").then(
+                    ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
+                        String townName = StringArgumentType.getString(c, "townName");
+                        trySendTown(townName);
+                        return 1;
+                    })
+            ).executes(c -> {
+                FabricClientCommandSource source = c.getSource();
+                Resident clientResident = instance.getClientResident();
+
+                if (clientResident == null) {
+                    Messaging.send(Translation.of("text_shared_notregistered", MinecraftClient.getInstance().player.getName()));
                     return 1;
-                })
-        ).executes(c -> {
-            FabricClientCommandSource source = c.getSource();
-            Resident clientResident = instance.getClientResident();
+                }
 
-            if (clientResident == null) {
-                Messaging.send(Translation.of("text_shared_notregistered", MinecraftClient.getInstance().player.getName()));
+                String townName = clientResident.getTown();
+                if (townName.equals("") || townName.equals("No Town"))
+                    Messaging.send(Translation.of("text_towninfo_not_registered"));
+                else trySendTown(townName);
+
                 return 1;
-            }
-
-            String townName = clientResident.getTown();
-            if (townName.equals("") || townName.equals("No Town"))
-                Messaging.send(Translation.of("text_towninfo_not_registered"));
-            else trySendTown(townName);
-
-            return 1;
-        }));
+            }));
+        });
     }
 
     public void registerNationInfoCommand() {
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("nationinfo").then(
-                ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
-                    String nationName = StringArgumentType.getString(c, "nationName");
-                    trySendNation(nationName);
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher.register(ClientCommandManager.literal("nationinfo").then(
+                    ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
+                        String nationName = StringArgumentType.getString(c, "nationName");
+                        trySendNation(nationName);
 
+                        return 1;
+                    })
+            ).executes(c -> {
+                FabricClientCommandSource source = c.getSource();
+                Resident clientResident = instance.getClientResident();
+
+                if (clientResident == null) {
+                    Messaging.sendPrefixed(Translation.of("text_shared_notregistered", MinecraftClient.getInstance().player.getName()));
                     return 1;
-                })
-        ).executes(c -> {
-            FabricClientCommandSource source = c.getSource();
-            Resident clientResident = instance.getClientResident();
+                }
 
-            if (clientResident == null) {
-                Messaging.sendPrefixed(Translation.of("text_shared_notregistered", MinecraftClient.getInstance().player.getName()));
+                String nationName = clientResident.getNation();
+                if (nationName.equals("") || nationName.equals("No Nation"))
+                    Messaging.sendPrefixed(Translation.of("text_nationinfo_not_registered"));
+                else trySendNation(nationName);
+
                 return 1;
-            }
-
-            String nationName = clientResident.getNation();
-            if (nationName.equals("") || nationName.equals("No Nation"))
-                Messaging.sendPrefixed(Translation.of("text_nationinfo_not_registered"));
-            else trySendNation(nationName);
-
-            return 1;
-        }));
+            }));
+        });
     }
 
     private void trySendTown(String townName) {
