@@ -2,11 +2,13 @@ package net.emc.emce.events.commands;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.utils.Messaging;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.fabric.FabricClientAudiences;
 import net.kyori.adventure.text.Component;
@@ -20,8 +22,8 @@ import java.util.Locale;
 
 public record AllianceCommand(EarthMCEssentials instance) {
 
-    public void register() {
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("alliance").then(
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        dispatcher.register(ClientCommandManager.literal("alliance").then(
                 ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
                     String allianceName = StringArgumentType.getString(c, "allianceName");
                     NamedTextColor colour = instance.getConfig().commands.allianceInfoTextColour.named();

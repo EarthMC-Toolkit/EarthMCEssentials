@@ -1,6 +1,7 @@
 package net.emc.emce.events.commands;
 
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.NationDataCache;
@@ -8,8 +9,8 @@ import net.emc.emce.caches.TownDataCache;
 import net.emc.emce.objects.Resident;
 import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.Messaging;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.fabric.FabricClientAudiences;
 import net.kyori.adventure.text.Component;
@@ -19,14 +20,13 @@ import net.minecraft.client.MinecraftClient;
 import java.util.Locale;
 
 public record InfoCommands(EarthMCEssentials instance) {
-
-    public void register() {
-        registerTownInfoCommand();
-        registerNationInfoCommand();
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        registerTownInfoCommand(dispatcher);
+        registerNationInfoCommand(dispatcher);
     }
 
-    public void registerTownInfoCommand() {
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("towninfo").then(
+    public void registerTownInfoCommand(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        dispatcher.register(ClientCommandManager.literal("towninfo").then(
                 ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
                     String townName = StringArgumentType.getString(c, "townName");
                     trySendTown(townName);
@@ -50,8 +50,8 @@ public record InfoCommands(EarthMCEssentials instance) {
         }));
     }
 
-    public void registerNationInfoCommand() {
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("nationinfo").then(
+    public void registerNationInfoCommand(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        dispatcher.register(ClientCommandManager.literal("nationinfo").then(
                 ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
                     String nationName = StringArgumentType.getString(c, "nationName");
                     trySendNation(nationName);

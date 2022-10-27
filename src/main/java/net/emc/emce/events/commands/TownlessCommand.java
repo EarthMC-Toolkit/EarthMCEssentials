@@ -1,20 +1,22 @@
 package net.emc.emce.events.commands;
 
 import com.google.gson.JsonArray;
+import com.mojang.brigadier.CommandDispatcher;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 
 public record TownlessCommand(EarthMCEssentials instance) {
 
-    public void register() {
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("townless").executes(c -> {
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        dispatcher.register(ClientCommandManager.literal("townless").executes(c -> {
             NamedTextColor color = instance.getConfig().commands.townlessTextColour.named();
 
             Messaging.send(Messaging.create("text_townless_header", color, instance.getTownless().size()));

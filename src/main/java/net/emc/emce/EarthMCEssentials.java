@@ -2,6 +2,7 @@ package net.emc.emce;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.mojang.brigadier.CommandDispatcher;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.emc.emce.config.ModConfig;
@@ -11,7 +12,10 @@ import net.emc.emce.modules.TaskScheduler;
 import net.emc.emce.objects.News.NewsData;
 import net.emc.emce.objects.Resident;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -53,7 +57,8 @@ public class EarthMCEssentials implements ModInitializer {
                 InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
         EventRegistry.RegisterClientTick();
-        EventRegistry.RegisterCommands(this);
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> EventRegistry.RegisterCommands(this, dispatcher)
+        );
     }
 
     public Resident getClientResident() {

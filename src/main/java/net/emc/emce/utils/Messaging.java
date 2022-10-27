@@ -37,7 +37,7 @@ public class Messaging {
     }
 
     public static void performCommand(String command) {
-        MinecraftClient.getInstance().player.sendChatMessage(command.startsWith("/") ? command : "/" + command);
+        MinecraftClient.getInstance().player.sendChatMessage(command.startsWith("/") ? command : "/" + command, null);
     }
 
     public static void sendDebugMessage(String message) {

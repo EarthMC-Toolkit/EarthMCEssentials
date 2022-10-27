@@ -3,19 +3,21 @@ package net.emc.emce.events.commands;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.CommandDispatcher;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 
 public record NearbyCommand(EarthMCEssentials instance) {
 
-    public void register() {
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("nearby").executes(c -> {
+    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        dispatcher.register(ClientCommandManager.literal("nearby").executes(c -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player == null)
                 return -1;
