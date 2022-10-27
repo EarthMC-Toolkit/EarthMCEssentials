@@ -138,7 +138,7 @@ public class ModUtils {
                 else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
             }
 
-            MutableText nearbyText = new TranslatableTextContent(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
+            MutableText nearbyText = MutableText.of(new TranslatableTextContent(prefix + currentObj.get("name").getAsString() + ": " + distance + "m"));
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
 

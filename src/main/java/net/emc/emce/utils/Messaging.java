@@ -1,9 +1,10 @@
 package net.emc.emce.utils;
 
-import net.emc.emce.EarthMCEssentials;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,9 +36,8 @@ public class Messaging {
     public static void sendPrefixedActionBar(Component text) {
        of().audience().sendActionBar(empty().append(prefix()).append(text));
     }
-
     public static void performCommand(String command) {
-        MinecraftClient.getInstance().player.sendChatMessage(command.startsWith("/") ? command : "/" + command);
+        MinecraftClient.getInstance().player.sendChatMessage(command.startsWith("/") ? command : "/" + command, Text.empty());
     }
 
     public static void sendDebugMessage(String message) {

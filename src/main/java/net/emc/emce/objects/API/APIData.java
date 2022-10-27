@@ -1,7 +1,5 @@
 package net.emc.emce.objects.API;
-
 import com.google.gson.JsonObject;
-import net.emc.emce.config.ModConfig;
 
 public class APIData {
     private final String domain;

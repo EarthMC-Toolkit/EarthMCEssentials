@@ -56,7 +56,7 @@ public class EarthMCAPI {
                 ClientPlayerEntity player = client.player;
 
                 if (player != null) {
-                    if (!player.getEntityWorld().getDimension().isBedWorking())
+                    if (!player.getEntityWorld().getDimension().bedWorks())
                         return new JsonArray();
 
                     JsonArray array = (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NEARBY) +
@@ -191,7 +191,7 @@ public class EarthMCAPI {
     }
 
     public static String clientName() {
-        return MinecraftClient.getInstance().player.getName().getContent();
+        return MinecraftClient.getInstance().player.getName().getString();
     }
 
     public static boolean playerOnline(String map) {
