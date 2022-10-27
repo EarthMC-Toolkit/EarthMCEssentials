@@ -5,9 +5,9 @@
     "allplayers": "/allplayers",
     "onlineplayers": "/onlineplayers",
     "residents": "/residents/",
-    "towns": "/towns/",
-    "nations": "/nations/",
-    "alliances": "/alliances/",
+    "towns": "/towns",
+    "nations": "/nations",
+    "alliances": "/alliances",
     "news": "/news",
     "nearby": "/nearby/players/"
   }
