@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.emc.emce.EarthMCEssentials.instance;
 import static net.emc.emce.utils.EarthMCAPI.fetchEndpoints;
+import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
@@ -25,8 +26,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
 
-        // Joining EMC
-        if (ModUtils.isConnectedToEMC()) {
+        if (isConnectedToEMC()) {
             fetchEndpoints();
             instance().setShouldRender(true);
         }

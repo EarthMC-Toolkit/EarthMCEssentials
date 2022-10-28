@@ -7,6 +7,7 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,7 +64,7 @@ public class ModUtils {
     }
 
     public static int getStringWidth(String string) { return getInstance().textRenderer.getWidth(string); }
-    public static int getTextWidth(TranslatableTextContent text) { return getInstance().textRenderer.getWidth((StringVisitable) text); }
+    public static int getTextWidth(MutableText text) { return getInstance().textRenderer.getWidth(text); }
     public static int getStringHeight(String string) { return getInstance().textRenderer.getWrappedLinesHeight(string, 1000); }
 
     public static int getWindowWidth() { return getInstance().getWindow().getScaledWidth(); }
@@ -139,7 +140,7 @@ public class ModUtils {
                 else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
             }
 
-            TranslatableTextContent nearbyText = new TranslatableTextContent(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
+            MutableText nearbyText = Text.translatable(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
 

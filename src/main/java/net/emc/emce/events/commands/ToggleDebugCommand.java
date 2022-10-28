@@ -13,12 +13,12 @@ public class ToggleDebugCommand {
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(
             ClientCommandManager.literal("toggledebug").executes(c -> {
-                if (instance().isDebugModeEnabled()) {
+                if (instance().debugEnabled()) {
                     Messaging.send(Translation.of("msg_debug_disabled"));
-                    instance().setDebugModeEnabled(false);
+                    instance().setDebugEnabled(false);
                 } else {
                     Messaging.send(Translation.of("msg_debug_enabled"));
-                    instance().setDebugModeEnabled(true);
+                    instance().setDebugEnabled(true);
                 }
 
                 return 1;

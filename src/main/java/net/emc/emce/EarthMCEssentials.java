@@ -2,7 +2,6 @@ package net.emc.emce;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.mojang.brigadier.CommandDispatcher;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.emc.emce.config.ModConfig;
@@ -15,7 +14,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -57,8 +55,22 @@ public class EarthMCEssentials implements ModInitializer {
                 InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
         EventRegistry.RegisterClientTick();
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> EventRegistry.RegisterCommands(this, dispatcher)
-        );
+
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            EventRegistry.RegisterCommands(this, dispatcher);
+        });
+    }
+
+    public static EarthMCEssentials instance() {
+        return instance;
+    }
+
+    public Logger logger() {
+        return logger;
+    }
+
+    public TaskScheduler scheduler() {
+        return scheduler;
     }
 
     public Resident getClientResident() {
@@ -83,7 +95,11 @@ public class EarthMCEssentials implements ModInitializer {
         return shouldRender;
     }
 
-    public boolean isDebugModeEnabled() {
+    public void setDebugEnabled(boolean debugModeEnabled) {
+        this.debugModeEnabled = debugModeEnabled;
+    }
+
+    public boolean debugEnabled() {
         return debugModeEnabled;
     }
 
@@ -95,8 +111,9 @@ public class EarthMCEssentials implements ModInitializer {
         return nearbyPlayers;
     }
 
-    public void setDebugModeEnabled(boolean debugModeEnabled) {
-        this.debugModeEnabled = debugModeEnabled;
+    public void setNearbyPlayers(JsonArray nearbyPlayers) {
+        this.nearbyPlayers = nearbyPlayers;
+        OverlayRenderer.UpdateStates(false, true);
     }
 
     public void setShouldRender(boolean shouldRender) {
@@ -108,10 +125,6 @@ public class EarthMCEssentials implements ModInitializer {
         OverlayRenderer.sendNews(config.news.position, nd);
     }
 
-    public void setNearbyPlayers(JsonArray nearbyPlayers) {
-        this.nearbyPlayers = nearbyPlayers;
-        OverlayRenderer.UpdateStates(false, true);
-    }
 
     public void setTownlessResidents(@NotNull JsonArray array) {
         // Make sure there is data to add.
@@ -125,17 +138,5 @@ public class EarthMCEssentials implements ModInitializer {
 
         OverlayRenderer.SetTownless(townlessResidents);
         OverlayRenderer.UpdateStates(true, false);
-    }
-
-    public Logger logger() {
-        return logger;
-    }
-
-    public TaskScheduler scheduler() {
-        return scheduler;
-    }
-
-    public static EarthMCEssentials instance() {
-        return instance;
     }
 }

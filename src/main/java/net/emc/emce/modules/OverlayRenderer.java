@@ -234,8 +234,11 @@ public class OverlayRenderer {
         // No advanced positioning, use preset states.
         int townlessLongest, nearbyLongest;
 
-        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableTextContent("text_townless_header", townless.size())));
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableTextContent("text_nearby_header", nearby().size())));
+        townlessLongest = Math.max(ModUtils.getLongestElement(townless),
+                ModUtils.getTextWidth(Text.translatable("text_townless_header", townless.size())));
+
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()),
+                ModUtils.getTextWidth(Text.translatable("text_nearby_header", nearby().size())));
 
         switch (townlessState) {
             case TOP_MIDDLE -> {
@@ -276,8 +279,11 @@ public class OverlayRenderer {
     private static void UpdateNearbyState() {
         int nearbyLongest, townlessLongest;
 
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()), ModUtils.getTextWidth(new TranslatableTextContent("text_nearby_header", nearby().size())));
-        townlessLongest = Math.max(ModUtils.getLongestElement(townless), ModUtils.getTextWidth(new TranslatableTextContent("text_townless_header", townless.size())));
+        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()),
+                ModUtils.getTextWidth(Text.translatable("text_nearby_header", nearby().size())));
+
+        townlessLongest = Math.max(ModUtils.getLongestElement(townless),
+                ModUtils.getTextWidth(Text.translatable("text_townless_header", townless.size())));
 
         switch (nearbyState) {
             case TOP_MIDDLE -> {

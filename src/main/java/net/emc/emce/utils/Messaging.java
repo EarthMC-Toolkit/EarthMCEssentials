@@ -41,14 +41,14 @@ public class Messaging {
     }
 
     public static void sendDebugMessage(String message) {
-        if (instance().isDebugModeEnabled()) {
+        if (instance().debugEnabled()) {
             send(translatable("debug_format", text(message).color(NamedTextColor.GRAY)));
             instance().logger().info(message);
         }
     }
 
     public static void sendDebugMessage(String message, Exception exception) {
-        if (instance().isDebugModeEnabled()) {
+        if (instance().debugEnabled()) {
             sendDebugMessage(message);
             sendDebugMessage(exception.getMessage());
 

@@ -59,13 +59,13 @@ public class TaskScheduler {
 
     public void initMap() {
         service = Executors.newScheduledThreadPool(2);
-        service.scheduleAtFixedRate(() -> {
+        service.schedule(() -> {
             if (hasMap) return;
 
             if (playerOnline("aurora")) setHasMap("aurora");
             else if (playerOnline("nova")) setHasMap("nova");
             else setHasMap(null);
-        }, 5, 10, TimeUnit.SECONDS);
+        }, 5, TimeUnit.SECONDS);
     }
 
     public void setHasMap(String map) {
