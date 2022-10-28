@@ -65,7 +65,7 @@ public class TaskScheduler {
             if (playerOnline("aurora")) setHasMap("aurora");
             else if (playerOnline("nova")) setHasMap("nova");
             else setHasMap(null);
-        }, 5, TimeUnit.SECONDS);
+        }, 6, TimeUnit.SECONDS); // Give enough time for dynmap to update players.
     }
 
     public void setHasMap(String map) {

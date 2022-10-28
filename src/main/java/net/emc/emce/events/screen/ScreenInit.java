@@ -11,17 +11,27 @@ public class ScreenInit {
     private static boolean configOpen = false;
 
     public ScreenInit() {
-        ScreenEvents.BEFORE_INIT.register((client, newScreen, scaledWidth, scaledHeight) ->
-                OverlayRenderer.UpdateStates(true, true));
-
-        ScreenEvents.AFTER_INIT.register(ScreenInit::afterInit);
+        ScreenEvents.BEFORE_INIT.register(ScreenInit::before);
+        ScreenEvents.AFTER_INIT.register(ScreenInit::after);
     }
 
-    public boolean configOpen() { return configOpen; }
-    public static void setConfigOpen(boolean value) { configOpen = value; }
-    private static void Refresh(Screen screen) { OverlayRenderer.Init(); }
+    public boolean configOpen() {
+        return configOpen;
+    }
 
-    private static void afterInit(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
+    public static void setConfigOpen(boolean value) {
+        configOpen = value;
+    }
+
+    private static void Refresh(Screen screen) {
+        OverlayRenderer.Init();
+    }
+
+    private static void before(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
+        OverlayRenderer.UpdateStates(true, true);
+    }
+
+    private static void after(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
         if (newScreen instanceof ClothConfigScreen) {
             ScreenExtensions configSE = ScreenExtensions.getExtensions(newScreen);
             configSE.fabric_getRemoveEvent().register(ScreenInit::Refresh);

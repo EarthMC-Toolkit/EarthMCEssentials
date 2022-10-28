@@ -14,10 +14,10 @@ public class ToggleDebugCommand {
         dispatcher.register(
             ClientCommandManager.literal("toggledebug").executes(c -> {
                 if (instance().debugEnabled()) {
-                    Messaging.send(Translation.of("msg_debug_disabled"));
+                    Messaging.sendPrefixed(Translation.of("msg_debug_disabled"));
                     instance().setDebugEnabled(false);
                 } else {
-                    Messaging.send(Translation.of("msg_debug_enabled"));
+                    Messaging.sendPrefixed(Translation.of("msg_debug_enabled"));
                     instance().setDebugEnabled(true);
                 }
 

@@ -33,18 +33,15 @@ public record InfoCommands(EarthMCEssentials instance) {
                     return 1;
                 })
         ).executes(c -> {
-            //FabricClientCommandSource source = c.getSource();
             Resident clientResident = instance.getClientResident();
 
-            if (clientResident == null) {
-                Messaging.send(Translation.of("text_shared_notregistered", MinecraftClient.getInstance().player.getName()));
-                return 1;
-            }
+            if (residentExists(clientResident)) {
+                String townName = clientResident.getTown();
 
-            String townName = clientResident.getTown();
-            if (townName.equals("") || townName.equals("No Town"))
-                Messaging.send(Translation.of("text_towninfo_not_registered"));
-            else trySendTown(townName);
+                if (townName.equals("") || townName.equals("No Town"))
+                    Messaging.sendPrefixed(Translation.of("text_towninfo_not_registered"));
+                else trySendTown(townName);
+            }
 
             return 1;
         }));
@@ -59,21 +56,29 @@ public record InfoCommands(EarthMCEssentials instance) {
                     return 1;
                 })
         ).executes(c -> {
-            //FabricClientCommandSource source = c.getSource();
             Resident clientResident = instance.getClientResident();
 
-            if (clientResident == null) {
-                Messaging.sendPrefixed(Translation.of("text_shared_notregistered", MinecraftClient.getInstance().player.getName()));
-                return 1;
-            }
+            if (residentExists(clientResident)) {
+                String nationName = clientResident.getNation();
 
-            String nationName = clientResident.getNation();
-            if (nationName.equals("") || nationName.equals("No Nation"))
-                Messaging.sendPrefixed(Translation.of("text_nationinfo_not_registered"));
-            else trySendNation(nationName);
+                if (nationName.equals("") || nationName.equals("No Nation"))
+                    Messaging.sendPrefixed(Translation.of("text_nationinfo_not_registered"));
+                else trySendNation(nationName);
+            }
 
             return 1;
         }));
+    }
+
+    private boolean residentExists(Resident res) {
+        if (res == null) {
+            Messaging.send(Translation.of("text_shared_notregistered",
+                    MinecraftClient.getInstance().player.getName().getString()));
+
+            return false;
+        }
+
+        return true;
     }
 
     private void trySendTown(String townName) {

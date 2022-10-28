@@ -56,9 +56,8 @@ public class EarthMCEssentials implements ModInitializer {
 
         EventRegistry.RegisterClientTick();
 
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            EventRegistry.RegisterCommands(this, dispatcher);
-        });
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+                EventRegistry.RegisterCommands(this, dispatcher));
     }
 
     public static EarthMCEssentials instance() {

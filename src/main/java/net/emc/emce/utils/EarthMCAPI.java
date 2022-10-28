@@ -20,6 +20,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -82,7 +83,7 @@ public class EarthMCAPI {
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new Resident((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.RESIDENTS) + residentName)));
+                return new Resident((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.RESIDENTS) + "/" + residentName)));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
@@ -216,8 +217,10 @@ public class EarthMCAPI {
                 throw new APIException("Request timed out after 5 seconds.\nEndpoint: " + urlString);
             }
 
-            System.out.println(response.body());
-            if (response.statusCode() != 200 && response.statusCode() != 304)
+            System.out.println("EMCE > " + response.body());
+
+            List<Integer> codes = List.of(new Integer[]{ 200, 203, 304 });
+            if (!codes.contains(response.statusCode()))
                 throw new APIException("API Error! Response code: " + response.statusCode() + "\nEndpoint: " + urlString);
 
             return response.body();
