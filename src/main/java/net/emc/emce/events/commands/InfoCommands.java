@@ -33,7 +33,7 @@ public record InfoCommands(EarthMCEssentials instance) {
                     return 1;
                 })
         ).executes(c -> {
-            FabricClientCommandSource source = c.getSource();
+            //FabricClientCommandSource source = c.getSource();
             Resident clientResident = instance.getClientResident();
 
             if (clientResident == null) {
@@ -59,7 +59,7 @@ public record InfoCommands(EarthMCEssentials instance) {
                     return 1;
                 })
         ).executes(c -> {
-            FabricClientCommandSource source = c.getSource();
+            //FabricClientCommandSource source = c.getSource();
             Resident clientResident = instance.getClientResident();
 
             if (clientResident == null) {

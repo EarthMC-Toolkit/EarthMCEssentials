@@ -33,11 +33,11 @@ public record TownlessCommand(EarthMCEssentials instance) {
                 StringBuilder townlessString = new StringBuilder();
 
                 for (String townlessPlayer : instance.getTownless()) {
-                    if (("/towny:town invite " + townlessString + " " + townlessPlayer).length() > 256) break;
+                    if (("towny:town invite " + townlessString + " " + townlessPlayer).length() > 256) break;
                     else townlessString.append(townlessPlayer).append(" ");
                 }
 
-                Messaging.performCommand("/towny:town invite " + townlessString);
+                Messaging.performCommand("towny:town invite " + townlessString);
                 Messaging.sendPrefixed(Messaging.create("msg_townless_sent", townlessTextColour,
                         Component.text(instance.getTownless().size()).color(NamedTextColor.WHITE)));
             }
@@ -52,11 +52,11 @@ public record TownlessCommand(EarthMCEssentials instance) {
                 StringBuilder townlessString = new StringBuilder();
 
                 for (String townlessPlayer : instance.getTownless()) {
-                    if (("/towny:town invite -" + townlessString + " " + townlessPlayer).length() > 256) break;
+                    if (("towny:town invite -" + townlessString + " " + townlessPlayer).length() > 256) break;
                     else townlessString.append("-").append(townlessPlayer).append(" ");
                 }
 
-                Messaging.performCommand("/towny:town invite " + townlessString);
+                Messaging.performCommand("towny:town invite " + townlessString);
                 Messaging.sendPrefixed(Messaging.create("msg_townless_revoked", townlessTextColour,
                         Component.text(instance.getTownless().size()).color(NamedTextColor.WHITE)));
             }
