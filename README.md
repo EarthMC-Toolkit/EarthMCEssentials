@@ -7,9 +7,9 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
 
 ## Features
 #### Commands
-  - `/nationinfo` or `/towninfo` - Displays info on the specified nation or town with extra info compared to the regular `/nation` or `/town` commands.
+  - `/nationinfo` or `/towninfo` - Displays info on the specified nation or town with extra info compared to the regular `/nation` or `/town` commands provided by Towny.
   - `/alliance <name>` - Displays info on the specified alliance.
-  - `/townless inviteAll/revokeAll` - Automatically invite/revoke all players from your town!
+  - `/townless inviteAll/revokeAll` - Automatically invite/revoke all townless players to/from your town!
   - `/nether <x> <z>` - Quickly convert overworld coordinates into their nether counterpart.
 #### On-Screen Info
   - Townless - All online townless players are shown on your screen.
