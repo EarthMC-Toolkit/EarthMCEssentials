@@ -96,7 +96,7 @@ public class EarthMCAPI {
             try {
                 return JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS) + "/" + playerName));
             } catch (APIException e) {
-                System.out.println(e.getMessage());
+                //System.out.println(e.getMessage());
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonObject();
             }
@@ -161,7 +161,7 @@ public class EarthMCAPI {
     }
 
     public static void fetchEndpoints() {
-        Messaging.sendDebugMessage("EMCE > Fetching endpoint URLs");
+        Messaging.sendDebugMessage("Fetching endpoint URLs");
 
         fetchAPI().thenAccept(data -> {
             apiData = data;
@@ -217,7 +217,7 @@ public class EarthMCAPI {
                 throw new APIException("Request timed out after 5 seconds.\nEndpoint: " + urlString);
             }
 
-            System.out.println("EMCE > " + response.body());
+            //System.out.println("EMCE > " + response.body());
 
             List<Integer> codes = List.of(new Integer[]{ 200, 203, 304 });
             if (!codes.contains(response.statusCode()))

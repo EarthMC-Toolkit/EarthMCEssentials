@@ -56,5 +56,7 @@ public class Messaging {
         }
     }
 
-    private static Component prefix() { return translatable("mod_prefix"); }
+    private static Component prefix() {
+        return translatable("mod_prefix");
+    }
 }

@@ -1,6 +1,6 @@
 {
     "mod_prefix": "§6EMCE §7> ",
-    "debug_format": "§6[§bDEBUG§6] §7%s",
+    "debug_format": "§6[§bDEBUG§6] §6EMCE §7> §7%s",
 
     "text_townless_header": "Townless Players [%d]",
     "text_townless_remaining": "And %d more...",
