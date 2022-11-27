@@ -37,7 +37,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         ModUtils.updateServerName();
         OverlayRenderer.Init();
 
-        EventRegistry.RegisterScreen();
+        //EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
 
         if (isConnectedToEMC()) {

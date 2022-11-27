@@ -15,7 +15,7 @@ public class ScreenInit {
         ScreenEvents.AFTER_INIT.register(ScreenInit::after);
     }
 
-    public boolean configOpen() {
+    public static boolean configOpen() {
         return configOpen;
     }
 

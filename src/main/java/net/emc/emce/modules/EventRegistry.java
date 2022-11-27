@@ -22,13 +22,11 @@ public class EventRegistry {
         new AllianceCommand(instance).register(dispatcher);
     }
 
-    public static void RegisterScreen() {
-        final ScreenInit screenInit = new ScreenInit();
-    }
-
     public static void RegisterClientTick() {
         // Every tick, see if we are pressing F4.
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (ScreenInit.configOpen()) return;
+
             if (EarthMCEssentials.configKeybinding.wasPressed()) {
                 Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
                 client.setScreen(configScreen);
