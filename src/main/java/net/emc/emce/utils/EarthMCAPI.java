@@ -60,7 +60,7 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().bedWorks())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NEARBY) + "/" +
+                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NEARBY) +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
@@ -96,7 +96,6 @@ public class EarthMCAPI {
             try {
                 return JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS) + "/" + playerName));
             } catch (APIException e) {
-                //System.out.println(e.getMessage());
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonObject();
             }
@@ -165,7 +164,9 @@ public class EarthMCAPI {
 
         fetchAPI().thenAccept(data -> {
             apiData = data;
-            instance().scheduler().initMap();
+
+            if (instance().sessionCounter > 1)
+                instance().scheduler().initMap();
         });
     }
 

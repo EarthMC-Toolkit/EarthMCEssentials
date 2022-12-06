@@ -1,5 +1,6 @@
 package net.emc.emce.modules;
 
+import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.caches.Cache;
 import net.emc.emce.caches.NationDataCache;
@@ -36,10 +37,10 @@ public class TaskScheduler {
         // Pre-fill data.
         if (config.general.enableMod) {
             if (config.townless.enabled)
-                EarthMCAPI.getTownless().thenAccept(townless -> instance().setTownlessResidents(townless));
+                EarthMCAPI.getTownless().thenAccept(instance()::setTownlessResidents);
 
-            if (ModConfig.instance().nearby.enabled && ModUtils.isConnectedToEMC())
-                EarthMCAPI.getNearby().thenAccept(nearby -> instance().setNearbyPlayers(nearby));
+            if (config.nearby.enabled)
+                EarthMCAPI.getNearby().thenAccept(instance()::setNearbyPlayers);
         }
 
         startTownless();
@@ -65,7 +66,7 @@ public class TaskScheduler {
             if (playerOnline("aurora")) setHasMap("aurora");
             else if (playerOnline("nova")) setHasMap("nova");
             else setHasMap(null);
-        }, 6, TimeUnit.SECONDS); // Give enough time for dynmap to update players.
+        }, 10, TimeUnit.SECONDS); // Give enough time for dynmap to update players.
     }
 
     public void setHasMap(String map) {

@@ -44,6 +44,8 @@ public class EarthMCEssentials implements ModInitializer {
     private final TaskScheduler scheduler = new TaskScheduler();
     public String mapName = "aurora";
 
+    public int sessionCounter = 0;
+
     @Override
     public void onInitialize() {
         instance = this;
@@ -123,7 +125,6 @@ public class EarthMCEssentials implements ModInitializer {
         this.newsData = nd;
         OverlayRenderer.sendNews(config.news.position, nd);
     }
-
 
     public void setTownlessResidents(@NotNull JsonArray array) {
         // Make sure there is data to add.

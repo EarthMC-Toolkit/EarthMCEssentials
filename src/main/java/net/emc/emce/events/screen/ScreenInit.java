@@ -10,11 +10,6 @@ import net.minecraft.client.gui.screen.Screen;
 public class ScreenInit {
     private static boolean configOpen = false;
 
-    public ScreenInit() {
-        ScreenEvents.BEFORE_INIT.register(ScreenInit::before);
-        ScreenEvents.AFTER_INIT.register(ScreenInit::after);
-    }
-
     public static boolean configOpen() {
         return configOpen;
     }
@@ -27,11 +22,11 @@ public class ScreenInit {
         OverlayRenderer.Init();
     }
 
-    private static void before(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
+    public static void before(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
         OverlayRenderer.UpdateStates(true, true);
     }
 
-    private static void after(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
+    public static void after(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
         if (newScreen instanceof ClothConfigScreen) {
             ScreenExtensions configSE = ScreenExtensions.getExtensions(newScreen);
             configSE.fabric_getRemoveEvent().register(ScreenInit::Refresh);

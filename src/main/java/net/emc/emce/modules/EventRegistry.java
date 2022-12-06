@@ -9,6 +9,7 @@ import net.emc.emce.events.screen.ScreenInit;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 
 public class EventRegistry {
@@ -25,14 +26,22 @@ public class EventRegistry {
     public static void RegisterClientTick() {
         // Every tick, see if we are pressing F4.
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (ScreenInit.configOpen()) return;
-
             if (EarthMCEssentials.configKeybinding.wasPressed()) {
-                Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
-                client.setScreen(configScreen);
-                ScreenInit.setConfigOpen(true);
+                boolean open = ScreenInit.configOpen();
+
+                if (!open) {
+                    ScreenInit.setConfigOpen(true);
+
+                    Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
+                    client.setScreen(configScreen);
+                }
             }
         });
+    }
+
+    public static void RegisterScreen() {
+        ScreenEvents.BEFORE_INIT.register(ScreenInit::before);
+        ScreenEvents.AFTER_INIT.register(ScreenInit::after);
     }
 
     public static void RegisterHud() {

@@ -13,6 +13,7 @@ import net.minecraft.client.util.telemetry.TelemetrySender;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +25,6 @@ import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
-
     @Inject(at = @At("TAIL"), method="<init>")
     private void onInit(MinecraftClient client, Screen screen, ClientConnection connection,
                         GameProfile profile, TelemetrySender telemetrySender, CallbackInfo ci) {
@@ -34,10 +34,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(at = @At("TAIL"), method="onGameJoin")
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
+        System.out.println("EMCE > Joined game.");
+
         ModUtils.updateServerName();
         OverlayRenderer.Init();
 
-        //EventRegistry.RegisterScreen();
+        EventRegistry.RegisterScreen();
         EventRegistry.RegisterHud();
 
         if (isConnectedToEMC()) {
@@ -49,7 +51,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(at = @At("TAIL"), method="onDisconnect")
     private void onDisconnect(DisconnectS2CPacket packet, CallbackInfo ci) {
+        System.out.println("EMCE > Disconnected.");
+
         ModUtils.setServerName("");
         OverlayRenderer.Clear();
+        
+        instance().sessionCounter = 0;
+        instance().scheduler().setHasMap(null);
     }
 }
