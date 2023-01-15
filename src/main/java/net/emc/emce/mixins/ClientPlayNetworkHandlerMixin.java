@@ -28,9 +28,9 @@ import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(at = @At("TAIL"), method="<init>")
-    private void onInit(MinecraftClient client, Screen screen, ClientConnection connection, ServerInfo serverInfo, GameProfile profile, WorldSession worldSession, CallbackInfo ci) {
-        EarthMCAPI.getResident(profile.getName()).thenAccept(res ->
-                instance().setClientResident(res));
+    private void onInit(MinecraftClient client, Screen screen, ClientConnection connection,
+                        ServerInfo serverInfo, GameProfile profile, WorldSession worldSession, CallbackInfo ci) {
+        EarthMCAPI.getResident(profile.getName()).thenAccept(res -> instance().setClientResident(res));
     }
 
     @Inject(at = @At("TAIL"), method="onGameJoin")

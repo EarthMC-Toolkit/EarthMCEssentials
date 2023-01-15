@@ -27,19 +27,19 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
   
 ## FAQ
 **Why am I crashing on startup?**
->*I recommend you use the [latest](https://github.com/EarthMC-Toolkit/EarthMCEssentials/releases/latest) EMCE version, with `Fabric API 0.64.0` and `Fabric Loader 0.14.9`, delete the file `emc-essentials.json` in your config folder and reboot MC. It is also worth checking the output log since some mods may conflict with EMCE.*
+>*I recommend you use the [latest](https://github.com/EarthMC-Toolkit/EarthMCEssentials/releases/latest) EMCE version, with `Fabric API 0.72.0` and `Fabric Loader 0.14.12`, delete the file `emc-essentials.json` in your config folder and reboot MC. It is also worth checking the output log since some mods may conflict with EMCE.*
 
 **How is data obtained?**
 >*All data is acquired from our [API](https://emc-toolkit.vercel.app/api) in conjuction with info from the Minecraft client.*
   
 **Is there a Forge version?**
->*No, support for Forge is not planned as Fabric is very lightweight and easy to work with.*
+>*Not right now. There may be a re-write using the Architectuary API, but this won't be any time soon.*
 
 **Can I use OptiFine?**
 >*Yes, but you will need to install [OptiFabric](https://www.curseforge.com/minecraft/mc-mods/optifabric/files) in addition.*
 
 **How can I register an alliance?**
->*Head to our [discord](https://discord.gg/AVtgkcRgFs) and provide your alliance's info in the appropriate channel.*
+>*Head to our [Discord](https://discord.gg/AVtgkcRgFs) and provide your alliance's info in the appropriate channel.*
 
 ### Support
 If you have a problem that the FAQ does not address, you can reach us at our [discord](https://discord.gg/AVtgkcRgFs).<br>
