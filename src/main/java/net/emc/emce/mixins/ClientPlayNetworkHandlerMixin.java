@@ -9,7 +9,9 @@ import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.telemetry.TelemetrySender;
+import net.minecraft.client.util.telemetry.WorldSession;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
@@ -26,8 +28,7 @@ import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(at = @At("TAIL"), method="<init>")
-    private void onInit(MinecraftClient client, Screen screen, ClientConnection connection,
-                        GameProfile profile, TelemetrySender telemetrySender, CallbackInfo ci) {
+    private void onInit(MinecraftClient client, Screen screen, ClientConnection connection, ServerInfo serverInfo, GameProfile profile, WorldSession worldSession, CallbackInfo ci) {
         EarthMCAPI.getResident(profile.getName()).thenAccept(res ->
                 instance().setClientResident(res));
     }

@@ -37,7 +37,7 @@ public class Messaging {
     }
 
     public static void performCommand(String command) {
-        MinecraftClient.getInstance().player.sendCommand(command);
+        MinecraftClient.getInstance().player.networkHandler.sendCommand(command);
     }
 
     public static void sendDebugMessage(String message) {
