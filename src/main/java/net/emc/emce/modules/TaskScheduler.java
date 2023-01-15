@@ -59,9 +59,12 @@ public class TaskScheduler {
     }
 
     public void initMap() {
-        service = Executors.newScheduledThreadPool(2);
+        service = Executors.newScheduledThreadPool(1);
         service.schedule(() -> {
-            if (hasMap) return;
+            if (hasMap) {
+                Messaging.sendDebugMessage("EMCE > Map already initialized!");
+                return;
+            }
 
             if (playerOnline("aurora")) setHasMap("aurora");
             else if (playerOnline("nova")) setHasMap("nova");
@@ -77,7 +80,9 @@ public class TaskScheduler {
             hasMap = false;
         }
         else {
+            instance().mapName = map;
             hasMap = true;
+
             start();
         }
     }
@@ -87,7 +92,7 @@ public class TaskScheduler {
         ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
-            if (townlessRunning && shouldRun()) {
+            if (townlessRunning && config.townless.enabled && shouldRun()) {
                 Messaging.sendDebugMessage("Starting townless task.");
                 EarthMCAPI.getTownless().thenAccept(townless -> {
                     instance().setTownlessResidents(townless);
@@ -102,7 +107,7 @@ public class TaskScheduler {
         final ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
-            if (nearbyRunning && ModUtils.isConnectedToEMC() && shouldRun()) {
+            if (nearbyRunning && config.nearby.enabled && shouldRun()) {
                 Messaging.sendDebugMessage("Starting nearby task.");
                 EarthMCAPI.getNearby().thenAccept(nearby -> {
                     instance().setNearbyPlayers(nearby);
@@ -139,6 +144,6 @@ public class TaskScheduler {
 
     private boolean shouldRun() {
         ModConfig config = ModConfig.instance();
-        return config.general.enableMod && MinecraftClient.getInstance().isWindowFocused();
+        return config.general.enableMod && ModUtils.isConnectedToEMC();
     }
 }

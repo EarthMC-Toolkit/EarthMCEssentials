@@ -165,6 +165,7 @@ public class EarthMCAPI {
         fetchAPI().thenAccept(data -> {
             apiData = data;
 
+            // Out of queue, begin map check.
             if (instance().sessionCounter > 1)
                 instance().scheduler().initMap();
         });
@@ -217,8 +218,6 @@ public class EarthMCAPI {
             } catch (HttpTimeoutException e) {
                 throw new APIException("Request timed out after 5 seconds.\nEndpoint: " + urlString);
             }
-
-            //System.out.println("EMCE > " + response.body());
 
             List<Integer> codes = List.of(new Integer[]{ 200, 203, 304 });
             if (!codes.contains(response.statusCode()))
