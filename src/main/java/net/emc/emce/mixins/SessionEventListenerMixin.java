@@ -12,13 +12,35 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.emc.emce.EarthMCEssentials.instance;
 
+import static net.emc.emce.utils.EarthMCAPI.fetchEndpoints;
+import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
+
+import static net.emc.emce.modules.EventRegistry.RegisterScreen;
+import static net.emc.emce.modules.EventRegistry.RegisterHud;
+enum CounterType {
+    UP,
+    DOWN
+}
+
 @Mixin(MinecraftClientGame.class)
 public abstract class SessionEventListenerMixin {
 
     @Inject(at = @At("TAIL"), method="onStartGameSession")
     public void onStartGameSession(CallbackInfo ci) {
-        instance().sessionCounter++;
-        System.out.println("EMCE > Session counter: " + instance().sessionCounter);
+        System.out.println("EMCE > Joined game.");
+        updateSessionCounter(CounterType.UP);
+
+        ModUtils.updateServerName();
+        OverlayRenderer.Init();
+
+        RegisterScreen();
+        RegisterHud();
+
+        if (isConnectedToEMC()) {
+            fetchEndpoints();
+            instance().setShouldRender(true);
+        }
+        else instance().setShouldRender(false);
     }
 
     @Inject(at = @At("TAIL"), method="onLeaveGameSession")
@@ -26,6 +48,15 @@ public abstract class SessionEventListenerMixin {
         ModUtils.setServerName("");
         OverlayRenderer.Clear();
 
-        instance().sessionCounter--;
+        updateSessionCounter(CounterType.DOWN);
+    }
+
+    public void updateSessionCounter(CounterType type) {
+        int oldCount = instance().sessionCounter;
+
+        if (type == CounterType.UP) instance().sessionCounter--;
+        else instance().sessionCounter++;
+
+        System.out.println("EMCE > Updated session counter from " + oldCount + " to " + instance().sessionCounter);
     }
 }

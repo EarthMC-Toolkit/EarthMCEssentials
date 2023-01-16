@@ -33,23 +33,6 @@ public abstract class ClientPlayNetworkHandlerMixin {
         EarthMCAPI.getResident(profile.getName()).thenAccept(res -> instance().setClientResident(res));
     }
 
-    @Inject(at = @At("TAIL"), method="onGameJoin")
-    private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        System.out.println("EMCE > Joined game.");
-
-        ModUtils.updateServerName();
-        OverlayRenderer.Init();
-
-        EventRegistry.RegisterScreen();
-        EventRegistry.RegisterHud();
-
-        if (isConnectedToEMC()) {
-            fetchEndpoints();
-            instance().setShouldRender(true);
-        }
-        else instance().setShouldRender(false);
-    }
-
     @Inject(at = @At("TAIL"), method="onDisconnect")
     private void onDisconnect(DisconnectS2CPacket packet, CallbackInfo ci) {
         System.out.println("EMCE > Disconnected.");
