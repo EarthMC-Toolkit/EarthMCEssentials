@@ -20,6 +20,7 @@ public class ScreenInit {
 
     private static void Refresh(Screen screen) {
         OverlayRenderer.Init();
+        setConfigOpen(false);
     }
 
     public static void before(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
@@ -30,8 +31,6 @@ public class ScreenInit {
         if (newScreen instanceof ClothConfigScreen) {
             ScreenExtensions configSE = ScreenExtensions.getExtensions(newScreen);
             configSE.fabric_getRemoveEvent().register(ScreenInit::Refresh);
-
-            setConfigOpen(false);
         }
     }
 }

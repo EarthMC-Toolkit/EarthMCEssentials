@@ -31,10 +31,10 @@ public class EventRegistry {
             if (EarthMCEssentials.configKeybinding.wasPressed()) {
                 if (!ScreenInit.configOpen()) {
                     try {
+                        ScreenInit.setConfigOpen(true);
+
                         Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
                         client.setScreen(configScreen);
-
-                        ScreenInit.setConfigOpen(true);
                     } catch (Exception e) {
                         Messaging.sendDebugMessage("EMCE > Error opening config screen.", e);
                     }
