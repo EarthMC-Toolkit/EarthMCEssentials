@@ -86,28 +86,31 @@ public class OverlayRenderer {
     }
 
     private static void RenderTownless(boolean usingPreset) {
+        int townlessSize = townless.size();
+        int maxLen = config.townless.maxLength;
+
         if (usingPreset) {
             Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-            MutableText townlessText = Text.translatable("text_townless_header", townless.size()).formatted(townlessTextFormatting);
+            MutableText townlessText = Text.translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
 
-            int rendered = 0;
+            int index = 0;
             Iterator<String> it = townless.iterator();
 
             while (it.hasNext()) {
                 String townlessName = it.next();
                 Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
-                if (config.townless.maxLength > 0 && rendered >= config.townless.maxLength) {
-                    MutableText remainingText = Text.translatable("text_townless_remaining", townless.size() - rendered).formatted(playerTextFormatting);
-                    renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + rendered*10, 16777215);
+                if (maxLen > 0 && index >= maxLen) {
+                    MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
+                    renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + index*10, 16777215);
                     break;
                 }
 
                 MutableText playerName = Text.translatable(townlessName).formatted(playerTextFormatting);
-                renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + rendered++*10, 16777215);
+                renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + index++*10, 16777215);
             }
         }
         else {
@@ -115,12 +118,12 @@ public class OverlayRenderer {
             int townlessPlayerOffset = config.townless.yPos;
 
             Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-            MutableText townlessText = Text.translatable("text_townless_header", townless.size()).formatted(townlessTextFormatting);
+            MutableText townlessText = Text.translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
 
             // Draw heading.
             renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
 
-            if (townless.size() > 0) {
+            if (townlessSize > 0) {
                 int index = 0;
                 Iterator<String> it = townless.iterator();
 
@@ -128,12 +131,13 @@ public class OverlayRenderer {
                     String name = it.next();
                     Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
-                    if (config.townless.maxLength >= 1) {
-                        if (index >= config.townless.maxLength) {
-                            MutableText remainingText = Text.translatable("text_townless_remaining",townless.size()-index).formatted(playerTextFormatting);
+                    if (maxLen >= 1) {
+                        if (index >= maxLen) {
+                            MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize-index).formatted(playerTextFormatting);
                             renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
                             break;
                         }
+
                         index++;
                     }
 
