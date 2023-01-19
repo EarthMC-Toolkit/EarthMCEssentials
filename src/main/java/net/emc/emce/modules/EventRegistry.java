@@ -36,7 +36,7 @@ public class EventRegistry {
 
                         ScreenInit.setConfigOpen(true);
                     } catch (Exception e) {
-                        Messaging.sendDebugMessage("Error setting screen!", e);
+                        Messaging.sendDebugMessage("EMCE > Error opening config screen.", e);
                     }
                 }
             }
