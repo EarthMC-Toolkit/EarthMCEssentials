@@ -36,11 +36,8 @@ public class TaskScheduler {
 
         // Pre-fill data.
         if (config.general.enableMod) {
-            if (config.townless.enabled)
-                EarthMCAPI.getTownless().thenAccept(instance()::setTownlessResidents);
-
-            if (config.nearby.enabled)
-                EarthMCAPI.getNearby().thenAccept(instance()::setNearbyPlayers);
+            if (config.townless.enabled) EarthMCAPI.getTownless().thenAccept(instance()::setTownlessResidents);
+            if (config.nearby.enabled) EarthMCAPI.getNearby().thenAccept(instance()::setNearbyPlayers);
         }
 
         startTownless();
@@ -50,39 +47,37 @@ public class TaskScheduler {
     }
 
     public void stop() {
-        service.shutdown();
-
         townlessRunning = false;
         nearbyRunning = false;
         newsRunning = false;
         cacheCheckRunning = false;
+
+        Messaging.sendDebugMessage("EMCE > Stopping scheduled tasks...");
     }
 
     public void initMap() {
-        service = Executors.newScheduledThreadPool(1);
-        service.schedule(() -> {
-            if (hasMap) {
-                Messaging.sendDebugMessage("EMCE > Map already initialized!");
-                return;
-            }
+        service = Executors.newScheduledThreadPool(2);
+        service.scheduleAtFixedRate(() -> {
+            if (hasMap) return;
 
             if (playerOnline("aurora")) setHasMap("aurora");
             else if (playerOnline("nova")) setHasMap("nova");
             else setHasMap(null);
-        }, 10, TimeUnit.SECONDS); // Give enough time for dynmap to update players.
+        }, 8, 15, TimeUnit.SECONDS); // Give enough time for Dynmap & Vercel to update.
     }
 
     public void setHasMap(String map) {
         if (map == null) {
-            if (!service.isShutdown()) stop();
+            Messaging.sendDebugMessage("EMCE > Player not found on any map.");
+            stop();
 
             instance().mapName = "aurora";
             hasMap = false;
         }
         else {
-            instance().mapName = map;
-            hasMap = true;
+            Messaging.sendDebugMessage("EMCE > Player found on: " + map);
 
+            hasMap = true;
             start();
         }
     }

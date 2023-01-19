@@ -1,9 +1,6 @@
 package net.emc.emce.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.objects.API.APIData;
 import net.emc.emce.objects.API.APIRoute;
@@ -21,6 +18,7 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -72,8 +70,7 @@ public class EarthMCAPI {
                             array.remove(i);
                     }
                     return array;
-                } else
-                    return instance().getNearbyPlayers();
+                } else return instance().getNearbyPlayers();
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return instance().getNearbyPlayers();
@@ -92,15 +89,33 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<JsonElement> getOnlinePlayer(String playerName) {
+    public static CompletableFuture<JsonArray> getOnlinePlayers() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS) + "/" + playerName));
+                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS)));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
-                return new JsonObject();
+                return new JsonArray();
             }
         });
+    }
+
+    public static JsonObject getOnlinePlayer(String name) {
+        JsonArray ops = getOnlinePlayers().join().getAsJsonArray();
+        JsonObject pl = new JsonObject();
+
+        if (!ops.isEmpty()) {
+            for (JsonElement op : ops) {
+                JsonObject cur = op.getAsJsonObject();
+
+                if (Objects.equals(cur.get("name").getAsString(), name)) {
+                    pl = cur;
+                    break;
+                }
+            }
+        }
+
+        return pl;
     }
 
     public static CompletableFuture<JsonArray> getTowns() {
@@ -199,10 +214,10 @@ public class EarthMCAPI {
     }
 
     public static boolean playerOnline(String map) {
-        instance().mapName = map;
+        instance().mapName = map; // getOnlinePlayer uses mapName.
 
-        JsonObject player = (JsonObject) getOnlinePlayer(clientName()).join();
-        return player.has("name") && player.get("name").getAsString().equals(clientName());
+        JsonObject player = getOnlinePlayer(clientName());
+        return player.has("name");
     }
 
     private static String getURL(String urlString) throws APIException {
