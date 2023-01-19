@@ -60,12 +60,13 @@ public class EarthMCAPI {
                     if (!player.getEntityWorld().getDimension().bedWorks())
                         return new JsonArray();
 
-                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NEARBY) +
+                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NEARBY) + "/" +
                             (int) player.getX() + "/" +
                             (int) player.getZ() + "/" +
                             xBlocks + "/" + zBlocks));
 
-                    for (int i = 0; i < array.size(); i++) {
+                    int size = array.size();
+                    for (int i = 0; i < size; i++) {
                         JsonObject currentObj = (JsonObject) array.get(i);
                         if (currentObj.get("name").getAsString().equals(client.player.getName().getString()))
                             array.remove(i);
