@@ -3,7 +3,6 @@ package net.emc.emce.events.commands;
 import com.google.gson.JsonArray;
 import com.mojang.brigadier.CommandDispatcher;
 import net.emc.emce.EarthMCEssentials;
-import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
@@ -13,64 +12,75 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 
+import java.util.List;
+
 public record TownlessCommand(EarthMCEssentials instance) {
+    static NamedTextColor townlessTextColour;
+
+    boolean lengthLimited(String str, int length) { return str.length() > length; }
+    boolean lengthLimited(String str) { return lengthLimited(str, 256); }
+
+    String inviteStr(StringBuilder str) { return inviteStr(str.toString()); }
+    String inviteStr(String str) { return inviteStr(str, false); }
+
+    String inviteStr(Object str, boolean revoking) {
+        return "towny:town invite" + (revoking ? " -" : " ") + str.toString();
+    }
+
+    Component createMsg(String key, int size) { return Messaging.create(key, townlessTextColour, whiteText(size)); }
+    Component whiteText(int size) { return Component.text(size).color(NamedTextColor.WHITE); }
 
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("townless").executes(c -> {
-            NamedTextColor color = instance.getConfig().commands.townlessTextColour.named();
+            List<String> townless = instance.getTownless();
+            int size = townless.size();
 
-            Messaging.send(Messaging.create("text_townless_header", color, instance.getTownless().size()));
-
-            if (instance.getTownless().size() > 0)
-                Messaging.send(Component.text(String.join(", ", instance.getTownless()), color));
+            townlessTextColour = instance.getConfig().commands.townlessTextColour.named();
+            Messaging.send(createMsg("text_townless_header", size));
+            if (size > 0) Messaging.send(Component.text(String.join(", ", townless), townlessTextColour));
 
             return 1;
         }).then(ClientCommandManager.literal("inviteAll").executes(c -> {
             if (MinecraftClient.getInstance().player == null) return -1;
-            NamedTextColor townlessTextColour = instance.getConfig().commands.townlessTextColour.named();
-
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
+                List<String> townless = instance.getTownless();
 
-                for (String townlessPlayer : instance.getTownless()) {
-                    if (("towny:town invite " + townlessString + " " + townlessPlayer).length() > 256) break;
-                    else townlessString.append(townlessPlayer).append(" ");
+                for (String townlessPlayer : townless) {
+                    if (lengthLimited(inviteStr(townlessString) + townlessPlayer)) break;
+                    townlessString.append(townlessPlayer).append(" ");
                 }
 
                 Messaging.performCommand("towny:town invite " + townlessString);
-                Messaging.sendPrefixed(Messaging.create("msg_townless_sent", townlessTextColour,
-                        Component.text(instance.getTownless().size()).color(NamedTextColor.WHITE)));
-            }
-            else Messaging.sendPrefixed(Translation.of("msg_townless_invite_err"));
+                Messaging.sendPrefixed(createMsg("msg_townless_sent", townless.size()));
+            } else Messaging.sendPrefixed("msg_townless_invite_err");
 
             return 1;
         })).then(ClientCommandManager.literal("revokeAll").executes(c -> {
             if (MinecraftClient.getInstance().player == null) return -1;
-            NamedTextColor townlessTextColour = instance.getConfig().commands.townlessTextColour.named();
-
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
+                List<String> townless = instance.getTownless();
 
-                for (String townlessPlayer : instance.getTownless()) {
-                    if (("towny:town invite -" + townlessString + " " + townlessPlayer).length() > 256) break;
-                    else townlessString.append("-").append(townlessPlayer).append(" ");
+                for (String townlessPlayer : townless) {
+                    if (lengthLimited(inviteStr(townlessString, true) + townlessPlayer)) break;
+                    townlessString.append("-").append(townlessPlayer).append(" ");
                 }
 
                 Messaging.performCommand("towny:town invite " + townlessString);
-                Messaging.sendPrefixed(Messaging.create("msg_townless_revoked", townlessTextColour,
-                        Component.text(instance.getTownless().size()).color(NamedTextColor.WHITE)));
+                Messaging.sendPrefixed(createMsg("msg_townless_revoked", townless.size()));
             }
-            else Messaging.sendPrefixed(Translation.of("msg_townless_revoke_err"));
+            else Messaging.sendPrefixed("msg_townless_revoke_err");
 
             return 1;
         })).then(ClientCommandManager.literal("refresh").executes(c -> {
             EarthMCAPI.getTownless().thenAccept(instance::setTownlessResidents);
-            Messaging.sendPrefixed(Translation.of("msg_townless_refresh"));
+            Messaging.sendPrefixed("msg_townless_refresh");
 
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {
             instance.setTownlessResidents(new JsonArray());
-            Messaging.sendPrefixed(Translation.of("msg_townless_clear"));
+            Messaging.sendPrefixed("msg_townless_clear");
 
             return 1;
         })));

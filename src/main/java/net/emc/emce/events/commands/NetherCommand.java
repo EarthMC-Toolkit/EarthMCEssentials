@@ -23,7 +23,7 @@ public class NetherCommand {
                     return 1;
                 })
             ).executes(c -> {
-                Messaging.send(Translation.of("msg_nether_err_args"));
+                Messaging.send("msg_nether_err_args");
                 return 1;
             })).executes(c -> {
                 int x, z;
@@ -32,10 +32,10 @@ public class NetherCommand {
                     x = MinecraftClient.getInstance().player.getBlockX();
                     z = MinecraftClient.getInstance().player.getBlockZ();
 
-                    Messaging.sendPrefixed(Translation.of("msg_nether_owncoords"));
+                    Messaging.sendPrefixed("msg_nether_owncoords");
                     Messaging.sendPrefixed(Translation.of("msg_nether_success", x/8, z/8));
                 }
-                else Messaging.send(Translation.of("msg_nether_err_null"));
+                else Messaging.send("msg_nether_err_null");
 
                 return 1;
             })

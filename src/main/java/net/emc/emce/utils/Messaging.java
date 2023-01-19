@@ -4,30 +4,53 @@ import net.emc.emce.EarthMCEssentials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import static net.emc.emce.EarthMCEssentials.instance;
 import static net.kyori.adventure.platform.fabric.FabricClientAudiences.of;
 import static net.kyori.adventure.text.Component.*;
 
+import static net.minecraft.client.MinecraftClient.getInstance;
+
 public class Messaging {
-    public static Component create(String key, NamedTextColor keyColour, Object... args) {
+    //#region Helper Methods
+    public static Component create(String key, NamedTextColor keyColour, Object @NotNull ... args) {
         List<Component> argList = Collections.emptyList();
         for (Object obj : args) argList.add(Component.text(obj.toString()));
 
         return translatable().key(key).color(keyColour).args(argList).build();
     }
 
+    private static Component prefix() {
+        return translatable("mod_prefix");
+    }
+    //#endregion
+
+    //#region Regular Msg
+    public static void send(String text) {
+        send(translatable(text));
+    }
+
     public static void send(Component text) {
         of().audience().sendMessage(text);
+    }
+    //#endregion
+
+    //#region Prefixed Msg
+    public static void sendPrefixed(String text) {
+        sendPrefixed(translatable(text));
     }
 
     public static void sendPrefixed(Component text) {
         send(empty().append(prefix()).append(text));
     }
+    //#endregion
 
+    //#region Action Bar
     public static void sendActionBar(Component text) {
         of().audience().sendActionBar(text);
     }
@@ -35,11 +58,16 @@ public class Messaging {
     public static void sendPrefixedActionBar(Component text) {
        of().audience().sendActionBar(empty().append(prefix()).append(text));
     }
+    //#endregion
 
-    public static void performCommand(String command) {
-        MinecraftClient.getInstance().player.networkHandler.sendCommand(command);
+    //#region Command
+    static Function<String, Boolean> sendCmd = getInstance().player.networkHandler::sendCommand;
+    public static void performCommand(String cmd) {
+        sendCmd.apply(cmd);
     }
+    //endregion
 
+    //#region Debug Methods
     public static void sendDebugMessage(String message) {
         if (instance().debugEnabled()) {
             send(translatable("debug_format", text(message).color(NamedTextColor.GRAY)));
@@ -55,8 +83,5 @@ public class Messaging {
             exception.printStackTrace();
         }
     }
-
-    private static Component prefix() {
-        return translatable("mod_prefix");
-    }
+    //#endregion
 }

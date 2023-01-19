@@ -39,7 +39,7 @@ public record InfoCommands(EarthMCEssentials instance) {
                 String townName = clientResident.getTown();
 
                 if (townName.equals("") || townName.equals("No Town"))
-                    Messaging.sendPrefixed(Translation.of("text_towninfo_not_registered"));
+                    Messaging.sendPrefixed("text_towninfo_not_registered");
                 else trySendTown(townName);
             }
 
@@ -62,7 +62,7 @@ public record InfoCommands(EarthMCEssentials instance) {
                 String nationName = clientResident.getNation();
 
                 if (nationName.equals("") || nationName.equals("No Nation"))
-                    Messaging.sendPrefixed(Translation.of("text_nationinfo_not_registered"));
+                    Messaging.sendPrefixed("text_nationinfo_not_registered");
                 else trySendNation(nationName);
             }
 

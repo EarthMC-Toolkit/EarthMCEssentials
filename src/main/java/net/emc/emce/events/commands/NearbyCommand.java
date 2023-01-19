@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
@@ -19,16 +20,20 @@ public record NearbyCommand(EarthMCEssentials instance) {
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("nearby").executes(c -> {
             MinecraftClient client = MinecraftClient.getInstance();
-            if (client.player == null)
-                return -1;
+            if (client.player == null) return -1;
 
-            NamedTextColor headingColour = instance.getConfig().nearby.headingTextColour.named();
-            NamedTextColor textColour = instance.getConfig().nearby.playerTextColour.named();
+            ModConfig.Nearby nearbyConfig = instance.getConfig().nearby;
+
+            NamedTextColor headingColour = nearbyConfig.headingTextColour.named();
+            NamedTextColor textColour = nearbyConfig.playerTextColour.named();
 
             Messaging.send(Component.text("text_nearby_header", headingColour));
 
-            for (int i = 0; i < instance.getNearbyPlayers().size(); i++) {
-                JsonObject currentPlayer = instance.getNearbyPlayers().get(i).getAsJsonObject();
+            JsonArray nearby = instance.getNearbyPlayers();
+            int size = nearby.size();
+
+            for (int i = 0; i < size; i++) {
+                JsonObject currentPlayer = nearby.get(i).getAsJsonObject();
 
                 JsonElement xElement = currentPlayer.get("x");
                 JsonElement zElement = currentPlayer.get("z");
@@ -38,27 +43,25 @@ public record NearbyCommand(EarthMCEssentials instance) {
                         Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
                 Component prefix = Component.empty();
-
-                if (instance.getConfig().nearby.showRank) {
-                    if (!currentPlayer.has("town"))
-                        prefix = Translation.of("text_nearby_rank_townless");
-                    else
-                        prefix = Component.text("(" + currentPlayer.get("rank").getAsString() + ") ");
+                if (nearbyConfig.showRank) {
+                    if (!currentPlayer.has("town")) prefix = Translation.of("text_nearby_rank_townless");
+                    else prefix = Component.text("(" + currentPlayer.get("rank").getAsString() + ") ");
                 }
 
-                Messaging.send(Component.empty().append(
-                        prefix.append(Component.text(currentPlayer.get("name").getAsString() + ": " + distance + "m")
-                              .color(textColour))));
+                String str = currentPlayer.get("name").getAsString() + ": " + distance + "m";
+                Component comp = Component.empty().append(prefix.append(Component.text(str)));
+
+                Messaging.send(comp.color(textColour));
             }
 
             return 1;
         }).then(ClientCommandManager.literal("refresh").executes(c -> {
             EarthMCAPI.getNearby().thenAccept(instance::setNearbyPlayers);
-            Messaging.sendPrefixed(Translation.of("msg_nearby_refresh"));
+            Messaging.sendPrefixed("msg_nearby_refresh");
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {
             instance.setNearbyPlayers(new JsonArray());
-            Messaging.send(Translation.of("msg_nearby_clear"));
+            Messaging.send("msg_nearby_clear");
             return 1;
         })));
     }
