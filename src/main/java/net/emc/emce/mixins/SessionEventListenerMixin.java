@@ -17,6 +17,7 @@ import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 
 import static net.emc.emce.modules.EventRegistry.RegisterScreen;
 import static net.emc.emce.modules.EventRegistry.RegisterHud;
+
 enum CounterType {
     UP,
     DOWN
@@ -24,7 +25,6 @@ enum CounterType {
 
 @Mixin(MinecraftClientGame.class)
 public abstract class SessionEventListenerMixin {
-
     @Inject(at = @At("TAIL"), method="onStartGameSession")
     public void onStartGameSession(CallbackInfo ci) {
         System.out.println("EMCE > Joined game.");
@@ -51,7 +51,7 @@ public abstract class SessionEventListenerMixin {
         updateSessionCounter(CounterType.DOWN);
     }
 
-    public void updateSessionCounter(CounterType type) {
+    void updateSessionCounter(CounterType type) {
         int oldCount = instance().sessionCounter;
 
         if (type == CounterType.UP) instance().sessionCounter--;
