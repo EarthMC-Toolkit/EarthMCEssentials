@@ -17,17 +17,18 @@ import java.util.List;
 public record TownlessCommand(EarthMCEssentials instance) {
     static NamedTextColor townlessTextColour;
 
-    boolean lengthLimited(String str, int length) { return str.length() > length; }
+    boolean lengthLimited(String str, int length) { return str.length() >= length; }
     boolean lengthLimited(String str) { return lengthLimited(str, 256); }
 
     String inviteStr(StringBuilder str) { return inviteStr(str.toString()); }
     String inviteStr(String str) { return inviteStr(str, false); }
 
     String inviteStr(Object str, boolean revoking) {
-        return "towny:town invite" + (revoking ? " -" : " ") + str.toString();
+        return "towny:town invite" + (revoking ? " -" : " ") + str.toString() + " ";
     }
 
-    Component createMsg(String key, int size) { return Messaging.create(key, townlessTextColour, whiteText(size)); }
+    NamedTextColor getTextColour() { return instance.getConfig().commands.townlessTextColour.named(); }
+    Component createMsg(String key, int size) { return Messaging.create(key, getTextColour(), whiteText(size)); }
     Component whiteText(int size) { return Component.text(size).color(NamedTextColor.WHITE); }
 
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
@@ -35,7 +36,6 @@ public record TownlessCommand(EarthMCEssentials instance) {
             List<String> townless = instance.getTownless();
             int size = townless.size();
 
-            townlessTextColour = instance.getConfig().commands.townlessTextColour.named();
             Messaging.send(createMsg("text_townless_header", size));
             if (size > 0) Messaging.send(Component.text(String.join(", ", townless), townlessTextColour));
 
@@ -48,7 +48,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
 
                 for (String townlessPlayer : townless) {
                     if (lengthLimited(inviteStr(townlessString) + townlessPlayer)) break;
-                    townlessString.append(townlessPlayer).append(" ");
+                    else townlessString.append(townlessPlayer).append(" ");
                 }
 
                 Messaging.performCommand("towny:town invite " + townlessString);
@@ -64,7 +64,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
 
                 for (String townlessPlayer : townless) {
                     if (lengthLimited(inviteStr(townlessString, true) + townlessPlayer)) break;
-                    townlessString.append("-").append(townlessPlayer).append(" ");
+                    else townlessString.append("-").append(townlessPlayer).append(" ");
                 }
 
                 Messaging.performCommand("towny:town invite " + townlessString);

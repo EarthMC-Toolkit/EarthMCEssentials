@@ -132,8 +132,8 @@ public class EarthMCEssentials implements ModInitializer {
 
         townlessResidents.clear();
 
-        for (JsonElement townlessResident : array) {
-            townlessResidents.add(townlessResident.getAsJsonObject().get("name").getAsString());
+        for (JsonElement res : array) {
+            townlessResidents.add(res.getAsJsonObject().get("name").getAsString());
         }
 
         OverlayRenderer.SetTownless(townlessResidents);

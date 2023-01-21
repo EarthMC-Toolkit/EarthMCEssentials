@@ -36,7 +36,7 @@ public class EventRegistry {
                         Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
                         client.setScreen(configScreen);
                     } catch (Exception e) {
-                        Messaging.sendDebugMessage("EMCE > Error opening config screen.", e);
+                        Messaging.sendDebugMessage("Error opening config screen.", e);
                     }
                 }
             }

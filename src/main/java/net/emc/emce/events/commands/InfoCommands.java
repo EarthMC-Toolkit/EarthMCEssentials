@@ -19,6 +19,8 @@ import net.minecraft.client.MinecraftClient;
 
 import java.util.Locale;
 
+import static net.emc.emce.utils.EarthMCAPI.clientName;
+
 public record InfoCommands(EarthMCEssentials instance) {
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         registerTownInfoCommand(dispatcher);
@@ -27,12 +29,12 @@ public record InfoCommands(EarthMCEssentials instance) {
 
     public void registerTownInfoCommand(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("towninfo").then(
-                ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
-                    String townName = StringArgumentType.getString(c, "townName");
-                    trySendTown(townName);
-                    return 1;
-                })
-        ).executes(c -> {
+            ClientCommandManager.argument("townName", StringArgumentType.string()).executes(c -> {
+                String townName = StringArgumentType.getString(c, "townName");
+                trySendTown(townName);
+
+                return 1;
+        })).executes(c -> {
             Resident clientResident = instance.getClientResident();
 
             if (residentExists(clientResident)) {
@@ -49,13 +51,12 @@ public record InfoCommands(EarthMCEssentials instance) {
 
     public void registerNationInfoCommand(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("nationinfo").then(
-                ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
-                    String nationName = StringArgumentType.getString(c, "nationName");
-                    trySendNation(nationName);
+            ClientCommandManager.argument("nationName", StringArgumentType.string()).executes(c -> {
+                String nationName = StringArgumentType.getString(c, "nationName");
+                trySendNation(nationName);
 
-                    return 1;
-                })
-        ).executes(c -> {
+                return 1;
+        })).executes(c -> {
             Resident clientResident = instance.getClientResident();
 
             if (residentExists(clientResident)) {
@@ -72,9 +73,7 @@ public record InfoCommands(EarthMCEssentials instance) {
 
     private boolean residentExists(Resident res) {
         if (res == null) {
-            Messaging.send(Translation.of("text_shared_notregistered",
-                    MinecraftClient.getInstance().player.getName().getString()));
-
+            Messaging.send(Translation.of("text_shared_notregistered", clientName()));
             return false;
         }
 
@@ -107,24 +106,26 @@ public record InfoCommands(EarthMCEssentials instance) {
         });
     }
 
-    private void sendTownInfo(JsonObject townObject, NamedTextColor colour) {
-        Audience audience = FabricClientAudiences.of().audience();
+    static Audience audience = null;
+    private void sendMsg(NamedTextColor colour, String key, Object... args) {
+        if (audience == null) audience = FabricClientAudiences.of().audience();
+        audience.sendMessage(Translation.of(key, args).color(colour));
+    }
 
-        audience.sendMessage(Translation.of("text_towninfo_header", townObject.get("name").getAsString()).color(colour));
-        audience.sendMessage(Translation.of("text_towninfo_mayor", townObject.get("mayor").getAsString()).color(colour));
-        audience.sendMessage(Translation.of("text_shared_area", townObject.get("area").getAsString()).color(colour));
-        audience.sendMessage(Translation.of("text_shared_residents", townObject.get("residents").getAsJsonArray().size()).color(colour));
-        audience.sendMessage(Translation.of("text_towninfo_location", townObject.get("x").getAsString(), townObject.get("z").getAsString()).color(colour));
+    private void sendTownInfo(JsonObject townObject, NamedTextColor colour) {
+        sendMsg(colour, "text_towninfo_header", townObject.get("name").getAsString());
+        sendMsg(colour, "text_towninfo_mayor", townObject.get("mayor").getAsString());
+        sendMsg(colour, "text_shared_area", townObject.get("area").getAsString());
+        sendMsg(colour, "text_shared_residents", townObject.get("residents").getAsJsonArray().size());
+        sendMsg(colour, "text_towninfo_location", townObject.get("x").getAsString(), townObject.get("z").getAsString());
     }
 
     private void sendNationInfo(JsonObject nationObject, NamedTextColor colour) {
-        Audience audience = FabricClientAudiences.of().audience();
-
-        audience.sendMessage(Translation.of("text_nationinfo_header", nationObject.get("name").getAsString()).color(colour));
-        audience.sendMessage(Translation.of("text_nationinfo_king", nationObject.get("king").getAsString()).color(colour));
-        audience.sendMessage(Translation.of("text_nationinfo_capital", nationObject.get("capitalName").getAsString()).color(colour));
-        audience.sendMessage(Translation.of("text_shared_area", nationObject.get("area").getAsString()).color(colour));
-        audience.sendMessage(Translation.of("text_shared_residents", nationObject.get("residents").getAsJsonArray().size()).color(colour));
-        audience.sendMessage(Translation.of("text_nationinfo_towns", nationObject.get("towns").getAsJsonArray().size()).color(colour));
+        sendMsg(colour, "text_nationinfo_header", nationObject.get("name").getAsString());
+        sendMsg(colour, "text_nationinfo_king", nationObject.get("king").getAsString());
+        sendMsg(colour, "text_nationinfo_capital", nationObject.get("capitalName").getAsString());
+        sendMsg(colour, "text_shared_area", nationObject.get("area").getAsString());
+        sendMsg(colour, "text_shared_residents", nationObject.get("residents").getAsJsonArray().size());
+        sendMsg(colour, "text_nationinfo_towns", nationObject.get("towns").getAsJsonArray().size());
     }
 }

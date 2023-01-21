@@ -66,13 +66,14 @@ public class EarthMCAPI {
                     int size = array.size();
                     for (int i = 0; i < size; i++) {
                         JsonObject currentObj = (JsonObject) array.get(i);
-                        if (currentObj.get("name").getAsString().equals(client.player.getName().getString()))
+                        if (currentObj.get("name").getAsString().equals(clientName()))
                             array.remove(i);
                     }
+
                     return array;
                 } else return instance().getNearbyPlayers();
             } catch (APIException e) {
-                Messaging.sendDebugMessage(e.getMessage(), e);
+                Messaging.sendDebugMessage("Error fetching nearby!", e);
                 return instance().getNearbyPlayers();
             }
         });
