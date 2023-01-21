@@ -1,6 +1,7 @@
 package net.emc.emce.mixins;
 
 import net.emc.emce.modules.OverlayRenderer;
+import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClientGame;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +23,6 @@ public abstract class SessionEventListenerMixin {
     @Inject(at = @At("TAIL"), method="onStartGameSession")
     public void onStartGameSession(CallbackInfo ci) {
         System.out.println("EMCE > Joined game.");
-        updateSessionCounter('+');
 
         ModUtils.updateServerName();
         OverlayRenderer.Init();
@@ -31,6 +31,8 @@ public abstract class SessionEventListenerMixin {
         RegisterHud();
 
         if (isConnectedToEMC()) {
+            updateSessionCounter('+');
+
             fetchEndpoints();
             instance().setShouldRender(true);
         }
@@ -42,7 +44,8 @@ public abstract class SessionEventListenerMixin {
         ModUtils.setServerName("");
         OverlayRenderer.Clear();
 
-        updateSessionCounter('-');
+        if (isConnectedToEMC())
+            updateSessionCounter('-');
     }
 
     void updateSessionCounter(char type) {
@@ -51,6 +54,8 @@ public abstract class SessionEventListenerMixin {
         if (type == '+') instance().sessionCounter++;
         else instance().sessionCounter--;
 
-        System.out.println("EMCE > Updated session counter from " + oldCount + " to " + instance().sessionCounter);
+        String debugStr = "Updated session counter from " + oldCount + " to " + instance().sessionCounter;
+        Messaging.sendDebugMessage(debugStr);
+        System.out.println("EMCE > " + debugStr);
     }
 }

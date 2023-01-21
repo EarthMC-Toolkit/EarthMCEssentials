@@ -52,7 +52,7 @@ public class TaskScheduler {
         newsRunning = false;
         cacheCheckRunning = false;
 
-        Messaging.sendDebugMessage("EMCE > Stopping scheduled tasks...");
+        Messaging.sendDebugMessage("Stopping scheduled tasks...");
     }
 
     public void initMap() {
@@ -63,19 +63,19 @@ public class TaskScheduler {
             if (playerOnline("aurora")) setHasMap("aurora");
             else if (playerOnline("nova")) setHasMap("nova");
             else setHasMap(null);
-        }, 8, 15, TimeUnit.SECONDS); // Give enough time for Dynmap & Vercel to update.
+        }, 15, 10, TimeUnit.SECONDS); // Give enough time for Dynmap & Vercel to update.
     }
 
     public void setHasMap(String map) {
         if (map == null) {
-            Messaging.sendDebugMessage("EMCE > Player not found on any map.");
+            Messaging.sendDebugMessage("Player not found on any map.");
             stop();
 
             instance().mapName = "aurora";
             hasMap = false;
         }
         else {
-            Messaging.sendDebugMessage("EMCE > Player found on: " + map);
+            Messaging.sendDebugMessage("Player found on: " + map);
 
             hasMap = true;
             start();
