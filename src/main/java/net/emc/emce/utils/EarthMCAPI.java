@@ -81,9 +81,8 @@ public class EarthMCAPI {
 
     public static CompletableFuture<Resident> getResident(String residentName) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                return new Resident((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.RESIDENTS) + "/" + residentName)));
-            } catch (APIException e) {
+            try { return new Resident((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.RESIDENTS) + "/" + residentName))); }
+            catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new Resident(residentName);
             }
@@ -92,9 +91,8 @@ public class EarthMCAPI {
 
     public static CompletableFuture<JsonArray> getOnlinePlayers() {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS)));
-            } catch (APIException e) {
+            try { return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS))); }
+            catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
             }
@@ -121,9 +119,7 @@ public class EarthMCAPI {
 
     public static CompletableFuture<JsonArray> getTowns() {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.TOWNS)));
-            } catch (APIException e) {
+            try { return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.TOWNS))); } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
             }
@@ -132,9 +128,8 @@ public class EarthMCAPI {
 
     public static CompletableFuture<JsonArray> getNations() {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NATIONS)));
-            } catch (APIException e) {
+            try { return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NATIONS))); }
+            catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
             }
@@ -223,18 +218,15 @@ public class EarthMCAPI {
 
     private static String getURL(String urlString) throws APIException {
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(urlString))
-                    .header("Accept", "application/json")
-                    .timeout(Duration.ofSeconds(5))
-                    .GET().build();
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
+                    .uri(URI.create(urlString)).header("Accept", "application/json");
 
+            Duration timeout = Duration.ofSeconds(5);
+            final HttpRequest req = builder.timeout(timeout).GET().build();
             final HttpResponse<String> response;
-            try {
-                response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            } catch (HttpTimeoutException e) {
-                throw new APIException("Request timed out after 5 seconds.\nEndpoint: " + urlString);
-            }
+
+            try { response = client.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)); }
+            catch (HttpTimeoutException e) { throw new APIException("Request timed out after 5 seconds.\nEndpoint: " + urlString); }
 
             List<Integer> codes = List.of(new Integer[]{ 200, 203, 304 });
             if (!codes.contains(response.statusCode()))

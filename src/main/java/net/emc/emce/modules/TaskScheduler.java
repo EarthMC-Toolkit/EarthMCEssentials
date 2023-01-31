@@ -56,7 +56,7 @@ public class TaskScheduler {
     }
 
     public void initMap() {
-        service = Executors.newScheduledThreadPool(2);
+        service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
             if (hasMap) return;
 
@@ -131,6 +131,8 @@ public class TaskScheduler {
         cacheCheckRunning = true;
 
         service.scheduleAtFixedRate(() -> {
+            if (!cacheCheckRunning) return;
+
             for (Cache<?> cache : CACHES)
                 if (cache.needsUpdate())
                     cache.clearCache();
@@ -139,6 +141,9 @@ public class TaskScheduler {
 
     private boolean shouldRun() {
         ModConfig config = ModConfig.instance();
-        return config.general.enableMod && ModUtils.isConnectedToEMC();
+        boolean focused = MinecraftClient.getInstance().isWindowFocused();
+        boolean playingEMC = config.general.enableMod && ModUtils.isConnectedToEMC();
+
+        return playingEMC && focused;
     }
 }
