@@ -36,8 +36,8 @@ public class TownDataCache extends Cache<Map<String, JsonObject>> {
     }
 
     @Override
-    public void clearCache() {
+    public void clear() {
         this.cachedData.clear();
-        super.clearCache();
+        super.clear();
     }
 }

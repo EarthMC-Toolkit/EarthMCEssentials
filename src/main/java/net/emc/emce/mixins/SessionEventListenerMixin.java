@@ -30,13 +30,14 @@ public abstract class SessionEventListenerMixin {
         RegisterScreen();
         RegisterHud();
 
-        if (isConnectedToEMC()) {
-            updateSessionCounter('+');
-
-            fetchEndpoints();
-            instance().setShouldRender(true);
+        if (!isConnectedToEMC()) {
+            instance().setShouldRender(false);
+            return;
         }
-        else instance().setShouldRender(false);
+
+        instance().setShouldRender(true);
+        updateSessionCounter('+');
+        fetchEndpoints();
     }
 
     @Inject(at = @At("TAIL"), method="onLeaveGameSession")

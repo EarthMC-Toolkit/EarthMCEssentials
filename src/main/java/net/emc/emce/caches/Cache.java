@@ -22,7 +22,7 @@ public abstract class Cache<T> {
 
     public abstract CompletableFuture<@NotNull T> getCache();
 
-    public void clearCache() {
+    public void clear() {
         this.cachedData = null;
     }
 }

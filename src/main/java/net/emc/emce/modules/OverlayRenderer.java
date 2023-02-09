@@ -26,17 +26,20 @@ import static net.emc.emce.EarthMCEssentials.instance;
 
 public class OverlayRenderer {
     private static MinecraftClient client;
-    private static State townlessState, nearbyState;
-    private static List<String> townless = new CopyOnWriteArrayList<>();
-    private static int currentNewsID = 0;
-    private static ModConfig config;
     private static TextRenderer renderer;
     private static MatrixStack matrixStack;
 
+    private static ModConfig config;
+    private static State townlessState, nearbyState;
+    private static List<String> townless = new CopyOnWriteArrayList<>();
+
+    private static final int currentNewsID = 0;
+    private static final int color = 16777215;
+
     public static void Init() {
+        config = ModConfig.instance();
         client = MinecraftClient.getInstance();
         renderer = client.textRenderer;
-        config = ModConfig.instance();
 
         townlessState = config.townless.positionState;
         nearbyState = config.nearby.positionState;
@@ -74,54 +77,55 @@ public class OverlayRenderer {
         if (config.nearby.enabled) RenderNearby(config.nearby.presetPositions);
     }
 
-    public static void sendNews(NewsState pos, NewsData news) {
-        if (news.getID() == currentNewsID) return;
-        currentNewsID = news.getID();
-
-        TextComponent text = Component.text(news.getMsg(), NamedTextColor.AQUA);
-        switch(pos) {
-            case CHAT -> Messaging.send(text);
-            case ACTION_BAR -> Messaging.sendActionBar(text);
-        }
-    }
+//    public static void sendNews(NewsState pos, NewsData news) {
+//        if (news.getID() == currentNewsID) return;
+//        currentNewsID = news.getID();
+//
+//        TextComponent text = Component.text(news.getMsg(), NamedTextColor.AQUA);
+//        switch(pos) {
+//            case CHAT -> Messaging.send(text);
+//            case ACTION_BAR -> Messaging.sendActionBar(text);
+//        }
+//    }
 
     private static void RenderTownless(boolean usingPreset) {
         int townlessSize = townless.size();
         int maxLen = config.townless.maxLength;
 
-        if (usingPreset) {
-            Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-            MutableText townlessText = Text.translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
+        int x = townlessState.getX();
+        int y = townlessState.getY();
 
+        Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
+        Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
+        MutableText townlessText = Text.translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
+
+        if (usingPreset) {
             // Draw heading.
-            renderer.drawWithShadow(matrixStack, townlessText, townlessState.getX(), townlessState.getY() - 10, 16777215);
+            renderer.drawWithShadow(matrixStack, townlessText, x, y - 10, color);
 
             int index = 0;
             Iterator<String> it = townless.iterator();
 
             while (it.hasNext()) {
                 String townlessName = it.next();
-                Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
                 if (maxLen > 0 && index >= maxLen) {
                     MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
-                    renderer.drawWithShadow(matrixStack, remainingText, townlessState.getX(), townlessState.getY() + index*10, 16777215);
+                    renderer.drawWithShadow(matrixStack, remainingText, x, y + index*10, color);
                     break;
                 }
 
                 MutableText playerName = Text.translatable(townlessName).formatted(playerTextFormatting);
-                renderer.drawWithShadow(matrixStack, playerName, townlessState.getX(), townlessState.getY() + index++*10, 16777215);
+                renderer.drawWithShadow(matrixStack, playerName, x, y + index++*10, color);
             }
         }
         else {
             // Position of the first player, who determines where the list will be.
-            int townlessPlayerOffset = config.townless.yPos;
-
-            Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-            MutableText townlessText = Text.translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
+            int playerOffset = config.townless.yPos;
+            int xOffset = config.townless.xPos;
 
             // Draw heading.
-            renderer.drawWithShadow(matrixStack, townlessText, config.townless.xPos, config.townless.yPos - 15, 16777215);
+            renderer.drawWithShadow(matrixStack, townlessText, xOffset, playerOffset - 15, color);
 
             if (townlessSize > 0) {
                 int index = 0;
@@ -129,12 +133,11 @@ public class OverlayRenderer {
 
                 while (it.hasNext()) {
                     String name = it.next();
-                    Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
 
                     if (maxLen >= 1) {
                         if (index >= maxLen) {
                             MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize-index).formatted(playerTextFormatting);
-                            renderer.drawWithShadow(matrixStack, remainingText, config.townless.xPos, townlessPlayerOffset, 16777215);
+                            renderer.drawWithShadow(matrixStack, remainingText, xOffset, playerOffset, color);
                             break;
                         }
 
@@ -142,27 +145,29 @@ public class OverlayRenderer {
                     }
 
                     MutableText playerName = Text.translatable(name).formatted(playerTextFormatting);
-                    renderer.drawWithShadow(matrixStack, playerName, config.townless.xPos, townlessPlayerOffset, 16777215);
+                    renderer.drawWithShadow(matrixStack, playerName, xOffset, playerOffset, color);
 
                     // Add offset for the next player.
-                    townlessPlayerOffset += 10;
+                    playerOffset += 10;
                 }
             }
         }
     }
 
     private static void RenderNearby(boolean usingPreset) {
+        int nearbySize = nearby().size();
+
+        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
+        Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
+        MutableText nearbyText = Text.translatable("text_nearby_header", nearbySize).formatted(nearbyTextFormatting);
+
         if (usingPreset) {
-            Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-            MutableText nearbyText = Text.translatable("text_nearby_header", nearby().size()).formatted(nearbyTextFormatting);
-
             // Draw heading.
-            renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, 16777215);
+            renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, color);
 
-            if (nearby().size() >= 1) {
-                if (client.player == null) return;
-
-                for (int i = 0; i < nearby().size(); i++) {
+            if (client.player == null) return;
+            if (nearbySize >= 1) {
+                for (int i = 0; i < nearbySize; i++) {
                     JsonObject currentPlayer = nearby().get(i).getAsJsonObject();
 
                     JsonElement xElement = currentPlayer.get("x");
@@ -182,27 +187,22 @@ public class OverlayRenderer {
                         else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
                     }
 
-                    Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
                     MutableText playerText = Text.translatable(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
-
-                    renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, 16777215);
+                    renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, color);
                 }
             }
         }
         else {
             // Position of the first player, who determines where the list will be.
-            int nearbyPlayerOffset = config.nearby.yPos;
-
-            Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-            MutableText nearbyText = Text.translatable("text_nearby_header", nearby().size()).formatted(nearbyTextFormatting);
+            int playerOffset = config.nearby.yPos;
+            int xOffset = config.nearby.xPos;
 
             // Draw heading.
-            renderer.drawWithShadow(matrixStack, nearbyText, config.nearby.xPos, config.nearby.yPos - 15, 16777215);
+            renderer.drawWithShadow(matrixStack, nearbyText, xOffset, playerOffset - 15, color);
 
-            if (nearby().size() >= 1) {
-                if (client.player == null) return;
-
-                for (int i = 0; i < nearby().size(); i++) {
+            if (client.player == null) return;
+            if (nearbySize >= 1) {
+                for (int i = 0; i < nearbySize; i++) {
                     JsonObject currentPlayer = nearby().get(i).getAsJsonObject();
 
                     JsonElement xElement = currentPlayer.get("x");
@@ -213,22 +213,19 @@ public class OverlayRenderer {
                     if (currentPlayerName.equals(client.player.getName().getString())) continue;
 
                     int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
-                            Math.abs(zElement.getAsInt() - (int) client.player.getZ());
+                                   Math.abs(zElement.getAsInt() - (int) client.player.getZ());
 
                     String prefix = "";
-
                     if (config.nearby.showRank) {
                         if (!currentPlayer.has("town")) prefix = "(Townless) ";
                         else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
                     }
 
-                    Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
                     MutableText playerText = Text.translatable(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
+                    renderer.drawWithShadow(matrixStack, playerText, xOffset, playerOffset, color);
 
-                    renderer.drawWithShadow(matrixStack, playerText, config.nearby.xPos, nearbyPlayerOffset, 16777215);
-
-                    // Add offset for the next player.
-                    nearbyPlayerOffset += 10;
+                    // Add 10 pixels to offset. (Where the next player will be rendered)
+                    playerOffset += 10;
                 }
             }
         }
@@ -244,34 +241,42 @@ public class OverlayRenderer {
         nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()),
                 ModUtils.getTextWidth(Text.translatable("text_nearby_header", nearby().size())));
 
+        int windowHeight = ModUtils.getWindowHeight();
+        int windowWidth = ModUtils.getWindowWidth();
+
+        int heightOffset = windowHeight - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22;
+        int heightHalfOffset = windowHeight / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2;
+
+        int widthOffset = windowWidth - townlessLongest - 5;
+
         switch (townlessState) {
             case TOP_MIDDLE -> {
                 if (nearbyState.equals(State.TOP_MIDDLE))
-                    townlessState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2);
+                    townlessState.setX(windowWidth/2 - (townlessLongest + nearbyLongest) / 2);
                 else
-                    townlessState.setX(ModUtils.getWindowWidth() / 2 - townlessLongest / 2);
+                    townlessState.setX(windowWidth/2 - townlessLongest/2);
 
                 townlessState.setY(16);
             }
             case TOP_RIGHT -> {
-                townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
+                townlessState.setX(widthOffset);
                 townlessState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
             }
             case LEFT -> {
                 townlessState.setX(5);
-                townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
+                townlessState.setY(heightHalfOffset);
             }
             case RIGHT -> {
-                townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
-                townlessState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2);
+                townlessState.setX(widthOffset);
+                townlessState.setY(heightHalfOffset);
             }
             case BOTTOM_RIGHT -> {
-                townlessState.setX(ModUtils.getWindowWidth() - townlessLongest - 5);
-                townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
+                townlessState.setX(widthOffset);
+                townlessState.setY(heightOffset);
             }
             case BOTTOM_LEFT -> {
                 townlessState.setX(5);
-                townlessState.setY(ModUtils.getWindowHeight() - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22);
+                townlessState.setY(heightOffset);
             }
             default -> { // Defaults to top left
                 townlessState.setX(5);
@@ -289,24 +294,30 @@ public class OverlayRenderer {
         townlessLongest = Math.max(ModUtils.getLongestElement(townless),
                 ModUtils.getTextWidth(Text.translatable("text_townless_header", townless.size())));
 
+        int windowHeight = ModUtils.getWindowHeight();
+        int windowWidth = ModUtils.getWindowWidth();
+
+        int nearbyArrayHeight = ModUtils.getArrayHeight(nearby());
+        int windowHeightOffset = windowHeight - nearbyArrayHeight - 10;
+        int windowHeightHalfOffset = windowHeight/2 - nearbyArrayHeight/2;
+
+        int xRightOffset = windowWidth - townlessLongest - nearbyLongest - 15;
+
         switch (nearbyState) {
             case TOP_MIDDLE -> {
                 if (townlessState.equals(State.TOP_MIDDLE)) {
-                    nearbyState.setX(ModUtils.getWindowWidth() / 2 - (townlessLongest + nearbyLongest) / 2 + townlessLongest + 5);
+                    nearbyState.setX(windowWidth / 2 - (townlessLongest + nearbyLongest) / 2 + townlessLongest + 5);
                     nearbyState.setY(townlessState.getY());
                 } else {
-                    nearbyState.setX(ModUtils.getWindowWidth() / 2 - nearbyLongest / 2);
+                    nearbyState.setX(windowWidth / 2 - nearbyLongest / 2);
                     nearbyState.setY(16);
                 }
             }
             case TOP_RIGHT -> {
-                if (townlessState.equals(State.TOP_RIGHT))
-                    nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
-                else
-                    nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
+                if (townlessState.equals(State.TOP_RIGHT)) nearbyState.setX(xRightOffset);
+                else nearbyState.setX(windowWidth - nearbyLongest - 5);
 
-                if (client.player != null)
-                    nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
+                nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
             }
             case LEFT -> {
                 if (townlessState.equals(State.LEFT)) {
@@ -314,25 +325,25 @@ public class OverlayRenderer {
                     nearbyState.setY(townlessState.getY());
                 } else {
                     nearbyState.setX(5);
-                    nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby()) / 2);
+                    nearbyState.setY(windowHeightHalfOffset);
                 }
             }
             case RIGHT -> {
                 if (townlessState.equals(State.RIGHT)) {
-                    nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                    nearbyState.setX(xRightOffset);
                     nearbyState.setY(townlessState.getY());
                 } else {
-                    nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 5);
-                    nearbyState.setY(ModUtils.getWindowHeight() / 2 - ModUtils.getArrayHeight(nearby()) / 2);
+                    nearbyState.setX(windowWidth - nearbyLongest - 5);
+                    nearbyState.setY(windowHeightHalfOffset);
                 }
             }
             case BOTTOM_RIGHT -> {
                 if (townlessState.equals(State.BOTTOM_RIGHT)) {
-                    nearbyState.setX(ModUtils.getWindowWidth() - townlessLongest - nearbyLongest - 15);
+                    nearbyState.setX(xRightOffset);
                     nearbyState.setY(townlessState.getY());
                 } else {
-                    nearbyState.setX(ModUtils.getWindowWidth() - nearbyLongest - 15);
-                    nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby()) - 10);
+                    nearbyState.setX(windowWidth - nearbyLongest - 15);
+                    nearbyState.setY(windowHeightOffset);
                 }
             }
             case BOTTOM_LEFT -> {
@@ -341,7 +352,7 @@ public class OverlayRenderer {
                     nearbyState.setY(townlessState.getY());
                 } else {
                     nearbyState.setX(5);
-                    nearbyState.setY(ModUtils.getWindowHeight() - ModUtils.getArrayHeight(nearby()) - 10);
+                    nearbyState.setY(windowHeightOffset);
                 }
             }
             default -> { // Defaults to top left

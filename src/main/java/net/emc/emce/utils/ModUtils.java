@@ -47,21 +47,19 @@ public class ModUtils {
             this.posY = posY;
         }
 
-        public int getX()
-        {
+        public int getX() {
             return posX;
         }
-        public int getY()
-        {
+
+        public int getY() {
             return posY;
         }
 
-        public void setX(int x)
-        {
+        public void setX(int x) {
             posX = x;
         }
-        public void setY(int y)
-        {
+
+        public void setY(int y) {
             posY = y;
         }
     }

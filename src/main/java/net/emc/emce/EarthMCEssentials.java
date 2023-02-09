@@ -37,7 +37,7 @@ public class EarthMCEssentials implements ModInitializer {
 
     private final List<String> townlessResidents = new CopyOnWriteArrayList<>();
     private JsonArray nearbyPlayers = new JsonArray();
-    private NewsData newsData = new NewsData(null);
+    //private NewsData newsData = new NewsData(null);
 
     public static KeyBinding configKeybinding;
 
@@ -121,10 +121,9 @@ public class EarthMCEssentials implements ModInitializer {
         this.shouldRender = shouldRender;
     }
 
-    public void setNews(NewsData nd) {
-        this.newsData = nd;
-        OverlayRenderer.sendNews(config.news.position, nd);
-    }
+//    public void trySendNews(NewsData nd) {
+//        OverlayRenderer.sendNews(config.news.position, nd);
+//    }
 
     public void setTownlessResidents(@NotNull JsonArray array) {
         // Make sure there is data to add.

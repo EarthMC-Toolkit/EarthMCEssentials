@@ -42,7 +42,7 @@ public class TaskScheduler {
 
         startTownless();
         startNearby();
-        startNews();
+        //startNews();
         startCacheCheck();
     }
 
@@ -112,20 +112,20 @@ public class TaskScheduler {
         }, 10, Math.max(config.api.intervals.nearby, 10), TimeUnit.SECONDS);
     }
 
-    private void startNews() {
-        newsRunning = true;
-        final ModConfig config = ModConfig.instance();
-
-        service.scheduleAtFixedRate(() -> {
-            if (newsRunning && config.news.enabled && shouldRun()) {
-                Messaging.sendDebugMessage("Starting news task.");
-                EarthMCAPI.getNews().thenAccept(news -> {
-                    instance().setNews(news);
-                    Messaging.sendDebugMessage("Finished news task.");
-                });
-            }
-        }, 10, Math.max(config.api.intervals.news, 10), TimeUnit.SECONDS);
-    }
+//    private void startNews() {
+//        newsRunning = true;
+//        final ModConfig config = ModConfig.instance();
+//
+//        service.scheduleAtFixedRate(() -> {
+//            if (newsRunning && config.news.enabled && shouldRun()) {
+//                Messaging.sendDebugMessage("Starting news task.");
+//                EarthMCAPI.getNews().thenAccept(news -> {
+//                    instance().trySendNews(news);
+//                    Messaging.sendDebugMessage("Finished news task.");
+//                });
+//            }
+//        }, 10, Math.max(config.api.intervals.news, 10), TimeUnit.SECONDS);
+//    }
 
     private void startCacheCheck() {
         cacheCheckRunning = true;
@@ -135,7 +135,7 @@ public class TaskScheduler {
 
             for (Cache<?> cache : CACHES)
                 if (cache.needsUpdate())
-                    cache.clearCache();
+                    cache.clear();
         }, 0, 5, TimeUnit.MINUTES);
     }
 

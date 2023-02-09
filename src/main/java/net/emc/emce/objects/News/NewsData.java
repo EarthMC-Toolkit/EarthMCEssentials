@@ -17,9 +17,11 @@ public class NewsData {
     public String getMsg() {
         return message;
     }
+
     public int getID() {
         return id;
     }
+
     public int getTimestamp() {
         return timestamp;
     }
