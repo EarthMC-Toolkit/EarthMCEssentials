@@ -1,10 +1,12 @@
 package net.emc.emce.utils;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.objects.API.APIData;
 import net.emc.emce.objects.API.APIRoute;
-import net.emc.emce.objects.News.NewsData;
 import net.emc.emce.objects.Resident;
 import net.emc.emce.objects.exception.APIException;
 import net.minecraft.client.MinecraftClient;

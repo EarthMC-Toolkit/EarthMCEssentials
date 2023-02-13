@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.emc.emce.objects.Resident;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
@@ -71,7 +72,7 @@ public class ModUtils {
     public static int getWindowWidth() { return getInstance().getWindow().getScaledWidth(); }
     public static int getWindowHeight() { return getInstance().getWindow().getScaledHeight(); }
 
-    public static String elementAsString(JsonElement el, String name) {
+    public static String elementAsString(@NotNull JsonElement el, String name) {
         return el.getAsJsonObject().get(name).getAsString();
     }
 
@@ -135,12 +136,16 @@ public class ModUtils {
             JsonObject currentObj = nearbyResidents.get(i).getAsJsonObject();
             Resident clientRes = instance().getClientResident();
 
-            if (currentObj.get("name") == null || currentObj.get("x") == null || currentObj.get("z") == null) continue;
-            if (clientRes != null && currentObj.get("name").getAsString().equals(clientRes.getName())) continue;
+            JsonElement name = currentObj.get("name");
+            JsonElement xElem = currentObj.get("x");
+            JsonElement zElem = currentObj.get("z");
+
+            if (zElem == null || xElem == null || name == null) continue;
+            if (clientRes != null && name.getAsString().equals(clientRes.getName())) continue;
 
             ClientPlayerEntity player = Objects.requireNonNull(getInstance().player);
-            int distance = Math.abs(currentObj.get("x").getAsInt() - player.getBlockX()) +
-                           Math.abs(currentObj.get("z").getAsInt() - player.getBlockZ());
+            int distance = Math.abs(xElem.getAsInt() - player.getBlockX()) +
+                           Math.abs(zElem.getAsInt() - player.getBlockZ());
 
             String prefix = "";
 
@@ -149,7 +154,7 @@ public class ModUtils {
                 else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
             }
 
-            MutableText nearbyText = Text.translatable(prefix + currentObj.get("name").getAsString() + ": " + distance + "m");
+            MutableText nearbyText = Text.translatable(prefix + name.getAsString() + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
 
@@ -178,25 +183,24 @@ public class ModUtils {
         String serverName = "";
 
         try {
-            ServerInfo serverInfo = getInstance().getCurrentServerEntry();
+            MinecraftClient instance = getInstance();
+            ServerInfo serverInfo = instance.getCurrentServerEntry();
 
             if (serverInfo != null) {
-                if (serverInfo.isLocal())
-                    serverName = serverInfo.name;
-                else
-                    serverName = serverInfo.address;
+                if (serverInfo.isLocal()) serverName = serverInfo.name;
+                else serverName = serverInfo.address;
             }
-            else if (getInstance().isConnectedToRealms()) serverName = "Realms";
-            else if (getInstance().isInSingleplayer()) serverName = "Singleplayer";
+            else if (instance.isConnectedToRealms()) serverName = "Realms";
+            else if (instance.isInSingleplayer()) serverName = "Singleplayer";
             else {
-                ClientPlayNetworkHandler clientPlayNetworkHandler = getInstance().getNetworkHandler();
+                ClientPlayNetworkHandler clientPlayNetworkHandler = instance.getNetworkHandler();
 
                 if (clientPlayNetworkHandler != null) {
                     return ((InetSocketAddress) clientPlayNetworkHandler.getConnection().getAddress()).getHostName();
                 }
             }
-        } catch (Exception exception) {
-            Messaging.sendDebugMessage("Error getting serverName.", exception);
+        } catch (Exception e) {
+            Messaging.sendDebugMessage("Error getting server name.", e);
         }
 
         return serverName;
