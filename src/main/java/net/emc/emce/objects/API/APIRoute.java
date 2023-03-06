@@ -8,6 +8,5 @@ public enum APIRoute {
     ONLINE_PLAYERS,
     TOWNS,
     NATIONS,
-    ALLIANCES,
-    NEWS
+    ALLIANCES
 }

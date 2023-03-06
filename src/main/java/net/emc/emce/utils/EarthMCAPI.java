@@ -138,17 +138,6 @@ public class EarthMCAPI {
         });
     }
 
-//    public static CompletableFuture<NewsData> getNews() {
-//        return CompletableFuture.supplyAsync(() -> {
-//            try {
-//                return new NewsData((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.NEWS))));
-//            } catch (APIException e) {
-//                Messaging.sendDebugMessage(e.getMessage(), e);
-//                return new NewsData(null);
-//            }
-//        });
-//    }
-
     public static CompletableFuture<JsonArray> getAlliances() {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -197,7 +186,6 @@ public class EarthMCAPI {
             case TOWNS -> route = apiData.routes.towns;
             case ALLIANCES -> route = apiData.routes.alliances;
             case NEARBY -> route = apiData.routes.nearby;
-            case NEWS -> route = apiData.routes.news;
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
 
@@ -208,7 +196,8 @@ public class EarthMCAPI {
     }
 
     public static String clientName() {
-        return MinecraftClient.getInstance().player.getName().getString();
+        ClientPlayerEntity pl = MinecraftClient.getInstance().player;
+        return pl == null ? "" : pl.getName().getString();
     }
 
     public static boolean playerOnline(String map) {

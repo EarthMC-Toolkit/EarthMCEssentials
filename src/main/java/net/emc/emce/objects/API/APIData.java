@@ -15,7 +15,6 @@ public class APIData {
         public String allPlayers;
         public String onlinePlayers;
         public String nearby;
-        public String news;
         public String alliances;
     }
 
@@ -34,7 +33,6 @@ public class APIData {
         routes.nearby = routesObj.get("nearby").getAsString();
 
         routes.alliances = routesObj.get("alliances").getAsString();
-        //routes.news = routesObj.get("news").getAsString();
     }
 
     public APIData() {
@@ -47,7 +45,6 @@ public class APIData {
         routes.allPlayers = "";
         routes.onlinePlayers = "";
         routes.nearby = "";
-        routes.news = "";
         routes.alliances = "";
     }
 
