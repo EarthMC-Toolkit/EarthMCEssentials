@@ -38,7 +38,7 @@ dependencies {
 	// Libraries to include in remapJar
 	include "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
-	//implementation 'io.github.emcw:emc-wrapper:1.0.0'
+	//implementation "io.github.emcw:emc-wrapper:${project.wrapper_version}"
 }
 
 processResources {

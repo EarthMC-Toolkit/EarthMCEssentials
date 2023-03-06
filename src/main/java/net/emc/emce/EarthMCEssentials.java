@@ -119,10 +119,6 @@ public class EarthMCEssentials implements ModInitializer {
         this.shouldRender = shouldRender;
     }
 
-//    public void trySendNews(NewsData nd) {
-//        OverlayRenderer.sendNews(config.news.position, nd);
-//    }
-
     public void setTownlessResidents(@NotNull JsonArray array) {
         // Make sure there is data to add.
         if (array.size() < 1) return;
