@@ -11,7 +11,6 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.objects.Colors;
-import net.emc.emce.objects.News.NewsState;
 import net.emc.emce.utils.ModUtils.State;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
@@ -30,10 +29,6 @@ public class ModConfig implements ConfigData {
     @Category("Nearby")
     @TransitiveObject()
     public Nearby nearby = new Nearby();
-
-    @Category("News")
-    @TransitiveObject()
-    public News news = new News();
 
     @Category("Commands")
     @TransitiveObject()
@@ -105,15 +100,6 @@ public class ModConfig implements ConfigData {
         public int zBlocks = 500;
     }
 
-    public static class News {
-        @Comment("Toggle news on or off.")
-        public boolean enabled = true;
-
-        @EnumHandler(option = BUTTON)
-        @Comment("The position of where news will be shown.")
-        public NewsState position = NewsState.ACTION_BAR;
-    }
-
     public static class Commands {
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the townless players text.")
@@ -145,10 +131,6 @@ public class ModConfig implements ConfigData {
             @Comment("Small but frequent payload, if you don't rely on it much, turn it up.")
             @BoundedDiscrete(min = 10, max = 120)
             public int nearby = 20;
-
-            @Comment("Very small payload and you won't need to turn this up in most situations.")
-            @BoundedDiscrete(min = 10, max = 180)
-            public int news = 60;
         }
     }
 
