@@ -18,7 +18,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,7 +32,6 @@ public class OverlayRenderer {
     private static State townlessState, nearbyState;
     private static List<String> townless = new CopyOnWriteArrayList<>();
 
-    private static final int currentNewsID = 0;
     private static final int color = 16777215;
 
     public static void Init() {
@@ -77,17 +75,6 @@ public class OverlayRenderer {
         if (config.nearby.enabled) RenderNearby(config.nearby.presetPositions);
     }
 
-//    public static void sendNews(NewsState pos, NewsData news) {
-//        if (news.getID() == currentNewsID) return;
-//        currentNewsID = news.getID();
-//
-//        TextComponent text = Component.text(news.getMsg(), NamedTextColor.AQUA);
-//        switch(pos) {
-//            case CHAT -> Messaging.send(text);
-//            case ACTION_BAR -> Messaging.sendActionBar(text);
-//        }
-//    }
-
     private static void RenderTownless(boolean usingPreset) {
         int townlessSize = townless.size();
         int maxLen = config.townless.maxLength;
@@ -104,19 +91,16 @@ public class OverlayRenderer {
             renderer.drawWithShadow(matrixStack, townlessText, x, y - 10, color);
 
             int index = 0;
-            Iterator<String> it = townless.iterator();
 
-            while (it.hasNext()) {
-                String townlessName = it.next();
-
+            for (String townlessName : townless) {
                 if (maxLen > 0 && index >= maxLen) {
                     MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
-                    renderer.drawWithShadow(matrixStack, remainingText, x, y + index*10, color);
+                    renderer.drawWithShadow(matrixStack, remainingText, x, y + index * 10, color);
                     break;
                 }
 
                 MutableText playerName = Text.translatable(townlessName).formatted(playerTextFormatting);
-                renderer.drawWithShadow(matrixStack, playerName, x, y + index++*10, color);
+                renderer.drawWithShadow(matrixStack, playerName, x, y + index++ * 10, color);
             }
         }
         else {
@@ -129,14 +113,11 @@ public class OverlayRenderer {
 
             if (townlessSize > 0) {
                 int index = 0;
-                Iterator<String> it = townless.iterator();
 
-                while (it.hasNext()) {
-                    String name = it.next();
-
+                for (String name : townless) {
                     if (maxLen >= 1) {
                         if (index >= maxLen) {
-                            MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize-index).formatted(playerTextFormatting);
+                            MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
                             renderer.drawWithShadow(matrixStack, remainingText, xOffset, playerOffset, color);
                             break;
                         }
@@ -260,6 +241,7 @@ public class OverlayRenderer {
             }
             case TOP_RIGHT -> {
                 townlessState.setX(widthOffset);
+                assert client.player != null;
                 townlessState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
             }
             case LEFT -> {
@@ -317,6 +299,7 @@ public class OverlayRenderer {
                 if (townlessState.equals(State.TOP_RIGHT)) nearbyState.setX(xRightOffset);
                 else nearbyState.setX(windowWidth - nearbyLongest - 5);
 
+                assert client.player != null;
                 nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
             }
             case LEFT -> {

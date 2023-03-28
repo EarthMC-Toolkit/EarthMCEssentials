@@ -3,16 +3,14 @@ package net.emc.emce.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.emc.emce.objects.Resident;
+import io.github.emcw.entities.Resident;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
@@ -26,6 +24,7 @@ import static net.minecraft.client.MinecraftClient.getInstance;
 public class ModUtils {
     private static @NotNull String serverName = "";
 
+    @SuppressWarnings("unused")
     public enum ScaleMethod {
         Independent,
         Proportionate
@@ -65,6 +64,7 @@ public class ModUtils {
         }
     }
 
+    @SuppressWarnings("unused")
     public static int getStringWidth(String string) { return getInstance().textRenderer.getWidth(string); }
     public static int getTextWidth(MutableText text) { return getInstance().textRenderer.getWidth(text); }
     public static int getStringHeight(String string) { return getInstance().textRenderer.getWrappedLinesHeight(string, 1000); }
@@ -76,7 +76,8 @@ public class ModUtils {
         return el.getAsJsonObject().get(name).getAsString();
     }
 
-    public static int getLongestElement(JsonArray array) {
+    @SuppressWarnings("unused")
+    public static int getLongestElement(@NotNull JsonArray array) {
         int length = array.size();
         if (array == null || length < 1) return 0;
 

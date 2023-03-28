@@ -1,6 +1,5 @@
 package net.emc.emce.events.commands;
 
-import com.google.gson.JsonArray;
 import com.mojang.brigadier.CommandDispatcher;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.EarthMCAPI;
@@ -13,6 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.List;
+import java.util.Map;
 
 public record TownlessCommand(EarthMCEssentials instance) {
     static NamedTextColor townlessTextColour;
@@ -74,12 +74,12 @@ public record TownlessCommand(EarthMCEssentials instance) {
 
             return 1;
         })).then(ClientCommandManager.literal("refresh").executes(c -> {
-            EarthMCAPI.getTownless().thenAccept(instance::setTownlessResidents);
+            instance.setTownless(EarthMCAPI.getTownless());
             Messaging.sendPrefixed("msg_townless_refresh");
 
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {
-            instance.setTownlessResidents(new JsonArray());
+            instance.setTownless(Map.of());
             Messaging.sendPrefixed("msg_townless_clear");
 
             return 1;

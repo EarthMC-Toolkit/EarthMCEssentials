@@ -1,9 +1,7 @@
 package net.emc.emce.utils;
 
-import net.emc.emce.EarthMCEssentials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.client.MinecraftClient;
 
 import java.util.Collections;
 import java.util.List;

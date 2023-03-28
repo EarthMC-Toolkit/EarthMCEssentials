@@ -1,23 +1,20 @@
 package net.emc.emce.modules;
 
-import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.caches.Cache;
-import net.emc.emce.caches.NationDataCache;
-import net.emc.emce.caches.TownDataCache;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
+import static net.emc.emce.utils.EarthMCAPI.getTownless;
 import static net.emc.emce.utils.EarthMCAPI.playerOnline;
 
 public class TaskScheduler {
@@ -25,24 +22,19 @@ public class TaskScheduler {
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning, newsRunning;
     public boolean hasMap = false;
 
-    private static final List<Cache<?>> CACHES = Arrays.asList(
-            NationDataCache.INSTANCE,
-            TownDataCache.INSTANCE,
-            AllianceDataCache.INSTANCE
-    );
+    private static final List<Cache<?>> CACHES = List.of(AllianceDataCache.INSTANCE);
 
     public void start() {
         ModConfig config = ModConfig.instance();
 
         // Pre-fill data.
         if (config.general.enableMod) {
-            if (config.townless.enabled) EarthMCAPI.getTownless().thenAccept(instance()::setTownlessResidents);
+            if (config.townless.enabled) instance().setTownless(getTownless());
             if (config.nearby.enabled) EarthMCAPI.getNearby().thenAccept(instance()::setNearbyPlayers);
         }
 
         startTownless();
         startNearby();
-        //startNews();
         startCacheCheck();
     }
 
@@ -89,10 +81,9 @@ public class TaskScheduler {
         service.scheduleAtFixedRate(() -> {
             if (townlessRunning && config.townless.enabled && shouldRun()) {
                 Messaging.sendDebugMessage("Starting townless task.");
-                EarthMCAPI.getTownless().thenAccept(townless -> {
-                    instance().setTownlessResidents(townless);
-                    Messaging.sendDebugMessage("Finished townless task.");
-                });
+
+                instance().setTownless(getTownless());
+                Messaging.sendDebugMessage("Finished townless task.");
             }
         }, 30, Math.max(config.api.intervals.townless, 30), TimeUnit.SECONDS);
     }
@@ -112,21 +103,6 @@ public class TaskScheduler {
         }, 10, Math.max(config.api.intervals.nearby, 10), TimeUnit.SECONDS);
     }
 
-//    private void startNews() {
-//        newsRunning = true;
-//        final ModConfig config = ModConfig.instance();
-//
-//        service.scheduleAtFixedRate(() -> {
-//            if (newsRunning && config.news.enabled && shouldRun()) {
-//                Messaging.sendDebugMessage("Starting news task.");
-//                EarthMCAPI.getNews().thenAccept(news -> {
-//                    instance().trySendNews(news);
-//                    Messaging.sendDebugMessage("Finished news task.");
-//                });
-//            }
-//        }, 10, Math.max(config.api.intervals.news, 10), TimeUnit.SECONDS);
-//    }
-
     private void startCacheCheck() {
         cacheCheckRunning = true;
 
@@ -142,7 +118,7 @@ public class TaskScheduler {
     private boolean shouldRun() {
         ModConfig config = ModConfig.instance();
         boolean focused = MinecraftClient.getInstance().isWindowFocused();
-        boolean playingEMC = config.general.enableMod && ModUtils.isConnectedToEMC();
+        boolean playingEMC = config.general.enableMod;
 
         return playingEMC && focused;
     }

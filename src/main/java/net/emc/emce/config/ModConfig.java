@@ -96,7 +96,7 @@ public class ModConfig implements ConfigData {
         @Comment("The colour of nearby players' names.")
         public Colors playerTextColour = Colors.GOLD;
 
-        // Independent scaling - each axis can be same or different.
+        // Independent scaling - either axis can be the same or different.
         @Comment("The amount of blocks to check on the X axis.")
         @BoundedDiscrete(min = 50, max = 10000)
         public int xBlocks = 500;
