@@ -152,7 +152,6 @@ public class EarthMCAPI {
             case ALL_PLAYERS -> route = apiData.routes.allPlayers;
             case ALLIANCES -> route = apiData.routes.alliances;
             case NEARBY -> route = apiData.routes.nearby;
-            case NEWS -> route = apiData.routes.news;
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
 
