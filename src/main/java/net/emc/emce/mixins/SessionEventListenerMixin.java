@@ -29,14 +29,11 @@ public abstract class SessionEventListenerMixin {
         RegisterScreen();
         RegisterHud();
 
-        if (!isConnectedToEMC()) {
-            instance().setShouldRender(false);
-            return;
+        instance().setShouldRender(instance().getConfig().general.enableMod);
+        if (isConnectedToEMC()) {
+            updateSessionCounter('+');
+            fetchEndpoints();
         }
-
-        instance().setShouldRender(true);
-        updateSessionCounter('+');
-        fetchEndpoints();
     }
 
     @Inject(at = @At("TAIL"), method="onLeaveGameSession")
