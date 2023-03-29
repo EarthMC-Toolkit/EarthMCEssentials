@@ -161,14 +161,13 @@ public class ModUtils {
         return longestElement;
     }
 
-    public static int getStatusEffectOffset(Collection<StatusEffectInstance> statusEffectInstances) {
-        if (statusEffectInstances.isEmpty()) return 16;
+    public static int getStatusEffectOffset(Collection<StatusEffectInstance> statusEffects) {
+        if (statusEffects.isEmpty()) return 16;
 
         int offset = 0;
-        for (StatusEffectInstance statusEffectInstance : statusEffectInstances) {
-            if (statusEffectInstance.shouldShowIcon()) {
-                if (statusEffectInstance.getEffectType().isBeneficial()) offset = Math.max(offset, 36);
-                else offset = 64;
+        for (StatusEffectInstance effect : statusEffects) {
+            if (effect.shouldShowIcon()) {
+                offset = effect.getEffectType().isBeneficial() ? Math.max(offset, 36) : 64;
             }
         }
 

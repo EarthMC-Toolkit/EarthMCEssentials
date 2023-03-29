@@ -2,7 +2,6 @@
   "domain": "https://emctoolkit.vercel.app/api/",
   "routes": {
     "allplayers": "/allplayers",
-    "alliances": "/alliances",
-    "nearby": "/nearby/players"
+    "alliances": "/alliances"
   }
 }
