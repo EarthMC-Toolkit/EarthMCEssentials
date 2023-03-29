@@ -2,7 +2,6 @@
 package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;

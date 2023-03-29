@@ -2,6 +2,7 @@ package net.emc.emce.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.client.network.ClientPlayerEntity;
 
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +59,8 @@ public class Messaging {
 
     //#region Send Command
     public static void performCommand(String cmd) {
-        getInstance().player.networkHandler.sendCommand(cmd);
+        ClientPlayerEntity pl = getInstance().player;
+        if (pl != null) getInstance().player.networkHandler.sendCommand(cmd);
     }
     //endregion
 

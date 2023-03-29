@@ -5,10 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.core.EMCWrapper;
-import io.github.emcw.entities.Nation;
-import io.github.emcw.entities.Player;
-import io.github.emcw.entities.Resident;
-import io.github.emcw.entities.Town;
+import io.github.emcw.entities.*;
 import io.github.emcw.exceptions.MissingEntryException;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.objects.API.APIData;
@@ -41,7 +38,7 @@ public class EarthMCAPI {
     public static APIData apiData = new APIData();
 
     public static JsonObject player = new JsonObject();
-    public static EMCWrapper wrapper = new EMCWrapper(true, true);
+    public static final EMCWrapper wrapper = new EMCWrapper(true, true);
 
     private static EMCMap currentMap() {
         return Objects.equals(instance().mapName, "aurora") ? wrapper.getAurora() : wrapper.getNova();
@@ -73,38 +70,33 @@ public class EarthMCAPI {
     }
 
     @Contract(" -> new")
-    public static @NotNull CompletableFuture<JsonArray> getNearby() {
+    public static @NotNull CompletableFuture<Map<String, Player>> getNearby() {
         return getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
     }
 
     @Contract("_, _ -> new")
-    public static @NotNull CompletableFuture<JsonArray> getNearby(int xBlocks, int zBlocks) {
+    public static @NotNull CompletableFuture<Map<String, Player>> getNearby(int xBlocks, int zBlocks) {
         return CompletableFuture.supplyAsync(() -> {
+            Map<String, Player> result = Map.of();
+
             try {
                 MinecraftClient client = MinecraftClient.getInstance();
                 ClientPlayerEntity player = client.player;
 
-                if (player != null) {
-                    if (!player.getEntityWorld().getDimension().bedWorks())
-                        return new JsonArray();
+                if (player == null) return result;
+                if (!player.getEntityWorld().getDimension().bedWorks()) return result;
 
-                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NEARBY) + "/" +
-                            (int) player.getX() + "/" +
-                            (int) player.getZ() + "/" +
-                            xBlocks + "/" + zBlocks));
+                EMCMap curMap = currentMap();
+                Integer x = (int) player.getX(),
+                        y = (int) player.getY();
 
-                    int size = array.size();
-                    for (int i = 0; i < size; i++) {
-                        JsonObject currentObj = (JsonObject) array.get(i);
-                        if (currentObj.get("name").getAsString().equals(clientName()))
-                            array.remove(i);
-                    }
+                Map<String, Player> nearby = curMap.Players.getNearby(curMap.Players.all(), x, y, xBlocks, zBlocks);
+                nearby.remove(clientName());
 
-                    return array;
-                } else return instance().getNearbyPlayers();
-            } catch (APIException e) {
+                return nearby;
+            } catch (Exception e) {
                 Messaging.sendDebugMessage("Error fetching nearby!", e);
-                return instance().getNearbyPlayers();
+                return result;
             }
         });
     }
@@ -151,7 +143,6 @@ public class EarthMCAPI {
         switch(routeType) {
             case ALL_PLAYERS -> route = apiData.routes.allPlayers;
             case ALLIANCES -> route = apiData.routes.alliances;
-            case NEARBY -> route = apiData.routes.nearby;
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
 
@@ -161,8 +152,10 @@ public class EarthMCAPI {
         return apiData.getDomain() + endpoint;
     }
 
+    @Nullable
     public static String clientName() {
-        return MinecraftClient.getInstance().player.getName().getString();
+        ClientPlayerEntity pl = MinecraftClient.getInstance().player;
+        return pl == null ? null : pl.getName().getString();
     }
 
     public static boolean playerOnline(String map) {

@@ -1,8 +1,6 @@
 package net.emc.emce.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import io.github.emcw.entities.Player;
 import io.github.emcw.entities.Resident;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -14,9 +12,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static net.emc.emce.EarthMCEssentials.instance;
 import static net.minecraft.client.MinecraftClient.getInstance;
@@ -72,18 +68,16 @@ public class ModUtils {
     public static int getWindowWidth() { return getInstance().getWindow().getScaledWidth(); }
     public static int getWindowHeight() { return getInstance().getWindow().getScaledHeight(); }
 
-    public static String elementAsString(@NotNull JsonElement el, String name) {
-        return el.getAsJsonObject().get(name).getAsString();
-    }
-
     @SuppressWarnings("unused")
-    public static int getLongestElement(@NotNull JsonArray array) {
-        int length = array.size();
-        if (array == null || length < 1) return 0;
+    public static int getLongestElement(Map<String, ?> map) {
+        int length = map == null ? 0 : map.size();
+        if (length < 1) return 0;
+
+        List<String> keys = new ArrayList<>(map.keySet());
 
         int longestElement = 0, i = 0;
         for (; i < length; i++) {
-            int currentWidth = getStringWidth(elementAsString(array.get(i), "name"));
+            int currentWidth = getStringWidth(keys.get(i));
             longestElement = Math.max(currentWidth, longestElement);
         }
 
@@ -99,13 +93,16 @@ public class ModUtils {
         return longestElement;
     }
 
-    public static int getArrayHeight(JsonArray array) {
-        int length = array.size();
+    public static int getArrayHeight(Map<String, ?> map) {
+        int length = map.size();
         if (length < 1) return 0;
 
+        List<String> keys = new ArrayList<>(map.keySet());
+
         int totalLength = 0, i = 0;
-        for (; i < length; i++)
-            totalLength += getStringHeight(elementAsString(array.get(i), "name"));
+        for (; i < length; i++) {
+            totalLength += getStringHeight(keys.get(i));
+        }
 
         return totalLength;
     }
@@ -128,34 +125,36 @@ public class ModUtils {
         return totalLength;
     }
 
-    public static int getNearbyLongestElement(JsonArray nearbyResidents) {
-        int length = nearbyResidents.size();
+    public static int getNearbyLongestElement(@NotNull Map<String, Player> nearby) {
+        int length = nearby.size();
         if (length < 1) return 0;
 
-        int longestElement = 0, i = 0;
-        for (; i < length; i++) {
-            JsonObject currentObj = nearbyResidents.get(i).getAsJsonObject();
+        int longestElement = 0;
+        for (Player curPlayer : nearby.values()) {
             Resident clientRes = instance().getClientResident();
 
-            JsonElement name = currentObj.get("name");
-            JsonElement xElem = currentObj.get("x");
-            JsonElement zElem = currentObj.get("z");
+            String name = curPlayer.getName();
+            Integer x = curPlayer.getLocation().getX();
+            Integer z = curPlayer.getLocation().getZ();
 
-            if (zElem == null || xElem == null || name == null) continue;
-            if (clientRes != null && name.getAsString().equals(clientRes.getName())) continue;
+            if (z == null || x == null || name == null) continue;
+            if (clientRes != null && name.equals(clientRes.getName())) continue;
 
             ClientPlayerEntity player = Objects.requireNonNull(getInstance().player);
-            int distance = Math.abs(xElem.getAsInt() - player.getBlockX()) +
-                           Math.abs(zElem.getAsInt() - player.getBlockZ());
+            int distance = Math.abs(x - player.getBlockX()) +
+                           Math.abs(z - player.getBlockZ());
 
             String prefix = "";
 
             if (instance().getConfig().nearby.showRank) {
-                if (!currentObj.has("town")) prefix = "(Townless) ";
-                else prefix = "(" + currentObj.get("rank").getAsString() + ") ";
+                if (!curPlayer.isResident()) prefix = "(Townless) ";
+                else {
+                    Resident curRes = (Resident) curPlayer;
+                    prefix = "(" + curRes.getRank() + ") ";
+                }
             }
 
-            MutableText nearbyText = Text.translatable(prefix + name.getAsString() + ": " + distance + "m");
+            MutableText nearbyText = Text.translatable(prefix + name + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
 

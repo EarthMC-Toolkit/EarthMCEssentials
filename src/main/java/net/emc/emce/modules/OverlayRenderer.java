@@ -1,17 +1,10 @@
 package net.emc.emce.modules;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import io.github.emcw.entities.Player;
+import io.github.emcw.entities.Resident;
 import net.emc.emce.config.ModConfig;
-import net.emc.emce.objects.News.NewsData;
-import net.emc.emce.objects.News.NewsState;
-import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.emc.emce.utils.ModUtils.State;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,9 +12,12 @@ import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static net.emc.emce.EarthMCEssentials.instance;
+import static net.emc.emce.utils.ModUtils.getTextWidth;
+import static net.minecraft.text.Text.translatable;
 
 public class OverlayRenderer {
     private static MinecraftClient client;
@@ -46,11 +42,11 @@ public class OverlayRenderer {
     }
 
     public static void Clear() {
-        instance().setNearbyPlayers(new JsonArray());
+        instance().setNearbyPlayers(Map.of());
         townless = new CopyOnWriteArrayList<>();
     }
 
-    public static JsonArray nearby() {
+    public static Map<String, Player> nearby() {
         return instance().getNearbyPlayers();
     }
 
@@ -84,7 +80,7 @@ public class OverlayRenderer {
 
         Formatting playerTextFormatting = Formatting.byName(config.townless.playerTextColour.name());
         Formatting townlessTextFormatting = Formatting.byName(config.townless.headingTextColour.name());
-        MutableText townlessText = Text.translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
+        MutableText townlessText = translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
 
         if (usingPreset) {
             // Draw heading.
@@ -94,12 +90,12 @@ public class OverlayRenderer {
 
             for (String townlessName : townless) {
                 if (maxLen > 0 && index >= maxLen) {
-                    MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
+                    MutableText remainingText = translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, remainingText, x, y + index * 10, color);
                     break;
                 }
 
-                MutableText playerName = Text.translatable(townlessName).formatted(playerTextFormatting);
+                MutableText playerName = translatable(townlessName).formatted(playerTextFormatting);
                 renderer.drawWithShadow(matrixStack, playerName, x, y + index++ * 10, color);
             }
         }
@@ -117,7 +113,7 @@ public class OverlayRenderer {
                 for (String name : townless) {
                     if (maxLen >= 1) {
                         if (index >= maxLen) {
-                            MutableText remainingText = Text.translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
+                            MutableText remainingText = translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
                             renderer.drawWithShadow(matrixStack, remainingText, xOffset, playerOffset, color);
                             break;
                         }
@@ -125,7 +121,7 @@ public class OverlayRenderer {
                         index++;
                     }
 
-                    MutableText playerName = Text.translatable(name).formatted(playerTextFormatting);
+                    MutableText playerName = translatable(name).formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, playerName, xOffset, playerOffset, color);
 
                     // Add offset for the next player.
@@ -136,40 +132,45 @@ public class OverlayRenderer {
     }
 
     private static void RenderNearby(boolean usingPreset) {
-        int nearbySize = nearby().size();
+        Map<String, Player> nearby = nearby();
 
         Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
         Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
-        MutableText nearbyText = Text.translatable("text_nearby_header", nearbySize).formatted(nearbyTextFormatting);
+        MutableText nearbyText = translatable("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
 
         if (usingPreset) {
             // Draw heading.
             renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, color);
 
             if (client.player == null) return;
-            if (nearbySize >= 1) {
-                for (int i = 0; i < nearbySize; i++) {
-                    JsonObject currentPlayer = nearby().get(i).getAsJsonObject();
+            if (nearby.size() >= 1) {
+                int i = 0;
 
-                    JsonElement xElement = currentPlayer.get("x");
-                    JsonElement zElement = currentPlayer.get("z");
-                    if (xElement == null || zElement == null) continue;
+                for (Player curPlayer : nearby.values()) {
+                    Integer x = curPlayer.getLocation().getX();
+                    Integer z = curPlayer.getLocation().getZ();
+                    if (x == null || z == null) continue;
 
-                    String currentPlayerName = currentPlayer.get("name").getAsString();
-                    if (currentPlayerName.equals(client.player.getName().getString())) continue;
+                    String name = curPlayer.getName();
+                    if (name.equals(client.player.getName().getString())) continue;
 
-                    int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
-                            Math.abs(zElement.getAsInt() - (int) client.player.getZ());
+                    int distance = Math.abs(x - (int) client.player.getX()) +
+                                   Math.abs(z - (int) client.player.getZ());
 
                     String prefix = "";
 
                     if (config.nearby.showRank) {
-                        if (!currentPlayer.has("town")) prefix = "(Townless) ";
-                        else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
+                        if (!curPlayer.isResident()) prefix = "(Townless) ";
+                        else {
+                            Resident res = (Resident) curPlayer;
+                            prefix = "(" + res.getRank() + ") ";
+                        }
                     }
 
-                    MutableText playerText = Text.translatable(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
+                    MutableText playerText = translatable(prefix + name + ": " + distance + "m").formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, color);
+
+                    ++i;
                 }
             }
         }
@@ -182,27 +183,28 @@ public class OverlayRenderer {
             renderer.drawWithShadow(matrixStack, nearbyText, xOffset, playerOffset - 15, color);
 
             if (client.player == null) return;
-            if (nearbySize >= 1) {
-                for (int i = 0; i < nearbySize; i++) {
-                    JsonObject currentPlayer = nearby().get(i).getAsJsonObject();
+            if (nearby.size() >= 1) {
+                for (Player curPlayer : nearby.values()) {
+                    Integer x = curPlayer.getLocation().getX();
+                    Integer z = curPlayer.getLocation().getZ();
+                    if (x == null || z == null) continue;
 
-                    JsonElement xElement = currentPlayer.get("x");
-                    JsonElement zElement = currentPlayer.get("z");
-                    if (xElement == null || zElement == null) continue;
-
-                    String currentPlayerName = currentPlayer.get("name").getAsString();
+                    String currentPlayerName = curPlayer.getName();
                     if (currentPlayerName.equals(client.player.getName().getString())) continue;
 
-                    int distance = Math.abs(xElement.getAsInt() - (int) client.player.getX()) +
-                                   Math.abs(zElement.getAsInt() - (int) client.player.getZ());
+                    int distance = Math.abs(x - (int) client.player.getX()) +
+                                   Math.abs(z - (int) client.player.getZ());
 
                     String prefix = "";
                     if (config.nearby.showRank) {
-                        if (!currentPlayer.has("town")) prefix = "(Townless) ";
-                        else prefix = "(" + currentPlayer.get("rank").getAsString() + ") ";
+                        if (!curPlayer.isResident()) prefix = "(Townless) ";
+                        else {
+                            Resident res = (Resident) curPlayer;
+                            prefix = "(" + res.getRank() + ") ";
+                        }
                     }
 
-                    MutableText playerText = Text.translatable(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
+                    MutableText playerText = translatable(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, playerText, xOffset, playerOffset, color);
 
                     // Add 10 pixels to offset. (Where the next player will be rendered)
@@ -217,10 +219,10 @@ public class OverlayRenderer {
         int townlessLongest, nearbyLongest;
 
         townlessLongest = Math.max(ModUtils.getLongestElement(townless),
-                ModUtils.getTextWidth(Text.translatable("text_townless_header", townless.size())));
+                getTextWidth(translatable("text_townless_header", townless.size())));
 
         nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()),
-                ModUtils.getTextWidth(Text.translatable("text_nearby_header", nearby().size())));
+                getTextWidth(translatable("text_nearby_header", nearby().size())));
 
         int windowHeight = ModUtils.getWindowHeight();
         int windowWidth = ModUtils.getWindowWidth();
@@ -271,17 +273,17 @@ public class OverlayRenderer {
         int nearbyLongest, townlessLongest;
 
         nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()),
-                ModUtils.getTextWidth(Text.translatable("text_nearby_header", nearby().size())));
+                getTextWidth(translatable("text_nearby_header", nearby().size())));
 
         townlessLongest = Math.max(ModUtils.getLongestElement(townless),
-                ModUtils.getTextWidth(Text.translatable("text_townless_header", townless.size())));
+                getTextWidth(translatable("text_townless_header", townless.size())));
 
         int windowHeight = ModUtils.getWindowHeight();
         int windowWidth = ModUtils.getWindowWidth();
 
         int nearbyArrayHeight = ModUtils.getArrayHeight(nearby());
         int windowHeightOffset = windowHeight - nearbyArrayHeight - 10;
-        int windowHeightHalfOffset = windowHeight/2 - nearbyArrayHeight/2;
+        int windowHeightHalfOffset = windowHeight / 2 - nearbyArrayHeight / 2;
 
         int xRightOffset = windowWidth - townlessLongest - nearbyLongest - 15;
 

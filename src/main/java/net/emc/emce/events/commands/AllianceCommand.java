@@ -18,7 +18,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
-import java.util.Iterator;
 import java.util.Locale;
 
 public record AllianceCommand(EarthMCEssentials instance) {
@@ -79,10 +78,9 @@ public record AllianceCommand(EarthMCEssentials instance) {
         if (!element.isJsonArray()) return element.getAsString();
 
         StringBuilder sb = new StringBuilder();
-        Iterator<JsonElement> iter = element.getAsJsonArray().iterator();
 
-        while (iter.hasNext()) {
-            sb.append(iter.next().getAsString());
+        for (JsonElement jsonElement : element.getAsJsonArray()) {
+            sb.append(jsonElement.getAsString());
             sb.append(", ");
         }
 

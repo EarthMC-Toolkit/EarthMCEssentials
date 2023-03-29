@@ -2,7 +2,6 @@ package net.emc.emce.events.screen;
 
 import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.emc.emce.modules.OverlayRenderer;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;

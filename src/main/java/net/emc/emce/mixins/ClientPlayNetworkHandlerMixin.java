@@ -1,8 +1,6 @@
 package net.emc.emce.mixins;
 
 import com.mojang.authlib.GameProfile;
-import net.emc.emce.EarthMCEssentials;
-import net.emc.emce.modules.EventRegistry;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.ModUtils;
@@ -10,12 +8,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.util.telemetry.TelemetrySender;
 import net.minecraft.client.util.telemetry.WorldSession;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.DisconnectS2CPacket;
-import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

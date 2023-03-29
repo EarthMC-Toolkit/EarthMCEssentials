@@ -81,7 +81,7 @@ public record InfoCommands(EarthMCEssentials instance) {
         return true;
     }
 
-    private void trySendTown(String townName) {
+    private void trySendTown(@NotNull String townName) {
         NamedTextColor townTextColour = instance.getConfig().commands.townInfoTextColour.named();
         Town town = EarthMCAPI.getTown(townName.toLowerCase(Locale.ROOT));
 

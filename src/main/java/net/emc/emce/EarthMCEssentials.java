@@ -1,7 +1,5 @@
 package net.emc.emce;
 
-import com.google.gson.JsonArray;
-
 import io.github.emcw.entities.BaseEntity;
 import io.github.emcw.entities.Player;
 import io.github.emcw.entities.Resident;
@@ -25,6 +23,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -39,7 +38,7 @@ public class EarthMCEssentials implements ModInitializer {
     private boolean debugModeEnabled = false;
 
     private List<String> townlessNames = new CopyOnWriteArrayList<>();
-    private JsonArray nearbyPlayers = new JsonArray();
+    private Map<String, Player> nearbyPlayers = new ConcurrentHashMap<>();
 
     public static KeyBinding configKeybinding;
 
@@ -110,11 +109,11 @@ public class EarthMCEssentials implements ModInitializer {
         return townlessNames;
     }
 
-    public JsonArray getNearbyPlayers() {
+    public Map<String, Player> getNearbyPlayers() {
         return nearbyPlayers;
     }
 
-    public void setNearbyPlayers(JsonArray nearbyPlayers) {
+    public void setNearbyPlayers(Map<String, Player> nearbyPlayers) {
         this.nearbyPlayers = nearbyPlayers;
         OverlayRenderer.UpdateStates(false, true);
     }

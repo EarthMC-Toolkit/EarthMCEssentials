@@ -16,7 +16,6 @@ import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 
 import static net.emc.emce.modules.EventRegistry.RegisterScreen;
 import static net.emc.emce.modules.EventRegistry.RegisterHud;
-import static net.emc.emce.utils.ModUtils.updateServerName;
 
 @Mixin(MinecraftClientGame.class)
 public abstract class SessionEventListenerMixin {
