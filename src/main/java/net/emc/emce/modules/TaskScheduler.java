@@ -18,7 +18,7 @@ import static net.emc.emce.utils.EarthMCAPI.playerOnline;
 
 public class TaskScheduler {
     public ScheduledExecutorService service;
-    public boolean townlessRunning, nearbyRunning, cacheCheckRunning, newsRunning;
+    public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
     public boolean hasMap = false;
 
     private static final List<Cache<?>> CACHES = List.of(AllianceDataCache.INSTANCE);
@@ -40,7 +40,6 @@ public class TaskScheduler {
     public void stop() {
         townlessRunning = false;
         nearbyRunning = false;
-        newsRunning = false;
         cacheCheckRunning = false;
 
         Messaging.sendDebugMessage("Stopping scheduled tasks...");

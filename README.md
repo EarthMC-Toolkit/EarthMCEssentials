@@ -12,9 +12,8 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
   - `/townless inviteAll/revokeAll` - Automatically invite/revoke all townless players to/from your town!
   - `/nether <x> <z>` - Quickly convert overworld coordinates into their nether counterpart.
 #### On-Screen Info
-  - Townless - All online townless players are shown on your screen.
+  - Townless - Show a list of online townless players and their (optional) coords.
   - Nearby - See anyone whose close to you without checking the dynmap! Configurable options include: radius, rank and distance.
-  - News - Sometimes it's hard to keep up with the news. EMCE sends news to your action bar (or chat) as soon as it is reported.
 #### Config screen (F4)
   - API Intervals - Set the rate at which you want data to be updated.
   - Data - Toggle on/off, screen x/y position, text colors, radius and more.

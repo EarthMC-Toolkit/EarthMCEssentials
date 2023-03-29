@@ -82,10 +82,6 @@
     "text.autoconfig.emc-essentials.option.nearby.xBlocks": "X Blocks",
     "text.autoconfig.emc-essentials.option.nearby.zBlocks": "Z Blocks",
 
-    "text.autoconfig.emc-essentials.category.News": "News",
-    "text.autoconfig.emc-essentials.option.news.enabled": "Enabled",
-    "text.autoconfig.emc-essentials.option.news.position": "Position",
-
     "text.autoconfig.emc-essentials.category.Commands": "Commands",
     "text.autoconfig.emc-essentials.option.commands.townlessTextColour": "Townless Text Colour",
     "text.autoconfig.emc-essentials.option.commands.townInfoTextColour": "Town Text Colour",
@@ -94,7 +90,5 @@
 
     "text.autoconfig.emc-essentials.category.API": "API",
     "text.autoconfig.emc-essentials.option.api.intervals": "Intervals",
-    "text.autoconfig.emc-essentials.option.api.intervals.townless": "Townless",
-    "text.autoconfig.emc-essentials.option.api.intervals.nearby": "Nearby",
-    "text.autoconfig.emc-essentials.option.api.intervals.news": "News"
+    "text.autoconfig.emc-essentials.option.api.intervals.townless": "Townless"
 }
