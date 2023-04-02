@@ -93,7 +93,7 @@ public class ModUtils {
         return longestElement;
     }
 
-    public static int getArrayHeight(Map<String, ?> map) {
+    public static int getArrayHeight(@NotNull Map<String, ?> map) {
         int length = map.size();
         if (length < 1) return 0;
 
@@ -107,7 +107,7 @@ public class ModUtils {
         return totalLength;
     }
 
-    public static int getTownlessArrayHeight(List<String> townless, int maxLength) {
+    public static int getTownlessArrayHeight(@NotNull List<String> townless, int maxLength) {
         int length = townless.size();
         if (length < 1) return 0;
 
@@ -116,7 +116,7 @@ public class ModUtils {
             String name = townless.get(i);
 
             if (i >= maxLength && maxLength != 0) {
-                String maxLengthString = "And " + name + " more...";
+                String maxLengthString = "And " + (length-i) + " more...";
                 return totalLength + getStringHeight(maxLengthString) - 10;
             }
             else totalLength += getStringHeight(name);
@@ -131,14 +131,14 @@ public class ModUtils {
 
         int longestElement = 0;
         for (Player curPlayer : nearby.values()) {
-            Resident clientRes = instance().getClientResident();
+            Player clientPlayer = instance().getClientPlayer();
 
             String name = curPlayer.getName();
             Integer x = curPlayer.getLocation().getX();
             Integer z = curPlayer.getLocation().getZ();
 
             if (z == null || x == null || name == null) continue;
-            if (clientRes != null && name.equals(clientRes.getName())) continue;
+            if (clientPlayer != null && name.equals(clientPlayer.getName())) continue;
 
             ClientPlayerEntity player = Objects.requireNonNull(getInstance().player);
             int distance = Math.abs(x - player.getBlockX()) +

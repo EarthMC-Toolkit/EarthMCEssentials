@@ -1,8 +1,8 @@
 package net.emc.emce;
 
+import io.github.emcw.core.EMCWrapper;
 import io.github.emcw.entities.BaseEntity;
 import io.github.emcw.entities.Player;
-import io.github.emcw.entities.Resident;
 import io.github.emcw.utils.GsonUtil;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -32,7 +32,7 @@ public class EarthMCEssentials implements ModInitializer {
 
     private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 
-    private Resident clientResident = null;
+    private Player clientPlayer = null;
     private ModConfig config = null;
     private boolean shouldRender = false;
     private boolean debugModeEnabled = false;
@@ -47,9 +47,13 @@ public class EarthMCEssentials implements ModInitializer {
 
     public int sessionCounter = 0;
 
+    public EMCWrapper wrapper;
+
     @Override
     public void onInitialize() {
         instance = this;
+
+        this.wrapper = new EMCWrapper();
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         initConfig();
@@ -75,12 +79,12 @@ public class EarthMCEssentials implements ModInitializer {
         return scheduler;
     }
 
-    public Resident getClientResident() {
-        return clientResident;
+    public Player getClientPlayer() {
+        return clientPlayer;
     }
 
-    public void setClientResident(Resident res) {
-        clientResident = res;
+    public void setClientPlayer(Player res) {
+        clientPlayer = res;
     }
 
     private void initConfig() { config = AutoConfig.getConfigHolder(ModConfig.class).getConfig(); }

@@ -23,7 +23,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(at = @At("TAIL"), method="<init>")
     private void onInit(MinecraftClient client, Screen screen, ClientConnection connection,
                         ServerInfo serverInfo, GameProfile profile, WorldSession worldSession, CallbackInfo ci) {
-        instance().setClientResident(EarthMCAPI.getResident(profile.getName()));
+        instance().setClientPlayer(EarthMCAPI.getPlayer(profile.getName()));
     }
 
     @Inject(at = @At("TAIL"), method="onDisconnect")

@@ -2,6 +2,9 @@ plugins {
 	id 'fabric-loom' version '1.0-SNAPSHOT'
 }
 
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
 version = "${project.mod_version}-${project.minecraft_version}+" as Object
 group = project.maven_group
 
@@ -13,7 +16,7 @@ repositories {
 		url = uri("https://maven.pkg.github.com/earthmc-toolkit/earthmc-wrapper")
 		credentials {
 			username = project.findProperty("gpr.user")
-			password = System.getenv("GITHUB_TOKEN")
+			password = project.findProperty("GITHUB_TOKEN")
 		}
 	}
 
@@ -32,20 +35,32 @@ dependencies {
 	modImplementation include("net.kyori:adventure-platform-fabric:${project.adventure_fabric_version}")
 
 	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+		exclude(group: "com.google.code.gson")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
 	// Libraries to include in remapJar
 	include "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
-	implementation "io.github.emcw:emc-wrapper:${project.wrapper_version}"
+	api include("io.github.emcw:emc-wrapper:${project.wrapper_version}") {
+		exclude(group: "org.jetbrains")
+		exclude(group: "com.google.code.gson")
+	}
+
+	include 'com.google.code.gson:gson:2.10.1'
+
+	compileOnly 'org.jetbrains:annotations:24.0.1'
+	annotationProcessor 'org.jetbrains:annotations:24.0.1'
+
+	compileOnly 'org.projectlombok:lombok:1.18.26'
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
 }
 
 processResources {
-	inputs.property "version", version
+	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": version
+		expand "version": project.version
 	}
 }
 
@@ -54,9 +69,5 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-
 	withSourcesJar()
 }

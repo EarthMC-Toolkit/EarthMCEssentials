@@ -33,6 +33,10 @@ public abstract class SessionEventListenerMixin {
         if (isConnectedToEMC()) {
             updateSessionCounter('+');
             fetchEndpoints();
+
+            // Out of queue, begin map check.
+            if (instance().sessionCounter > 1)
+                instance().scheduler().initMap();
         }
     }
 

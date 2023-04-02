@@ -33,9 +33,9 @@ public class ModConfig implements ConfigData {
     @TransitiveObject()
     public final Commands commands = new Commands();
 
-//    @Category("API")
-//    @TransitiveObject()
-//    public API api = new API();
+    @Category("Intervals")
+    @TransitiveObject()
+    public Intervals intervals = new Intervals();
 
     public static class General {
         @Comment("Toggles the mod on or off.")
@@ -117,21 +117,15 @@ public class ModConfig implements ConfigData {
         public final Colors allianceInfoTextColour = Colors.GOLD;
     }
 
-//    public static class API {
-//        @ConfigEntry.Gui.CollapsibleObject
-//        @Comment("Configure the rate (in seconds) at which different data will be updated.")
-//        public Intervals intervals = new Intervals();
-//
-//        public static class Intervals {
-//            @Comment("Fairly harmless on performance, can be lowered without much overhead.")
-//            @BoundedDiscrete(min = 10, max = 600)
-//            public int townless = 60;
-//
-//            @Comment("Small but frequent payload, if you don't rely on it much, turn it up.")
-//            @BoundedDiscrete(min = 5, max = 60)
-//            public int nearby = 30;
-//        }
-//    }
+    public static class Intervals {
+        @Comment("Fairly harmless on performance, can be lowered without much overhead.")
+        @BoundedDiscrete(min = 10, max = 200)
+        public int townless = 60;
+
+        @Comment("Small but frequent payload, if you don't rely on it much, turn it up.")
+        @BoundedDiscrete(min = 5, max = 30)
+        public int nearby = 10;
+    }
 
     public static ModConfig instance() {
         return EarthMCEssentials.instance().getConfig();

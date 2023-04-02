@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static net.emc.emce.EarthMCEssentials.instance;
-import static net.emc.emce.utils.ModUtils.getTextWidth;
+import static net.emc.emce.utils.ModUtils.*;
 import static net.minecraft.text.Text.translatable;
 
 public class OverlayRenderer {
@@ -90,8 +90,11 @@ public class OverlayRenderer {
 
             for (String townlessName : townless) {
                 if (maxLen > 0 && index >= maxLen) {
-                    MutableText remainingText = translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
+                    MutableText remainingText = translatable("text_townless_remaining", townlessSize - index);
+
+                    remainingText = remainingText.formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, remainingText, x, y + index * 10, color);
+
                     break;
                 }
 
@@ -113,8 +116,11 @@ public class OverlayRenderer {
                 for (String name : townless) {
                     if (maxLen >= 1) {
                         if (index >= maxLen) {
-                            MutableText remainingText = translatable("text_townless_remaining", townlessSize - index).formatted(playerTextFormatting);
+                            MutableText remainingText = translatable("text_townless_remaining", townlessSize - index);
+
+                            remainingText = remainingText.formatted(playerTextFormatting);
                             renderer.drawWithShadow(matrixStack, remainingText, xOffset, playerOffset, color);
+
                             break;
                         }
 
@@ -218,17 +224,17 @@ public class OverlayRenderer {
         // No advanced positioning, use preset states.
         int townlessLongest, nearbyLongest;
 
-        townlessLongest = Math.max(ModUtils.getLongestElement(townless),
+        townlessLongest = Math.max(getLongestElement(townless),
                 getTextWidth(translatable("text_townless_header", townless.size())));
 
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()),
+        nearbyLongest = Math.max(getNearbyLongestElement(instance().getNearbyPlayers()),
                 getTextWidth(translatable("text_nearby_header", nearby().size())));
 
-        int windowHeight = ModUtils.getWindowHeight();
-        int windowWidth = ModUtils.getWindowWidth();
+        int windowHeight = getWindowHeight();
+        int windowWidth = getWindowWidth();
 
-        int heightOffset = windowHeight - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) - 22;
-        int heightHalfOffset = windowHeight / 2 - ModUtils.getTownlessArrayHeight(townless, config.townless.maxLength) / 2;
+        int heightOffset = windowHeight - getTownlessArrayHeight(townless, config.townless.maxLength) - 22;
+        int heightHalfOffset = windowHeight / 2 - getTownlessArrayHeight(townless, config.townless.maxLength) / 2;
 
         int widthOffset = windowWidth - townlessLongest - 5;
 
@@ -244,7 +250,7 @@ public class OverlayRenderer {
             case TOP_RIGHT -> {
                 townlessState.setX(widthOffset);
                 assert client.player != null;
-                townlessState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
+                townlessState.setY(getStatusEffectOffset(client.player.getStatusEffects()));
             }
             case LEFT -> {
                 townlessState.setX(5);
@@ -272,14 +278,14 @@ public class OverlayRenderer {
     private static void UpdateNearbyState() {
         int nearbyLongest, townlessLongest;
 
-        nearbyLongest = Math.max(ModUtils.getNearbyLongestElement(instance().getNearbyPlayers()),
+        nearbyLongest = Math.max(getNearbyLongestElement(instance().getNearbyPlayers()),
                 getTextWidth(translatable("text_nearby_header", nearby().size())));
 
-        townlessLongest = Math.max(ModUtils.getLongestElement(townless),
+        townlessLongest = Math.max(getLongestElement(townless),
                 getTextWidth(translatable("text_townless_header", townless.size())));
 
-        int windowHeight = ModUtils.getWindowHeight();
-        int windowWidth = ModUtils.getWindowWidth();
+        int windowHeight = getWindowHeight();
+        int windowWidth = getWindowWidth();
 
         int nearbyArrayHeight = ModUtils.getArrayHeight(nearby());
         int windowHeightOffset = windowHeight - nearbyArrayHeight - 10;
@@ -302,7 +308,7 @@ public class OverlayRenderer {
                 else nearbyState.setX(windowWidth - nearbyLongest - 5);
 
                 assert client.player != null;
-                nearbyState.setY(ModUtils.getStatusEffectOffset(client.player.getStatusEffects()));
+                nearbyState.setY(getStatusEffectOffset(client.player.getStatusEffects()));
             }
             case LEFT -> {
                 if (townlessState.equals(State.LEFT)) {

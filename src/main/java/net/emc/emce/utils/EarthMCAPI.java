@@ -37,21 +37,34 @@ public class EarthMCAPI {
 
     public static APIData apiData = new APIData();
 
-    public static JsonObject player = new JsonObject();
-    public static final EMCWrapper wrapper = new EMCWrapper(true, true);
-
     private static EMCMap currentMap() {
-        return Objects.equals(instance().mapName, "aurora") ? wrapper.getAurora() : wrapper.getNova();
+        boolean isNova = Objects.equals(instance().mapName, "nova");
+
+        if (isNova) {
+            try { return instance().wrapper.getNova(); }
+            catch (Exception e) { System.out.println(e.getMessage()); }
+        } else {
+            try { return instance().wrapper.getAurora(); }
+            catch (Exception e) { System.out.println(e.getMessage()); }
+        }
+
+        return new EMCMap(instance().mapName);
     }
 
     public static @Nullable Town getTown(String name) {
         try { return currentMap().Towns.single(name); }
-        catch (MissingEntryException e) { return null; }
+        catch (MissingEntryException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public static @Nullable Nation getNation(String name) {
         try { return currentMap().Nations.single(name); }
-        catch (MissingEntryException e) { return null; }
+        catch (MissingEntryException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public static Map<String, Player> getTownless() {
@@ -60,13 +73,21 @@ public class EarthMCAPI {
 
     public static Map<String, Player> onlinePlayers() { return currentMap().Players.online(); }
 
+    @SuppressWarnings("unused")
     public static Map<String, Resident> getResidents() {
         return currentMap().Residents.all();
     }
 
     public static @Nullable Resident getResident(String name) {
         try { return currentMap().Residents.single(name); }
-        catch (MissingEntryException e) { return null; }
+        catch (MissingEntryException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public static @Nullable Player getPlayer(String name) {
+        return currentMap().Players.all().getOrDefault(name, null);
     }
 
     @Contract(" -> new")
@@ -101,7 +122,8 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<JsonArray> getAlliances() {
+    @Contract(" -> new")
+    public static @NotNull CompletableFuture<JsonArray> getAlliances() {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ALLIANCES)));
@@ -112,7 +134,8 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<APIData> fetchAPI() {
+    @Contract(" -> new")
+    public static @NotNull CompletableFuture<APIData> fetchAPI() {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return new APIData((JsonObject) JsonParser.parseString(
@@ -127,17 +150,10 @@ public class EarthMCAPI {
 
     public static void fetchEndpoints() {
         Messaging.sendDebugMessage("Fetching endpoint URLs");
-
-        fetchAPI().thenAccept(data -> {
-            apiData = data;
-
-            // Out of queue, begin map check.
-            if (instance().sessionCounter > 1)
-                instance().scheduler().initMap();
-        });
+        fetchAPI().thenAccept(data -> apiData = data);
     }
 
-    public static String getRoute(APIRoute routeType) {
+    public static @NotNull String getRoute(@NotNull APIRoute routeType) {
         String route;
 
         switch(routeType) {

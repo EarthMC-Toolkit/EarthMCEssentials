@@ -88,7 +88,7 @@
     "text.autoconfig.emc-essentials.option.commands.nationInfoTextColour": "Nation Text Colour",
     "text.autoconfig.emc-essentials.option.commands.allianceInfoTextColour": "Alliance Text Colour",
 
-    "text.autoconfig.emc-essentials.category.API": "API",
-    "text.autoconfig.emc-essentials.option.api.intervals": "Intervals",
-    "text.autoconfig.emc-essentials.option.api.intervals.townless": "Townless"
+    "text.autoconfig.emc-essentials.category.Intervals": "Data Scheduling",
+    "text.autoconfig.emc-essentials.option.intervals.townless": "Townless Interval (sec)",
+    "text.autoconfig.emc-essentials.option.intervals.nearby": "Nearby Interval (sec)"
 }

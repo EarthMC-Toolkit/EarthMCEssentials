@@ -2,10 +2,7 @@ package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import io.github.emcw.entities.Location;
-import io.github.emcw.entities.Nation;
-import io.github.emcw.entities.Resident;
-import io.github.emcw.entities.Town;
+import io.github.emcw.entities.*;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
@@ -36,10 +33,10 @@ public record InfoCommands(EarthMCEssentials instance) {
 
                 return 1;
         })).executes(c -> {
-            Resident clientResident = instance.getClientResident();
+            Player clientPlayer = instance.getClientPlayer();
 
-            if (residentExists(clientResident)) {
-                String townName = clientResident.getTown();
+            if (residentExists(clientPlayer.getName())) {
+                String townName = ((Resident) clientPlayer).getTown();
 
                 if (townName.equals("") || townName.equals("No Town"))
                     Messaging.sendPrefixed("text_towninfo_not_registered");
@@ -58,10 +55,10 @@ public record InfoCommands(EarthMCEssentials instance) {
 
                 return 1;
         })).executes(c -> {
-            Resident clientResident = instance.getClientResident();
+            Player clientPlayer = instance.getClientPlayer();
 
-            if (residentExists(clientResident)) {
-                String nationName = clientResident.getNation();
+            if (residentExists(clientPlayer.getName())) {
+                String nationName = ((Resident) clientPlayer).getNation();
 
                 if (nationName.equals("") || nationName.equals("No Nation"))
                     Messaging.sendPrefixed("text_nationinfo_not_registered");
@@ -72,7 +69,9 @@ public record InfoCommands(EarthMCEssentials instance) {
         }));
     }
 
-    private boolean residentExists(Resident res) {
+    private boolean residentExists(String name) {
+        Resident res = EarthMCAPI.getResident(name);
+
         if (res == null) {
             Messaging.send(Translation.of("text_shared_notregistered", clientName()));
             return false;

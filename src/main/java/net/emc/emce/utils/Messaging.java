@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.emc.emce.EarthMCEssentials.instance;
@@ -16,7 +16,7 @@ import static net.minecraft.client.MinecraftClient.getInstance;
 public class Messaging {
     //#region Helper Methods
     public static Component create(String key, NamedTextColor keyColour, Object... args) {
-        List<Component> argList = Collections.emptyList();
+        List<Component> argList = new ArrayList<>();
         for (Object obj : args) argList.add(Component.text(obj.toString()));
 
         return translatable().key(key).color(keyColour).args(argList).build();
