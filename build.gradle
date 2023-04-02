@@ -8,6 +8,9 @@ targetCompatibility = JavaVersion.VERSION_17
 version = "${project.mod_version}-${project.minecraft_version}+" as Object
 group = project.maven_group
 
+def localProps = new Properties()
+localProps.load(new FileInputStream(rootProject.file("local.properties")))
+
 repositories {
 	mavenCentral()
 
@@ -15,8 +18,8 @@ repositories {
 		name = "GitHubPackages"
 		url = uri("https://maven.pkg.github.com/earthmc-toolkit/earthmc-wrapper")
 		credentials {
-			username = project.findProperty("gpr.user")
-			password = project.findProperty("GITHUB_TOKEN")
+			username = localProps.getProperty("USERNAME")
+			password = localProps.getProperty("GITHUB_TOKEN")
 		}
 	}
 
