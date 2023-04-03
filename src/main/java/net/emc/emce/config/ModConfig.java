@@ -46,13 +46,13 @@ public class ModConfig implements ConfigData {
         @Comment("Toggles townless players on or off.")
         public final boolean enabled = true;
         @Comment("The maximum length the townless list can be. < 1 for no limit.")
-        public final int maxLength = 0; // < 1 = No limit
+        public final int maxLength = 10; // < 1 = No limit
         @Comment("Toggles the use of preset positions, uses sliders if off.")
         public final boolean presetPositions = true;
 
         @EnumHandler(option = BUTTON)
         @Comment("The position of the Townless info.")
-        public final State positionState = State.TOP_LEFT;
+        public final State positionState = State.RIGHT;
 
         @Comment("Note: Only used if Use Preset Positions is off.")
         public final int xPos = 1;
@@ -61,10 +61,10 @@ public class ModConfig implements ConfigData {
 
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the 'Townless Players' text.")
-        public final Colors headingTextColour = Colors.BLUE;
+        public final Colors headingTextColour = Colors.DARK_PURPLE;
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the townless player names.")
-        public final Colors playerTextColour = Colors.BLUE;
+        public final Colors playerTextColour = Colors.DARK_PURPLE;
     }
 
     public static class Nearby {
@@ -92,9 +92,9 @@ public class ModConfig implements ConfigData {
 
         // Independent scaling - either axis can be the same or different.
         @Comment("The amount of blocks to check on the X axis.")
-        @BoundedDiscrete(min = 50, max = 10000)
+        @BoundedDiscrete(min = 32, max = 10240)
         public final int xBlocks = 500;
-        @BoundedDiscrete(min = 50, max = 10000)
+        @BoundedDiscrete(min = 32, max = 10240)
         @Comment("The amount of blocks to check on the Z axis.")
         public final int zBlocks = 500;
     }
@@ -123,8 +123,8 @@ public class ModConfig implements ConfigData {
         public int townless = 60;
 
         @Comment("Small but frequent payload, if you don't rely on it much, turn it up.")
-        @BoundedDiscrete(min = 5, max = 30)
-        public int nearby = 10;
+        @BoundedDiscrete(min = 3, max = 15)
+        public int nearby = 5;
     }
 
     public static ModConfig instance() {

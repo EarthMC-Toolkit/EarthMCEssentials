@@ -21,7 +21,7 @@ import static net.emc.emce.modules.EventRegistry.RegisterHud;
 public abstract class SessionEventListenerMixin {
     @Inject(at = @At("TAIL"), method="onStartGameSession")
     public void onStartGameSession(CallbackInfo ci) {
-        System.out.println("EMCE > Joined game.");
+        System.out.println("EMCE > New game session detected.");
 
         ModUtils.updateServerName();
         OverlayRenderer.Init();
@@ -32,7 +32,7 @@ public abstract class SessionEventListenerMixin {
         instance().setShouldRender(instance().getConfig().general.enableMod);
         if (isConnectedToEMC()) {
             updateSessionCounter('+');
-            fetchEndpoints();
+            //fetchEndpoints();
 
             // Out of queue, begin map check.
             if (instance().sessionCounter > 1)

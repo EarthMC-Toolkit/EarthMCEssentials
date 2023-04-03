@@ -1,29 +1,20 @@
 package net.emc.emce.utils;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.*;
+import io.github.emcw.exceptions.APIException;
 import io.github.emcw.exceptions.MissingEntryException;
+import io.github.emcw.utils.Request;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.objects.API.APIData;
 import net.emc.emce.objects.API.APIRoute;
-import net.emc.emce.objects.exception.APIException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpTimeoutException;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -31,10 +22,10 @@ import java.util.concurrent.CompletableFuture;
 import static net.emc.emce.EarthMCEssentials.instance;
 
 public class EarthMCAPI {
-    private static final HttpClient client = HttpClient.newHttpClient();
     private static final ModConfig config = ModConfig.instance();
-
     public static APIData apiData = new APIData();
+    private static final String endpoints =
+            "https://raw.githubusercontent.com/EarthMC-Toolkit/EarthMCEssentials/main/src/main/resources/api.json";
 
     private static EMCMap currentMap() {
         return Objects.equals(instance().mapName, "nova")
@@ -77,8 +68,12 @@ public class EarthMCAPI {
         }
     }
 
+    public static Map<String, Player> allPlayers() {
+        return currentMap().Players.all();
+    }
+
     public static @Nullable Player getPlayer(String name) {
-        return currentMap().Players.all().getOrDefault(name, null);
+        return allPlayers().getOrDefault(name, null);
     }
 
     @Contract(" -> new")
@@ -102,7 +97,7 @@ public class EarthMCAPI {
                 Integer x = (int) player.getX(),
                         y = (int) player.getY();
 
-                Map<String, Player> nearby = curMap.Players.getNearby(curMap.Players.all(), x, y, xBlocks, zBlocks);
+                Map<String, Player> nearby = curMap.Players.getNearby(allPlayers(), x, y, xBlocks, zBlocks);
                 nearby.remove(clientName());
 
                 return nearby;
@@ -117,7 +112,7 @@ public class EarthMCAPI {
     public static @NotNull CompletableFuture<JsonArray> getAlliances() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ALLIANCES)));
+                return Request.send(getRoute(APIRoute.ALLIANCES));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -129,9 +124,7 @@ public class EarthMCAPI {
     public static @NotNull CompletableFuture<APIData> fetchAPI() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new APIData((JsonObject) JsonParser.parseString(
-                    getURL("https://raw.githubusercontent.com/EarthMC-Toolkit/EarthMCEssentials" +
-                           "/main/src/main/resources/api.json")));
+                return new APIData(Request.send(endpoints));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new APIData();
@@ -168,25 +161,5 @@ public class EarthMCAPI {
     public static boolean playerOnline(String map) {
         instance().mapName = map; // getOnlinePlayer uses mapName.
         return onlinePlayers().containsKey(clientName());
-    }
-
-    private static String getURL(String urlString) throws APIException {
-        try {
-            HttpRequest.Builder builder = HttpRequest.newBuilder()
-                    .uri(URI.create(urlString)).header("Accept", "application/json");
-
-            Duration timeout = Duration.ofSeconds(5);
-            final HttpRequest req = builder.timeout(timeout).GET().build();
-            final HttpResponse<String> response;
-
-            try { response = client.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)); }
-            catch (HttpTimeoutException e) { throw new APIException("Request timed out after 5 seconds.\nEndpoint: " + urlString); }
-
-            List<Integer> codes = List.of(new Integer[]{ 200, 203, 304 });
-            if (!codes.contains(response.statusCode()))
-                throw new APIException("API Error! Response code: " + response.statusCode() + "\nEndpoint: " + urlString);
-
-            return response.body();
-        } catch (Exception e) { throw new APIException(e.getMessage()); }
     }
 }
