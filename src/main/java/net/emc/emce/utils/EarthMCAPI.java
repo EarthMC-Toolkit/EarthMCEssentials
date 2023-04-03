@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.emcw.core.EMCMap;
-import io.github.emcw.core.EMCWrapper;
 import io.github.emcw.entities.*;
 import io.github.emcw.exceptions.MissingEntryException;
 import net.emc.emce.config.ModConfig;
@@ -38,17 +37,9 @@ public class EarthMCAPI {
     public static APIData apiData = new APIData();
 
     private static EMCMap currentMap() {
-        boolean isNova = Objects.equals(instance().mapName, "nova");
-
-        if (isNova) {
-            try { return instance().wrapper.getNova(); }
-            catch (Exception e) { System.out.println(e.getMessage()); }
-        } else {
-            try { return instance().wrapper.getAurora(); }
-            catch (Exception e) { System.out.println(e.getMessage()); }
-        }
-
-        return new EMCMap(instance().mapName);
+        return Objects.equals(instance().mapName, "nova")
+                ? instance().wrapper.getNova()
+                : instance().wrapper.getAurora();
     }
 
     public static @Nullable Town getTown(String name) {

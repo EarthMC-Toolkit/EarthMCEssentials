@@ -46,20 +46,12 @@ public class TaskScheduler {
     }
 
     public void initMap() {
-        initMap(false);
-    }
-
-    public void initMap(Boolean singleplayer) {
         service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
             if (hasMap) return;
 
-            if (singleplayer || playerOnline("aurora")) {
-                setHasMap("aurora");
-                return;
-            }
-
-            if (playerOnline("nova")) setHasMap("nova");
+            if (playerOnline("aurora")) setHasMap("aurora");
+            else if (playerOnline("nova")) setHasMap("nova");
             else setHasMap(null);
         }, 15, 10, TimeUnit.SECONDS); // Give enough time for Dynmap & Vercel to update.
     }
