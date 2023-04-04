@@ -13,8 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
-import static net.emc.emce.utils.EarthMCAPI.getTownless;
-import static net.emc.emce.utils.EarthMCAPI.clientOnline;
+import static net.emc.emce.utils.EarthMCAPI.*;
 
 public class TaskScheduler {
     public ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
@@ -29,7 +28,7 @@ public class TaskScheduler {
         // Pre-fill data.
         if (config.general.enableMod) {
             if (config.townless.enabled) instance().setTownless(getTownless());
-            if (config.nearby.enabled) EarthMCAPI.getNearby().thenAccept(instance()::setNearbyPlayers);
+            if (config.nearby.enabled) instance().setNearbyPlayers(getNearby());
         }
 
         startCacheCheck();
@@ -52,7 +51,7 @@ public class TaskScheduler {
             if (clientOnline("aurora")) setHasMap("aurora");
             if (clientOnline("nova")) setHasMap("nova");
             else setHasMap(null);
-        }, 15, 10, TimeUnit.SECONDS);
+        }, 10, 5, TimeUnit.SECONDS);
     }
 
     public void setHasMap(String map) {
@@ -69,31 +68,28 @@ public class TaskScheduler {
 
     private void startTownless() {
         townlessRunning = true;
-        ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
+            var config = instance().config();
             if (townlessRunning && config.townless.enabled && shouldRun()) {
                 Messaging.sendDebugMessage("Starting townless task.");
-
                 instance().setTownless(getTownless());
                 Messaging.sendDebugMessage("Finished townless task.");
             }
-        }, 5, Math.max(config.intervals.townless, 200), TimeUnit.SECONDS);
+        }, 5, Math.max(instance().config().intervals.townless, 200), TimeUnit.SECONDS);
     }
 
     private void startNearby() {
         nearbyRunning = true;
-        final ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
+            var config = instance().config();
             if (nearbyRunning && config.nearby.enabled && shouldRun()) {
                 Messaging.sendDebugMessage("Starting nearby task.");
-                EarthMCAPI.getNearby().thenAccept(nearby -> {
-                    instance().setNearbyPlayers(nearby);
-                    Messaging.sendDebugMessage("Finished nearby task.");
-                });
+                instance().setNearbyPlayers(EarthMCAPI.getNearby());
+                Messaging.sendDebugMessage("Finished nearby task.");
             }
-        }, 5, Math.max(config.intervals.nearby, 30), TimeUnit.SECONDS);
+        }, 5, Math.max(instance().config().intervals.nearby, 30), TimeUnit.SECONDS);
     }
 
     private void startCacheCheck() {

@@ -18,7 +18,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static io.github.emcw.utils.GsonUtil.serialize;
 import static net.emc.emce.EarthMCEssentials.instance;
 
 public class EarthMCAPI {
@@ -62,6 +64,8 @@ public class EarthMCAPI {
 
     public static boolean clientOnline(String map) {
         instance().mapName = map; // getOnlinePlayer uses mapName.
+
+        System.out.println(serialize(onlinePlayers().values()));
         return onlinePlayers().containsKey(clientName());
     }
 
@@ -87,35 +91,33 @@ public class EarthMCAPI {
     }
 
     @Contract(" -> new")
-    public static @NotNull CompletableFuture<Map<String, Player>> getNearby() {
+    public static @NotNull Map<String, Player> getNearby() {
         return getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
     }
 
     @Contract("_, _ -> new")
-    public static @NotNull CompletableFuture<Map<String, Player>> getNearby(int xBlocks, int zBlocks) {
-        return CompletableFuture.supplyAsync(() -> {
-            Map<String, Player> result = Map.of();
+    public static @NotNull Map<String, Player> getNearby(int xBlocks, int zBlocks) {
+        Map<String, Player> result = new ConcurrentHashMap<>();
 
-            try {
-                MinecraftClient client = MinecraftClient.getInstance();
-                ClientPlayerEntity player = client.player;
+        try {
+            MinecraftClient client = MinecraftClient.getInstance();
+            ClientPlayerEntity player = client.player;
 
-                if (player == null) return result;
-                if (!player.getEntityWorld().getDimension().bedWorks()) return result;
+            if (player == null) return result;
+            if (!player.getEntityWorld().getDimension().bedWorks()) return result;
 
-                EMCMap curMap = currentMap();
-                Integer x = (int) player.getX(),
-                        y = (int) player.getY();
+            EMCMap curMap = currentMap();
+            Integer x = (int) player.getX(),
+                    y = (int) player.getY();
 
-                Map<String, Player> nearby = curMap.Players.getNearby(allPlayers(), x, y, xBlocks, zBlocks);
-                nearby.remove(clientName());
+            Map<String, Player> nearby = curMap.Players.getNearby(allPlayers(), x, y, xBlocks, zBlocks);
+            nearby.remove(clientName());
 
-                return nearby;
-            } catch (Exception e) {
-                Messaging.sendDebugMessage("Error fetching nearby!", e);
-                return result;
-            }
-        });
+            return nearby;
+        } catch (Exception e) {
+            Messaging.sendDebugMessage("Error fetching nearby!", e);
+            return result;
+        }
     }
 
     @Contract(" -> new")
