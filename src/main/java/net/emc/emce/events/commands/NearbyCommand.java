@@ -13,12 +13,13 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public record NearbyCommand(EarthMCEssentials instance) {
 
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("nearby").executes(c -> {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player == null) return -1;
@@ -57,7 +58,7 @@ public record NearbyCommand(EarthMCEssentials instance) {
             
             return 1;
         }).then(ClientCommandManager.literal("refresh").executes(c -> {
-            EarthMCAPI.getNearby().thenAccept(instance::setNearbyPlayers);
+            instance.setNearbyPlayers(EarthMCAPI.getNearby());
             Messaging.sendPrefixed("msg_nearby_refresh");
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {

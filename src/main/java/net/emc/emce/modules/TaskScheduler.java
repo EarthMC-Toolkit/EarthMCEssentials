@@ -16,7 +16,7 @@ import static net.emc.emce.EarthMCEssentials.instance;
 import static net.emc.emce.utils.EarthMCAPI.*;
 
 public class TaskScheduler {
-    public ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+    public final ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
     public boolean hasMap = false;
 

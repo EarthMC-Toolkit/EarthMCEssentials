@@ -4,7 +4,6 @@ import io.github.emcw.entities.Player;
 import io.github.emcw.entities.Resident;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.ModUtils;
-import net.emc.emce.utils.ModUtils.State;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;

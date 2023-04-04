@@ -14,6 +14,7 @@ import net.emc.emce.utils.ModUtils.State;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
 
+@SuppressWarnings("CanBeFinal")
 @Config(name = "emc-essentials")
 @Background(value = "cloth-config2:transparent")
 public class ModConfig implements ConfigData {
