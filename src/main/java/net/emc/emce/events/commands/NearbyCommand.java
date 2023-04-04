@@ -23,7 +23,7 @@ public record NearbyCommand(EarthMCEssentials instance) {
             MinecraftClient client = MinecraftClient.getInstance();
             if (client.player == null) return -1;
 
-            ModConfig.Nearby nearbyConfig = instance.getConfig().nearby;
+            ModConfig.Nearby nearbyConfig = instance.config().nearby;
 
             NamedTextColor headingColour = nearbyConfig.headingTextColour.named();
             NamedTextColor textColour = nearbyConfig.playerTextColour.named();

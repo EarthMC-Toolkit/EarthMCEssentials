@@ -2,6 +2,7 @@ package net.emc.emce.utils;
 
 import io.github.emcw.entities.Player;
 import io.github.emcw.entities.Resident;
+import net.emc.emce.config.ModConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-import static net.emc.emce.EarthMCEssentials.instance;
+import static net.emc.emce.utils.EarthMCAPI.clientName;
 import static net.minecraft.client.MinecraftClient.getInstance;
 
 public class ModUtils {
@@ -131,14 +132,12 @@ public class ModUtils {
 
         int longestElement = 0;
         for (Player curPlayer : nearby.values()) {
-            Player clientPlayer = instance().getClientPlayer();
-
             String name = curPlayer.getName();
             Integer x = curPlayer.getLocation().getX();
             Integer z = curPlayer.getLocation().getZ();
 
             if (z == null || x == null || name == null) continue;
-            if (clientPlayer != null && name.equals(clientPlayer.getName())) continue;
+            if (name.equals(clientName())) continue;
 
             ClientPlayerEntity player = Objects.requireNonNull(getInstance().player);
             int distance = Math.abs(x - player.getBlockX()) +
@@ -146,7 +145,7 @@ public class ModUtils {
 
             String prefix = "";
 
-            if (instance().getConfig().nearby.showRank) {
+            if (ModConfig.instance().nearby.showRank) {
                 if (!curPlayer.isResident()) prefix = "(Townless) ";
                 else {
                     Resident curRes = (Resident) curPlayer;

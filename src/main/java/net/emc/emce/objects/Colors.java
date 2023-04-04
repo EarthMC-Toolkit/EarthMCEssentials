@@ -3,6 +3,7 @@ package net.emc.emce.objects;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public enum Colors {
     BLUE(NamedTextColor.BLUE),
     DARK_BLUE(NamedTextColor.DARK_BLUE),

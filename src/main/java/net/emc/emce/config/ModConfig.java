@@ -19,19 +19,19 @@ import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.Enu
 public class ModConfig implements ConfigData {
     @Category("General")
     @TransitiveObject()
-    public final General general = new General();
+    public General general = new General();
 
     @Category("Townless")
     @TransitiveObject()
-    public final Townless townless = new Townless();
+    public Townless townless = new Townless();
 
     @Category("Nearby")
     @TransitiveObject()
-    public final Nearby nearby = new Nearby();
+    public Nearby nearby = new Nearby();
 
     @Category("Commands")
     @TransitiveObject()
-    public final Commands commands = new Commands();
+    public Commands commands = new Commands();
 
     @Category("Intervals")
     @TransitiveObject()
@@ -39,82 +39,85 @@ public class ModConfig implements ConfigData {
 
     public static class General {
         @Comment("Toggles the mod on or off.")
-        public final boolean enableMod = true;
+        public boolean enableMod = true;
+
+        @Comment("Toggles logging debug messages in chat.")
+        public boolean debugLog = false;
     }
 
     public static class Townless {
         @Comment("Toggles townless players on or off.")
-        public final boolean enabled = true;
+        public boolean enabled = true;
         @Comment("The maximum length the townless list can be. < 1 for no limit.")
-        public final int maxLength = 10; // < 1 = No limit
+        public int maxLength = 10; // < 1 = No limit
         @Comment("Toggles the use of preset positions, uses sliders if off.")
-        public final boolean presetPositions = true;
+        public boolean presetPositions = true;
 
         @EnumHandler(option = BUTTON)
         @Comment("The position of the Townless info.")
-        public final State positionState = State.RIGHT;
+        public State positionState = State.RIGHT;
 
         @Comment("Note: Only used if Use Preset Positions is off.")
-        public final int xPos = 1;
+        public int xPos = 1;
         @Comment("Note: Only used if Use Preset Positions is off.")
-        public final int yPos = 16;
+        public int yPos = 16;
 
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the 'Townless Players' text.")
-        public final Colors headingTextColour = Colors.DARK_PURPLE;
+        public Colors headingTextColour = Colors.DARK_PURPLE;
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the townless player names.")
-        public final Colors playerTextColour = Colors.DARK_PURPLE;
+        public Colors playerTextColour = Colors.DARK_PURPLE;
     }
 
     public static class Nearby {
         @Comment("Toggle nearby overlay on or off.")
-        public final boolean enabled = true;
+        public boolean enabled = true;
         @Comment("Toggle if players' ranks should show before their name.")
-        public final boolean showRank = false;
+        public boolean showRank = false;
         @Comment("Toggle between a preset or custom position.")
-        public final boolean presetPositions = true;
+        public boolean presetPositions = true;
 
         @EnumHandler(option = BUTTON)
-        public final State positionState = State.TOP_RIGHT;
+        public State positionState = State.TOP_RIGHT;
 
         @Comment("The horizontal position on the HUD.")
-        public final int xPos = 100;
+        public int xPos = 100;
         @Comment("The vertical position on the HUD.")
-        public final int yPos = 16;
+        public int yPos = 16;
 
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the 'Nearby Players' text.")
-        public final Colors headingTextColour = Colors.GOLD;
+        public Colors headingTextColour = Colors.GOLD;
         @EnumHandler(option = BUTTON)
         @Comment("The colour of nearby players' names.")
-        public final Colors playerTextColour = Colors.GOLD;
+        public Colors playerTextColour = Colors.GOLD;
 
         // Independent scaling - either axis can be the same or different.
         @Comment("The amount of blocks to check on the X axis.")
         @BoundedDiscrete(min = 32, max = 10240)
-        public final int xBlocks = 500;
+        public int xBlocks = 500;
         @BoundedDiscrete(min = 32, max = 10240)
         @Comment("The amount of blocks to check on the Z axis.")
-        public final int zBlocks = 500;
+        public int zBlocks = 500;
     }
 
     public static class Commands {
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the townless players text.")
-        public final Colors townlessTextColour = Colors.LIGHT_PURPLE;
+        public Colors townlessTextColour = Colors.LIGHT_PURPLE;
 
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the town info text.")
-        public final Colors townInfoTextColour = Colors.GREEN;
+        public Colors townInfoTextColour = Colors.GREEN;
 
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the nation info text.")
-        public final Colors nationInfoTextColour = Colors.AQUA;
+        public Colors nationInfoTextColour = Colors.AQUA;
 
         @EnumHandler(option = BUTTON)
         @Comment("The colour of the alliance info text.")
-        public final Colors allianceInfoTextColour = Colors.GOLD;
+        public Colors allianceInfoTextColour = Colors.GOLD;
     }
 
     public static class Intervals {
@@ -128,6 +131,6 @@ public class ModConfig implements ConfigData {
     }
 
     public static ModConfig instance() {
-        return EarthMCEssentials.instance().getConfig();
+        return EarthMCEssentials.instance().config();
     }
 }

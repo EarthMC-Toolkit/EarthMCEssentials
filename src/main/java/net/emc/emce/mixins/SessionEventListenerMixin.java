@@ -1,5 +1,6 @@
 package net.emc.emce.mixins;
 
+import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
@@ -26,13 +27,20 @@ public abstract class SessionEventListenerMixin {
         ModUtils.updateServerName();
         OverlayRenderer.Init();
 
-        RegisterScreen();
-        RegisterHud();
+        ModConfig.General gen = instance().config().general;
+        instance().setShouldRender(gen.enableMod);
+        instance().setDebugEnabled(gen.debugLog);
 
-        instance().setShouldRender(instance().getConfig().general.enableMod);
+        System.out.println("EMCE > Debug mode: " + gen.debugLog);
+
+        if (instance().sessionCounter == 1) {
+            RegisterScreen();
+            RegisterHud();
+        }
+
         if (isConnectedToEMC()) {
             updateSessionCounter('+');
-            //fetchEndpoints();
+            fetchEndpoints();
 
             // Out of queue, begin map check.
             if (instance().sessionCounter > 1)
@@ -42,11 +50,11 @@ public abstract class SessionEventListenerMixin {
 
     @Inject(at = @At("TAIL"), method="onLeaveGameSession")
     public void onLeaveGameSession(CallbackInfo ci) {
+        if(isConnectedToEMC())
+            updateSessionCounter('-');
+
         ModUtils.setServerName("");
         OverlayRenderer.Clear();
-
-        if (isConnectedToEMC())
-            updateSessionCounter('-');
     }
 
     void updateSessionCounter(char type) {

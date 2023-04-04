@@ -27,7 +27,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
         return "towny:town invite" + (revoking ? " -" : " ") + str.toString() + " ";
     }
 
-    NamedTextColor getTextColour() { return instance.getConfig().commands.townlessTextColour.named(); }
+    NamedTextColor getTextColour() { return instance.config().commands.townlessTextColour.named(); }
     Component createMsg(String key, int size) { return Messaging.create(key, getTextColour(), whiteText(size)); }
     Component whiteText(int size) { return Component.text(size).color(NamedTextColor.WHITE); }
 

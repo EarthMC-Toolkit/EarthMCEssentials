@@ -55,6 +55,16 @@ public class EarthMCAPI {
 
     public static Map<String, Player> onlinePlayers() { return currentMap().Players.online(); }
 
+    @Nullable
+    public static Player getOnlinePlayer(String playerName) {
+        return currentMap().Players.getOnline(playerName);
+    }
+
+    public static boolean clientOnline(String map) {
+        instance().mapName = map; // getOnlinePlayer uses mapName.
+        return onlinePlayers().containsKey(clientName());
+    }
+
     @SuppressWarnings("unused")
     public static Map<String, Resident> getResidents() {
         return currentMap().Residents.all();
@@ -156,10 +166,5 @@ public class EarthMCAPI {
     public static String clientName() {
         ClientPlayerEntity pl = MinecraftClient.getInstance().player;
         return pl == null ? null : pl.getName().getString();
-    }
-
-    public static boolean playerOnline(String map) {
-        instance().mapName = map; // getOnlinePlayer uses mapName.
-        return onlinePlayers().containsKey(clientName());
     }
 }

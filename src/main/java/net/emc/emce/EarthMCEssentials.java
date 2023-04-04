@@ -10,6 +10,7 @@ import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.EventRegistry;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.modules.TaskScheduler;
+import net.emc.emce.utils.Messaging;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -29,31 +30,29 @@ import java.util.stream.Collectors;
 
 public class EarthMCEssentials implements ModInitializer {
     private static EarthMCEssentials instance;
+    public EMCWrapper wrapper;
 
     private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 
     private Player clientPlayer = null;
-    private ModConfig config = null;
     private boolean shouldRender = false;
-    private boolean debugModeEnabled = false;
 
     private List<String> townlessNames = new CopyOnWriteArrayList<>();
     private Map<String, Player> nearbyPlayers = new ConcurrentHashMap<>();
 
-    public static KeyBinding configKeybinding;
-
     private final TaskScheduler scheduler = new TaskScheduler();
-    public String mapName = "aurora";
 
+    public String mapName = "aurora";
     public int sessionCounter = 0;
 
-    public EMCWrapper wrapper;
+    public static KeyBinding configKeybinding;
+    private ModConfig config = null;
+    private boolean debugModeEnabled = false;
 
     @Override
     public void onInitialize() {
         instance = this;
-
-        this.wrapper = new EMCWrapper();
+        wrapper = new EMCWrapper();
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         initConfig();
@@ -87,11 +86,8 @@ public class EarthMCEssentials implements ModInitializer {
         clientPlayer = res;
     }
 
-    private void initConfig() { config = AutoConfig.getConfigHolder(ModConfig.class).getConfig(); }
-    public ModConfig getConfig() {
-        if (config == null) initConfig();
-        return config;
-    }
+    public ModConfig config() { return config; }
+    public void initConfig() { config = AutoConfig.getConfigHolder(ModConfig.class).getConfig(); }
 
     public boolean shouldRender() {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -101,12 +97,15 @@ public class EarthMCEssentials implements ModInitializer {
         return shouldRender;
     }
 
-    public void setDebugEnabled(boolean debugModeEnabled) {
-        this.debugModeEnabled = debugModeEnabled;
+    public void setDebugEnabled(boolean enabled) {
+        this.debugModeEnabled = enabled;
+
+        if (enabled) Messaging.sendPrefixed("msg_debug_enabled");
+        else Messaging.sendPrefixed("msg_debug_enabled");
     }
 
     public boolean debugEnabled() {
-        return debugModeEnabled;
+        return this.debugModeEnabled;
     }
 
     public List<String> getTownless() {

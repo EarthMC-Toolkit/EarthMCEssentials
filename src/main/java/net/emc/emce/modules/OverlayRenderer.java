@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static net.emc.emce.EarthMCEssentials.instance;
+import static net.emc.emce.utils.EarthMCAPI.clientName;
 import static net.emc.emce.utils.ModUtils.*;
 import static net.minecraft.text.Text.translatable;
 
@@ -158,7 +159,7 @@ public class OverlayRenderer {
                     if (x == null || z == null) continue;
 
                     String name = curPlayer.getName();
-                    if (name.equals(client.player.getName().getString())) continue;
+                    if (name.equals(clientName())) continue;
 
                     int distance = Math.abs(x - (int) client.player.getX()) +
                                    Math.abs(z - (int) client.player.getZ());

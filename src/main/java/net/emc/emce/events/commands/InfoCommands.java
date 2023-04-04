@@ -81,7 +81,7 @@ public record InfoCommands(EarthMCEssentials instance) {
     }
 
     private void trySendTown(@NotNull String townName) {
-        NamedTextColor townTextColour = instance.getConfig().commands.townInfoTextColour.named();
+        NamedTextColor townTextColour = instance.config().commands.townInfoTextColour.named();
         Town town = EarthMCAPI.getTown(townName.toLowerCase(Locale.ROOT));
 
         if (town == null) {
@@ -92,7 +92,7 @@ public record InfoCommands(EarthMCEssentials instance) {
     }
 
     private void trySendNation(@NotNull String nationName) {
-        NamedTextColor nationTextColour = instance.getConfig().commands.nationInfoTextColour.named();
+        NamedTextColor nationTextColour = instance.config().commands.nationInfoTextColour.named();
         Nation nation = EarthMCAPI.getNation(nationName.toLowerCase(Locale.ROOT));
 
         if (nation == null) {

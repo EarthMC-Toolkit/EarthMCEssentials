@@ -20,9 +20,7 @@ public class EventRegistry {
         new NearbyCommand(instance).register(dispatcher);
         new TownlessCommand(instance).register(dispatcher);
         new AllianceCommand(instance).register(dispatcher);
-
         new NetherCommand().register(dispatcher);
-        new ToggleDebugCommand().register(dispatcher);
     }
 
     public static void RegisterClientTick() {

@@ -14,10 +14,10 @@ import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
 import static net.emc.emce.utils.EarthMCAPI.getTownless;
-import static net.emc.emce.utils.EarthMCAPI.playerOnline;
+import static net.emc.emce.utils.EarthMCAPI.clientOnline;
 
 public class TaskScheduler {
-    public ScheduledExecutorService service;
+    public ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
     public boolean hasMap = false;
 
@@ -46,29 +46,24 @@ public class TaskScheduler {
     }
 
     public void initMap() {
-        service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
             if (hasMap) return;
 
-            if (playerOnline("aurora")) setHasMap("aurora");
-            else if (playerOnline("nova")) setHasMap("nova");
+            if (clientOnline("aurora")) setHasMap("aurora");
+            if (clientOnline("nova")) setHasMap("nova");
             else setHasMap(null);
-        }, 15, 10, TimeUnit.SECONDS); // Give enough time for Dynmap & Vercel to update.
+        }, 15, 10, TimeUnit.SECONDS);
     }
 
     public void setHasMap(String map) {
+        hasMap = map != null;
+
         if (map == null) {
-            Messaging.sendDebugMessage("Player not found on any map.");
             stop();
-
-            instance().mapName = "aurora";
-            hasMap = false;
-        }
-        else {
-            Messaging.sendDebugMessage("Player found on: " + map);
-
-            hasMap = true;
+            Messaging.sendDebugMessage("Player not found on any map!");
+        } else {
             start();
+            Messaging.sendDebugMessage("Player found on: " + map);
         }
     }
 
@@ -116,5 +111,4 @@ public class TaskScheduler {
     boolean shouldRun() {
         return ModConfig.instance().general.enableMod && MinecraftClient.getInstance().isWindowFocused();
     }
-
 }

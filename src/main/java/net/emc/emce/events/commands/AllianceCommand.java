@@ -12,6 +12,9 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.fabric.FabricClientAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentBuilder;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -26,7 +29,7 @@ public record AllianceCommand(EarthMCEssentials instance) {
         dispatcher.register(ClientCommandManager.literal("alliance").then(
                 ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
                     String allianceName = StringArgumentType.getString(c, "allianceName");
-                    NamedTextColor colour = instance.getConfig().commands.allianceInfoTextColour.named();
+                    NamedTextColor colour = instance.config().commands.allianceInfoTextColour.named();
 
                     // Implement data cache
                     AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
@@ -67,11 +70,13 @@ public record AllianceCommand(EarthMCEssentials instance) {
     }
 
     private Component createText(String langKey, JsonObject obj, String key, TextColor color, boolean isLink) {
+        if (!isLink) return createText(langKey, obj, key, color);
+
         String text = formatElement(obj.get(key));
         Style linkStyle = Style.style(ClickEvent.openUrl(text), NamedTextColor.AQUA, TextDecoration.UNDERLINED);
 
-        return Component.translatable().key(langKey).color(color)
-                .append(Component.text(text).style(linkStyle)).build();
+        Component comp = Component.translatable(langKey).color(color);
+        return comp.append(Component.text(text).style(linkStyle));
     }
 
     private static String formatElement(JsonElement element) {

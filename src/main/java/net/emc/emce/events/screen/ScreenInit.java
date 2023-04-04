@@ -2,7 +2,7 @@ package net.emc.emce.events.screen;
 
 import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.emc.emce.modules.OverlayRenderer;
-import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
@@ -28,8 +28,7 @@ public class ScreenInit {
 
     public static void after(MinecraftClient client, Screen newScreen, int scaledWidth, int scaledHeight) {
         if (newScreen instanceof ClothConfigScreen) {
-            ScreenExtensions configSE = ScreenExtensions.getExtensions(newScreen);
-            configSE.fabric_getRemoveEvent().register(ScreenInit::Refresh);
+            ScreenEvents.remove(newScreen).register(ScreenInit::Refresh);
         }
     }
 }

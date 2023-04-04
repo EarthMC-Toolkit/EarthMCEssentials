@@ -59,6 +59,7 @@
 
     "text.autoconfig.emc-essentials.category.General": "General",
     "text.autoconfig.emc-essentials.option.general.enableMod": "Enable Mod",
+    "text.autoconfig.emc-essentials.option.general.debugLog": "Log debug messages",
 
     "text.autoconfig.emc-essentials.category.Townless": "Townless",
     "text.autoconfig.emc-essentials.option.townless.enabled": "Enabled",
