@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Stream;
 
 import static io.github.emcw.utils.GsonUtil.streamEntries;
 import static java.util.stream.Collectors.toMap;
@@ -97,6 +97,20 @@ public class OverlayRenderer {
                Math.abs(z - (int) client.player.getZ());
     }
 
+    public static int closest(Player p1, Player p2) {
+        Location loc1 = p1.getLocation();
+        Integer dist1 = dist(loc1.getX(), loc1.getZ());
+
+        Location loc2 = p2.getLocation();
+        Integer dist2 = dist(loc2.getX(), loc2.getZ());
+
+        return dist1.compareTo(dist2);
+    }
+
+    public static <K, V> Map<K, V> collectSorted(Stream<Map.Entry<K, V>> entries) {
+        return entries.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
+    }
+
     public static @Nullable MutableText prefixedPlayerDistance(@NotNull Player player) throws MissingEntryException {
         Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
 
@@ -113,29 +127,23 @@ public class OverlayRenderer {
         return translatable(prefix + name + ": " + distance + "m").formatted(playerTextFormatting);
     }
 
-    static LinkedHashMap<String, Player> sortByDistance(Map<String, Player> players, boolean acsending) {
-        return streamEntries(players).sorted((o1, o2) -> {
-            Location loc1 = o1.getValue().getLocation();
-            Integer dist1 = dist(loc1.getX(), loc1.getZ());
-
-            Location loc2 = o2.getValue().getLocation();
-            Integer dist2 = dist(loc2.getX(), loc2.getZ());
-
-            return acsending ? dist1.compareTo(dist2) : dist2.compareTo(dist1);
-        }).collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
+    static Map<String, Player> sortByDistance(Map<String, Player> players, boolean acsending) {
+        return collectSorted(streamEntries(players).sorted((o1, o2) ->
+            closest(o1.getValue(), o2.getValue())
+        ));
     }
 
-    static LinkedHashMap<String, Player> sortByRank(Map<String, Player> players, String rank) {
-        return streamEntries(players).sorted((o1, o2) -> {
-            if (Objects.equals(rank, "townless")) {
-                Boolean cur = !o1.getValue().isResident();
-                Boolean next = !o2.getValue().isResident();
+    static Map<String, Player> sortByTownless(Map<String, Player> players) {
+        return collectSorted(streamEntries(players).sorted((o1, o2) -> {
+            Player p1 = o1.getValue(), p2 = o2.getValue();
+            boolean res1 = p1.isResident(), res2 = p2.isResident();
 
-                return cur.compareTo(next);
-            }
+            if (res1 && res2) return -1; // Both residents, ignore.
+            if (!res1 && !res2) return closest(p1, p2); // Both townless, sort by closest.
 
-            return 0;
-        }).collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
+            // Different results, sort by whoever is townless.
+            return Boolean.compare(res1, res2);
+        }));
     }
 
     private static void RenderTownless(boolean usingPreset) {
@@ -210,7 +218,7 @@ public class OverlayRenderer {
         switch (config.nearby.nearbySort) {
             case NEAREST -> nearby = sortByDistance(nearby, true);
             case FURTHEST -> nearby = sortByDistance(nearby, false);
-            case TOWNLESS -> nearby = sortByRank(nearby, "townless");
+            case TOWNLESS -> nearby = sortByTownless(nearby);
         }
 
         Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());

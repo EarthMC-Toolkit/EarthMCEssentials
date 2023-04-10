@@ -2,7 +2,7 @@ package net.emc.emce.mixins;
 
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.utils.Messaging;
-import net.minecraft.client.MinecraftClientGame;
+import net.minecraft.client.ClientGameSession;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,10 +16,10 @@ import static net.emc.emce.modules.EventRegistry.RegisterHud;
 import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 import static net.emc.emce.utils.ModUtils.updateServerName;
 
-@Mixin(MinecraftClientGame.class)
+@Mixin(ClientGameSession.class)
 public abstract class SessionEventListenerMixin {
-    @Inject(at = @At("TAIL"), method="onStartGameSession")
-    public void onStartGameSession(CallbackInfo ci) {
+    @Inject(at = @At("TAIL"), method="<init>")
+    public void onInit(CallbackInfo ci) {
         System.out.println("EMCE > New game session detected.");
 
         updateServerName();
@@ -41,15 +41,6 @@ public abstract class SessionEventListenerMixin {
             if (instance().sessionCounter > 1)
                 instance().scheduler().initMap();
         }
-    }
-
-    @Inject(at = @At("TAIL"), method="onLeaveGameSession")
-    public void onLeaveGameSession(CallbackInfo ci) {
-        if(isConnectedToEMC())
-            updateSessionCounter('-');
-
-        updateServerName();
-        OverlayRenderer.Clear();
     }
 
     void updateSessionCounter(char type) {

@@ -35,9 +35,9 @@ public class ModUtils {
     public enum NearbySort {
         NEAREST,
         FURTHEST,
-        TOWNLESS,
-        MAYOR,
-        NATION_LEADER
+        TOWNLESS
+//        MAYOR,
+//        NATION_LEADER
     }
 
     public enum State {

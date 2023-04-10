@@ -52,8 +52,9 @@ public class ModConfig implements ConfigData {
     public static class Townless {
         @Comment("Toggles townless players on or off.")
         public boolean enabled = true;
-        @Comment("The maximum length the townless list can be. < 1 for no limit.")
-        public int maxLength = 10; // < 1 = No limit
+        @Comment("The maximum amount of players shown before wrapping.")
+        @BoundedDiscrete(min = 3, max = 24)
+        public int maxLength = 12; // < 1 = No limit
         @Comment("Toggles the use of preset positions, uses sliders if off.")
         public boolean presetPositions = true;
 
@@ -61,9 +62,9 @@ public class ModConfig implements ConfigData {
         @Comment("The position of the Townless info.")
         public State positionState = State.RIGHT;
 
-        @Comment("Note: Only used if Use Preset Positions is off.")
+        @Comment("Note: No effect when 'Use Preset Positions' is on.")
         public int xPos = 1;
-        @Comment("Note: Only used if Use Preset Positions is off.")
+        @Comment("Note: No effect when 'Use Preset Positions' is on.")
         public int yPos = 16;
 
         @EnumHandler(option = DROPDOWN)
@@ -83,10 +84,10 @@ public class ModConfig implements ConfigData {
         public boolean presetPositions = true;
 
         @EnumHandler(option = BUTTON)
-        public State positionState = State.TOP_RIGHT;
+        public State positionState = State.LEFT;
 
         @EnumHandler(option = BUTTON)
-        @Comment("Determines order of the nearby players list before rendering.")
+        @Comment("Determines order of importance when sorting Nearby Players. Only affects the HUD.")
         public NearbySort nearbySort = NearbySort.NEAREST;
 
         @Comment("The horizontal position on the HUD.")
