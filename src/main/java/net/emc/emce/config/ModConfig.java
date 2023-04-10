@@ -10,9 +10,12 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.objects.Colors;
+
+import net.emc.emce.utils.ModUtils.NearbySort;
 import net.emc.emce.utils.ModUtils.State;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN;
 
 @SuppressWarnings("CanBeFinal")
 @Config(name = "emc-essentials")
@@ -63,10 +66,10 @@ public class ModConfig implements ConfigData {
         @Comment("Note: Only used if Use Preset Positions is off.")
         public int yPos = 16;
 
-        @EnumHandler(option = BUTTON)
+        @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the 'Townless Players' text.")
         public Colors headingTextColour = Colors.DARK_PURPLE;
-        @EnumHandler(option = BUTTON)
+        @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the townless player names.")
         public Colors playerTextColour = Colors.DARK_PURPLE;
     }
@@ -82,15 +85,19 @@ public class ModConfig implements ConfigData {
         @EnumHandler(option = BUTTON)
         public State positionState = State.TOP_RIGHT;
 
+        @EnumHandler(option = BUTTON)
+        @Comment("Determines order of the nearby players list before rendering.")
+        public NearbySort nearbySort = NearbySort.NEAREST;
+
         @Comment("The horizontal position on the HUD.")
         public int xPos = 100;
         @Comment("The vertical position on the HUD.")
         public int yPos = 16;
 
-        @EnumHandler(option = BUTTON)
+        @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the 'Nearby Players' text.")
         public Colors headingTextColour = Colors.GOLD;
-        @EnumHandler(option = BUTTON)
+        @EnumHandler(option = DROPDOWN)
         @Comment("The colour of nearby players' names.")
         public Colors playerTextColour = Colors.GOLD;
 
@@ -104,19 +111,19 @@ public class ModConfig implements ConfigData {
     }
 
     public static class Commands {
-        @EnumHandler(option = BUTTON)
+        @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the townless players text.")
         public Colors townlessTextColour = Colors.LIGHT_PURPLE;
 
-        @EnumHandler(option = BUTTON)
+        @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the town info text.")
         public Colors townInfoTextColour = Colors.GREEN;
 
-        @EnumHandler(option = BUTTON)
+        @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the nation info text.")
         public Colors nationInfoTextColour = Colors.AQUA;
 
-        @EnumHandler(option = BUTTON)
+        @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the alliance info text.")
         public Colors allianceInfoTextColour = Colors.GOLD;
     }
@@ -124,10 +131,10 @@ public class ModConfig implements ConfigData {
     public static class Intervals {
         @Comment("Fairly harmless on performance, can be lowered without much overhead.")
         @BoundedDiscrete(min = 10, max = 200)
-        public int townless = 60;
+        public int townless = 30;
 
         @Comment("Small but frequent payload, if you don't rely on it much, turn it up.")
-        @BoundedDiscrete(min = 3, max = 15)
+        @BoundedDiscrete(min = 2, max = 30)
         public int nearby = 5;
     }
 

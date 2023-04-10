@@ -1,7 +1,8 @@
 package net.emc.emce.modules;
 
+import io.github.emcw.entities.Location;
 import io.github.emcw.entities.Player;
-import io.github.emcw.entities.Resident;
+import io.github.emcw.exceptions.MissingEntryException;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
@@ -9,11 +10,17 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static io.github.emcw.utils.GsonUtil.streamEntries;
+import static java.util.stream.Collectors.toMap;
 import static net.emc.emce.EarthMCEssentials.instance;
 import static net.emc.emce.utils.EarthMCAPI.clientName;
 import static net.emc.emce.utils.ModUtils.*;
@@ -69,6 +76,66 @@ public class OverlayRenderer {
 
         if (config.townless.enabled) RenderTownless(config.townless.presetPositions);
         if (config.nearby.enabled) RenderNearby(config.nearby.presetPositions);
+    }
+
+    public static String getRankPrefix(Player player) throws MissingEntryException {
+        String prefix = "(Townless) ";
+
+        if (config.nearby.showRank) {
+            if (player.isResident()) {
+                String rank = player.asResident(instance().mapName).getRank();
+                prefix = "(" + rank + ") ";
+            }
+        }
+
+        return prefix;
+    }
+
+    public static int dist(int x, int z) {
+        assert client.player != null;
+        return Math.abs(x - (int) client.player.getX()) +
+               Math.abs(z - (int) client.player.getZ());
+    }
+
+    public static @Nullable MutableText prefixedPlayerDistance(@NotNull Player player) throws MissingEntryException {
+        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
+
+        Integer x = player.getLocation().getX();
+        Integer z = player.getLocation().getZ();
+        if (x == null || z == null) return null;
+
+        String name = player.getName();
+        if (name.equals(clientName())) return null;
+
+        int distance = dist(x, z);
+        String prefix = getRankPrefix(player);
+
+        return translatable(prefix + name + ": " + distance + "m").formatted(playerTextFormatting);
+    }
+
+    static LinkedHashMap<String, Player> sortByDistance(Map<String, Player> players, boolean acsending) {
+        return streamEntries(players).sorted((o1, o2) -> {
+            Location loc1 = o1.getValue().getLocation();
+            Integer dist1 = dist(loc1.getX(), loc1.getZ());
+
+            Location loc2 = o2.getValue().getLocation();
+            Integer dist2 = dist(loc2.getX(), loc2.getZ());
+
+            return acsending ? dist1.compareTo(dist2) : dist2.compareTo(dist1);
+        }).collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
+    }
+
+    static LinkedHashMap<String, Player> sortByRank(Map<String, Player> players, String rank) {
+        return streamEntries(players).sorted((o1, o2) -> {
+            if (Objects.equals(rank, "townless")) {
+                Boolean cur = !o1.getValue().isResident();
+                Boolean next = !o2.getValue().isResident();
+
+                return cur.compareTo(next);
+            }
+
+            return 0;
+        }).collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
     }
 
     private static void RenderTownless(boolean usingPreset) {
@@ -140,7 +207,12 @@ public class OverlayRenderer {
     private static void RenderNearby(boolean usingPreset) {
         Map<String, Player> nearby = nearby();
 
-        Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
+        switch (config.nearby.nearbySort) {
+            case NEAREST -> nearby = sortByDistance(nearby, true);
+            case FURTHEST -> nearby = sortByDistance(nearby, false);
+            case TOWNLESS -> nearby = sortByRank(nearby, "townless");
+        }
+
         Formatting nearbyTextFormatting = Formatting.byName(config.nearby.headingTextColour.name());
         MutableText nearbyText = translatable("text_nearby_header", nearby.size()).formatted(nearbyTextFormatting);
 
@@ -150,32 +222,19 @@ public class OverlayRenderer {
 
             if (client.player == null) return;
             if (nearby.size() >= 1) {
+                MutableText playerText;
                 int i = 0;
 
                 for (Player curPlayer : nearby.values()) {
-                    Integer x = curPlayer.getLocation().getX();
-                    Integer z = curPlayer.getLocation().getZ();
-                    if (x == null || z == null) continue;
-
-                    String name = curPlayer.getName();
-                    if (name.equals(clientName())) continue;
-
-                    int distance = Math.abs(x - (int) client.player.getX()) +
-                                   Math.abs(z - (int) client.player.getZ());
-
-                    String prefix = "";
-
-                    if (config.nearby.showRank) {
-                        if (!curPlayer.isResident()) prefix = "(Townless) ";
-                        else {
-                            Resident res = (Resident) curPlayer;
-                            prefix = "(" + res.getRank() + ") ";
-                        }
+                    try {
+                        playerText = prefixedPlayerDistance(curPlayer);
+                        if (playerText == null) continue;
+                    }
+                    catch (MissingEntryException e) {
+                        continue;
                     }
 
-                    MutableText playerText = translatable(prefix + name + ": " + distance + "m").formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, color);
-
                     ++i;
                 }
             }
@@ -190,27 +249,17 @@ public class OverlayRenderer {
 
             if (client.player == null) return;
             if (nearby.size() >= 1) {
+                MutableText playerText;
+
                 for (Player curPlayer : nearby.values()) {
-                    Integer x = curPlayer.getLocation().getX();
-                    Integer z = curPlayer.getLocation().getZ();
-                    if (x == null || z == null) continue;
-
-                    String currentPlayerName = curPlayer.getName();
-                    if (currentPlayerName.equals(client.player.getName().getString())) continue;
-
-                    int distance = Math.abs(x - (int) client.player.getX()) +
-                                   Math.abs(z - (int) client.player.getZ());
-
-                    String prefix = "";
-                    if (config.nearby.showRank) {
-                        if (!curPlayer.isResident()) prefix = "(Townless) ";
-                        else {
-                            Resident res = (Resident) curPlayer;
-                            prefix = "(" + res.getRank() + ") ";
-                        }
+                    try {
+                        playerText = prefixedPlayerDistance(curPlayer);
+                        if (playerText == null) continue;
+                    }
+                    catch (MissingEntryException e) {
+                        continue;
                     }
 
-                    MutableText playerText = translatable(prefix + currentPlayerName + ": " + distance + "m").formatted(playerTextFormatting);
                     renderer.drawWithShadow(matrixStack, playerText, xOffset, playerOffset, color);
 
                     // Add 10 pixels to offset. (Where the next player will be rendered)

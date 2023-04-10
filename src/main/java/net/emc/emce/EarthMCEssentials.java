@@ -101,7 +101,7 @@ public class EarthMCEssentials implements ModInitializer {
         this.debugModeEnabled = enabled;
 
         if (enabled) Messaging.sendPrefixed("msg_debug_enabled");
-        else Messaging.sendPrefixed("msg_debug_enabled");
+        else Messaging.sendPrefixed("msg_debug_disabled");
     }
 
     public boolean debugEnabled() {
@@ -125,12 +125,12 @@ public class EarthMCEssentials implements ModInitializer {
         this.shouldRender = shouldRender;
     }
 
-    public void setTownless(@NotNull Map<String, Player> array) {
+    public void setTownless(@NotNull Map<String, Player> map) {
         // Make sure there is data to add.
-        if (array.size() < 1) return;
+        if (map.size() < 1) return;
 
         townlessNames.clear();
-        townlessNames = GsonUtil.streamValues(array).map(BaseEntity::getName).collect(Collectors.toList());
+        townlessNames = GsonUtil.streamValues(map).map(BaseEntity::getName).collect(Collectors.toList());
 
         OverlayRenderer.SetTownless(townlessNames);
         OverlayRenderer.UpdateStates(true, false);

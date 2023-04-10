@@ -40,7 +40,7 @@
     "text_nationinfo_capital": "Capital: %s",
     "text_nationinfo_area": "Area: %s",
     "text_nationinfo_towns": "Towns: %s",
-    "text_nationinfo_err": "§cNation %s is not registered.",
+    "text_nationinfo_err": "§cNation %s §cis not registered.",
     "text_nationinfo_not_registered": "§cYour nation is not registered.",
 
     "text_alliance_header": "Alliance Information - %s - #%s",
@@ -53,9 +53,9 @@
 
     "text_shared_area": "Area: %s",
     "text_shared_residents": "Residents: %d",
-    "text_shared_notregistered": "§cResident %s is not registered.",
+    "text_shared_notregistered": "§cPlayer %s §cis not a resident!",
 
-    "text.autoconfig.emc-essentials.title": "EarthMC Essentials Config",
+    "text.autoconfig.emc-essentials.title": "§n§aEarthMC Essentials Config",
 
     "text.autoconfig.emc-essentials.category.General": "General",
     "text.autoconfig.emc-essentials.option.general.enableMod": "Enable Mod",
@@ -76,6 +76,7 @@
     "text.autoconfig.emc-essentials.option.nearby.showRank": "Show Rank",
     "text.autoconfig.emc-essentials.option.nearby.presetPositions": "Use Preset Positions",
     "text.autoconfig.emc-essentials.option.nearby.positionState": "Preset Position",
+    "text.autoconfig.emc-essentials.option.nearby.nearbySort": "Sort Order",
     "text.autoconfig.emc-essentials.option.nearby.xPos": "Horizontal Position (X)",
     "text.autoconfig.emc-essentials.option.nearby.yPos": "Vertical Position (Y)",
     "text.autoconfig.emc-essentials.option.nearby.headingTextColour": "Heading Colour",

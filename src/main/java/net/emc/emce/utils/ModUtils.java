@@ -1,9 +1,11 @@
 package net.emc.emce.utils;
 
 import io.github.emcw.entities.Player;
-import io.github.emcw.entities.Resident;
-import net.emc.emce.config.ModConfig;
+import io.github.emcw.exceptions.MissingEntryException;
+import lombok.Setter;
+import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
@@ -13,18 +15,29 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.*;
 
+import static net.emc.emce.modules.OverlayRenderer.dist;
+import static net.emc.emce.modules.OverlayRenderer.getRankPrefix;
 import static net.emc.emce.utils.EarthMCAPI.clientName;
 import static net.minecraft.client.MinecraftClient.getInstance;
 
 public class ModUtils {
-    private static @NotNull String serverName = "";
+    @Setter private static @NotNull String serverName = "";
 
     @SuppressWarnings("unused")
     public enum ScaleMethod {
         Independent,
         Proportionate
+    }
+
+    public enum NearbySort {
+        NEAREST,
+        FURTHEST,
+        TOWNLESS,
+        MAYOR,
+        NATION_LEADER
     }
 
     public enum State {
@@ -140,17 +153,13 @@ public class ModUtils {
             if (name.equals(clientName())) continue;
 
             ClientPlayerEntity player = Objects.requireNonNull(getInstance().player);
-            int distance = Math.abs(x - player.getBlockX()) +
-                           Math.abs(z - player.getBlockZ());
+            int distance = dist(x, z);
 
-            String prefix = "";
-
-            if (ModConfig.instance().nearby.showRank) {
-                if (!curPlayer.isResident()) prefix = "(Townless) ";
-                else {
-                    Resident curRes = (Resident) curPlayer;
-                    prefix = "(" + curRes.getRank() + ") ";
-                }
+            String prefix;
+            try {
+                prefix = getRankPrefix(curPlayer);
+            } catch (MissingEntryException e) {
+                continue;
             }
 
             MutableText nearbyText = Text.translatable(prefix + name + ": " + distance + "m");
@@ -173,11 +182,20 @@ public class ModUtils {
         return offset;
     }
 
+    public static boolean configOpen() {
+        Screen screen = MinecraftClient.getInstance().currentScreen;
+        return screen instanceof ClothConfigScreen;
+    }
+
     public static boolean isConnectedToEMC() {
         return serverName.toLowerCase().contains("earthmc.net");
     }
 
-    public static @NotNull String getServerName() {
+    public static void updateServerName() {
+        setServerName(currentServer());
+    }
+
+    public static @NotNull String currentServer() {
         String serverName = "";
 
         try {
@@ -191,10 +209,11 @@ public class ModUtils {
             else if (instance.isConnectedToRealms()) serverName = "Realms";
             else if (instance.isInSingleplayer()) serverName = "Singleplayer";
             else {
-                ClientPlayNetworkHandler clientPlayNetworkHandler = instance.getNetworkHandler();
+                ClientPlayNetworkHandler networkHandler = instance.getNetworkHandler();
 
-                if (clientPlayNetworkHandler != null) {
-                    return ((InetSocketAddress) clientPlayNetworkHandler.getConnection().getAddress()).getHostName();
+                if (networkHandler != null) {
+                    SocketAddress address = networkHandler.getConnection().getAddress();
+                    return ((InetSocketAddress) address).getHostName();
                 }
             }
         } catch (Exception e) {
@@ -202,13 +221,5 @@ public class ModUtils {
         }
 
         return serverName;
-    }
-
-    public static void updateServerName() {
-        serverName = getServerName().toLowerCase();
-    }
-
-    public static void setServerName(@NotNull String serverName) {
-        ModUtils.serverName = serverName;
     }
 }

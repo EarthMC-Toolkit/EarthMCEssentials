@@ -5,7 +5,7 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-version = "${project.mod_version}-${project.minecraft_version}+" as Object
+version = "v${project.mod_version}-${project.minecraft_version}" as Object
 group = project.maven_group
 
 def localProps = new Properties()
@@ -70,7 +70,7 @@ processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand("version": project.version)
 	}
 }
 

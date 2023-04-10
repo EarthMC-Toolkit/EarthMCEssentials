@@ -2,17 +2,18 @@ package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.utils.EarthMCAPI;
 import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.List;
-import java.util.Map;
 
 public record TownlessCommand(EarthMCEssentials instance) {
     static NamedTextColor townlessTextColour;
@@ -28,8 +29,11 @@ public record TownlessCommand(EarthMCEssentials instance) {
     }
 
     NamedTextColor getTextColour() { return instance.config().commands.townlessTextColour.named(); }
-    Component createMsg(String key, int size) { return Messaging.create(key, getTextColour(), whiteText(size)); }
-    Component whiteText(int size) { return Component.text(size).color(NamedTextColor.WHITE); }
+    TextComponent whiteText(int size) { return Component.text(size).color(NamedTextColor.WHITE); }
+
+    Component createMsg(String key, int size) {
+        return Messaging.create(key, getTextColour(), whiteText(size));
+    }
 
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("townless").executes(c -> {
@@ -79,7 +83,9 @@ public record TownlessCommand(EarthMCEssentials instance) {
 
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {
-            instance.setTownless(Map.of());
+            OverlayRenderer.SetTownless(List.of());
+            OverlayRenderer.UpdateStates(true, false);
+
             Messaging.sendPrefixed("msg_townless_clear");
 
             return 1;

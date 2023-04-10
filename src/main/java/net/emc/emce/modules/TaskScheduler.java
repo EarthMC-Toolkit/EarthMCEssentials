@@ -12,23 +12,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static io.github.emcw.utils.GsonUtil.serialize;
 import static net.emc.emce.EarthMCEssentials.instance;
-import static net.emc.emce.utils.EarthMCAPI.*;
+import static net.emc.emce.utils.EarthMCAPI.clientOnline;
 
 public class TaskScheduler {
-    public final ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
     public boolean hasMap = false;
 
     private static final List<Cache<?>> CACHES = List.of(AllianceDataCache.INSTANCE);
+    private ScheduledExecutorService service;
 
     public void start() {
         ModConfig config = ModConfig.instance();
 
         // Pre-fill data.
         if (config.general.enableMod) {
-            if (config.townless.enabled) instance().setTownless(getTownless());
-            if (config.nearby.enabled) instance().setNearbyPlayers(getNearby());
+            if (config.townless.enabled) instance().setTownless(EarthMCAPI.getTownless());
+            if (config.nearby.enabled) instance().setNearbyPlayers(EarthMCAPI.getNearby());
         }
 
         startCacheCheck();
@@ -45,22 +46,26 @@ public class TaskScheduler {
     }
 
     public void initMap() {
+        service = Executors.newScheduledThreadPool(4);
         service.scheduleAtFixedRate(() -> {
             if (hasMap) return;
 
             if (clientOnline("aurora")) setHasMap("aurora");
-            if (clientOnline("nova")) setHasMap("nova");
+            else if (clientOnline("nova")) setHasMap("nova");
             else setHasMap(null);
-        }, 10, 5, TimeUnit.SECONDS);
+        }, 5, 15, TimeUnit.SECONDS);
     }
 
     public void setHasMap(String map) {
-        hasMap = map != null;
-
         if (map == null) {
+            hasMap = false;
+            instance().mapName = "aurora";
+
             stop();
             Messaging.sendDebugMessage("Player not found on any map!");
         } else {
+            hasMap = true;
+
             start();
             Messaging.sendDebugMessage("Player found on: " + map);
         }
@@ -68,28 +73,26 @@ public class TaskScheduler {
 
     private void startTownless() {
         townlessRunning = true;
+        ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
-            var config = instance().config();
             if (townlessRunning && config.townless.enabled && shouldRun()) {
-                Messaging.sendDebugMessage("Starting townless task.");
-                instance().setTownless(getTownless());
-                Messaging.sendDebugMessage("Finished townless task.");
+                instance().setTownless(EarthMCAPI.getTownless());
+                Messaging.sendDebugMessage("Updating townless...");
             }
-        }, 5, Math.max(instance().config().intervals.townless, 200), TimeUnit.SECONDS);
+        }, 5, Math.min(config.intervals.townless, 200), TimeUnit.SECONDS);
     }
 
     private void startNearby() {
         nearbyRunning = true;
+        ModConfig config = ModConfig.instance();
 
         service.scheduleAtFixedRate(() -> {
-            var config = instance().config();
             if (nearbyRunning && config.nearby.enabled && shouldRun()) {
-                Messaging.sendDebugMessage("Starting nearby task.");
                 instance().setNearbyPlayers(EarthMCAPI.getNearby());
-                Messaging.sendDebugMessage("Finished nearby task.");
+                Messaging.sendDebugMessage("Updating nearby...");
             }
-        }, 5, Math.max(instance().config().intervals.nearby, 30), TimeUnit.SECONDS);
+        }, 5, Math.min(config.intervals.nearby, 30), TimeUnit.SECONDS);
     }
 
     private void startCacheCheck() {

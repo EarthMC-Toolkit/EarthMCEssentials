@@ -3,9 +3,8 @@ package net.emc.emce.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.network.ClientPlayerEntity;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import static net.emc.emce.EarthMCEssentials.instance;
 import static net.kyori.adventure.platform.fabric.FabricClientAudiences.of;
@@ -15,15 +14,14 @@ import static net.minecraft.client.MinecraftClient.getInstance;
 
 public class Messaging {
     //#region Helper Methods
-    public static Component create(String key, NamedTextColor keyColour, Object... args) {
-        List<Component> argList = new ArrayList<>();
-        for (Object obj : args) argList.add(Component.text(obj.toString()));
-
-        return translatable().key(key).color(keyColour).args(argList).build();
+    @Contract("_, _, _ -> new")
+    public static @NotNull Component create(String key, NamedTextColor keyColour, Component... args) {
+        return translatable().key(key).color(keyColour).args(args).build();
     }
     //#endregion
 
-    private static Component prefix() {
+    @Contract(value = " -> new", pure = true)
+    private static @NotNull Component prefix() {
         return translatable("mod_prefix");
     }
 
@@ -60,7 +58,7 @@ public class Messaging {
     //#region Send Command
     public static void performCommand(String cmd) {
         ClientPlayerEntity pl = getInstance().player;
-        if (pl != null) getInstance().player.networkHandler.sendCommand(cmd);
+        if (pl != null) pl.networkHandler.sendCommand(cmd);
     }
     //endregion
 

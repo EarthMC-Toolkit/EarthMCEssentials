@@ -20,16 +20,14 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static io.github.emcw.utils.GsonUtil.serialize;
 import static net.emc.emce.EarthMCEssentials.instance;
 
 public class EarthMCAPI {
-    private static final ModConfig config = ModConfig.instance();
     public static APIData apiData = new APIData();
     private static final String endpoints =
             "https://raw.githubusercontent.com/EarthMC-Toolkit/EarthMCEssentials/main/src/main/resources/api.json";
 
-    private static EMCMap currentMap() {
+    public static EMCMap currentMap() {
         return Objects.equals(instance().mapName, "nova")
                 ? instance().wrapper.getNova()
                 : instance().wrapper.getAurora();
@@ -51,11 +49,28 @@ public class EarthMCAPI {
         }
     }
 
+    private static void refresh() {
+        currentMap().Players.updateCache(true);
+    }
+
+    private static void clear() {
+        currentMap().Players.clear();
+    }
+
+    public static Map<String, Player> allPlayers() {
+        refresh();
+        return currentMap().Players.all();
+    }
+
     public static Map<String, Player> getTownless() {
+        refresh();
         return currentMap().Players.townless();
     }
 
-    public static Map<String, Player> onlinePlayers() { return currentMap().Players.online(); }
+    public static Map<String, Player> onlinePlayers() {
+        refresh();
+        return currentMap().Players.online();
+    }
 
     @Nullable
     public static Player getOnlinePlayer(String playerName) {
@@ -64,8 +79,6 @@ public class EarthMCAPI {
 
     public static boolean clientOnline(String map) {
         instance().mapName = map; // getOnlinePlayer uses mapName.
-
-        System.out.println(serialize(onlinePlayers().values()));
         return onlinePlayers().containsKey(clientName());
     }
 
@@ -82,16 +95,13 @@ public class EarthMCAPI {
         }
     }
 
-    public static Map<String, Player> allPlayers() {
-        return currentMap().Players.all();
-    }
-
     public static @Nullable Player getPlayer(String name) {
         return allPlayers().getOrDefault(name, null);
     }
 
     @Contract(" -> new")
     public static @NotNull Map<String, Player> getNearby() {
+        ModConfig config = ModConfig.instance();
         return getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
     }
 
@@ -100,24 +110,22 @@ public class EarthMCAPI {
         Map<String, Player> result = new ConcurrentHashMap<>();
 
         try {
-            MinecraftClient client = MinecraftClient.getInstance();
-            ClientPlayerEntity player = client.player;
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
+            // Check if client's player is valid, and we can sleep in a bed in this world.
             if (player == null) return result;
             if (!player.getEntityWorld().getDimension().bedWorks()) return result;
 
-            EMCMap curMap = currentMap();
             Integer x = (int) player.getX(),
-                    y = (int) player.getY();
+                    z = (int) player.getZ();
 
-            Map<String, Player> nearby = curMap.Players.getNearby(allPlayers(), x, y, xBlocks, zBlocks);
-            nearby.remove(clientName());
-
-            return nearby;
+            result = currentMap().Players.getNearby(onlinePlayers(), x, z, xBlocks, zBlocks);
+            result.remove(clientName());
         } catch (Exception e) {
             Messaging.sendDebugMessage("Error fetching nearby!", e);
-            return result;
         }
+
+        return result;
     }
 
     @Contract(" -> new")

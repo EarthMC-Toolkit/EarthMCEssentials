@@ -33,12 +33,18 @@ public record InfoCommands(EarthMCEssentials instance) {
 
                 return 1;
         })).executes(c -> {
-            Player clientPlayer = instance.getClientPlayer();
+            if (residentExists(clientName())) {
+                String townName;
 
-            if (residentExists(clientPlayer.getName())) {
-                String townName = ((Resident) clientPlayer).getTown();
+                try {
+                    Player clientPlayer = instance.getClientPlayer();
+                    townName = clientPlayer.asResident(instance.mapName).getTown();
+                } catch (Exception e) {
+                    Messaging.sendPrefixed("text_towninfo_not_registered");
+                    return 1;
+                }
 
-                if (townName.equals("") || townName.equals("No Town"))
+                if (townName.equals("") && townName.equals("No Town"))
                     Messaging.sendPrefixed("text_towninfo_not_registered");
                 else trySendTown(townName);
             }
@@ -55,12 +61,18 @@ public record InfoCommands(EarthMCEssentials instance) {
 
                 return 1;
         })).executes(c -> {
-            Player clientPlayer = instance.getClientPlayer();
+            if (residentExists(clientName())) {
+                String nationName;
 
-            if (residentExists(clientPlayer.getName())) {
-                String nationName = ((Resident) clientPlayer).getNation();
+                try {
+                    Player clientPlayer = instance.getClientPlayer();
+                    nationName = clientPlayer.asResident(instance.mapName).getNation();
+                } catch (Exception e) {
+                    Messaging.sendPrefixed("text_towninfo_not_registered");
+                    return 1;
+                }
 
-                if (nationName.equals("") || nationName.equals("No Nation"))
+                if (nationName == null || nationName.equals("No Nation"))
                     Messaging.sendPrefixed("text_nationinfo_not_registered");
                 else trySendNation(nationName);
             }
@@ -73,7 +85,7 @@ public record InfoCommands(EarthMCEssentials instance) {
         Resident res = EarthMCAPI.getResident(name);
 
         if (res == null) {
-            Messaging.send(Translation.of("text_shared_notregistered", clientName()));
+            Messaging.send(Translation.of("text_shared_notregistered", name));
             return false;
         }
 

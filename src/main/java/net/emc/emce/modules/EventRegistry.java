@@ -7,6 +7,7 @@ import net.emc.emce.config.ModConfig;
 import net.emc.emce.events.commands.*;
 import net.emc.emce.events.screen.ScreenInit;
 import net.emc.emce.utils.Messaging;
+import net.emc.emce.utils.ModUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -27,10 +28,8 @@ public class EventRegistry {
         // Every tick, see if we are pressing F4.
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (EarthMCEssentials.configKeybinding.wasPressed()) {
-                if (!ScreenInit.configOpen()) {
+                if (!ModUtils.configOpen()) {
                     try {
-                        ScreenInit.setConfigOpen(true);
-
                         Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
                         client.setScreen(configScreen);
                     } catch (Exception e) {

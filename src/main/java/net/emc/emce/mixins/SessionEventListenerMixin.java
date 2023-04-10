@@ -1,9 +1,7 @@
 package net.emc.emce.mixins;
 
-import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.utils.Messaging;
-import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClientGame;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,12 +9,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.emc.emce.EarthMCEssentials.instance;
-
 import static net.emc.emce.utils.EarthMCAPI.fetchEndpoints;
-import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 
 import static net.emc.emce.modules.EventRegistry.RegisterScreen;
 import static net.emc.emce.modules.EventRegistry.RegisterHud;
+import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
+import static net.emc.emce.utils.ModUtils.updateServerName;
 
 @Mixin(MinecraftClientGame.class)
 public abstract class SessionEventListenerMixin {
@@ -24,14 +22,11 @@ public abstract class SessionEventListenerMixin {
     public void onStartGameSession(CallbackInfo ci) {
         System.out.println("EMCE > New game session detected.");
 
-        ModUtils.updateServerName();
+        updateServerName();
         OverlayRenderer.Init();
 
-        ModConfig.General gen = instance().config().general;
-        instance().setShouldRender(gen.enableMod);
-        instance().setDebugEnabled(gen.debugLog);
-
-        System.out.println("EMCE > Debug mode: " + gen.debugLog);
+        instance().setShouldRender(instance().config().general.enableMod);
+        instance().setDebugEnabled(instance().config().general.debugLog);
 
         if (instance().sessionCounter == 1) {
             RegisterScreen();
@@ -53,7 +48,7 @@ public abstract class SessionEventListenerMixin {
         if(isConnectedToEMC())
             updateSessionCounter('-');
 
-        ModUtils.setServerName("");
+        updateServerName();
         OverlayRenderer.Clear();
     }
 
