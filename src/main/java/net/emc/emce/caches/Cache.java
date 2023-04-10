@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class Cache<T> {
-    int CACHE_SECONDS = 600;
+    final int CACHE_SECONDS = 600;
     private Instant lastUpdate = Instant.now();
     public boolean updating = false;
     public T cachedData;

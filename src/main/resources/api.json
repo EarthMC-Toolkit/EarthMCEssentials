@@ -1,14 +1,7 @@
 {
   "domain": "https://emctoolkit.vercel.app/api/",
   "routes": {
-    "townless": "/townlessplayers",
     "allplayers": "/allplayers",
-    "onlineplayers": "/onlineplayers",
-    "residents": "/residents",
-    "towns": "/towns",
-    "nations": "/nations",
-    "alliances": "/alliances",
-    "news": "/news",
-    "nearby": "/nearby/players"
+    "alliances": "/alliances"
   }
 }

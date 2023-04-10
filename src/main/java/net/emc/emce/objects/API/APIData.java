@@ -1,51 +1,39 @@
 package net.emc.emce.objects.API;
 
 import com.google.gson.JsonObject;
-import net.emc.emce.config.ModConfig;
+import org.jetbrains.annotations.NotNull;
+
+import static io.github.emcw.utils.GsonUtil.keyAsStr;
 
 public class APIData {
     private final String domain;
-    public Routes routes = new Routes();
+    public final Routes routes;
 
     public static class Routes {
-        public String townless;
-        public String nations;
-        public String towns;
-        public String residents;
-        public String allPlayers;
-        public String onlinePlayers;
-        public String nearby;
-        public String alliances;
+        public final String allPlayers;
+        public final String alliances;
+
+        public Routes() {
+            allPlayers = "";
+            alliances = "";
+        }
+
+        public Routes(String allPlayers, String alliances) {
+            this.allPlayers = allPlayers;
+            this.alliances = alliances;
+        }
     }
 
-    public APIData(JsonObject object) {
-        domain = object.get("domain").getAsString();
-        JsonObject routesObj = object.get("routes").getAsJsonObject();
+    public APIData(@NotNull JsonObject object) {
+        domain = keyAsStr(object, "domain");
+        JsonObject obj = object.get("routes").getAsJsonObject();
 
-        routes.towns = routesObj.get("towns").getAsString();
-        routes.nations = routesObj.get("nations").getAsString();
-        routes.residents = routesObj.get("residents").getAsString();
-
-        routes.onlinePlayers = routesObj.get("onlineplayers").getAsString();
-        routes.allPlayers = routesObj.get("allplayers").getAsString();
-
-        routes.townless = routesObj.get("townless").getAsString();
-        routes.nearby = routesObj.get("nearby").getAsString();
-
-        routes.alliances = routesObj.get("alliances").getAsString();
+        routes = new Routes(keyAsStr(obj, "allplayers"), keyAsStr(obj, "alliances"));
     }
 
     public APIData() {
         domain = "";
-
-        routes.townless = "";
-        routes.nations = "";
-        routes.towns = "";
-        routes.residents = "";
-        routes.allPlayers = "";
-        routes.onlinePlayers = "";
-        routes.nearby = "";
-        routes.alliances = "";
+        routes = new Routes();
     }
 
     public String getDomain() { return domain; }

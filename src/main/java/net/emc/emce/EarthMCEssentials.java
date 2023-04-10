@@ -1,14 +1,16 @@
 package net.emc.emce;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import io.github.emcw.core.EMCWrapper;
+import io.github.emcw.entities.BaseEntity;
+import io.github.emcw.entities.Player;
+import io.github.emcw.utils.GsonUtil;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.EventRegistry;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.modules.TaskScheduler;
-import net.emc.emce.objects.Resident;
+import net.emc.emce.utils.Messaging;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -21,32 +23,36 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class EarthMCEssentials implements ModInitializer {
     private static EarthMCEssentials instance;
+    public EMCWrapper wrapper;
 
     private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 
-    private Resident clientResident = null;
-    private ModConfig config = null;
+    private Player clientPlayer = null;
     private boolean shouldRender = false;
-    private boolean debugModeEnabled = false;
 
-    private final List<String> townlessResidents = new CopyOnWriteArrayList<>();
-    private JsonArray nearbyPlayers = new JsonArray();
-    //private NewsData newsData = new NewsData(null);
-
-    public static KeyBinding configKeybinding;
+    private List<String> townlessNames = new CopyOnWriteArrayList<>();
+    private Map<String, Player> nearbyPlayers = new ConcurrentHashMap<>();
 
     private final TaskScheduler scheduler = new TaskScheduler();
-    public String mapName = "aurora";
 
+    public String mapName = "aurora";
     public int sessionCounter = 0;
+
+    public static KeyBinding configKeybinding;
+    private ModConfig config = null;
+    private boolean debugModeEnabled = false;
 
     @Override
     public void onInitialize() {
         instance = this;
+        wrapper = new EMCWrapper();
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         initConfig();
@@ -72,19 +78,16 @@ public class EarthMCEssentials implements ModInitializer {
         return scheduler;
     }
 
-    public Resident getClientResident() {
-        return clientResident;
+    public Player getClientPlayer() {
+        return clientPlayer;
     }
 
-    public void setClientResident(Resident res) {
-        clientResident = res;
+    public void setClientPlayer(Player res) {
+        clientPlayer = res;
     }
 
-    private void initConfig() { config = AutoConfig.getConfigHolder(ModConfig.class).getConfig(); }
-    public ModConfig getConfig() {
-        if (config == null) initConfig();
-        return config;
-    }
+    public ModConfig config() { return config; }
+    public void initConfig() { config = AutoConfig.getConfigHolder(ModConfig.class).getConfig(); }
 
     public boolean shouldRender() {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -94,23 +97,26 @@ public class EarthMCEssentials implements ModInitializer {
         return shouldRender;
     }
 
-    public void setDebugEnabled(boolean debugModeEnabled) {
-        this.debugModeEnabled = debugModeEnabled;
+    public void setDebugEnabled(boolean enabled) {
+        this.debugModeEnabled = enabled;
+
+        if (enabled) Messaging.sendPrefixed("msg_debug_enabled");
+        else Messaging.sendPrefixed("msg_debug_disabled");
     }
 
     public boolean debugEnabled() {
-        return debugModeEnabled;
+        return this.debugModeEnabled;
     }
 
     public List<String> getTownless() {
-        return townlessResidents;
+        return townlessNames;
     }
 
-    public JsonArray getNearbyPlayers() {
+    public Map<String, Player> getNearbyPlayers() {
         return nearbyPlayers;
     }
 
-    public void setNearbyPlayers(JsonArray nearbyPlayers) {
+    public void setNearbyPlayers(Map<String, Player> nearbyPlayers) {
         this.nearbyPlayers = nearbyPlayers;
         OverlayRenderer.UpdateStates(false, true);
     }
@@ -119,17 +125,14 @@ public class EarthMCEssentials implements ModInitializer {
         this.shouldRender = shouldRender;
     }
 
-    public void setTownlessResidents(@NotNull JsonArray array) {
+    public void setTownless(@NotNull Map<String, Player> map) {
         // Make sure there is data to add.
-        if (array.size() < 1) return;
+        if (map.size() < 1) return;
 
-        townlessResidents.clear();
+        townlessNames.clear();
+        townlessNames = GsonUtil.streamValues(map).map(BaseEntity::getName).collect(Collectors.toList());
 
-        for (JsonElement res : array) {
-            townlessResidents.add(res.getAsJsonObject().get("name").getAsString());
-        }
-
-        OverlayRenderer.SetTownless(townlessResidents);
+        OverlayRenderer.SetTownless(townlessNames);
         OverlayRenderer.UpdateStates(true, false);
     }
 }

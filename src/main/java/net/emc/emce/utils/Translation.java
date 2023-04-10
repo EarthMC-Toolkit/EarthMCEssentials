@@ -3,17 +3,18 @@ package net.emc.emce.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 
-import java.util.Arrays;
-import java.util.List;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
+
+import java.util.stream.Stream;
 
 public class Translation {
     public static Component of(String key) {
-        return Component.translatable(key);
+        return translatable(key);
     }
 
     public static Component of(String key, Object... args) {
-        List<TextComponent> components = Arrays.stream(args).map(arg -> Component.text(String.valueOf(arg))).toList();
-
-        return Component.translatable(key, components);
+        Stream<TextComponent> components = Stream.of(args).parallel().map(arg -> text(String.valueOf(arg)));
+        return translatable(key, components.toList());
     }
 }

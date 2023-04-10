@@ -18,7 +18,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
-import java.util.Iterator;
 import java.util.Locale;
 
 public record AllianceCommand(EarthMCEssentials instance) {
@@ -27,7 +26,7 @@ public record AllianceCommand(EarthMCEssentials instance) {
         dispatcher.register(ClientCommandManager.literal("alliance").then(
                 ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
                     String allianceName = StringArgumentType.getString(c, "allianceName");
-                    NamedTextColor colour = instance.getConfig().commands.allianceInfoTextColour.named();
+                    NamedTextColor colour = instance.config().commands.allianceInfoTextColour.named();
 
                     // Implement data cache
                     AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
@@ -68,21 +67,22 @@ public record AllianceCommand(EarthMCEssentials instance) {
     }
 
     private Component createText(String langKey, JsonObject obj, String key, TextColor color, boolean isLink) {
+        if (!isLink) return createText(langKey, obj, key, color);
+
         String text = formatElement(obj.get(key));
         Style linkStyle = Style.style(ClickEvent.openUrl(text), NamedTextColor.AQUA, TextDecoration.UNDERLINED);
 
-        return Component.translatable().key(langKey).color(color)
-                .append(Component.text(text).style(linkStyle)).build();
+        Component comp = Component.translatable(langKey).color(color);
+        return comp.append(Component.text(text).style(linkStyle));
     }
 
     private static String formatElement(JsonElement element) {
         if (!element.isJsonArray()) return element.getAsString();
 
         StringBuilder sb = new StringBuilder();
-        Iterator<JsonElement> iter = element.getAsJsonArray().iterator();
 
-        while (iter.hasNext()) {
-            sb.append(iter.next().getAsString());
+        for (JsonElement jsonElement : element.getAsJsonArray()) {
+            sb.append(jsonElement.getAsString());
             sb.append(", ");
         }
 

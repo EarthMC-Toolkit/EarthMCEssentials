@@ -12,9 +12,8 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
   - `/townless inviteAll/revokeAll` - Automatically invite/revoke all townless players to/from your town!
   - `/nether <x> <z>` - Quickly convert overworld coordinates into their nether counterpart.
 #### On-Screen Info
-  - Townless - All online townless players are shown on your screen.
+  - Townless - Show a list of online townless players and their (optional) coords.
   - Nearby - See anyone whose close to you without checking the dynmap! Configurable options include: radius, rank and distance.
-  - News - Sometimes it's hard to keep up with the news. EMCE sends news to your action bar (or chat) as soon as it is reported.
 #### Config screen (F4)
   - API Intervals - Set the rate at which you want data to be updated.
   - Data - Toggle on/off, screen x/y position, text colors, radius and more.
@@ -30,7 +29,7 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
 >*I recommend you use the [latest](https://github.com/EarthMC-Toolkit/EarthMCEssentials/releases/latest) EMCE version, with `Fabric API 0.72.0` and `Fabric Loader 0.14.12`, delete the file `emc-essentials.json` in your config folder and reboot MC. It is also worth checking the output log since some mods may conflict with EMCE.*
 
 **How is data obtained?**
->*All data is acquired from our [API](https://emc-toolkit.vercel.app/api) in conjuction with info from the Minecraft client.*
+>*Most data comes from the purpose-made [EMC-Wrapper](https://github.com/EarthMC-Toolkit/EarthMC-Wrapper) library, while custom data is acquired from the [API](https://emc-toolkit.vercel.app/api).*
   
 **Is there a Forge version?**
 >*Not right now. There may be a re-write using the Architectuary API, but this won't be any time soon.*

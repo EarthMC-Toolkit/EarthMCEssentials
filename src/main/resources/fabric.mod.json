@@ -9,10 +9,12 @@
   ],
   "contact": {
     "homepage": "https://github.com/EarthMC-Toolkit/EarthMCEssentials",
-    "issues": "https://github.com/EarthMC-Toolkit/EarthMCEssentials/issues"
+    "issues": "https://github.com/EarthMC-Toolkit/EarthMCEssentials/issues",
+    "discord": "https://discord.gg/AVtgkcRgFs"
   },
+  "license": "CC BY-NC 4.0",
   "icon": "assets/emce/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
       "net.emc.emce.EarthMCEssentials"

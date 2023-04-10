@@ -1,147 +1,138 @@
 package net.emc.emce.utils;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import io.github.emcw.core.EMCMap;
+import io.github.emcw.entities.*;
+import io.github.emcw.exceptions.APIException;
+import io.github.emcw.exceptions.MissingEntryException;
+import io.github.emcw.utils.Request;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.objects.API.APIData;
 import net.emc.emce.objects.API.APIRoute;
-import net.emc.emce.objects.Resident;
-import net.emc.emce.objects.exception.APIException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpTimeoutException;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Pattern;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.emc.emce.EarthMCEssentials.instance;
 
 public class EarthMCAPI {
-    private static final HttpClient client = HttpClient.newHttpClient();
-    private static final ModConfig config = ModConfig.instance();
-    public static final Pattern urlSchemePattern = Pattern.compile("^[a-z][a-z0-9+\\-.]*://");
-
     public static APIData apiData = new APIData();
+    private static final String endpoints =
+            "https://raw.githubusercontent.com/EarthMC-Toolkit/EarthMCEssentials/main/src/main/resources/api.json";
 
-    public static JsonObject player = new JsonObject();
-
-    public static CompletableFuture<JsonArray> getTownless() {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.TOWNLESS)));
-            } catch (APIException e) {
-                Messaging.sendDebugMessage(e.getMessage(), e);
-                return new JsonArray();
-            }
-        });
+    public static EMCMap currentMap() {
+        return Objects.equals(instance().mapName, "nova")
+                ? instance().wrapper.getNova()
+                : instance().wrapper.getAurora();
     }
 
-    public static CompletableFuture<JsonArray> getNearby() {
+    public static @Nullable Town getTown(String name) {
+        try { return currentMap().Towns.single(name); }
+        catch (MissingEntryException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public static @Nullable Nation getNation(String name) {
+        try { return currentMap().Nations.single(name); }
+        catch (MissingEntryException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    private static void refresh() {
+        currentMap().Players.updateCache(true);
+    }
+
+    private static void clear() {
+        currentMap().Players.clear();
+    }
+
+    public static Map<String, Player> allPlayers() {
+        refresh();
+        return currentMap().Players.all();
+    }
+
+    public static Map<String, Player> getTownless() {
+        refresh();
+        return currentMap().Players.townless();
+    }
+
+    public static Map<String, Player> onlinePlayers() {
+        refresh();
+        return currentMap().Players.online();
+    }
+
+    @Nullable
+    public static Player getOnlinePlayer(String playerName) {
+        return currentMap().Players.getOnline(playerName);
+    }
+
+    public static boolean clientOnline(String map) {
+        instance().mapName = map; // getOnlinePlayer uses mapName.
+        return onlinePlayers().containsKey(clientName());
+    }
+
+    @SuppressWarnings("unused")
+    public static Map<String, Resident> getResidents() {
+        return currentMap().Residents.all();
+    }
+
+    public static @Nullable Resident getResident(String name) {
+        try { return currentMap().Residents.single(name); }
+        catch (MissingEntryException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public static @Nullable Player getPlayer(String name) {
+        return allPlayers().getOrDefault(name, null);
+    }
+
+    @Contract(" -> new")
+    public static @NotNull Map<String, Player> getNearby() {
+        ModConfig config = ModConfig.instance();
         return getNearby(config.nearby.xBlocks, config.nearby.zBlocks);
     }
 
-    public static CompletableFuture<JsonArray> getNearby(int xBlocks, int zBlocks) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                MinecraftClient client = MinecraftClient.getInstance();
-                ClientPlayerEntity player = client.player;
+    @Contract("_, _ -> new")
+    public static @NotNull Map<String, Player> getNearby(int xBlocks, int zBlocks) {
+        Map<String, Player> result = new ConcurrentHashMap<>();
 
-                if (player != null) {
-                    if (!player.getEntityWorld().getDimension().bedWorks())
-                        return new JsonArray();
+        try {
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
-                    JsonArray array = (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NEARBY) + "/" +
-                            (int) player.getX() + "/" +
-                            (int) player.getZ() + "/" +
-                            xBlocks + "/" + zBlocks));
+            // Check if client's player is valid, and we can sleep in a bed in this world.
+            if (player == null) return result;
+            if (!player.getEntityWorld().getDimension().bedWorks()) return result;
 
-                    int size = array.size();
-                    for (int i = 0; i < size; i++) {
-                        JsonObject currentObj = (JsonObject) array.get(i);
-                        if (currentObj.get("name").getAsString().equals(clientName()))
-                            array.remove(i);
-                    }
+            Integer x = (int) player.getX(),
+                    z = (int) player.getZ();
 
-                    return array;
-                } else return instance().getNearbyPlayers();
-            } catch (APIException e) {
-                Messaging.sendDebugMessage("Error fetching nearby!", e);
-                return instance().getNearbyPlayers();
-            }
-        });
-    }
-
-    public static CompletableFuture<Resident> getResident(String residentName) {
-        return CompletableFuture.supplyAsync(() -> {
-            try { return new Resident((JsonObject) JsonParser.parseString(getURL(getRoute(APIRoute.RESIDENTS) + "/" + residentName))); }
-            catch (APIException e) {
-                Messaging.sendDebugMessage(e.getMessage(), e);
-                return new Resident(residentName);
-            }
-        });
-    }
-
-    public static CompletableFuture<JsonArray> getOnlinePlayers() {
-        return CompletableFuture.supplyAsync(() -> {
-            try { return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ONLINE_PLAYERS))); }
-            catch (APIException e) {
-                Messaging.sendDebugMessage(e.getMessage(), e);
-                return new JsonArray();
-            }
-        });
-    }
-
-    public static JsonObject getOnlinePlayer(String name) {
-        JsonArray ops = getOnlinePlayers().join().getAsJsonArray();
-        JsonObject pl = new JsonObject();
-
-        if (!ops.isEmpty()) {
-            for (JsonElement op : ops) {
-                JsonObject cur = op.getAsJsonObject();
-
-                if (Objects.equals(cur.get("name").getAsString(), name)) {
-                    pl = cur;
-                    break;
-                }
-            }
+            result = currentMap().Players.getNearby(onlinePlayers(), x, z, xBlocks, zBlocks);
+            result.remove(clientName());
+        } catch (Exception e) {
+            Messaging.sendDebugMessage("Error fetching nearby!", e);
         }
 
-        return pl;
+        return result;
     }
 
-    public static CompletableFuture<JsonArray> getTowns() {
-        return CompletableFuture.supplyAsync(() -> {
-            try { return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.TOWNS))); } catch (APIException e) {
-                Messaging.sendDebugMessage(e.getMessage(), e);
-                return new JsonArray();
-            }
-        });
-    }
-
-    public static CompletableFuture<JsonArray> getNations() {
-        return CompletableFuture.supplyAsync(() -> {
-            try { return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.NATIONS))); }
-            catch (APIException e) {
-                Messaging.sendDebugMessage(e.getMessage(), e);
-                return new JsonArray();
-            }
-        });
-    }
-
-    public static CompletableFuture<JsonArray> getAlliances() {
+    @Contract(" -> new")
+    public static @NotNull CompletableFuture<JsonArray> getAlliances() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return (JsonArray) JsonParser.parseString(getURL(getRoute(APIRoute.ALLIANCES)));
+                return Request.send(getRoute(APIRoute.ALLIANCES));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new JsonArray();
@@ -149,12 +140,11 @@ public class EarthMCAPI {
         });
     }
 
-    public static CompletableFuture<APIData> fetchAPI() {
+    @Contract(" -> new")
+    public static @NotNull CompletableFuture<APIData> fetchAPI() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return new APIData((JsonObject) JsonParser.parseString(
-                    getURL("https://raw.githubusercontent.com/EarthMC-Toolkit/EarthMCEssentials" +
-                           "/main/src/main/resources/api.json")));
+                return new APIData(Request.send(endpoints));
             } catch (APIException e) {
                 Messaging.sendDebugMessage(e.getMessage(), e);
                 return new APIData();
@@ -164,28 +154,15 @@ public class EarthMCAPI {
 
     public static void fetchEndpoints() {
         Messaging.sendDebugMessage("Fetching endpoint URLs");
-
-        fetchAPI().thenAccept(data -> {
-            apiData = data;
-
-            // Out of queue, begin map check.
-            if (instance().sessionCounter > 1)
-                instance().scheduler().initMap();
-        });
+        fetchAPI().thenAccept(data -> apiData = data);
     }
 
-    public static String getRoute(APIRoute routeType) {
+    public static @NotNull String getRoute(@NotNull APIRoute routeType) {
         String route;
 
         switch(routeType) {
-            case TOWNLESS -> route = apiData.routes.townless;
-            case NATIONS -> route = apiData.routes.nations;
-            case RESIDENTS -> route = apiData.routes.residents;
             case ALL_PLAYERS -> route = apiData.routes.allPlayers;
-            case ONLINE_PLAYERS -> route = apiData.routes.onlinePlayers;
-            case TOWNS -> route = apiData.routes.towns;
             case ALLIANCES -> route = apiData.routes.alliances;
-            case NEARBY -> route = apiData.routes.nearby;
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
 
@@ -195,35 +172,9 @@ public class EarthMCAPI {
         return apiData.getDomain() + endpoint;
     }
 
+    @Nullable
     public static String clientName() {
         ClientPlayerEntity pl = MinecraftClient.getInstance().player;
-        return pl == null ? "" : pl.getName().getString();
-    }
-
-    public static boolean playerOnline(String map) {
-        instance().mapName = map; // getOnlinePlayer uses mapName.
-
-        JsonObject player = getOnlinePlayer(clientName());
-        return player.has("name");
-    }
-
-    private static String getURL(String urlString) throws APIException {
-        try {
-            HttpRequest.Builder builder = HttpRequest.newBuilder()
-                    .uri(URI.create(urlString)).header("Accept", "application/json");
-
-            Duration timeout = Duration.ofSeconds(5);
-            final HttpRequest req = builder.timeout(timeout).GET().build();
-            final HttpResponse<String> response;
-
-            try { response = client.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)); }
-            catch (HttpTimeoutException e) { throw new APIException("Request timed out after 5 seconds.\nEndpoint: " + urlString); }
-
-            List<Integer> codes = List.of(new Integer[]{ 200, 203, 304 });
-            if (!codes.contains(response.statusCode()))
-                throw new APIException("API Error! Response code: " + response.statusCode() + "\nEndpoint: " + urlString);
-
-            return response.body();
-        } catch (Exception e) { throw new APIException(e.getMessage()); }
+        return pl == null ? null : pl.getName().getString();
     }
 }
