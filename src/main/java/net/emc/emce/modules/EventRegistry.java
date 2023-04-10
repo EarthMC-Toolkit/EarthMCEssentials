@@ -10,9 +10,15 @@ import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
+
+import static net.emc.emce.EarthMCEssentials.instance;
+import static net.emc.emce.utils.EarthMCAPI.fetchEndpoints;
+import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
+import static net.emc.emce.utils.ModUtils.updateServerName;
 
 public class EventRegistry {
     public static void RegisterCommands(EarthMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
@@ -48,5 +54,53 @@ public class EventRegistry {
     public static void RegisterHud() {
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->
             OverlayRenderer.Render(matrixStack));
+    }
+
+    public static void RegisterConnection(EarthMCEssentials instance) {
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            System.out.println("EMCE > New game session detected.");
+
+            updateServerName();
+            OverlayRenderer.Init();
+
+            instance.setShouldRender(instance.config().general.enableMod);
+            instance.setDebugEnabled(instance.config().general.debugLog);
+
+            if (instance.sessionCounter == 1) {
+                RegisterScreen();
+                RegisterHud();
+            }
+
+            if (isConnectedToEMC()) {
+                updateSessionCounter('+');
+                fetchEndpoints();
+
+                // Out of queue, begin map check.
+                if (instance.sessionCounter > 1)
+                    instance.scheduler().initMap();
+            }
+
+        });
+
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            System.out.println("EMCE > Disconnected.");
+
+            ModUtils.setServerName("");
+            OverlayRenderer.Clear();
+
+            instance().sessionCounter = 0;
+            instance().scheduler().setHasMap(null);
+        });
+    }
+
+    private static void updateSessionCounter(char type) {
+        int oldCount = instance().sessionCounter;
+
+        if (type == '+') instance().sessionCounter++;
+        else instance().sessionCounter--;
+
+        String debugStr = "Updated session counter from " + oldCount + " to " + instance().sessionCounter;
+        Messaging.sendDebugMessage(debugStr);
+        System.out.println("EMCE > " + debugStr);
     }
 }

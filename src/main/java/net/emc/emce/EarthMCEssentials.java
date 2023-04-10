@@ -61,6 +61,7 @@ public class EarthMCEssentials implements ModInitializer {
                 InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
 
         EventRegistry.RegisterClientTick();
+        EventRegistry.RegisterConnection(this);
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 EventRegistry.RegisterCommands(this, dispatcher));
