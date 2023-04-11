@@ -30,7 +30,7 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
 
 **Client or Server?**
 > *Everything in this mod is ran on the client-side and the only data source is Dynmap (via 
-> the purpose-made [EMC-Wrapper](https://github.com/EarthMC-Toolkit/EarthMC-Wrapper) library) with custom data being acquired from the [API]> (https://emc-toolkit.vercel.app/api).*
+the purpose-made [EMC-Wrapper](https://github.com/EarthMC-Toolkit/EarthMC-Wrapper) library) with custom data being acquired from the [API](https://emc-toolkit.vercel.app/api).*
   
 **Is there a Forge version?**
 >*Not right now. There may be a re-write using the Architectuary API, but this won't be any time soon.*
