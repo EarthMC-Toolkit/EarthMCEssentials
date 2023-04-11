@@ -26,9 +26,10 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
   
 ## FAQ
 **Why am I crashing on startup?**
->*I recommend you use the [latest](https://github.com/EarthMC-Toolkit/EarthMCEssentials/releases/latest) EMCE version, with `Fabric API 0.72.0` and `Fabric Loader 0.14.12`, delete the file `emc-essentials.json` in your config folder and reboot MC. It is also worth checking the output log since some mods may conflict with EMCE.*
+>*I recommend you use the [latest](https://github.com/EarthMC-Toolkit/EarthMCEssentials/releases/latest) EMCE version, with `Fabric API 0.76.0` and `Fabric Loader 0.14.19`, delete the file `emc-essentials.json` in your config folder and reboot MC. It is also worth checking the output log since some mods may conflict with EMCE.*
 
-**How is data obtained?**
+**Client or Server?**
+> Everything in this mod is ran on the client-side and the only data source is Dynmap (via 
 >*Most data comes from the purpose-made [EMC-Wrapper](https://github.com/EarthMC-Toolkit/EarthMC-Wrapper) library, while custom data is acquired from the [API](https://emc-toolkit.vercel.app/api).*
   
 **Is there a Forge version?**
