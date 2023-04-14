@@ -22,3 +22,5 @@ run/
 /remappedSrc
 
 local.properties
+
+src/test/

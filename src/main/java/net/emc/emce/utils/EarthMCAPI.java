@@ -5,6 +5,7 @@ import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.*;
 import io.github.emcw.exceptions.APIException;
 import io.github.emcw.exceptions.MissingEntryException;
+import io.github.emcw.map.Players;
 import io.github.emcw.utils.Request;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.objects.API.APIData;
@@ -33,6 +34,19 @@ public class EarthMCAPI {
                 : instance().wrapper.getAurora();
     }
 
+    private static void clear() {
+        currentMap().Players.clear();
+    }
+
+    private static void refresh() {
+        currentMap().Players.updateCache(true);
+    }
+
+    private static Players players() {
+        refresh();
+        return currentMap().Players;
+    }
+
     public static @Nullable Town getTown(String name) {
         try { return currentMap().Towns.single(name); }
         catch (MissingEntryException e) {
@@ -49,32 +63,21 @@ public class EarthMCAPI {
         }
     }
 
-    private static void refresh() {
-        currentMap().Players.updateCache(true);
-    }
-
-    private static void clear() {
-        currentMap().Players.clear();
-    }
-
     public static Map<String, Player> allPlayers() {
-        refresh();
-        return currentMap().Players.all();
+        return players().all();
     }
 
     public static Map<String, Player> getTownless() {
-        refresh();
-        return currentMap().Players.townless();
+        return players().townless();
     }
 
     public static Map<String, Player> onlinePlayers() {
-        refresh();
-        return currentMap().Players.online();
+        return players().online();
     }
 
     @Nullable
     public static Player getOnlinePlayer(String playerName) {
-        return currentMap().Players.getOnline(playerName);
+        return players().getOnline(playerName);
     }
 
     public static boolean clientOnline(String map) {
