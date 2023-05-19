@@ -16,7 +16,7 @@ public class AllianceDataCache extends Cache<Map<String, JsonObject>> {
     public static final AllianceDataCache INSTANCE = new AllianceDataCache();
 
     @Override
-    public CompletableFuture<@NotNull Map<String, JsonObject>> getCache() {
+    public CompletableFuture<Map<String, JsonObject>> getCache() {
         return CompletableFuture.supplyAsync(() -> {
             if (this.cachedData == null || this.needsUpdate()) {
                 this.updating = true;

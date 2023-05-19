@@ -1,7 +1,5 @@
 package net.emc.emce.caches;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,7 +18,7 @@ public abstract class Cache<T> {
         this.updating = false;
     }
 
-    public abstract CompletableFuture<@NotNull T> getCache();
+    public abstract CompletableFuture<T> getCache();
 
     public void clear() {
         this.cachedData = null;
