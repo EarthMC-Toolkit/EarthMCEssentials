@@ -14,8 +14,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
+import static net.emc.emce.utils.EarthMCAPI.clientOnline;
 import static net.emc.emce.utils.EarthMCAPI.fetchEndpoints;
 import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 import static net.emc.emce.utils.ModUtils.updateServerName;
@@ -56,51 +62,54 @@ public class EventRegistry {
             OverlayRenderer.Render(matrixStack));
     }
 
+    static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     public static void RegisterConnection(EarthMCEssentials instance) {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            System.out.println("EMCE > New game session detected.");
-
             updateServerName();
-            OverlayRenderer.Init();
 
-            instance.setShouldRender(instance.config().general.enableMod);
-            instance.setDebugEnabled(instance.config().general.debugLog);
+            // Allow 3 seconds for Dynmap to update.
+            exec.schedule(() -> {
+                //region Detect client map (if on emc)
+                String curMap = getClientMap();
+                if (curMap == null) return; // Don't do anything if not on EMC.
 
-            if (instance.sessionCounter == 1) {
+                System.out.println("EMCE > New game session detected.");
+                //endregion
+
+                //region Run regardless of map
+                instance.setShouldRender(instance.config().general.enableMod);
+                instance.setDebugEnabled(instance.config().general.debugLog);
+
+                fetchEndpoints();
+                OverlayRenderer.Init();
+
                 RegisterScreen();
                 RegisterHud();
-            }
+                //endregion
 
-            if (isConnectedToEMC()) {
-                updateSessionCounter('+');
-                fetchEndpoints();
-
-                // Out of queue, begin map check.
-                if (instance.sessionCounter > 1)
-                    instance.scheduler().initMap();
-            }
-
+                if (!inQueue(curMap)) instance.scheduler().initMap();
+                else instance.scheduler().reset();
+            }, 3, TimeUnit.SECONDS);
         });
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             System.out.println("EMCE > Disconnected.");
 
             ModUtils.setServerName("");
-            OverlayRenderer.Clear();
-
-            instance().sessionCounter = 0;
-            instance().scheduler().setHasMap(null);
+            instance().scheduler().reset();
         });
     }
 
-    private static void updateSessionCounter(char type) {
-        int oldCount = instance().sessionCounter;
+    private static @Nullable String getClientMap() {
+        if (!isConnectedToEMC()) return null;
 
-        if (type == '+') instance().sessionCounter++;
-        else instance().sessionCounter--;
+        if (clientOnline("aurora")) return "aurora";
+        if (clientOnline("nova")) return "nova";
 
-        String debugStr = "Updated session counter from " + oldCount + " to " + instance().sessionCounter;
-        Messaging.sendDebugMessage(debugStr);
-        System.out.println("EMCE > " + debugStr);
+        return "queue";
+    }
+
+    private static boolean inQueue(String map) {
+        return Objects.equals(map, "queue");
     }
 }

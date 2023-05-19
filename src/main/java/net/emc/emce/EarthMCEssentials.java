@@ -43,7 +43,6 @@ public class EarthMCEssentials implements ModInitializer {
     private final TaskScheduler scheduler = new TaskScheduler();
 
     public String mapName = "aurora";
-    public int sessionCounter = 0;
 
     public static KeyBinding configKeybinding;
     private ModConfig config = null;

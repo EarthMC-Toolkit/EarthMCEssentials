@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static io.github.emcw.utils.GsonUtil.serialize;
 import static net.emc.emce.EarthMCEssentials.instance;
 import static net.emc.emce.utils.EarthMCAPI.clientOnline;
 
@@ -46,14 +45,21 @@ public class TaskScheduler {
     }
 
     public void initMap() {
-        service = Executors.newScheduledThreadPool(4);
-        service.scheduleAtFixedRate(() -> {
-            if (hasMap) return;
+        service = Executors.newScheduledThreadPool(2);
+        service.scheduleAtFixedRate(this::checkMap, 0, 10, TimeUnit.SECONDS);
+    }
 
-            if (clientOnline("aurora")) setHasMap("aurora");
-            else if (clientOnline("nova")) setHasMap("nova");
-            else setHasMap(null);
-        }, 5, 15, TimeUnit.SECONDS);
+    void checkMap() {
+        if (hasMap) return;
+
+        if (clientOnline("aurora")) setHasMap("aurora");
+        else if (clientOnline("nova")) setHasMap("nova");
+        else setHasMap(null);
+    }
+
+    public void reset() {
+        OverlayRenderer.Clear();
+        setHasMap(null);
     }
 
     public void setHasMap(String map) {

@@ -27,8 +27,8 @@
     "emce.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.12",
-    "fabric-api": ">=0.76.0",
+    "fabricloader": ">=0.14.15",
+    "fabric-api": ">=0.78.0",
     "minecraft": ">=1.19.3",
     "java": ">=17"
   },
