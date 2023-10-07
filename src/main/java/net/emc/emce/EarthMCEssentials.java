@@ -30,7 +30,9 @@ import java.util.stream.Collectors;
 
 public class EarthMCEssentials implements ModInitializer {
     private static EarthMCEssentials instance;
-    public EMCWrapper wrapper;
+
+    public String mapName = "aurora";
+    public EMCWrapper wrapper = new EMCWrapper();
 
     private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 
@@ -42,8 +44,6 @@ public class EarthMCEssentials implements ModInitializer {
 
     private final TaskScheduler scheduler = new TaskScheduler();
 
-    public String mapName = "aurora";
-
     public static KeyBinding configKeybinding;
     private ModConfig config = null;
     private boolean debugModeEnabled = false;
@@ -51,7 +51,6 @@ public class EarthMCEssentials implements ModInitializer {
     @Override
     public void onInitialize() {
         instance = this;
-        wrapper = new EMCWrapper();
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         initConfig();
