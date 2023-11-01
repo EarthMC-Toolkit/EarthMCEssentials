@@ -55,8 +55,10 @@ public class EarthMCEssentials implements ModInitializer {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         initConfig();
 
-        configKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding("Open Config Menu",
-                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"));
+        configKeybinding = KeyBindingHelper.registerKeyBinding(
+            new KeyBinding("Open Config Menu",
+            InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"
+        ));
 
         EventRegistry.RegisterClientTick();
         EventRegistry.RegisterConnection(this);
@@ -129,7 +131,9 @@ public class EarthMCEssentials implements ModInitializer {
         if (map.size() < 1) return;
 
         townlessNames.clear();
-        townlessNames = GsonUtil.streamValues(map).map(BaseEntity::getName).collect(Collectors.toList());
+        townlessNames = GsonUtil.streamValues(map)
+                .map(BaseEntity::getName)
+                .collect(Collectors.toList());
 
         OverlayRenderer.SetTownless(townlessNames);
         OverlayRenderer.UpdateStates(true, false);

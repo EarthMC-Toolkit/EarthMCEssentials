@@ -1,7 +1,6 @@
 {
   "domain": "https://emctoolkit.vercel.app/api/",
   "routes": {
-    "allplayers": "/allplayers",
     "alliances": "/alliances"
   }
 }
