@@ -1,3 +1,9 @@
+> [!WARNING]
+> EMCE is currently broken due to various updates to EarthMC.
+> 
+> While I do plan on updating when I get time, it may be a while yet since I am very busy.\
+> If you know your way around this project and/or EMCW, please consider contributing to get it working again!
+
 # EarthMC Essentials 
 ![Downloads](https://img.shields.io/github/downloads/EarthMC-Toolkit/EarthMCEssentials/total)
 <a href="https://discord.gg/AVtgkcRgFs">
