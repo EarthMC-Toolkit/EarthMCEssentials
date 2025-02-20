@@ -35,6 +35,7 @@ public class OverlayRenderer {
     private static State townlessState, nearbyState;
     private static List<String> townless = new CopyOnWriteArrayList<>();
 
+    // #FFFFFF (White)
     private static final int color = 16777215;
 
     public static void Init() {

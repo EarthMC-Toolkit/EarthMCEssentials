@@ -1,9 +1,6 @@
 package net.emc.emce;
 
-import io.github.emcw.core.EMCWrapper;
-import io.github.emcw.entities.BaseEntity;
-import io.github.emcw.entities.Player;
-import io.github.emcw.utils.GsonUtil;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.emc.emce.config.ModConfig;
@@ -32,7 +29,7 @@ public class EarthMCEssentials implements ModInitializer {
     private static EarthMCEssentials instance;
 
     public String mapName = "aurora";
-    public EMCWrapper wrapper = new EMCWrapper();
+    public EMCWrapper emcw = new EMCWrapper();
 
     private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 

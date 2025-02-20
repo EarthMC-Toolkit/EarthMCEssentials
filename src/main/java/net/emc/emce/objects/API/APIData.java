@@ -10,16 +10,16 @@ public class APIData {
     public final Routes routes;
 
     public static class Routes {
-        public final String allPlayers;
+        public final String news;
         public final String alliances;
 
         public Routes() {
-            allPlayers = "";
+            news = "";
             alliances = "";
         }
 
         public Routes(String allPlayers, String alliances) {
-            this.allPlayers = allPlayers;
+            this.news = allPlayers;
             this.alliances = alliances;
         }
     }
@@ -28,7 +28,7 @@ public class APIData {
         domain = keyAsStr(object, "domain");
         JsonObject obj = object.get("routes").getAsJsonObject();
 
-        routes = new Routes(keyAsStr(obj, "allplayers"), keyAsStr(obj, "alliances"));
+        routes = new Routes(keyAsStr(obj, "news"), keyAsStr(obj, "alliances"));
     }
 
     public APIData() {

@@ -21,6 +21,8 @@ run/
 # Extra
 /remappedSrc
 
-local.properties
-
+# Custom
 src/test/
+
+# DO NOT UNIGNORE.
+local.properties

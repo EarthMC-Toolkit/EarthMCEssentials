@@ -28,10 +28,8 @@ public class EarthMCAPI {
     private static final String endpoints =
             "https://raw.githubusercontent.com/EarthMC-Toolkit/EarthMCEssentials/main/src/main/resources/api.json";
 
-    public static EMCMap currentMap() {
-        return Objects.equals(instance().mapName, "nova")
-                ? instance().wrapper.getNova()
-                : instance().wrapper.getAurora();
+    public static Squaremap currentMap() {
+        return instance().emcw.getSquaremap(KnownMap.valueof(instance().mapName));
     }
 
     private static void clear() {
@@ -119,8 +117,8 @@ public class EarthMCAPI {
             if (player == null) return result;
             if (!player.getEntityWorld().getDimension().bedWorks()) return result;
 
-            Integer x = (int) player.getX(),
-                    z = (int) player.getZ();
+            int x = (int) player.getX();
+            int z = (int) player.getZ();
 
             result = currentMap().Players.getNearby(onlinePlayers(), x, z, xBlocks, zBlocks);
             result.remove(clientName());

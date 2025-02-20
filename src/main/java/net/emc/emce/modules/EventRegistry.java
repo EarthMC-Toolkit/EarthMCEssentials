@@ -29,7 +29,7 @@ import static net.emc.emce.utils.ModUtils.updateServerName;
 public class EventRegistry {
     public static void RegisterCommands(EarthMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
         // Register client-sided commands.
-        new InfoCommands(instance).register(dispatcher);
+        //new InfoCommands(instance).register(dispatcher);
         new NearbyCommand(instance).register(dispatcher);
         new TownlessCommand(instance).register(dispatcher);
         new AllianceCommand(instance).register(dispatcher);
@@ -104,7 +104,7 @@ public class EventRegistry {
         if (!isConnectedToEMC()) return null;
 
         if (clientOnline("aurora")) return "aurora";
-        if (clientOnline("nova")) return "nova";
+        //if (clientOnline("nova")) return "nova";
 
         return "queue";
     }
