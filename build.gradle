@@ -15,8 +15,11 @@ repositories {
 		name = "GitHubPackages"
 		url = uri("https://maven.pkg.github.com/earthmc-toolkit/earthmc-wrapper")
 		credentials {
-			username = localProps.getProperty("USERNAME")
-			password = localProps.getProperty("GITHUB_TOKEN")
+			// NOTE TO CONTRIBUTERS:
+			// You must create a `local.properties` file with the keys below.
+			// You can create a token at https://github.com/settings/tokens under the "Tokens (classic)" tab.
+			username = localProps.getProperty("USERNAME") // Your GitHub account name.
+			password = localProps.getProperty("GITHUB_PACKAGES_TOKEN") // Your PAT with the `read:packages` permission.
 		}
 	}
 
