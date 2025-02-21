@@ -9,18 +9,18 @@ public abstract class Cache<T> {
     public boolean updating = false;
     public T cachedData;
 
-    public boolean needsUpdate() {
+    public boolean cacheNeedsUpdate() {
         return !this.updating && this.lastUpdate.plusSeconds(CACHE_SECONDS).isBefore(Instant.now());
     }
 
-    public void update() {
+    public void updateCache() {
         this.lastUpdate = Instant.now();
         this.updating = false;
     }
 
     public abstract CompletableFuture<T> getCache();
 
-    public void clear() {
+    public void clearCache() {
         this.cachedData = null;
     }
 }

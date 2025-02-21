@@ -1,6 +1,7 @@
 {
   "domain": "https://emctoolkit.vercel.app/api/",
   "routes": {
+    "news": "/news",
     "alliances": "/alliances"
   }
 }

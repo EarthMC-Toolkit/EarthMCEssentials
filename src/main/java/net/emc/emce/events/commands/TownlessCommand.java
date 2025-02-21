@@ -1,9 +1,10 @@
 package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.modules.OverlayRenderer;
-import net.emc.emce.utils.EarthMCAPI;
+
 import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -13,7 +14,10 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 
-import java.util.List;
+import java.util.HashSet;
+
+import java.util.Map;
+import java.util.Set;
 
 public record TownlessCommand(EarthMCEssentials instance) {
     static NamedTextColor townlessTextColour;
@@ -35,9 +39,10 @@ public record TownlessCommand(EarthMCEssentials instance) {
         return Messaging.create(key, getTextColour(), whiteText(size));
     }
 
+    // TODO: This is a clusterfuck that hurts my eyes. Fix when possible.
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("townless").executes(c -> {
-            List<String> townless = instance.getTownless();
+            Set<String> townless = instance.getTownless();
             int size = townless.size();
 
             Messaging.send(createMsg("text_townless_header", size));
@@ -48,7 +53,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
             if (MinecraftClient.getInstance().player == null) return -1;
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
-                List<String> townless = instance.getTownless();
+                Set<String> townless = instance.getTownless();
 
                 for (String townlessPlayer : townless) {
                     if (lengthLimited(inviteStr(townlessString) + townlessPlayer)) break;
@@ -64,7 +69,7 @@ public record TownlessCommand(EarthMCEssentials instance) {
             if (MinecraftClient.getInstance().player == null) return -1;
             if (ModUtils.isConnectedToEMC()) {
                 StringBuilder townlessString = new StringBuilder();
-                List<String> townless = instance.getTownless();
+                Set<String> townless = instance.getTownless();
 
                 for (String townlessPlayer : townless) {
                     if (lengthLimited(inviteStr(townlessString, true) + townlessPlayer)) break;
@@ -78,12 +83,14 @@ public record TownlessCommand(EarthMCEssentials instance) {
 
             return 1;
         })).then(ClientCommandManager.literal("refresh").executes(c -> {
-            instance.setTownless(EarthMCAPI.getTownless());
+            Map<String, SquaremapOnlinePlayer> townless = instance().getCurrentMap().Players.getByResidency(false);
+
+            instance.setTownless(townless);
             Messaging.sendPrefixed("msg_townless_refresh");
 
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {
-            OverlayRenderer.SetTownless(List.of());
+            OverlayRenderer.SetTownless(new HashSet<>());
             OverlayRenderer.UpdateStates(true, false);
 
             Messaging.sendPrefixed("msg_townless_clear");

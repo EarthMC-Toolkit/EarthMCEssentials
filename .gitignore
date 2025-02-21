@@ -23,6 +23,7 @@ run/
 
 # Custom
 src/test/
+src/archive/
 
 # DO NOT UNIGNORE.
 local.properties

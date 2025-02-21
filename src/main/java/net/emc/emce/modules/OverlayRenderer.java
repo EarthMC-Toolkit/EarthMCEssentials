@@ -1,13 +1,15 @@
 package net.emc.emce.modules;
 
-import io.github.emcw.entities.Location;
-import io.github.emcw.entities.Player;
 import io.github.emcw.exceptions.MissingEntryException;
+import io.github.emcw.squaremap.entities.SquaremapLocation;
+import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
+import kotlin.Pair;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
+
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
@@ -16,20 +18,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 import static io.github.emcw.utils.GsonUtil.streamEntries;
 import static java.util.stream.Collectors.toMap;
-import static net.emc.emce.EarthMCEssentials.instance;
-import static net.emc.emce.utils.EarthMCAPI.clientName;
+
+import static net.emc.emce.EarthMCEssentials.*;
 import static net.emc.emce.utils.ModUtils.*;
 import static net.minecraft.text.Text.translatable;
 
+@SuppressWarnings("UnusedReturnValue")
 public class OverlayRenderer {
     private static MinecraftClient client;
     private static TextRenderer renderer;
-    private static MatrixStack matrixStack;
+    private static DrawContext drawCtx;
 
     private static ModConfig config;
     private static State townlessState, nearbyState;
@@ -54,12 +58,12 @@ public class OverlayRenderer {
         townless = new CopyOnWriteArrayList<>();
     }
 
-    public static Map<String, Player> nearby() {
+    public static Map<String, SquaremapOnlinePlayer> nearby() {
         return instance().getNearbyPlayers();
     }
 
-    public static void SetTownless(List<String> townlessResidents) {
-        townless = new CopyOnWriteArrayList<>(townlessResidents);
+    public static void SetTownless(Set<String> townlessNames) {
+        townless = new CopyOnWriteArrayList<>(townlessNames);
     }
 
     public static void UpdateStates(boolean updateTownless, boolean updateNearby) {
@@ -70,22 +74,24 @@ public class OverlayRenderer {
         if (updateNearby) UpdateNearbyState();
     }
 
-    public static void Render(MatrixStack ms) {
+    public static void RenderAllOverlays(DrawContext ctx) {
         if (!instance().shouldRender()) return;
 
-        matrixStack = ms;
+        drawCtx = ctx;
 
         if (config.townless.enabled) RenderTownless(config.townless.presetPositions);
         if (config.nearby.enabled) RenderNearby(config.nearby.presetPositions);
     }
 
-    public static String getRankPrefix(Player player) throws MissingEntryException {
+    public static String getRankPrefix(SquaremapOnlinePlayer player) throws MissingEntryException {
         String prefix = "(Townless) ";
 
+        squaremapPlayerToResident(instance().getCurrentMap(), player);
+        
         if (config.nearby.showRank) {
             if (player.isResident()) {
                 String rank = player.asResident(instance().mapName).getRank();
-                prefix = "(" + rank + ") ";
+                prefix = String.format("(%s) ", rank);
             }
         }
 
@@ -98,11 +104,11 @@ public class OverlayRenderer {
                Math.abs(z - (int) client.player.getZ());
     }
 
-    public static int closest(Player p1, Player p2) {
-        Location loc1 = p1.getLocation();
+    public static int closest(SquaremapOnlinePlayer p1, SquaremapOnlinePlayer p2) {
+        SquaremapLocation loc1 = p1.getLocation();
         Integer dist1 = dist(loc1.getX(), loc1.getZ());
 
-        Location loc2 = p2.getLocation();
+        SquaremapLocation loc2 = p2.getLocation();
         Integer dist2 = dist(loc2.getX(), loc2.getZ());
 
         return dist1.compareTo(dist2);
@@ -112,7 +118,7 @@ public class OverlayRenderer {
         return entries.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
     }
 
-    public static @Nullable MutableText prefixedPlayerDistance(@NotNull Player player) throws MissingEntryException {
+    public static @Nullable MutableText prefixedPlayerDistance(@NotNull SquaremapOnlinePlayer player) throws MissingEntryException {
         Formatting playerTextFormatting = Formatting.byName(config.nearby.playerTextColour.name());
 
         Integer x = player.getLocation().getX();
@@ -120,7 +126,7 @@ public class OverlayRenderer {
         if (x == null || z == null) return null;
 
         String name = player.getName();
-        if (name.equals(clientName())) return null;
+        if (name == null || name.equals(clientName())) return null;
 
         int distance = dist(x, z);
         String prefix = getRankPrefix(player);
@@ -128,23 +134,46 @@ public class OverlayRenderer {
         return translatable(prefix + name + ": " + distance + "m").formatted(playerTextFormatting);
     }
 
-    static Map<String, Player> sortByDistance(Map<String, Player> players, boolean acsending) {
+    static Map<String, SquaremapOnlinePlayer> sortByDistance(Map<String, SquaremapOnlinePlayer> players, boolean acsending) {
         return collectSorted(streamEntries(players).sorted((o1, o2) ->
             closest(o1.getValue(), o2.getValue())
         ));
     }
 
-    static Map<String, Player> sortByTownless(Map<String, Player> players) {
-        return collectSorted(streamEntries(players).sorted((o1, o2) -> {
-            Player p1 = o1.getValue(), p2 = o2.getValue();
-            boolean res1 = p1.isResident(), res2 = p2.isResident();
+    static Map<String, SquaremapOnlinePlayer> sortByTownless(Map<String, SquaremapOnlinePlayer> players) {
+        Map<String, SquaremapOnlinePlayer> townless = instance().fetchTownless();
+        
+        var sorted = players.entrySet().stream().sorted((a, b) -> {
+            SquaremapOnlinePlayer opA = a.getValue();
+            SquaremapOnlinePlayer opB = b.getValue();
+            
+            // Check if players are townless by checking if they're in the 'townless' map
+            boolean aIsTownless = townless.containsKey(a.getKey());
+            boolean bIsTownless = townless.containsKey(b.getKey());
+            
+            // Both are residents, keep below townless.
+            if (!aIsTownless && !bIsTownless) {
+                return -1;
+            }
+            
+            // Both are townless, put closest first.
+            if (aIsTownless && bIsTownless) {
+                return closest(opA, opB);
+            }
+            
+            // One player is townless, other is a resident.
+            return Boolean.compare(aIsTownless, bIsTownless);
+        });
 
-            if (res1 && res2) return -1; // Both residents, ignore.
-            if (!res1 && !res2) return closest(p1, p2); // Both townless, sort by closest.
+        return collectSorted(sorted);
+    }
 
-            // Different results, sort by whoever is townless.
-            return Boolean.compare(res1, res2);
-        }));
+    public static int drawWithoutShadow(Text text, int x, int y, int colour) {
+        return drawCtx.drawText(renderer, text, x, y, colour, false);
+    }
+
+    public static int drawWithShadow(Text text, int x, int y, int colour) {
+        return drawCtx.drawTextWithShadow(renderer, text, x, y, colour);
     }
 
     private static void RenderTownless(boolean usingPreset) {
@@ -159,8 +188,7 @@ public class OverlayRenderer {
         MutableText townlessText = translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
 
         if (usingPreset) {
-            // Draw heading.
-            renderer.drawWithShadow(matrixStack, townlessText, x, y - 10, color);
+            drawWithoutShadow(townlessText, x, y - 10, color);
 
             int index = 0;
 
@@ -169,13 +197,13 @@ public class OverlayRenderer {
                     MutableText remainingText = translatable("text_townless_remaining", townlessSize - index);
 
                     remainingText = remainingText.formatted(playerTextFormatting);
-                    renderer.drawWithShadow(matrixStack, remainingText, x, y + index * 10, color);
+                    drawWithShadow(remainingText, x, y + index * 10, color);
 
                     break;
                 }
 
                 MutableText playerName = translatable(townlessName).formatted(playerTextFormatting);
-                renderer.drawWithShadow(matrixStack, playerName, x, y + index++ * 10, color);
+                drawWithShadow(playerName, x, y + index++ * 10, color);
             }
         }
         else {
@@ -184,7 +212,7 @@ public class OverlayRenderer {
             int xOffset = config.townless.xPos;
 
             // Draw heading.
-            renderer.drawWithShadow(matrixStack, townlessText, xOffset, playerOffset - 15, color);
+            drawWithShadow(townlessText, xOffset, playerOffset - 15, color);
 
             if (townlessSize > 0) {
                 int index = 0;
@@ -195,7 +223,7 @@ public class OverlayRenderer {
                             MutableText remainingText = translatable("text_townless_remaining", townlessSize - index);
 
                             remainingText = remainingText.formatted(playerTextFormatting);
-                            renderer.drawWithShadow(matrixStack, remainingText, xOffset, playerOffset, color);
+                            drawWithShadow(remainingText, xOffset, playerOffset, color);
 
                             break;
                         }
@@ -204,7 +232,7 @@ public class OverlayRenderer {
                     }
 
                     MutableText playerName = translatable(name).formatted(playerTextFormatting);
-                    renderer.drawWithShadow(matrixStack, playerName, xOffset, playerOffset, color);
+                    drawWithShadow(playerName, xOffset, playerOffset, color);
 
                     // Add offset for the next player.
                     playerOffset += 10;
@@ -214,7 +242,7 @@ public class OverlayRenderer {
     }
 
     private static void RenderNearby(boolean usingPreset) {
-        Map<String, Player> nearby = nearby();
+        Map<String, SquaremapOnlinePlayer> nearby = nearby();
 
         switch (config.nearby.nearbySort) {
             case NEAREST -> nearby = sortByDistance(nearby, true);
@@ -227,14 +255,14 @@ public class OverlayRenderer {
 
         if (usingPreset) {
             // Draw heading.
-            renderer.drawWithShadow(matrixStack, nearbyText, nearbyState.getX(), nearbyState.getY() - 10, color);
+            drawWithShadow(nearbyText, nearbyState.getX(), nearbyState.getY() - 10, color);
 
             if (client.player == null) return;
             if (nearby.size() >= 1) {
                 MutableText playerText;
                 int i = 0;
 
-                for (Player curPlayer : nearby.values()) {
+                for (SquaremapOnlinePlayer curPlayer : nearby.values()) {
                     try {
                         playerText = prefixedPlayerDistance(curPlayer);
                         if (playerText == null) continue;
@@ -243,7 +271,7 @@ public class OverlayRenderer {
                         continue;
                     }
 
-                    renderer.drawWithShadow(matrixStack, playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, color);
+                    drawWithShadow(playerText, nearbyState.getX(), nearbyState.getY() + 10 * i, color);
                     ++i;
                 }
             }
@@ -254,13 +282,13 @@ public class OverlayRenderer {
             int xOffset = config.nearby.xPos;
 
             // Draw heading.
-            renderer.drawWithShadow(matrixStack, nearbyText, xOffset, playerOffset - 15, color);
+            drawWithShadow(nearbyText, xOffset, playerOffset - 15, color);
 
             if (client.player == null) return;
             if (nearby.size() >= 1) {
                 MutableText playerText;
 
-                for (Player curPlayer : nearby.values()) {
+                for (SquaremapOnlinePlayer curPlayer : nearby.values()) {
                     try {
                         playerText = prefixedPlayerDistance(curPlayer);
                         if (playerText == null) continue;
@@ -269,7 +297,7 @@ public class OverlayRenderer {
                         continue;
                     }
 
-                    renderer.drawWithShadow(matrixStack, playerText, xOffset, playerOffset, color);
+                    drawWithShadow(playerText, xOffset, playerOffset, color);
 
                     // Add 10 pixels to offset. (Where the next player will be rendered)
                     playerOffset += 10;

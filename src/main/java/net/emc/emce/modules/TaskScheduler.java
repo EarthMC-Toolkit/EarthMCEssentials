@@ -1,9 +1,10 @@
 package net.emc.emce.modules;
 
+import io.github.emcw.KnownMap;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.caches.Cache;
 import net.emc.emce.config.ModConfig;
-import net.emc.emce.utils.EarthMCAPI;
+
 import net.emc.emce.utils.Messaging;
 import net.minecraft.client.MinecraftClient;
 
@@ -13,7 +14,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
-import static net.emc.emce.utils.EarthMCAPI.clientOnline;
 
 public class TaskScheduler {
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
@@ -53,7 +53,7 @@ public class TaskScheduler {
         if (hasMap) return;
 
         if (clientOnline("aurora")) setHasMap("aurora");
-        else if (clientOnline("nova")) setHasMap("nova");
+        //else if (clientOnline("nova")) setHasMap("nova");
         else setHasMap(null);
     }
 
@@ -65,7 +65,7 @@ public class TaskScheduler {
     public void setHasMap(String map) {
         if (map == null) {
             hasMap = false;
-            instance().mapName = "aurora";
+            instance().currentMap = KnownMap.AURORA;
 
             stop();
             Messaging.sendDebugMessage("Player not found on any map!");
@@ -108,7 +108,7 @@ public class TaskScheduler {
             if (!cacheCheckRunning) return;
 
             for (Cache<?> cache : CACHES)
-                if (cache.needsUpdate())
+                if (cache.cacheNeedsUpdate())
                     cache.clear();
         }, 0, 5, TimeUnit.MINUTES);
     }

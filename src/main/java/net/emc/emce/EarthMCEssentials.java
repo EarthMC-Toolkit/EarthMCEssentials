@@ -1,5 +1,14 @@
 package net.emc.emce;
 
+import io.github.emcw.oapi.OfficialAPI;
+import lombok.Getter;
+import lombok.Setter;
+
+import io.github.emcw.Squaremap;
+import io.github.emcw.squaremap.entities.SquaremapResident;
+import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
+import io.github.emcw.EMCWrapper;
+import io.github.emcw.KnownMap;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -12,32 +21,38 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
+
+import com.google.gson.JsonElement;
 
 public class EarthMCEssentials implements ModInitializer {
     private static EarthMCEssentials instance;
 
-    public String mapName = "aurora";
-    public EMCWrapper emcw = new EMCWrapper();
+    public KnownMap currentMap = KnownMap.AURORA;
+    public static EMCWrapper emcw = new EMCWrapper()
+        .registerSquaremap(KnownMap.AURORA);
+
+    public OfficialAPI.V3 auroraAPI = new OfficialAPI.V3(KnownMap.AURORA);
 
     private final Logger logger = LogManager.getLogger(EarthMCEssentials.class);
 
-    private Player clientPlayer = null;
-    private boolean shouldRender = false;
+    @Getter @Setter private JsonElement clientPlayer = null; // From the OAPI
+    @Setter private boolean shouldRender = false;
 
-    private List<String> townlessNames = new CopyOnWriteArrayList<>();
-    private Map<String, Player> nearbyPlayers = new ConcurrentHashMap<>();
+    private Set<String> townlessNames = new HashSet<>();
+    private Map<String, SquaremapOnlinePlayer> nearbyPlayers = new ConcurrentHashMap<>();
 
     private final TaskScheduler scheduler = new TaskScheduler();
 
@@ -52,16 +67,16 @@ public class EarthMCEssentials implements ModInitializer {
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
         initConfig();
 
-        configKeybinding = KeyBindingHelper.registerKeyBinding(
-            new KeyBinding("Open Config Menu",
-            InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"
+        configKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "Open Config Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4, "EarthMC Essentials"
         ));
 
         EventRegistry.RegisterClientTick();
         EventRegistry.RegisterConnection(this);
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-                EventRegistry.RegisterCommands(this, dispatcher));
+            EventRegistry.RegisterCommands(this, dispatcher)
+        );
     }
 
     public static EarthMCEssentials instance() {
@@ -76,21 +91,17 @@ public class EarthMCEssentials implements ModInitializer {
         return scheduler;
     }
 
-    public Player getClientPlayer() {
-        return clientPlayer;
-    }
-
-    public void setClientPlayer(Player res) {
-        clientPlayer = res;
-    }
-
     public ModConfig config() { return config; }
     public void initConfig() { config = AutoConfig.getConfigHolder(ModConfig.class).getConfig(); }
 
     public boolean shouldRender() {
+        if (!config.general.enableMod) return false;
+
         MinecraftClient client = MinecraftClient.getInstance();
-        if (!config.general.enableMod || client.player == null || client.options.debugEnabled)
-            return false;
+        if (client.player == null) return false;
+
+        boolean f3DebugOpen = client.getDebugHud().shouldShowDebugHud();
+        if (f3DebugOpen) return false;
 
         return shouldRender;
     }
@@ -106,33 +117,51 @@ public class EarthMCEssentials implements ModInitializer {
         return this.debugModeEnabled;
     }
 
-    public List<String> getTownless() {
+    public Set<String> getTownless() {
         return townlessNames;
     }
 
-    public Map<String, Player> getNearbyPlayers() {
+    public Map<String, SquaremapOnlinePlayer> getNearbyPlayers() {
         return nearbyPlayers;
     }
 
-    public void setNearbyPlayers(Map<String, Player> nearbyPlayers) {
+    public void setNearbyPlayers(Map<String, SquaremapOnlinePlayer> nearbyPlayers) {
         this.nearbyPlayers = nearbyPlayers;
         OverlayRenderer.UpdateStates(false, true);
     }
 
-    public void setShouldRender(boolean shouldRender) {
-        this.shouldRender = shouldRender;
-    }
-
-    public void setTownless(@NotNull Map<String, Player> map) {
+    public void setTownless(@NotNull Map<String, SquaremapOnlinePlayer> map) {
         // Make sure there is data to add.
         if (map.size() < 1) return;
 
         townlessNames.clear();
-        townlessNames = GsonUtil.streamValues(map)
-                .map(BaseEntity::getName)
-                .collect(Collectors.toList());
+        townlessNames = map.keySet();
 
         OverlayRenderer.SetTownless(townlessNames);
         OverlayRenderer.UpdateStates(true, false);
+    }
+
+    public Map<String, SquaremapOnlinePlayer> fetchTownless() {
+        return getCurrentMap().Players.getByResidency(false);
+    }
+    
+    // This assumes squaremap will be used for all known maps.
+    public Squaremap getCurrentMap() {
+        return emcw.getSquaremap(currentMap);
+    }
+
+    @Nullable
+    public static SquaremapResident squaremapPlayerToResident(Squaremap map, SquaremapOnlinePlayer op) {
+        return map.Residents.getSingle(op.getName());
+    }
+
+    @Nullable
+    public static String clientName() {
+        ClientPlayerEntity pl = MinecraftClient.getInstance().player;
+        return pl == null ? null : pl.getName().getString();
+    }
+    
+    public boolean clientOnlineInMap(KnownMap map) {
+        return true;
     }
 }

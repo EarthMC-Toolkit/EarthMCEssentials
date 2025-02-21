@@ -21,8 +21,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.EarthMCEssentials.instance;
-import static net.emc.emce.utils.EarthMCAPI.clientOnline;
-import static net.emc.emce.utils.EarthMCAPI.fetchEndpoints;
+
 import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 import static net.emc.emce.utils.ModUtils.updateServerName;
 
@@ -58,8 +57,14 @@ public class EventRegistry {
     }
 
     public static void RegisterHud() {
-        HudRenderCallback.EVENT.register((matrixStack, tickDelta) ->
-            OverlayRenderer.Render(matrixStack));
+        // TODO: HudRenderCallback was deprecated in favour of events.
+        // We can maybe use HudLayerRegistrationCallback instead - not exactly sure how yet.
+        //
+        // Relevent: https://github.com/FabricMC/fabric/pull/4119
+        HudRenderCallback.EVENT.register((drawCtx, renderTickCounter) -> {
+            // Renders every overlay (townless, nearby etc) if allowed.
+            OverlayRenderer.RenderAllOverlays(drawCtx);
+        });
     }
 
     static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
@@ -80,14 +85,14 @@ public class EventRegistry {
                 instance.setShouldRender(instance.config().general.enableMod);
                 instance.setDebugEnabled(instance.config().general.debugLog);
 
-                fetchEndpoints();
+                //fetchEndpoints();
                 OverlayRenderer.Init();
 
                 RegisterScreen();
                 RegisterHud();
                 //endregion
 
-                if (!inQueue(curMap)) instance.scheduler().initMap();
+                if (!isMapQueue(curMap)) instance.scheduler().initMap();
                 else instance.scheduler().reset();
             }, 3, TimeUnit.SECONDS);
         });
@@ -109,7 +114,7 @@ public class EventRegistry {
         return "queue";
     }
 
-    private static boolean inQueue(String map) {
+    private static boolean isMapQueue(String map) {
         return Objects.equals(map, "queue");
     }
 }

@@ -59,11 +59,13 @@ dependencies {
 	include 'org.apache.commons:commons-lang3:3.12.0'
 	include 'com.google.code.gson:gson:2.10.1'
 
+	//#region Plugins
 	compileOnly 'org.jetbrains:annotations:24.0.1'
 	annotationProcessor 'org.jetbrains:annotations:24.0.1'
 
-	compileOnly 'org.projectlombok:lombok:1.18.26'
-	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+	compileOnly 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	//#endregion
 }
 
 processResources {

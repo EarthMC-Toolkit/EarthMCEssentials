@@ -2,15 +2,18 @@ package net.emc.emce.events.commands;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.fabric.FabricClientAudiences;
+import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -24,28 +27,28 @@ public record AllianceCommand(EarthMCEssentials instance) {
 
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("alliance").then(
-                ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
-                    String allianceName = StringArgumentType.getString(c, "allianceName");
-                    NamedTextColor colour = instance.config().commands.allianceInfoTextColour.named();
+            ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
+                String allianceName = StringArgumentType.getString(c, "allianceName");
+                NamedTextColor colour = instance.config().commands.allianceInfoTextColour.named();
 
-                    // Implement data cache
-                    AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
-                        JsonObject allianceObject = alliances.get(allianceName.toLowerCase(Locale.ROOT));
+                // Implement data cache
+                AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
+                    JsonObject allianceObject = alliances.get(allianceName.toLowerCase(Locale.ROOT));
 
-                        if (allianceObject == null) {
-                            Component arg = Component.text(allianceName).color(colour);
-                            Messaging.send(Messaging.create("text_alliance_err", NamedTextColor.RED, arg));
-                        }
-                        else sendAllianceInfo(allianceObject, colour);
-                    });
+                    if (allianceObject == null) {
+                        Component arg = Component.text(allianceName).color(colour);
+                        Messaging.send(Messaging.create("text_alliance_err", NamedTextColor.RED, arg));
+                    }
+                    else sendAllianceInfo(allianceObject, colour);
+                });
 
-                    return 1;
-                })
+                return 1;
+            })
         ));
     }
 
     private void sendAllianceInfo(JsonObject allianceObj, NamedTextColor colour) {
-        Audience client = FabricClientAudiences.of().audience();
+        Audience client = MinecraftClientAudiences.of().audience();
 
         client.sendMessage(createText("text_alliance_header", allianceObj, "allianceName", colour, "rank"));
         client.sendMessage(createText("text_alliance_leader", allianceObj, "leaderName", colour));

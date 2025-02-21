@@ -1,5 +1,7 @@
 package net.emc.emce.utils;
 
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -7,7 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import static net.emc.emce.EarthMCEssentials.instance;
-import static net.kyori.adventure.platform.fabric.FabricClientAudiences.of;
+
 import static net.kyori.adventure.text.Component.*;
 
 import static net.minecraft.client.MinecraftClient.getInstance;
@@ -17,6 +19,10 @@ public class Messaging {
     @Contract("_, _, _ -> new")
     public static @NotNull Component create(String key, NamedTextColor keyColour, Component... args) {
         return translatable().key(key).color(keyColour).args(args).build();
+    }
+
+    static Audience getAudience() {
+        return MinecraftClientAudiences.of().audience();
     }
     //#endregion
 
@@ -31,7 +37,7 @@ public class Messaging {
     }
 
     public static void send(Component text) {
-        of().audience().sendMessage(text);
+        getAudience().sendMessage(text);
     }
     //#endregion
 
@@ -47,11 +53,11 @@ public class Messaging {
 
     //#region Action Bar
     public static void sendActionBar(Component text) {
-        of().audience().sendActionBar(text);
+        getAudience().sendActionBar(text);
     }
 
     public static void sendPrefixedActionBar(Component text) {
-       of().audience().sendActionBar(empty().append(prefix()).append(text));
+        getAudience().sendActionBar(empty().append(prefix()).append(text));
     }
     //#endregion
 

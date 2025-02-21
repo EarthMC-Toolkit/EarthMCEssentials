@@ -1,7 +1,8 @@
 package net.emc.emce.mixins;
 
-import io.github.emcw.entities.Player;
-import net.emc.emce.utils.EarthMCAPI;
+import com.google.gson.JsonElement;
+
+import net.emc.emce.utils.OAPIV3;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,12 +17,15 @@ public class MinecraftClientMixin {
     @Inject(at = @At("TAIL"), method="<init>")
     private void onInit(RunArgs args, CallbackInfo ci) {
         String clientName = args.network.session.getUsername();
-        Player clientPlayer = EarthMCAPI.getPlayer(clientName);
+        JsonElement clientPlayer = OAPIV3.getPlayer(clientName);
 
-        if (clientPlayer == null) System.out.println("Could not find player by client name: " + clientName);
-        else {
+        if (clientPlayer != null) {
             instance().setClientPlayer(clientPlayer);
-            System.out.println(clientPlayer.asString());
+            System.out.println("onInit: Set clientPlayer");
+
+            return;
         }
+
+        System.out.println("Could not find player by client name: " + clientName);
     }
 }

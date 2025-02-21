@@ -1,4 +1,4 @@
-package net.emc.emce.objects.API;
+package net.emc.emce.objects.CustomAPI;
 
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;

@@ -1,30 +1,34 @@
 package net.emc.emce.utils;
 
-import io.github.emcw.entities.Player;
-import io.github.emcw.exceptions.MissingEntryException;
 import lombok.Setter;
+import net.minecraft.entity.effect.StatusEffect;
+
+import org.jetbrains.annotations.NotNull;
+
+import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
+import io.github.emcw.exceptions.MissingEntryException;
+
 import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.*;
 
+import static net.emc.emce.EarthMCEssentials.clientName;
 import static net.emc.emce.modules.OverlayRenderer.dist;
 import static net.emc.emce.modules.OverlayRenderer.getRankPrefix;
-import static net.emc.emce.utils.EarthMCAPI.clientName;
+
 import static net.minecraft.client.MinecraftClient.getInstance;
 
 public class ModUtils {
-    @Setter private static @NotNull String serverName = "";
+    @Setter private static String serverName = null;
 
     @SuppressWarnings("unused")
     public enum ScaleMethod {
@@ -139,15 +143,15 @@ public class ModUtils {
         return totalLength;
     }
 
-    public static int getNearbyLongestElement(@NotNull Map<String, Player> nearby) {
+    public static int getNearbyLongestElement(@NotNull Map<String, SquaremapOnlinePlayer> nearby) {
         int length = nearby.size();
         if (length < 1) return 0;
 
         int longestElement = 0;
-        for (Player curPlayer : nearby.values()) {
-            String name = curPlayer.getName();
-            Integer x = curPlayer.getLocation().getX();
-            Integer z = curPlayer.getLocation().getZ();
+        for (SquaremapOnlinePlayer curOp : nearby.values()) {
+            String name = curOp.getName();
+            Integer x = curOp.getLocation().getX();
+            Integer z = curOp.getLocation().getZ();
 
             if (z == null || x == null || name == null) continue;
             if (name.equals(clientName())) continue;
@@ -157,7 +161,7 @@ public class ModUtils {
 
             String prefix;
             try {
-                prefix = getRankPrefix(curPlayer);
+                prefix = getRankPrefix(curOp);
             } catch (MissingEntryException e) {
                 continue;
             }
@@ -174,9 +178,11 @@ public class ModUtils {
 
         int offset = 0;
         for (StatusEffectInstance effect : statusEffects) {
-            if (effect.shouldShowIcon()) {
-                offset = effect.getEffectType().isBeneficial() ? Math.max(offset, 36) : 64;
-            }
+            if (!effect.shouldShowIcon()) continue;
+
+            // A 'beneficial' effect is a positive one as opposed to harmful or neutral.
+            StatusEffect effectType = effect.getEffectType().value();
+            offset = effectType.isBeneficial() ? Math.max(offset, 36) : 64;
         }
 
         return offset;
@@ -188,38 +194,30 @@ public class ModUtils {
     }
 
     public static boolean isConnectedToEMC() {
-        return serverName.toLowerCase().contains("earthmc.net");
+        return serverName.toLowerCase().endsWith("earthmc.net");
     }
 
     public static void updateServerName() {
-        setServerName(currentServer());
+        String curServer = currentServer();
+        if (curServer != null) setServerName(curServer);
     }
 
-    public static @NotNull String currentServer() {
-        String serverName = "";
-
+    @Nullable
+    public static String currentServer() {
         try {
             MinecraftClient instance = getInstance();
             ServerInfo serverInfo = instance.getCurrentServerEntry();
 
-            if (serverInfo != null) {
-                if (serverInfo.isLocal()) serverName = serverInfo.name;
-                else serverName = serverInfo.address;
+            // If the server is Singleplayer, Realms, or LAN, return null
+            if (serverInfo == null || serverInfo.isRealm() || instance.isInSingleplayer() || serverInfo.isLocal()) {
+                return null;
             }
-            else if (instance.isConnectedToRealms()) serverName = "Realms";
-            else if (instance.isInSingleplayer()) serverName = "Singleplayer";
-            else {
-                ClientPlayNetworkHandler networkHandler = instance.getNetworkHandler();
 
-                if (networkHandler != null) {
-                    SocketAddress address = networkHandler.getConnection().getAddress();
-                    return ((InetSocketAddress) address).getHostName();
-                }
-            }
+            // Otherwise, return the server's address (external server)
+            return serverInfo.address;
         } catch (Exception e) {
             Messaging.sendDebugMessage("Error getting server name.", e);
+            return null;
         }
-
-        return serverName;
     }
 }
