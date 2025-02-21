@@ -17,7 +17,7 @@
   "environment": "client",
   "entrypoints": {
     "main": [
-      "net.emc.emce.EarthMCEssentials"
+      "net.emc.emce.EMCEssentials"
     ],
     "modmenu": [
       "net.emc.emce.config.ModMenuIntegration"

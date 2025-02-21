@@ -1,10 +1,10 @@
 package net.emc.emce.utils;
 
 import com.google.gson.JsonArray;
+import net.emc.emce.EMCEssentials;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.objects.CustomAPI.APIData;
 import net.emc.emce.objects.CustomAPI.APIRoute;
 
@@ -38,7 +38,7 @@ public class CustomAPI {
             default -> throw new IllegalStateException("Unexpected value: " + routeType);
         }
         
-        String endpoint = EarthMCEssentials.instance().currentMap.getName() + route;
+        String endpoint = EMCEssentials.instance().currentMap.getName() + route;
         Messaging.sendDebugMessage("Requesting endpoint -> " + endpoint);
         
         return apiData.getDomain() + endpoint;

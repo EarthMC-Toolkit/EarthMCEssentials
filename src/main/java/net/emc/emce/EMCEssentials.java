@@ -23,7 +23,6 @@ import com.google.gson.JsonElement;
 
 import io.github.emcw.EMCWrapper;
 import io.github.emcw.KnownMap;
-import io.github.emcw.oapi.OfficialAPI;
 
 import io.github.emcw.Squaremap;
 import io.github.emcw.squaremap.entities.SquaremapResident;
@@ -42,12 +41,13 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
-public class EarthMCEssentials implements ModInitializer {
+@SuppressWarnings("LombokGetterMayBeUsed")
+public class EMCEssentials implements ModInitializer {
     @Accessors(fluent = true)
-    @Getter private static EarthMCEssentials instance;
+    @Getter private static EMCEssentials instance;
     
     @Accessors(fluent = true)
-    @Getter private static final Logger logger = LoggerFactory.getLogger(EarthMCEssentials.class);
+    @Getter private static final Logger logger = LoggerFactory.getLogger(EMCEssentials.class);
     
     @Accessors(fluent = true)
     @Getter private final TaskScheduler scheduler = new TaskScheduler();
@@ -55,8 +55,6 @@ public class EarthMCEssentials implements ModInitializer {
     public KnownMap currentMap = KnownMap.AURORA;
     public static EMCWrapper emcw = new EMCWrapper()
         .registerSquaremap(KnownMap.AURORA);
-
-    public OfficialAPI.V3 auroraAPI = new OfficialAPI.V3(KnownMap.AURORA);
 
     @Getter @Setter private JsonElement clientPlayer = null; // From the OAPI
     @Setter private boolean shouldRender = false;
@@ -162,7 +160,7 @@ public class EarthMCEssentials implements ModInitializer {
     
     public void setTownless(@NotNull Map<String, SquaremapOnlinePlayer> map) {
         // Make sure there is data to add.
-        if (map.size() < 1) return;
+        if (map.isEmpty()) return;
 
         townlessNames.clear();
         townlessNames = map.keySet();

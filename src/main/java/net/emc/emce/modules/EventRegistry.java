@@ -3,7 +3,7 @@ package net.emc.emce.modules;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.emcw.KnownMap;
 import me.shedaniel.autoconfig.AutoConfig;
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.events.commands.*;
 import net.emc.emce.events.screen.ScreenInit;
@@ -25,7 +25,7 @@ import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 import static net.emc.emce.utils.ModUtils.updateServerName;
 
 public class EventRegistry {
-    public static void RegisterCommands(EarthMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public static void RegisterCommands(EMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
         // Register client-sided commands.
         //new InfoCommands(instance).register(dispatcher);
         new NearbyCommand(instance).register(dispatcher);
@@ -37,7 +37,7 @@ public class EventRegistry {
     public static void RegisterClientTick() {
         // Every tick, see if we are pressing F4.
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (EarthMCEssentials.configKeybinding.wasPressed()) {
+            if (EMCEssentials.configKeybinding.wasPressed()) {
                 if (!ModUtils.configOpen()) {
                     try {
                         Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
@@ -67,7 +67,7 @@ public class EventRegistry {
     }
 
     static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
-    public static void RegisterConnection(EarthMCEssentials instance) {
+    public static void RegisterConnection(EMCEssentials instance) {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             updateServerName();
 
@@ -100,14 +100,14 @@ public class EventRegistry {
             System.out.println("EMCE > Disconnected.");
 
             ModUtils.setServerName("");
-            EarthMCEssentials.instance().scheduler().reset();
+            EMCEssentials.instance().scheduler().reset();
         });
     }
 
     private static @Nullable String getClientMap() {
         if (!isConnectedToEMC()) return null;
 
-        if (EarthMCEssentials.clientOnlineInMap(KnownMap.AURORA)) {
+        if (EMCEssentials.clientOnlineInMap(KnownMap.AURORA)) {
             return KnownMap.AURORA.getName();
         }
         //if (clientOnline("nova")) return "nova";

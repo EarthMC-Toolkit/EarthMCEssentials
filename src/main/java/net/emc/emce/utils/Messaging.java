@@ -1,6 +1,6 @@
 package net.emc.emce.utils;
 
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.kyori.adventure.text.Component;
@@ -69,14 +69,14 @@ public class Messaging {
 
     //#region Debug Methods
     public static void sendDebugMessage(String message) {
-        if (EarthMCEssentials.instance().debugEnabled()) {
+        if (EMCEssentials.instance().debugEnabled()) {
             send(translatable("debug_format", text(message).color(NamedTextColor.GRAY)));
-            EarthMCEssentials.logger().info(message);
+            EMCEssentials.logger().info(message);
         }
     }
 
     public static void sendDebugMessage(String message, Exception exception) {
-        if (EarthMCEssentials.instance().debugEnabled()) {
+        if (EMCEssentials.instance().debugEnabled()) {
             sendDebugMessage(message);
             sendDebugMessage(exception.getMessage());
 

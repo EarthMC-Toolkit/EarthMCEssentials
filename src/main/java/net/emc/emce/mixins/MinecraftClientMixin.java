@@ -2,7 +2,7 @@ package net.emc.emce.mixins;
 
 import com.google.gson.JsonElement;
 
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.utils.OAPIV3;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
@@ -19,7 +19,7 @@ public class MinecraftClientMixin {
         JsonElement clientPlayer = OAPIV3.getPlayer(clientName);
 
         if (clientPlayer != null) {
-            EarthMCEssentials.instance().setClientPlayer(clientPlayer);
+            EMCEssentials.instance().setClientPlayer(clientPlayer);
             System.out.println("onInit: Set clientPlayer");
 
             return;

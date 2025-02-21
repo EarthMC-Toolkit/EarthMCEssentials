@@ -1,7 +1,7 @@
 package net.emc.emce.modules;
 
 import io.github.emcw.KnownMap;
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.caches.Cache;
 import net.emc.emce.config.ModConfig;
@@ -27,8 +27,8 @@ public class TaskScheduler {
 
         // Pre-fill data.
         if (config.general.enableMod) {
-            if (config.townless.enabled) EarthMCEssentials.instance().updateTownless();
-            if (config.nearby.enabled) EarthMCEssentials.instance().updateNearbyPlayers();
+            if (config.townless.enabled) EMCEssentials.instance().updateTownless();
+            if (config.nearby.enabled) EMCEssentials.instance().updateNearbyPlayers();
         }
 
         startCacheCheck();
@@ -52,7 +52,7 @@ public class TaskScheduler {
     void checkMap() {
         if (hasMap) return;
 
-        if (EarthMCEssentials.clientOnlineInMap(KnownMap.AURORA)) {
+        if (EMCEssentials.clientOnlineInMap(KnownMap.AURORA)) {
             setHasMap(KnownMap.AURORA.getName());
         }
         else setHasMap(null);
@@ -66,7 +66,7 @@ public class TaskScheduler {
     public void setHasMap(String map) {
         if (map == null) {
             hasMap = false;
-            EarthMCEssentials.instance().currentMap = KnownMap.AURORA;
+            EMCEssentials.instance().currentMap = KnownMap.AURORA;
 
             stop();
             Messaging.sendDebugMessage("Player not found on any map!");
@@ -84,7 +84,7 @@ public class TaskScheduler {
 
         service.scheduleAtFixedRate(() -> {
             if (townlessRunning && config.townless.enabled && shouldRun()) {
-                EarthMCEssentials.instance().updateTownless();
+                EMCEssentials.instance().updateTownless();
                 Messaging.sendDebugMessage("Updating townless...");
             }
         }, 5, Math.min(config.intervals.townless, 200), TimeUnit.SECONDS);
@@ -96,7 +96,7 @@ public class TaskScheduler {
 
         service.scheduleAtFixedRate(() -> {
             if (nearbyRunning && config.nearby.enabled && shouldRun()) {
-                EarthMCEssentials.instance().updateNearbyPlayers();
+                EMCEssentials.instance().updateNearbyPlayers();
                 Messaging.sendDebugMessage("Updating nearby...");
             }
         }, 5, Math.min(config.intervals.nearby, 30), TimeUnit.SECONDS);

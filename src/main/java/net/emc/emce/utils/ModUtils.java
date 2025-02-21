@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static net.emc.emce.EarthMCEssentials.clientName;
+import static net.emc.emce.EMCEssentials.clientName;
 import static net.emc.emce.modules.OverlayRenderer.dist;
 import static net.emc.emce.modules.OverlayRenderer.getRankPrefix;
 

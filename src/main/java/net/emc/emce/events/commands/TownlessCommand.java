@@ -2,7 +2,7 @@ package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.modules.OverlayRenderer;
 
 import net.emc.emce.utils.Messaging;
@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public record TownlessCommand(EarthMCEssentials instance) {
+public record TownlessCommand(EMCEssentials instance) {
     static NamedTextColor townlessTextColour;
 
     boolean lengthLimited(String str, int length) { return str.length() >= length; }

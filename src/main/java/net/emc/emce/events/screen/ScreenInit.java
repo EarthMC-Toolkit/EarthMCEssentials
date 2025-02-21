@@ -1,7 +1,7 @@
 package net.emc.emce.events.screen;
 
 import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.OverlayRenderer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -10,10 +10,10 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class ScreenInit {
     private static void Refresh(Screen screen) {
-        ModConfig.General gen = EarthMCEssentials.instance().config().general;
+        ModConfig.General gen = EMCEssentials.instance().config().general;
         
-        EarthMCEssentials.instance().setShouldRender(gen.enableMod);
-        EarthMCEssentials.instance().setDebugEnabled(gen.debugLog);
+        EMCEssentials.instance().setShouldRender(gen.enableMod);
+        EMCEssentials.instance().setDebugEnabled(gen.debugLog);
 
         OverlayRenderer.Init();
     }

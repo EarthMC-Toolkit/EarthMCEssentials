@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.objects.Colors;
 
 import net.emc.emce.utils.ModUtils.NearbySort;
@@ -140,6 +140,6 @@ public class ModConfig implements ConfigData {
     }
 
     public static ModConfig instance() {
-        return EarthMCEssentials.instance().config();
+        return EMCEssentials.instance().config();
     }
 }

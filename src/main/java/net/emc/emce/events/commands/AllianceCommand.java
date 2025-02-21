@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -23,7 +23,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.Locale;
 
-public record AllianceCommand(EarthMCEssentials instance) {
+public record AllianceCommand(EMCEssentials instance) {
 
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("alliance").then(

@@ -6,7 +6,7 @@ import io.github.emcw.squaremap.entities.SquaremapLocation;
 import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
 import io.github.emcw.squaremap.entities.SquaremapResident;
 
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 import static io.github.emcw.utils.GsonUtil.streamEntries;
 import static java.util.stream.Collectors.toMap;
 
-import static net.emc.emce.EarthMCEssentials.*;
+import static net.emc.emce.EMCEssentials.*;
 import static net.emc.emce.utils.ModUtils.*;
 import static net.minecraft.text.Text.translatable;
 
@@ -57,7 +57,7 @@ public class OverlayRenderer {
     }
 
     public static void Clear() {
-        EarthMCEssentials.instance().setNearbyPlayers(Map.of());
+        EMCEssentials.instance().setNearbyPlayers(Map.of());
         townless = new CopyOnWriteArrayList<>();
     }
 
@@ -67,7 +67,7 @@ public class OverlayRenderer {
 
     public static void UpdateStates(boolean updateTownless, boolean updateNearby) {
         // Fail-safe
-        var nearby = EarthMCEssentials.instance().getNearbyPlayers();
+        var nearby = EMCEssentials.instance().getNearbyPlayers();
         if (client.player == null || townless == null || nearby == null) return;
 
         if (updateTownless) UpdateTownlessState();
@@ -75,7 +75,7 @@ public class OverlayRenderer {
     }
 
     public static void RenderAllOverlays(DrawContext ctx) {
-        if (!EarthMCEssentials.instance().shouldRender()) return;
+        if (!EMCEssentials.instance().shouldRender()) return;
 
         drawCtx = ctx;
 
@@ -87,7 +87,7 @@ public class OverlayRenderer {
         String prefix = "(Townless) ";
         
         if (config.nearby.showRank) {
-            Squaremap curMap = EarthMCEssentials.instance().getCurrentMap();
+            Squaremap curMap = EMCEssentials.instance().getCurrentMap();
             SquaremapResident opRes = squaremapPlayerToResident(curMap, op);
             if (opRes != null) {
                 prefix = String.format("(%s) ", opRes.getRank());
@@ -140,7 +140,7 @@ public class OverlayRenderer {
     }
 
     static Map<String, SquaremapOnlinePlayer> sortByTownless(Map<String, SquaremapOnlinePlayer> players) {
-        Map<String, SquaremapOnlinePlayer> townless = EarthMCEssentials.instance().fetchTownless();
+        Map<String, SquaremapOnlinePlayer> townless = EMCEssentials.instance().fetchTownless();
         
         var sorted = players.entrySet().stream().sorted((a, b) -> {
             SquaremapOnlinePlayer opA = a.getValue();
@@ -241,7 +241,7 @@ public class OverlayRenderer {
     }
 
     private static void RenderNearby(boolean usingPreset) {
-        Map<String, SquaremapOnlinePlayer> nearby = EarthMCEssentials.instance().getNearbyPlayers();
+        Map<String, SquaremapOnlinePlayer> nearby = EMCEssentials.instance().getNearbyPlayers();
 
         switch (config.nearby.nearbySort) {
             case NEAREST -> nearby = sortByDistance(nearby, true);
@@ -313,7 +313,7 @@ public class OverlayRenderer {
             getTextWidth(translatable("text_townless_header", townless.size()))
         );
 
-        var nearby = EarthMCEssentials.instance().getNearbyPlayers();
+        var nearby = EMCEssentials.instance().getNearbyPlayers();
         nearbyLongest = Math.max(getNearbyLongestElement(nearby),
             getTextWidth(translatable("text_nearby_header", nearby.size()))
         );
@@ -366,7 +366,7 @@ public class OverlayRenderer {
     private static void UpdateNearbyState() {
         int nearbyLongest, townlessLongest;
 
-        var nearby = EarthMCEssentials.instance().getNearbyPlayers();
+        var nearby = EMCEssentials.instance().getNearbyPlayers();
         nearbyLongest = Math.max(getNearbyLongestElement(nearby),
             getTextWidth(translatable("text_nearby_header", nearby.size()))
         );

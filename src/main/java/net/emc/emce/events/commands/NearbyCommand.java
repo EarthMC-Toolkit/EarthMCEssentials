@@ -5,7 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
 
 import io.github.emcw.squaremap.entities.SquaremapResident;
-import net.emc.emce.EarthMCEssentials;
+import net.emc.emce.EMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.utils.Translation;
 
@@ -21,10 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.emc.emce.EarthMCEssentials.squaremapPlayerToResident;
+import static net.emc.emce.EMCEssentials.squaremapPlayerToResident;
 import static net.emc.emce.modules.OverlayRenderer.dist;
 
-public record NearbyCommand(EarthMCEssentials instance) {
+public record NearbyCommand(EMCEssentials instance) {
 
     public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("nearby").executes(c -> {
