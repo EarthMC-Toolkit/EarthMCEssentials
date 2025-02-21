@@ -176,23 +176,29 @@ public class EarthMCEssentials implements ModInitializer {
     }
     //#endregion
     
-    // This assumes squaremap will be used for all known maps.
-    public Squaremap getCurrentMap() {
-        return emcw.getSquaremap(currentMap);
-    }
-
-    @Nullable
-    public static SquaremapResident squaremapPlayerToResident(Squaremap map, SquaremapOnlinePlayer op) {
-        return map.Residents.getSingle(op.getName());
-    }
-
+    //#region Client stuff
     @Nullable
     public static String clientName() {
         ClientPlayerEntity pl = MinecraftClient.getInstance().player;
         return pl == null ? null : pl.getName().getString();
     }
     
-    public boolean clientOnlineInMap(KnownMap map) {
-        return true;
+    public static boolean clientOnlineInMap(KnownMap map) {
+        instance().currentMap = map; // TODO: Investigate why we do this here and if it's still necessary.
+        Map<String, SquaremapOnlinePlayer> ops = instance.getCurrentMap().Players.getAll();
+        
+        return ops.containsKey(clientName());
     }
+    //#endregion
+    
+    // This assumes squaremap will be used for all known maps.
+    public Squaremap getCurrentMap() {
+        return emcw.getSquaremap(currentMap);
+    }
+    
+    @Nullable
+    public static SquaremapResident squaremapPlayerToResident(Squaremap map, SquaremapOnlinePlayer op) {
+        return map.Residents.getSingle(op.getName());
+    }
+    
 }

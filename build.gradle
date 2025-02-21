@@ -71,6 +71,9 @@ dependencies {
 processResources {
 	inputs.property "version", project.version
 
+	// Gradle doesn't like this and outputs the following error that you can safely ignore:
+	// 	"Cannot resolve resource filtering of MatchingCopyAction.
+	// 	IDEA may fail to build project. Consider using delegated build (enabled by default)."
 	filesMatching("fabric.mod.json") {
 		expand("version": project.version)
 	}

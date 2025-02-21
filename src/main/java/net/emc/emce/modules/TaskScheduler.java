@@ -52,8 +52,9 @@ public class TaskScheduler {
     void checkMap() {
         if (hasMap) return;
 
-        if (clientOnline("aurora")) setHasMap("aurora");
-        //else if (clientOnline("nova")) setHasMap("nova");
+        if (EarthMCEssentials.clientOnlineInMap(KnownMap.AURORA)) {
+            setHasMap(KnownMap.AURORA.getName());
+        }
         else setHasMap(null);
     }
 

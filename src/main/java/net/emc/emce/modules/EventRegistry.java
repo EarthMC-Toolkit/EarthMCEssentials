@@ -1,6 +1,7 @@
 package net.emc.emce.modules;
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.emcw.KnownMap;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.config.ModConfig;
@@ -106,7 +107,9 @@ public class EventRegistry {
     private static @Nullable String getClientMap() {
         if (!isConnectedToEMC()) return null;
 
-        if (clientOnline("aurora")) return "aurora";
+        if (EarthMCEssentials.clientOnlineInMap(KnownMap.AURORA)) {
+            return KnownMap.AURORA.getName();
+        }
         //if (clientOnline("nova")) return "nova";
 
         return "queue";
