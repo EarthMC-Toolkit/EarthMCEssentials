@@ -14,7 +14,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
 public class TaskScheduler {
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
     public boolean hasMap = false;
@@ -52,7 +51,7 @@ public class TaskScheduler {
     void checkMap() {
         if (hasMap) return;
 
-        if (EMCEssentials.instance().clientOnlineInMap(KnownMap.AURORA)) {
+        if (EMCEssentials.instance().clientOnlineInSquaremap(KnownMap.AURORA)) {
             setHasMap(KnownMap.AURORA.getName());
         }
         else setHasMap(null);
