@@ -66,7 +66,7 @@ public record NearbyCommand(EarthMCEssentials instance) {
             
             return 1;
         }).then(ClientCommandManager.literal("refresh").executes(c -> {
-            instance.setNearbyPlayers();
+            instance.updateNearbyPlayers();
             Messaging.sendPrefixed("msg_nearby_refresh");
             return 1;
         })).then(ClientCommandManager.literal("clear").executes(c -> {

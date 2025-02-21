@@ -8,15 +8,12 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
-import static net.emc.emce.EarthMCEssentials.instance;
-
 public class ScreenInit {
     private static void Refresh(Screen screen) {
-        EarthMCEssentials instance = instance();
-        ModConfig.General gen = instance.config().general;
-
-        instance.setShouldRender(gen.enableMod);
-        instance.setDebugEnabled(gen.debugLog);
+        ModConfig.General gen = EarthMCEssentials.instance().config().general;
+        
+        EarthMCEssentials.instance().setShouldRender(gen.enableMod);
+        EarthMCEssentials.instance().setDebugEnabled(gen.debugLog);
 
         OverlayRenderer.Init();
     }

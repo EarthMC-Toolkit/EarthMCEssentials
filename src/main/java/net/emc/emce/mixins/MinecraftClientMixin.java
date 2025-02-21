@@ -2,6 +2,7 @@ package net.emc.emce.mixins;
 
 import com.google.gson.JsonElement;
 
+import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.utils.OAPIV3;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
@@ -9,8 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import static net.emc.emce.EarthMCEssentials.instance;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
@@ -20,7 +19,7 @@ public class MinecraftClientMixin {
         JsonElement clientPlayer = OAPIV3.getPlayer(clientName);
 
         if (clientPlayer != null) {
-            instance().setClientPlayer(clientPlayer);
+            EarthMCEssentials.instance().setClientPlayer(clientPlayer);
             System.out.println("onInit: Set clientPlayer");
 
             return;

@@ -1,6 +1,7 @@
 package net.emc.emce.modules;
 
 import io.github.emcw.KnownMap;
+import net.emc.emce.EarthMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.caches.Cache;
 import net.emc.emce.config.ModConfig;
@@ -13,7 +14,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static net.emc.emce.EarthMCEssentials.instance;
 
 public class TaskScheduler {
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
@@ -27,8 +27,8 @@ public class TaskScheduler {
 
         // Pre-fill data.
         if (config.general.enableMod) {
-            if (config.townless.enabled) instance().setTownless(EarthMCAPI.getTownless());
-            if (config.nearby.enabled) instance().setNearbyPlayers(EarthMCAPI.getNearby());
+            if (config.townless.enabled) EarthMCEssentials.instance().updateTownless();
+            if (config.nearby.enabled) EarthMCEssentials.instance().updateNearbyPlayers();
         }
 
         startCacheCheck();
@@ -65,7 +65,7 @@ public class TaskScheduler {
     public void setHasMap(String map) {
         if (map == null) {
             hasMap = false;
-            instance().currentMap = KnownMap.AURORA;
+            EarthMCEssentials.instance().currentMap = KnownMap.AURORA;
 
             stop();
             Messaging.sendDebugMessage("Player not found on any map!");
@@ -83,7 +83,7 @@ public class TaskScheduler {
 
         service.scheduleAtFixedRate(() -> {
             if (townlessRunning && config.townless.enabled && shouldRun()) {
-                instance().setTownless(EarthMCAPI.getTownless());
+                EarthMCEssentials.instance().updateTownless();
                 Messaging.sendDebugMessage("Updating townless...");
             }
         }, 5, Math.min(config.intervals.townless, 200), TimeUnit.SECONDS);
@@ -95,7 +95,7 @@ public class TaskScheduler {
 
         service.scheduleAtFixedRate(() -> {
             if (nearbyRunning && config.nearby.enabled && shouldRun()) {
-                instance().setNearbyPlayers(EarthMCAPI.getNearby());
+                EarthMCEssentials.instance().updateNearbyPlayers();
                 Messaging.sendDebugMessage("Updating nearby...");
             }
         }, 5, Math.min(config.intervals.nearby, 30), TimeUnit.SECONDS);
@@ -107,9 +107,11 @@ public class TaskScheduler {
         service.scheduleAtFixedRate(() -> {
             if (!cacheCheckRunning) return;
 
-            for (Cache<?> cache : CACHES)
-                if (cache.cacheNeedsUpdate())
-                    cache.clear();
+            for (Cache<?> cache : CACHES) {
+                if (cache.cacheNeedsUpdate()) {
+                    cache.clearCache();
+                }
+            }
         }, 0, 5, TimeUnit.MINUTES);
     }
 

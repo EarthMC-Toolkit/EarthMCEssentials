@@ -20,8 +20,6 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static net.emc.emce.EarthMCEssentials.instance;
-
 import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 import static net.emc.emce.utils.ModUtils.updateServerName;
 
@@ -101,7 +99,7 @@ public class EventRegistry {
             System.out.println("EMCE > Disconnected.");
 
             ModUtils.setServerName("");
-            instance().scheduler().reset();
+            EarthMCEssentials.instance().scheduler().reset();
         });
     }
 
