@@ -16,7 +16,11 @@ public class OAPIV3 {
             case AURORA:
             default: {
                 JsonArray players = auroraAPI.players(new String[]{ name });
-                return players != null ? players.get(0) : null;
+                if (players == null || players.size() < 1) {
+                    return null;
+                }
+                
+                return players.get(0);
             }
         }
     }

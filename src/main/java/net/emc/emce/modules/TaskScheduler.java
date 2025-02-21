@@ -117,6 +117,9 @@ public class TaskScheduler {
     }
 
     boolean shouldRun() {
-        return ModConfig.instance().general.enableMod && MinecraftClient.getInstance().isWindowFocused();
+        boolean modEnabled = ModConfig.instance().general.enableMod;
+        boolean focused = MinecraftClient.getInstance().isWindowFocused();
+
+        return modEnabled && focused;
     }
 }
