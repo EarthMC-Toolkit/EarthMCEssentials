@@ -59,7 +59,7 @@ public class EventRegistry {
         // TODO: HudRenderCallback was deprecated in favour of events.
         // We can maybe use HudLayerRegistrationCallback instead - not exactly sure how yet.
         //
-        // Relevent: https://github.com/FabricMC/fabric/pull/4119
+        // Relevant: https://github.com/FabricMC/fabric/pull/4119
         HudRenderCallback.EVENT.register((drawCtx, renderTickCounter) -> {
             // Renders every overlay (townless, nearby etc) if allowed.
             OverlayRenderer.RenderAllOverlays(drawCtx);
@@ -107,7 +107,7 @@ public class EventRegistry {
     private static @Nullable String getClientMap() {
         if (!isConnectedToEMC()) return null;
 
-        if (EMCEssentials.clientOnlineInMap(KnownMap.AURORA)) {
+        if (EMCEssentials.instance().clientOnlineInSquaremap(KnownMap.AURORA)) {
             return KnownMap.AURORA.getName();
         }
         //if (clientOnline("nova")) return "nova";

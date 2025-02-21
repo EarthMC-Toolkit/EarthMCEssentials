@@ -1,5 +1,6 @@
 package net.emc.emce;
 
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,8 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-
-import com.google.gson.JsonElement;
 
 import io.github.emcw.EMCWrapper;
 import io.github.emcw.KnownMap;
@@ -56,7 +55,7 @@ public class EMCEssentials implements ModInitializer {
     public static EMCWrapper emcw = new EMCWrapper()
         .registerSquaremap(KnownMap.AURORA);
 
-    @Getter @Setter private JsonElement clientPlayer = null; // From the OAPI
+    @Getter @Setter private JsonObject clientPlayer = null; // From the OAPI
     @Setter private boolean shouldRender = false;
 
     private Set<String> townlessNames = new HashSet<>();
@@ -181,10 +180,8 @@ public class EMCEssentials implements ModInitializer {
         return pl == null ? null : pl.getName().getString();
     }
     
-    public static boolean clientOnlineInMap(KnownMap map) {
-        instance().currentMap = map; // TODO: Investigate why we do this here and if it's still necessary.
-        Map<String, SquaremapOnlinePlayer> ops = instance.getCurrentMap().Players.getAll();
-        
+    public boolean clientOnlineInSquaremap(KnownMap map) {
+        Map<String, SquaremapOnlinePlayer> ops = emcw.getSquaremap(map).Players.getAll();
         return ops.containsKey(clientName());
     }
     //#endregion

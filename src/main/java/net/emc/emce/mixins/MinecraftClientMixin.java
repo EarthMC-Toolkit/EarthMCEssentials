@@ -2,6 +2,8 @@ package net.emc.emce.mixins;
 
 import com.google.gson.JsonElement;
 
+import com.google.gson.JsonObject;
+import io.github.emcw.utils.GsonUtil;
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.utils.OAPIV3;
 import net.minecraft.client.MinecraftClient;
@@ -16,15 +18,24 @@ public class MinecraftClientMixin {
     @Inject(at = @At("TAIL"), method="<init>")
     private void onInit(RunArgs args, CallbackInfo ci) {
         String clientName = args.network.session.getUsername();
-        JsonElement clientPlayer = OAPIV3.getPlayer(clientName);
+        JsonElement apiPlayer = OAPIV3.getPlayer(EMCEssentials.instance().currentMap, clientName);
 
-        if (clientPlayer != null) {
+        if (apiPlayer != null) {
+            JsonObject clientPlayer = apiPlayer.getAsJsonObject();
             EMCEssentials.instance().setClientPlayer(clientPlayer);
-            System.out.println("onInit: Set clientPlayer");
+            
+            JsonObject playerObj = new JsonObject();
+            playerObj.addProperty("name", clientPlayer.get("name").getAsString());
+            playerObj.addProperty("uuid", clientPlayer.get("uuid").getAsString());
+            playerObj.add("town", clientPlayer.getAsJsonObject("town").get("name"));
+            playerObj.addProperty("balance", clientPlayer.getAsJsonObject("stats").get("balance").getAsFloat());
+            
+            System.out.println("EMCE > [onInit] Initialized clientPlayer. Condensed representation:");
+            System.out.println(GsonUtil.serialize(playerObj));
 
             return;
         }
 
-        System.out.println("Could not find player by client name: " + clientName);
+        System.err.println("EMCE > Could not find player by client name: " + clientName);
     }
 }
