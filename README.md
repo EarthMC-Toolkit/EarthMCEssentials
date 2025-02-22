@@ -1,15 +1,14 @@
 > [!WARNING]
-> EMCE is currently broken due to various updates to EarthMC.
-> 
-> While I do plan on updating when I get time, it may be a while yet since I am very busy.\
-> If you know your way around this project and/or EMCW, please consider contributing to get it working again!
+> EMCE is currently broken due to various updates to EarthMC.\
+> Though I am attempting to get it working again in my free time, please be patient.
 
-# EarthMC Essentials 
+# EarthMC Essentials
 ![Downloads](https://img.shields.io/github/downloads/EarthMC-Toolkit/EarthMCEssentials/total)
-<a href="https://discord.gg/AVtgkcRgFs">
-  <img src="https://img.shields.io/discord/966271635894190090?logo=discord"><a/>
-             
+<a href="https://discord.gg/AVtgkcRgFs"><img src="https://img.shields.io/discord/966271635894190090?logo=discord"><a/>
+
 A fabric mod designed for EarthMC that provides info on people, places and more.
+
+<img align="center" width="1080" src="https://cdn.modrinth.com/data/GDrr0KgP/images/b122b9977b0c6bb345569d6174b076f588edbd2c.png">
 
 ## Features
 #### Commands
@@ -19,7 +18,7 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
   - `/nether <x> <z>` - Quickly convert overworld coordinates into their nether counterpart.
 #### On-Screen Info
   - Townless - Show a list of online townless players and their (optional) coords.
-  - Nearby - See anyone whose close to you without checking the dynmap! Configurable options include: radius, rank and distance.
+  - Nearby - See anyone whose close to you without checking the map! Configurable options include: radius, rank and distance.
 #### Config screen (F4)
   - API Intervals - Set the rate at which you want data to be updated.
   - Data - Toggle on/off, screen x/y position, text colors, radius and more.
@@ -32,11 +31,11 @@ A fabric mod designed for EarthMC that provides info on people, places and more.
   
 ## FAQ
 **Why am I crashing on startup?**
->*I recommend you use the [latest](https://github.com/EarthMC-Toolkit/EarthMCEssentials/releases/latest) EMCE version, with `Fabric API 0.81.0` and `Fabric Loader 0.14.19`, delete the file `emc-essentials.json` in your config folder and reboot MC. It is also worth checking the output log since some mods may conflict with EMCE.*
+>*I recommend you use the [latest](https://github.com/EarthMC-Toolkit/EarthMCEssentials/releases/latest) EMCE version, with `Fabric API 0.118.0` and `Fabric Loader 0.16.10`, delete the file `emc-essentials.json` in your config folder and reboot MC. It is also worth checking the output log since some mods may conflict with EMCE.*
 
 **Client or Server?**
-> *Everything in this mod is ran on the client-side and the only data source is Dynmap (via 
-the purpose-made [EMC-Wrapper](https://github.com/EarthMC-Toolkit/EarthMC-Wrapper) library) with custom data being acquired from the [API](https://emc-toolkit.vercel.app/api).*
+> *Everything in this mod is ran on the client-side and the only data sources are the [Official API](https://earthmc.net/docs/api), Squaremap (via 
+the purpose-made [EMC-Wrapper](https://github.com/EarthMC-Toolkit/EarthMC-Wrapper) library) with news and alliances being acquired from the toolkit [API](https://emc-toolkit.vercel.app/api).*
   
 **Is there a Forge version?**
 >*Not right now. There may be a re-write using the Architectuary API, but this won't be any time soon.*
