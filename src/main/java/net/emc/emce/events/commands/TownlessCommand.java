@@ -38,64 +38,81 @@ public record TownlessCommand(EMCEssentials instance) {
     Component createMsg(String key, int size) {
         return Messaging.create(key, getTextColour(), whiteText(size));
     }
-
-    // TODO: This is a clusterfuck that hurts my eyes. Fix when possible.
+    
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(ClientCommandManager.literal("townless").executes(c -> {
+        var townlessCmd = ClientCommandManager.literal("townless").executes(c -> execTownless())
+            .then(ClientCommandManager.literal("inviteAll").executes(c -> execInviteAll()))
+            .then(ClientCommandManager.literal("revokeAll").executes(c -> execRevokeAll()))
+            .then(ClientCommandManager.literal("refresh").executes(c -> execRefresh()))
+            .then(ClientCommandManager.literal("clear").executes(c -> execClear()));
+    
+        dispatcher.register(townlessCmd);
+    }
+    
+    public int execTownless() {
+        Set<String> townless = instance.getTownless();
+        int size = townless.size();
+        
+        Messaging.send(createMsg("text_townless_header", size));
+        if (size > 0) Messaging.send(Component.text(String.join(", ", townless), townlessTextColour));
+        
+        return 1;
+    }
+    
+    public int execInviteAll() {
+        if (MinecraftClient.getInstance().player == null) return -1;
+        
+        if (ModUtils.isConnectedToEMC()) {
+            StringBuilder townlessString = new StringBuilder();
             Set<String> townless = instance.getTownless();
-            int size = townless.size();
-
-            Messaging.send(createMsg("text_townless_header", size));
-            if (size > 0) Messaging.send(Component.text(String.join(", ", townless), townlessTextColour));
-
-            return 1;
-        }).then(ClientCommandManager.literal("inviteAll").executes(c -> {
-            if (MinecraftClient.getInstance().player == null) return -1;
-            if (ModUtils.isConnectedToEMC()) {
-                StringBuilder townlessString = new StringBuilder();
-                Set<String> townless = instance.getTownless();
-
-                for (String townlessPlayer : townless) {
-                    if (lengthLimited(inviteStr(townlessString) + townlessPlayer)) break;
-                    else townlessString.append(townlessPlayer).append(" ");
-                }
-
-                Messaging.performCommand("towny:town invite " + townlessString);
-                Messaging.sendPrefixed(createMsg("msg_townless_sent", townless.size()));
-            } else Messaging.sendPrefixed("msg_townless_invite_err");
-
-            return 1;
-        })).then(ClientCommandManager.literal("revokeAll").executes(c -> {
-            if (MinecraftClient.getInstance().player == null) return -1;
-            if (ModUtils.isConnectedToEMC()) {
-                StringBuilder townlessString = new StringBuilder();
-                Set<String> townless = instance.getTownless();
-
-                for (String townlessPlayer : townless) {
-                    if (lengthLimited(inviteStr(townlessString, true) + townlessPlayer)) break;
-                    else townlessString.append("-").append(townlessPlayer).append(" ");
-                }
-
-                Messaging.performCommand("towny:town invite " + townlessString);
-                Messaging.sendPrefixed(createMsg("msg_townless_revoked", townless.size()));
+            
+            for (String townlessPlayer : townless) {
+                if (lengthLimited(inviteStr(townlessString) + townlessPlayer)) break;
+                else townlessString.append(townlessPlayer).append(" ");
             }
-            else Messaging.sendPrefixed("msg_townless_revoke_err");
-
-            return 1;
-        })).then(ClientCommandManager.literal("refresh").executes(c -> {
-            Map<String, SquaremapOnlinePlayer> townless = instance().getCurrentMap().Players.getByResidency(false);
-
-            instance.setTownless(townless);
-            Messaging.sendPrefixed("msg_townless_refresh");
-
-            return 1;
-        })).then(ClientCommandManager.literal("clear").executes(c -> {
-            OverlayRenderer.SetTownless(new HashSet<>());
-            OverlayRenderer.UpdateStates(true, false);
-
-            Messaging.sendPrefixed("msg_townless_clear");
-
-            return 1;
-        })));
+            
+            Messaging.performCommand("towny:town invite " + townlessString);
+            Messaging.sendPrefixed(createMsg("msg_townless_sent", townless.size()));
+        } else Messaging.sendPrefixed("msg_townless_invite_err");
+        
+        return 1;
+    }
+    
+    public int execRevokeAll() {
+        if (MinecraftClient.getInstance().player == null) return -1;
+        
+        if (ModUtils.isConnectedToEMC()) {
+            StringBuilder townlessString = new StringBuilder();
+            Set<String> townless = instance.getTownless();
+            
+            for (String townlessPlayer : townless) {
+                if (lengthLimited(inviteStr(townlessString, true) + townlessPlayer)) break;
+                else townlessString.append("-").append(townlessPlayer).append(" ");
+            }
+            
+            Messaging.performCommand("towny:town invite " + townlessString);
+            Messaging.sendPrefixed(createMsg("msg_townless_revoked", townless.size()));
+        }
+        else Messaging.sendPrefixed("msg_townless_revoke_err");
+        
+        return 1;
+    }
+    
+    public int execRefresh() {
+        Map<String, SquaremapOnlinePlayer> townless = instance.getCurrentMap().Players.getByResidency(false);
+        
+        instance.setTownless(townless);
+        Messaging.sendPrefixed("msg_townless_refresh");
+        
+        return 1;
+    }
+    
+    public int execClear() {
+        OverlayRenderer.SetTownless(new HashSet<>());
+        OverlayRenderer.UpdateStates(true, false);
+        
+        Messaging.sendPrefixed("msg_townless_clear");
+        
+        return 1;
     }
 }

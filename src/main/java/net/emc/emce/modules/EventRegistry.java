@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,18 +39,22 @@ public class EventRegistry {
         // Every tick, see if we are pressing F4.
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (EMCEssentials.configKeybinding.wasPressed()) {
-                if (!ModUtils.configOpen()) {
-                    try {
-                        Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
-                        client.setScreen(configScreen);
-                    } catch (Exception e) {
-                        Messaging.sendDebugMessage("Error opening config screen.", e);
-                    }
-                }
+                TryOpenConfigScreen(client);
             }
         });
     }
 
+    public static void TryOpenConfigScreen(MinecraftClient client) {
+        if (!ModUtils.configOpen()) {
+            try {
+                Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
+                client.setScreen(configScreen);
+            } catch (Exception e) {
+                Messaging.sendDebugMessage("Error opening config screen.", e);
+            }
+        }
+    }
+    
     public static void RegisterScreen() {
         ScreenEvents.BEFORE_INIT.register(ScreenInit::before);
         ScreenEvents.AFTER_INIT.register(ScreenInit::after);
@@ -71,7 +76,7 @@ public class EventRegistry {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             updateServerName();
 
-            // Allow 3 seconds for Dynmap to update.
+            // Allow some time for Squaremap to update.
             exec.schedule(() -> {
                 //region Detect client map (if on emc)
                 String curMap = getClientMap();
@@ -93,7 +98,7 @@ public class EventRegistry {
 
                 if (!isMapQueue(curMap)) instance.scheduler().initMap();
                 else instance.scheduler().reset();
-            }, 3, TimeUnit.SECONDS);
+            }, 5, TimeUnit.SECONDS);
         });
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {

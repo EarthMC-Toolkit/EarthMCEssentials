@@ -49,7 +49,7 @@ public record NearbyCommand(EMCEssentials instance) {
                 Component prefix = Component.empty();
 
                 if (nearbyConfig.showRank) {
-                    SquaremapResident res = squaremapPlayerToResident(instance().getCurrentMap(), curOp);
+                    SquaremapResident res = squaremapPlayerToResident(instance.getCurrentMap(), curOp);
 
                     if (res == null) prefix = Translation.of("text_nearby_rank_townless");
                     else {
