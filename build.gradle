@@ -15,7 +15,7 @@ repositories {
 		name = "GitHubPackages"
 		url = uri("https://maven.pkg.github.com/earthmc-toolkit/earthmc-wrapper")
 		credentials {
-			// NOTE TO CONTRIBUTERS:
+			// NOTE TO CONTRIBUTORS:
 			// You must create a `local.properties` file with the keys below.
 			// You can create a token at https://github.com/settings/tokens under the "Tokens (classic)" tab.
 			username = localProps.getProperty("USERNAME") // Your GitHub account name.
@@ -31,6 +31,7 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 
+	// TODO: Fabric API is technically optional. Do we actually need it?
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
@@ -69,7 +70,7 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
+	inputs.property("version", project.version)
 
 	// Gradle doesn't like this and outputs the following error that you can safely ignore:
 	// 	"Cannot resolve resource filtering of MatchingCopyAction.
