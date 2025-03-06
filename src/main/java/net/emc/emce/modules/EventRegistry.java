@@ -73,27 +73,28 @@ public class EventRegistry {
     static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     public static void RegisterConnection(EMCEssentials instance) {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            // Update the server name to the one we just joined.
             ModUtils.setServerName(ModUtils.currentServer());
 
-            // Allow some time for Squaremap to update.
+            // Allow some time for the map to update.
             exec.schedule(() -> {
-                //region Detect client map (if on emc)
+                //#region Detect client map (if on emc)
                 String curMap = getClientMap();
                 if (curMap == null) return; // Don't do anything if not on EMC.
 
                 System.out.println("EMCE > New game session detected.");
-                //endregion
+                //#endregion
 
-                //region Run regardless of map
+                //#region Run regardless of map
                 instance.setShouldRender(instance.config().general.enableMod);
                 instance.setDebugEnabled(instance.config().general.debugLog);
 
-                //fetchEndpoints();
+                //fetchEndpoints(); // TODO: What is this even here for and do we still need it?
                 OverlayRenderer.Init();
 
                 RegisterScreen();
                 RegisterHud();
-                //endregion
+                //#endregion
 
                 if (!isMapQueue(curMap)) instance.scheduler().initMap();
                 else instance.scheduler().reset();
@@ -114,7 +115,6 @@ public class EventRegistry {
         if (EMCEssentials.instance().clientOnlineInSquaremap(KnownMap.AURORA)) {
             return KnownMap.AURORA.getName();
         }
-        //if (clientOnline("nova")) return "nova";
 
         return "queue";
     }

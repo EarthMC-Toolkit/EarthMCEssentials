@@ -78,7 +78,7 @@ public class OverlayRenderer {
         if (!EMCEssentials.instance().shouldRender()) return;
 
         drawCtx = ctx;
-        
+
         if (config.townless.enabled) RenderTownless(config.townless.presetPositions);
         if (config.nearby.enabled) RenderNearby(config.nearby.presetPositions);
     }

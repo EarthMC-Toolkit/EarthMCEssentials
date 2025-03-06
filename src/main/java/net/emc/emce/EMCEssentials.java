@@ -195,5 +195,4 @@ public class EMCEssentials implements ModInitializer {
     public static SquaremapResident squaremapPlayerToResident(Squaremap map, SquaremapOnlinePlayer op) {
         return map.Residents.getSingle(op.getName());
     }
-    
 }

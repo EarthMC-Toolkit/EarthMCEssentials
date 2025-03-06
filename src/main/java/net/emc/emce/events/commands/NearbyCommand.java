@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static net.emc.emce.EMCEssentials.squaremapPlayerToResident;
-import static net.emc.emce.modules.OverlayRenderer.dist;
+import static net.emc.emce.modules.OverlayRenderer.distFromClientPlayer;
 
 public record NearbyCommand(EMCEssentials instance) {
 
@@ -45,16 +45,16 @@ public record NearbyCommand(EMCEssentials instance) {
                 Integer z = curOp.getLocation().getZ();
                 if (x == null || z == null) continue;
 
-                int distance = dist(x, z);
+                int distance = distFromClientPlayer(x, z);
                 Component prefix = Component.empty();
 
                 if (nearbyConfig.showRank) {
                     SquaremapResident res = squaremapPlayerToResident(instance.getCurrentMap(), curOp);
-
-                    if (res == null) prefix = Translation.of("text_nearby_rank_townless");
-                    else {
+                    if (res != null) {
                         String rankText = String.format("(%s) ", res.getRank());
                         prefix = Component.text(rankText);
+                    } else {
+                        prefix = Translation.of("text_nearby_rank_townless");
                     }
                 }
 
