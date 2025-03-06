@@ -187,7 +187,7 @@ public class OverlayRenderer {
         MutableText townlessText = translatable("text_townless_header", townlessSize).formatted(townlessTextFormatting);
 
         if (usingPreset) {
-            drawWithoutShadow(townlessText, x, y - 10, color);
+            drawWithShadow(townlessText, x, y - 10, color);
 
             int index = 0;
 
@@ -257,7 +257,7 @@ public class OverlayRenderer {
             drawWithShadow(nearbyText, nearbyState.getX(), nearbyState.getY() - 10, color);
 
             if (client.player == null) return;
-            if (nearby.size() >= 1) {
+            if (!nearby.isEmpty()) {
                 MutableText playerText;
                 int i = 0;
 
@@ -284,7 +284,7 @@ public class OverlayRenderer {
             drawWithShadow(nearbyText, xOffset, playerOffset - 15, color);
 
             if (client.player == null) return;
-            if (nearby.size() >= 1) {
+            if (!nearby.isEmpty()) {
                 MutableText playerText;
 
                 for (SquaremapOnlinePlayer curPlayer : nearby.values()) {
