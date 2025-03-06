@@ -78,7 +78,7 @@ public class OverlayRenderer {
         if (!EMCEssentials.instance().shouldRender()) return;
 
         drawCtx = ctx;
-
+        
         if (config.townless.enabled) RenderTownless(config.townless.presetPositions);
         if (config.nearby.enabled) RenderNearby(config.nearby.presetPositions);
     }
@@ -97,7 +97,7 @@ public class OverlayRenderer {
         return prefix;
     }
 
-    public static int dist(int x, int z) {
+    public static int distFromClientPlayer(int x, int z) {
         assert client.player != null;
         return Math.abs(x - (int) client.player.getX()) +
                Math.abs(z - (int) client.player.getZ());
@@ -105,10 +105,10 @@ public class OverlayRenderer {
 
     public static int closest(SquaremapOnlinePlayer p1, SquaremapOnlinePlayer p2) {
         SquaremapLocation loc1 = p1.getLocation();
-        Integer dist1 = dist(loc1.getX(), loc1.getZ());
+        Integer dist1 = distFromClientPlayer(loc1.getX(), loc1.getZ());
 
         SquaremapLocation loc2 = p2.getLocation();
-        Integer dist2 = dist(loc2.getX(), loc2.getZ());
+        Integer dist2 = distFromClientPlayer(loc2.getX(), loc2.getZ());
 
         return dist1.compareTo(dist2);
     }
@@ -127,13 +127,13 @@ public class OverlayRenderer {
         String name = player.getName();
         if (name == null || name.equals(clientName())) return null;
 
-        int distance = dist(x, z);
+        int distance = distFromClientPlayer(x, z);
         String prefix = getRankPrefix(player);
 
         return translatable(prefix + name + ": " + distance + "m").formatted(playerTextFormatting);
     }
 
-    static Map<String, SquaremapOnlinePlayer> sortByDistance(Map<String, SquaremapOnlinePlayer> players, boolean acsending) {
+    static Map<String, SquaremapOnlinePlayer> sortByDistance(Map<String, SquaremapOnlinePlayer> players, boolean ascending) {
         return collectSorted(streamEntries(players).sorted((o1, o2) ->
             closest(o1.getValue(), o2.getValue())
         ));

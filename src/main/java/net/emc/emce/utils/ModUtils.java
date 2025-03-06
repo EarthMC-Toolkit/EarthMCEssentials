@@ -12,7 +12,6 @@ import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.MutableText;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static net.emc.emce.EMCEssentials.clientName;
-import static net.emc.emce.modules.OverlayRenderer.dist;
+import static net.emc.emce.modules.OverlayRenderer.distFromClientPlayer;
 import static net.emc.emce.modules.OverlayRenderer.getRankPrefix;
 
 import static net.minecraft.client.MinecraftClient.getInstance;
@@ -88,13 +87,15 @@ public class ModUtils {
 
     @SuppressWarnings("unused")
     public static int getLongestElement(Map<String, ?> map) {
-        int length = map == null ? 0 : map.size();
-        if (length < 1) return 0;
+        int len = map == null ? 0 : map.size();
+        if (len < 1) return 0;
 
         List<String> keys = new ArrayList<>(map.keySet());
-
-        int longestElement = 0, i = 0;
-        for (; i < length; i++) {
+        
+        int i = 0;
+        int longestElement = 0;
+        
+        for (; i < len; i++) {
             int currentWidth = getStringWidth(keys.get(i));
             longestElement = Math.max(currentWidth, longestElement);
         }
@@ -104,21 +105,23 @@ public class ModUtils {
 
     public static int getLongestElement(@NotNull Collection<String> collection) {
         int longestElement = 0;
-
-        for (String string : collection)
+        for (String string : collection) {
             longestElement = Math.max(longestElement, getStringHeight(string));
+        }
 
         return longestElement;
     }
 
     public static int getArrayHeight(@NotNull Map<String, ?> map) {
-        int length = map.size();
-        if (length < 1) return 0;
+        int len = map.size();
+        if (len < 1) return 0;
 
         List<String> keys = new ArrayList<>(map.keySet());
 
-        int totalLength = 0, i = 0;
-        for (; i < length; i++) {
+        int i = 0;
+        int totalLength = 0;
+        
+        for (; i < len; i++) {
             totalLength += getStringHeight(keys.get(i));
         }
 
@@ -126,15 +129,15 @@ public class ModUtils {
     }
 
     public static int getTownlessArrayHeight(@NotNull List<String> townless, int maxLength) {
-        int length = townless.size();
-        if (length < 1) return 0;
+        int len = townless.size();
+        if (len < 1) return 0;
 
         int totalLength = 0, i = 0;
-        for (; i < length; i++) {
+        for (; i < len; i++) {
             String name = townless.get(i);
 
             if (i >= maxLength && maxLength != 0) {
-                String maxLengthString = "And " + (length-i) + " more...";
+                String maxLengthString = String.format("And %d more...", (len-i));
                 return totalLength + getStringHeight(maxLengthString) - 10;
             }
             else totalLength += getStringHeight(name);
@@ -144,28 +147,25 @@ public class ModUtils {
     }
 
     public static int getNearbyLongestElement(@NotNull Map<String, SquaremapOnlinePlayer> nearby) {
-        int length = nearby.size();
-        if (length < 1) return 0;
-
         int longestElement = 0;
-        for (SquaremapOnlinePlayer curOp : nearby.values()) {
-            String name = curOp.getName();
-            Integer x = curOp.getLocation().getX();
-            Integer z = curOp.getLocation().getZ();
-
-            if (z == null || x == null || name == null) continue;
+        for (SquaremapOnlinePlayer nearbyOp : nearby.values()) {
+            String name = nearbyOp.getName();
+            if (name == null) continue;
             if (name.equals(clientName())) continue;
-
-            ClientPlayerEntity player = Objects.requireNonNull(getInstance().player);
-            int distance = dist(x, z);
+            
+            Integer x = nearbyOp.getLocation().getX();
+            Integer z = nearbyOp.getLocation().getZ();
+            if (x == null || z == null) continue;
 
             String prefix;
             try {
-                prefix = getRankPrefix(curOp);
+                prefix = getRankPrefix(nearbyOp);
             } catch (MissingEntryException e) {
                 continue;
             }
-
+            
+            int distance = distFromClientPlayer(x, z);
+            
             MutableText nearbyText = Text.translatable(prefix + name + ": " + distance + "m");
             longestElement = Math.max(getTextWidth(nearbyText), longestElement);
         }
@@ -197,23 +197,27 @@ public class ModUtils {
         return serverName.toLowerCase().endsWith("earthmc.net");
     }
 
-    public static void updateServerName() {
-        String curServer = currentServer();
-        if (curServer != null) setServerName(curServer);
-    }
-
+//    public static void updateServerName() {
+//        String curServer = currentServer();
+//        if (curServer != null) setServerName(curServer);
+//    }
+    
+    /**
+     * Attempts to get the name of the current <b>multiplayer</b> server if we are on one.
+     * Returns {@code null} in the case that we are in Singleplayer, Realms, or LAN.
+     */
     @Nullable
     public static String currentServer() {
         try {
             MinecraftClient instance = getInstance();
+            if (instance.isInSingleplayer()) return null;
+            
             ServerInfo serverInfo = instance.getCurrentServerEntry();
-
-            // If the server is Singleplayer, Realms, or LAN, return null
-            if (serverInfo == null || serverInfo.isRealm() || instance.isInSingleplayer() || serverInfo.isLocal()) {
-                return null;
-            }
-
-            // Otherwise, return the server's address (external server)
+            if (serverInfo == null) return null;
+            if (serverInfo.isRealm()) return null;
+            if (serverInfo.isLocal()) return null;
+            
+            // Otherwise, return the address of the external server.
             return serverInfo.address;
         } catch (Exception e) {
             Messaging.sendDebugMessage("Error getting server name.", e);

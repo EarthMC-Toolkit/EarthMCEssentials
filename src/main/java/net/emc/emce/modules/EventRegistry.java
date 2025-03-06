@@ -23,7 +23,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
-import static net.emc.emce.utils.ModUtils.updateServerName;
 
 public class EventRegistry {
     public static void RegisterCommands(EMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
@@ -74,7 +73,7 @@ public class EventRegistry {
     static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     public static void RegisterConnection(EMCEssentials instance) {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            updateServerName();
+            ModUtils.setServerName(ModUtils.currentServer());
 
             // Allow some time for Squaremap to update.
             exec.schedule(() -> {
@@ -104,7 +103,7 @@ public class EventRegistry {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             System.out.println("EMCE > Disconnected.");
 
-            ModUtils.setServerName("");
+            ModUtils.setServerName(null);
             EMCEssentials.instance().scheduler().reset();
         });
     }
