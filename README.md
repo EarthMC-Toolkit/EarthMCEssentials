@@ -1,6 +1,6 @@
-> [!WARNING]
-> EMCE is currently broken due to various updates to EarthMC.\
-> Though I am attempting to get it working again in my free time, please be patient.
+> [!NOTE]
+> EMCE is working again, but may not be released officially until I can guarantee everything works like it used to.\
+> If you would like to use an early build in the meantime, you can join the [Toolkit Discord](https://discord.com/channels/966271635894190090/966822836096364636/1347287599772860438) and visit the `#announcements` channel where you will find the required jars.
 
 # EarthMC Essentials
 ![Downloads](https://img.shields.io/github/downloads/EarthMC-Toolkit/EarthMCEssentials/total)
