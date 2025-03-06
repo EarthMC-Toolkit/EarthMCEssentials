@@ -1,10 +1,12 @@
 package net.emc.emce;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import net.emc.emce.utils.OAPIV3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -181,8 +183,10 @@ public class EMCEssentials implements ModInitializer {
     }
     
     public boolean clientOnlineInSquaremap(KnownMap map) {
-        Map<String, SquaremapOnlinePlayer> ops = emcw.getSquaremap(map).Players.getAll();
-        return ops.containsKey(clientName());
+        JsonElement clientOp = OAPIV3.getPlayer(map, clientName());
+        if (clientOp == null) return false;
+        
+        return clientOp.getAsJsonObject().getAsJsonObject("status").get("isOnline").getAsBoolean();
     }
     //#endregion
     

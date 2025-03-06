@@ -47,14 +47,29 @@ public class TaskScheduler {
         service = Executors.newScheduledThreadPool(2);
         service.scheduleAtFixedRate(this::checkMap, 0, 10, TimeUnit.SECONDS);
     }
-
+    
+    /**
+     * Tests all known maps to see which the player is online in.
+     * Will break and set {@link #hasMap} to {@code true} at the first map detected, {@code false} otherwise.
+     */
     void checkMap() {
         if (hasMap) return;
 
-        if (EMCEssentials.instance().clientOnlineInSquaremap(KnownMap.AURORA)) {
-            setHasMap(KnownMap.AURORA.getName());
+        Messaging.sendDebugMessage("Checking which map client player is on...");
+        
+        boolean online = false;
+        for (KnownMap map : KnownMap.values()) {
+            if (EMCEssentials.instance().clientOnlineInSquaremap(map)) {
+                setHasMap(map);
+                online = true;
+                
+                break;
+            }
         }
-        else setHasMap(null);
+        
+        if (!online) {
+            setHasMap(null);
+        }
     }
 
     public void reset() {
@@ -62,16 +77,17 @@ public class TaskScheduler {
         setHasMap(null);
     }
 
-    public void setHasMap(String map) {
+    public void setHasMap(KnownMap map) {
         if (map == null) {
             hasMap = false;
-            EMCEssentials.instance().currentMap = KnownMap.AURORA;
+            //EMCEssentials.instance().currentMap = KnownMap.AURORA;
 
             stop();
             Messaging.sendDebugMessage("Player not found on any map!");
         } else {
             hasMap = true;
-
+            EMCEssentials.instance().currentMap = map;
+            
             start();
             Messaging.sendDebugMessage("Player found on: " + map);
         }

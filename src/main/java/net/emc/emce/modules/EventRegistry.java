@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
 
 public class EventRegistry {
+    static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    
     public static void RegisterCommands(EMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
         // Register client-sided commands.
         //new InfoCommands(instance).register(dispatcher);
@@ -69,20 +71,20 @@ public class EventRegistry {
             OverlayRenderer.RenderAllOverlays(drawCtx);
         });
     }
-
-    static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    
     public static void RegisterConnection(EMCEssentials instance) {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             // Update the server name to the one we just joined.
             ModUtils.setServerName(ModUtils.currentServer());
 
-            // Allow some time for the map to update.
+            // Allow some time for the OAPI to update. Fires once every time we join.
             exec.schedule(() -> {
-                //#region Detect client map (if on emc)
-                String curMap = getClientMap();
-                if (curMap == null) return; // Don't do anything if not on EMC.
-
+                //#region Detect which map client is on, if we are on EMC.
+                String clientMapName = getClientMap();
+                if (clientMapName == null) return; // Not on EMC.
+                
                 System.out.println("EMCE > New game session detected.");
+                Messaging.sendDebugMessage("New game session detected.");
                 //#endregion
 
                 //#region Run regardless of map
@@ -96,16 +98,16 @@ public class EventRegistry {
                 RegisterHud();
                 //#endregion
 
-                if (!isMapQueue(curMap)) instance.scheduler().initMap();
+                if (!isMapQueue(clientMapName)) instance.scheduler().initMap();
                 else instance.scheduler().reset();
-            }, 5, TimeUnit.SECONDS);
+            }, 3, TimeUnit.SECONDS);
         });
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             System.out.println("EMCE > Disconnected.");
 
             ModUtils.setServerName(null);
-            EMCEssentials.instance().scheduler().reset();
+            instance.scheduler().reset();
         });
     }
 

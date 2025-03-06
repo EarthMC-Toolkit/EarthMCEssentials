@@ -17,25 +17,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MinecraftClientMixin {
     @Inject(at = @At("TAIL"), method="<init>")
     private void onInit(RunArgs args, CallbackInfo ci) {
-        String clientName = args.network.session.getUsername();
-        JsonElement apiPlayer = OAPIV3.getPlayer(EMCEssentials.instance().currentMap, clientName);
-
-        if (apiPlayer != null) {
-            JsonObject clientPlayer = apiPlayer.getAsJsonObject();
-            EMCEssentials.instance().setClientPlayer(clientPlayer);
-            
-            JsonObject playerObj = new JsonObject();
-            playerObj.addProperty("name", clientPlayer.get("name").getAsString());
-            playerObj.addProperty("uuid", clientPlayer.get("uuid").getAsString());
-            playerObj.add("town", clientPlayer.getAsJsonObject("town").get("name"));
-            playerObj.addProperty("balance", clientPlayer.getAsJsonObject("stats").get("balance").getAsFloat());
-            
-            System.out.println("EMCE > [onInit] Initialized clientPlayer. Condensed representation:");
-            System.out.println(GsonUtil.serialize(playerObj));
-
-            return;
-        }
-
-        System.err.println("EMCE > Could not find player by client name: " + clientName);
+//        String clientName = args.network.session.getUsername();
+//        JsonElement apiPlayer = OAPIV3.getPlayer(EMCEssentials.instance().currentMap, clientName);
+//
+//        if (apiPlayer != null) {
+//            JsonObject clientPlayer = apiPlayer.getAsJsonObject();
+//            EMCEssentials.instance().setClientPlayer(clientPlayer);
+//
+//            JsonObject condensed = new JsonObject();
+//            condensed.addProperty("name", clientPlayer.get("name").getAsString());
+//            condensed.addProperty("uuid", clientPlayer.get("uuid").getAsString());
+//            condensed.add("town", clientPlayer.getAsJsonObject("town").get("name"));
+//            condensed.addProperty("balance", clientPlayer.getAsJsonObject("stats").get("balance").getAsFloat());
+//
+//            System.out.println("EMCE > [onInit] Initialized clientPlayer. Condensed representation:");
+//            System.out.println(GsonUtil.serialize(condensed));
+//
+//            return;
+//        }
+//
+//        System.err.println("EMCE > Could not find player by client name: " + clientName);
     }
 }
