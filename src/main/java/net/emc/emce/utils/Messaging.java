@@ -17,7 +17,7 @@ public class Messaging {
     //#region Helper Methods
     @Contract("_, _, _ -> new")
     public static @NotNull Component create(String key, NamedTextColor keyColour, Component... args) {
-        return translatable().key(key).color(keyColour).args(args).build();
+        return translatable().key(key).color(keyColour).arguments(args).build();
     }
 
     static Audience getAudience() {
@@ -74,13 +74,14 @@ public class Messaging {
             EMCEssentials.logger().info(message);
         }
     }
-
+    
     public static void sendDebugMessage(String message, Exception exception) {
         if (EMCEssentials.instance().debugEnabled()) {
             sendDebugMessage(message);
             sendDebugMessage(exception.getMessage());
-
-            exception.printStackTrace();
+            
+            // TODO: Replace with something else?
+            exception.printStackTrace(System.err);
         }
     }
     //#endregion
