@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import net.emc.emce.utils.OAPIV3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,31 +18,33 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-
 import io.github.emcw.EMCWrapper;
 import io.github.emcw.KnownMap;
-
 import io.github.emcw.Squaremap;
 import io.github.emcw.squaremap.entities.SquaremapResident;
 import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
 
+import net.emc.emce.utils.OAPIV3;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.EventRegistry;
 import net.emc.emce.modules.OverlayRenderer;
 import net.emc.emce.modules.TaskScheduler;
 import net.emc.emce.utils.Messaging;
-import net.fabricmc.api.ModInitializer;
+
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+
 @SuppressWarnings("LombokGetterMayBeUsed")
-public class EMCEssentials implements ModInitializer {
+public class EMCEssentials implements ClientModInitializer {
     @Accessors(fluent = true)
     @Getter private static EMCEssentials instance;
     
@@ -68,7 +69,7 @@ public class EMCEssentials implements ModInitializer {
     private boolean debugModeEnabled = false;
 
     @Override
-    public void onInitialize() {
+    public void onInitializeClient() {
         instance = this;
 
         AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
@@ -155,15 +156,19 @@ public class EMCEssentials implements ModInitializer {
         return townlessNames;
     }
     
+    /**
+     * This method fetches townless players and updates the value of {@link #townlessNames} if the data is valid.
+     * It will then subsequently update the info and state of the townless overlay automatically by
+     * calling the appropriate methods via {@link OverlayRenderer}.
+     */
     public void updateTownless() {
         setTownless(fetchTownless());
     }
     
-    public void setTownless(@NotNull Map<String, SquaremapOnlinePlayer> map) {
+    void setTownless(@NotNull Map<String, SquaremapOnlinePlayer> map) {
         // Make sure there is data to add.
         if (map.isEmpty()) return;
 
-        townlessNames.clear();
         townlessNames = map.keySet();
 
         OverlayRenderer.SetTownless(townlessNames);

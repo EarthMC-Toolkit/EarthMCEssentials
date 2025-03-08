@@ -30,6 +30,7 @@ public class CustomAPI {
         });
     }
     
+    @SuppressWarnings("all")
     public static @NotNull String getRoute(@NotNull APIRoute routeType) {
         String route;
         

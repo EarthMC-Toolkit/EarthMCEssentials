@@ -22,8 +22,6 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static net.emc.emce.utils.ModUtils.isConnectedToEMC;
-
 public class EventRegistry {
     static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     
@@ -91,7 +89,6 @@ public class EventRegistry {
                 instance.setShouldRender(instance.config().general.enableMod);
                 instance.setDebugEnabled(instance.config().general.debugLog);
 
-                //fetchEndpoints(); // TODO: What is this even here for and do we still need it?
                 OverlayRenderer.Init();
 
                 RegisterScreen();
@@ -112,7 +109,7 @@ public class EventRegistry {
     }
 
     private static @Nullable String getClientMap() {
-        if (!isConnectedToEMC()) return null;
+        if (!ModUtils.isConnectedToEMC()) return null;
 
         if (EMCEssentials.instance().clientOnlineInSquaremap(KnownMap.AURORA)) {
             return KnownMap.AURORA.getName();

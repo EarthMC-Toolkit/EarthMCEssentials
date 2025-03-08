@@ -3,7 +3,7 @@ package net.emc.emce.modules;
 import io.github.emcw.KnownMap;
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
-import net.emc.emce.caches.Cache;
+import net.emc.emce.caches.SimpleCache;
 import net.emc.emce.config.ModConfig;
 
 import net.emc.emce.utils.Messaging;
@@ -18,7 +18,7 @@ public class TaskScheduler {
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
     public boolean hasMap = false;
 
-    private static final List<Cache<?>> CACHES = List.of(AllianceDataCache.INSTANCE);
+    private static final List<SimpleCache<?>> CACHES = List.of(AllianceDataCache.INSTANCE);
     private ScheduledExecutorService service;
 
     public void start() {
@@ -123,7 +123,7 @@ public class TaskScheduler {
         service.scheduleAtFixedRate(() -> {
             if (!cacheCheckRunning) return;
 
-            for (Cache<?> cache : CACHES) {
+            for (SimpleCache<?> cache : CACHES) {
                 if (cache.cacheNeedsUpdate()) {
                     cache.clearCache();
                 }

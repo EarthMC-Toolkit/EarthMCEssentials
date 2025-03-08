@@ -3,7 +3,7 @@ package net.emc.emce.caches;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class Cache<T> {
+public abstract class SimpleCache<T> {
     final int CACHE_SECONDS = 600;
     private Instant lastUpdate = Instant.now();
     public boolean updating = false;

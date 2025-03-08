@@ -16,7 +16,7 @@
   "icon": "assets/emce/icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [
+    "client": [
       "net.emc.emce.EMCEssentials"
     ],
     "modmenu": [

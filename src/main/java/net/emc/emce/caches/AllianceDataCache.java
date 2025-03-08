@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class AllianceDataCache extends Cache<Map<String, JsonObject>> {
+public class AllianceDataCache extends SimpleCache<Map<String, JsonObject>> {
     public static final AllianceDataCache INSTANCE = new AllianceDataCache();
 
     @Override

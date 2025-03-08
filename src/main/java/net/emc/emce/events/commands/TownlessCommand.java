@@ -1,7 +1,7 @@
 package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
+
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.modules.OverlayRenderer;
 
@@ -14,16 +14,15 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 
+import java.util.Set;
 import java.util.HashSet;
 
-import java.util.Map;
-import java.util.Set;
-
+@SuppressWarnings("SameParameterValue")
 public record TownlessCommand(EMCEssentials instance) {
     static NamedTextColor townlessTextColour;
-
-    boolean lengthLimited(String str, int length) { return str.length() >= length; }
+    
     boolean lengthLimited(String str) { return lengthLimited(str, 256); }
+    boolean lengthLimited(String str, int length) { return str.length() >= length; }
 
     String inviteStr(StringBuilder str) { return inviteStr(str.toString()); }
     String inviteStr(String str) { return inviteStr(str, false); }
@@ -99,9 +98,7 @@ public record TownlessCommand(EMCEssentials instance) {
     }
     
     public int execRefresh() {
-        Map<String, SquaremapOnlinePlayer> townless = instance.getCurrentMap().Players.getByResidency(false);
-        
-        instance.setTownless(townless);
+        instance.updateTownless();
         Messaging.sendPrefixed("msg_townless_refresh");
         
         return 1;
