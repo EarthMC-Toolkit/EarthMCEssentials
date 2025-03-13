@@ -25,54 +25,61 @@ import static net.emc.emce.EMCEssentials.squaremapPlayerToResident;
 import static net.emc.emce.modules.OverlayRenderer.distFromClientPlayer;
 
 public record NearbyCommand(EMCEssentials instance) {
-
     public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(ClientCommandManager.literal("nearby").executes(c -> {
-            ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player == null) return -1;
-
-            ModConfig.Nearby nearbyConfig = instance.config().nearby;
-
-            NamedTextColor headingColour = nearbyConfig.headingTextColour.named();
-            NamedTextColor textColour = nearbyConfig.playerTextColour.named();
-
-            Messaging.send(Component.text("text_nearby_header", headingColour));
-
-            Map<String, SquaremapOnlinePlayer> nearby = instance.getNearbyPlayers();
-
-            for (SquaremapOnlinePlayer curOp : nearby.values()) {
-                Integer x = curOp.getLocation().getX();
-                Integer z = curOp.getLocation().getZ();
-                if (x == null || z == null) continue;
-
-                int distance = distFromClientPlayer(x, z);
-                Component prefix = Component.empty();
-
-                if (nearbyConfig.showRank) {
-                    SquaremapResident res = squaremapPlayerToResident(instance.getCurrentMap(), curOp);
-                    if (res != null) {
-                        String rankText = String.format("(%s) ", res.getRank());
-                        prefix = Component.text(rankText);
-                    } else {
-                        prefix = Translation.of("text_nearby_rank_townless");
-                    }
+        var nearbyCmd = ClientCommandManager.literal("nearby").executes(ctx -> execNearby())
+            .then(ClientCommandManager.literal("refresh").executes(c -> execNearbyRefresh()))
+            .then(ClientCommandManager.literal("clear").executes(c -> execNearbyClear()));
+        
+        dispatcher.register(nearbyCmd);
+    }
+    
+    public int execNearby() {
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player == null) return -1;
+        
+        ModConfig.Nearby nearbyConfig = instance.config().nearby;
+        NamedTextColor headingColour = nearbyConfig.headingTextColour.named();
+        NamedTextColor textColour = nearbyConfig.playerTextColour.named();
+        
+        Map<String, SquaremapOnlinePlayer> nearby = instance.getNearbyPlayers();
+        Messaging.send(Component.text("text_nearby_header", headingColour));
+        
+        for (SquaremapOnlinePlayer curOp : nearby.values()) {
+            Integer x = curOp.getLocation().getX();
+            Integer z = curOp.getLocation().getZ();
+            if (x == null || z == null) continue;
+            
+            int distance = distFromClientPlayer(x, z);
+            Component prefix = Component.empty();
+            
+            if (nearbyConfig.showRank) {
+                SquaremapResident res = squaremapPlayerToResident(instance.getCurrentMap(), curOp);
+                if (res != null) {
+                    String rankText = String.format("(%s) ", res.getRank());
+                    prefix = Component.text(rankText);
+                } else {
+                    prefix = Translation.of("text_nearby_rank_townless");
                 }
-
-                String formatted = String.format("%s: %dm", curOp.getName(), distance);
-                Component comp = Component.empty().append(prefix.append(Component.text(formatted)));
-
-                Messaging.send(comp.color(textColour));
             }
             
-            return 1;
-        }).then(ClientCommandManager.literal("refresh").executes(c -> {
-            instance.updateNearbyPlayers();
-            Messaging.sendPrefixed("msg_nearby_refresh");
-            return 1;
-        })).then(ClientCommandManager.literal("clear").executes(c -> {
-            instance.setNearbyPlayers(new HashMap<>());
-            Messaging.send("msg_nearby_clear");
-            return 1;
-        })));
+            String formatted = String.format("%s: %dm", curOp.getName(), distance);
+            Component comp = Component.empty().append(prefix.append(Component.text(formatted)));
+            
+            Messaging.send(comp.color(textColour));
+        }
+        
+        return 1;
+    }
+    
+    public int execNearbyRefresh() {
+        instance.updateNearbyPlayers();
+        Messaging.sendPrefixed("msg_nearby_refresh");
+        return 1;
+    }
+    
+    public int execNearbyClear() {
+        instance.setNearbyPlayers(new HashMap<>());
+        Messaging.send("msg_nearby_clear");
+        return 1;
     }
 }

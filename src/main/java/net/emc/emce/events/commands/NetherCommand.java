@@ -13,26 +13,15 @@ import net.minecraft.client.network.ClientPlayerEntity;
 
 public class NetherCommand {
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(
-            ClientCommandManager.literal("nether")
-                .then(ClientCommandManager.argument("x", IntegerArgumentType.integer())
-                .then(ClientCommandManager.argument("z", IntegerArgumentType.integer())
-                .executes(this::execNetherArgs)
-            ).executes(c -> {
+        var netherCmd = ClientCommandManager.literal("nether").executes(ctx -> execNetherCurPos())
+            .then(ClientCommandManager.argument("x", IntegerArgumentType.integer())
+            .then(ClientCommandManager.argument("z", IntegerArgumentType.integer()).executes(this::execNetherArgs))
+            .executes(ctx -> {
                 Messaging.send("msg_nether_err_args");
                 return 1;
-            })).executes(c -> execNetherCurPos())
-        );
-    }
-    
-    // Use the X and Z arguments given by the user when running the command.
-    public int execNetherArgs(CommandContext<FabricClientCommandSource> ctx) {
-        int x = IntegerArgumentType.getInteger(ctx, "x");
-        int z = IntegerArgumentType.getInteger(ctx, "z");
+            }));
         
-        Messaging.send(Translation.of("msg_nether_success", x/8, z/8));
-        
-        return 1;
+        dispatcher.register(netherCmd);
     }
     
     // Uses the players current position when converting to nether coords.
@@ -48,6 +37,16 @@ public class NetherCommand {
             player.getBlockX()/8,
             player.getBlockZ()/8
         ));
+        
+        return 1;
+    }
+    
+    // Use the X and Z arguments given by the user when running the command.
+    public int execNetherArgs(CommandContext<FabricClientCommandSource> ctx) {
+        int x = IntegerArgumentType.getInteger(ctx, "x");
+        int z = IntegerArgumentType.getInteger(ctx, "z");
+        
+        Messaging.send(Translation.of("msg_nether_success", x/8, z/8));
         
         return 1;
     }

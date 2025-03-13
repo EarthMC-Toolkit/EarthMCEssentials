@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
+import com.mojang.brigadier.context.CommandContext;
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.utils.Messaging;
@@ -24,27 +25,36 @@ import net.kyori.adventure.text.format.TextDecoration;
 import java.util.Locale;
 
 public record AllianceCommand(EMCEssentials instance) {
-
     public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(ClientCommandManager.literal("alliance").then(
-            ClientCommandManager.argument("allianceName", StringArgumentType.string()).executes(c -> {
-                String allianceName = StringArgumentType.getString(c, "allianceName");
-                NamedTextColor colour = instance.config().commands.allianceInfoTextColour.named();
-
-                // Implement data cache
-                AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
-                    JsonObject allianceObject = alliances.get(allianceName.toLowerCase(Locale.ROOT));
-
-                    if (allianceObject == null) {
-                        Component arg = Component.text(allianceName).color(colour);
-                        Messaging.send(Messaging.create("text_alliance_err", NamedTextColor.RED, arg));
-                    }
-                    else sendAllianceInfo(allianceObject, colour);
-                });
-
-                return 1;
-            })
-        ));
+        var allianceCmd = ClientCommandManager.literal("alliance")
+            .then(ClientCommandManager.literal("list").executes(ctx -> execAllianceList()))
+            .then(ClientCommandManager.argument("allianceName", StringArgumentType.string())
+                .executes(this::execAllianceNameArg)
+            );
+        
+        dispatcher.register(allianceCmd);
+    }
+    
+    public int execAllianceList() {
+        return 1;
+    }
+    
+    public int execAllianceNameArg(CommandContext<FabricClientCommandSource> ctx) {
+        String allianceName = StringArgumentType.getString(ctx, "allianceName");
+        NamedTextColor colour = instance.config().commands.allianceInfoTextColour.named();
+        
+        // Implement data cache
+        AllianceDataCache.INSTANCE.getCache().thenAccept(alliances -> {
+            JsonObject allianceObject = alliances.get(allianceName.toLowerCase(Locale.ROOT));
+            
+            if (allianceObject == null) {
+                Component arg = Component.text(allianceName).color(colour);
+                Messaging.send(Messaging.create("text_alliance_err", NamedTextColor.RED, arg));
+            }
+            else sendAllianceInfo(allianceObject, colour);
+        });
+        
+        return 1;
     }
 
     private void sendAllianceInfo(JsonObject allianceObj, NamedTextColor colour) {
