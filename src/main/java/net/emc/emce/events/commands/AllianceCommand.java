@@ -64,11 +64,13 @@ public record AllianceCommand(EMCEssentials instance) {
         return Component.translatable(langKey, Component.text(formatElement(obj.get(key)))).color(color);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private Component createText(String langKey, JsonObject obj, String key, TextColor color, String option) {
         return Component.translatable(langKey, Component.text(formatElement(obj.get(key))),
                Component.text(obj.get(option).getAsString())).color(color);
     }
-
+    
+    @SuppressWarnings("SameParameterValue")
     private Component createText(String langKey, JsonObject obj, String key, TextColor color, boolean isLink) {
         if (!isLink) return createText(langKey, obj, key, color);
 

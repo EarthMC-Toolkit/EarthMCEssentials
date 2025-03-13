@@ -76,6 +76,7 @@ processResources {
 	// 	"Cannot resolve resource filtering of MatchingCopyAction.
 	// 	IDEA may fail to build project. Consider using delegated build (enabled by default)."
 	filesMatching("fabric.mod.json") {
+		// Keeps the "version" property in `fabric.mod.json` file up-to-date with `gradle.properties`.
 		expand("version": project.version)
 	}
 }

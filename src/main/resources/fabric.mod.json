@@ -4,15 +4,13 @@
   "version": "${version}",
   "name": "EarthMCEssentials",
   "description": "Enriches your EarthMC experience by adding useful info & commands.",
-  "authors": [
-    "Owen3H"
-  ],
+  "authors": ["Owen3H"],
+  "license": "GNU LGPL 3.0",
   "contact": {
     "homepage": "https://github.com/EarthMC-Toolkit/EarthMCEssentials",
     "issues": "https://github.com/EarthMC-Toolkit/EarthMCEssentials/issues",
     "discord": "https://discord.gg/AVtgkcRgFs"
   },
-  "license": "CC BY-NC 4.0",
   "icon": "assets/emce/icon.png",
   "environment": "client",
   "entrypoints": {
