@@ -70,15 +70,10 @@ public class EventRegistry {
     }
 
     public static void RegisterHud() {
-        // TODO: HudRenderCallback was deprecated in favour of events.
-        // We can maybe use HudLayerRegistrationCallback instead - not exactly sure how yet.
-        //
-        // Relevant: https://github.com/FabricMC/fabric/pull/4119
+        // We are using the new hud rendering method to put the overlay info before the vanilla chat layer,
+        // though this is experimental and we could just go back to simple HudRenderCallback if need be.
         HudLayerRegistrationCallback.EVENT.register(layeredDrawer ->
-            layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, INFO_OVERLAY_LAYER, OverlayRenderer::RenderAllOverlays)
-            
-            // Renders every overlay (townless, nearby etc) if allowed.
-            //OverlayRenderer.RenderAllOverlays(drawCtx);
+            layeredDrawer.attachLayerBefore(IdentifiedLayer.CHAT, INFO_OVERLAY_LAYER, OverlayRenderer::RenderAllOverlays)
         );
     }
     
@@ -123,8 +118,9 @@ public class EventRegistry {
     private static @Nullable String getClientMap() {
         if (!ModUtils.isConnectedToEMC()) return null;
 
-        if (EMCEssentials.instance().clientOnlineInSquaremap(KnownMap.AURORA)) {
-            return KnownMap.AURORA.getName();
+        for (KnownMap map : KnownMap.values()) {
+            if (!EMCEssentials.instance().clientOnlineInSquaremap(map)) continue;
+            return map.getName();
         }
 
         return "queue";
