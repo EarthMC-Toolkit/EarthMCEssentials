@@ -45,7 +45,7 @@ public class TaskScheduler {
 
     public void initMap() {
         service = Executors.newScheduledThreadPool(2);
-        service.scheduleAtFixedRate(this::checkMap, 0, 10, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(this::checkMap, 0, 5, TimeUnit.SECONDS);
     }
     
     /**

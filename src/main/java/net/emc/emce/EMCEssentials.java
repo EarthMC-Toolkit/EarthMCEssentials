@@ -45,20 +45,20 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class EMCEssentials implements ClientModInitializer {
-    @Accessors(fluent = true)
-    @Getter private static EMCEssentials instance;
+    public static final String MOD_ID = EMCEssentials.class.getName();
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     
-    @Accessors(fluent = true)
-    @Getter private static final Logger logger = LoggerFactory.getLogger(EMCEssentials.class);
+    @Getter @Accessors(fluent = true)
+    private static EMCEssentials instance;
     
-    @Accessors(fluent = true)
-    @Getter private final TaskScheduler scheduler = new TaskScheduler();
+    @Getter @Accessors(fluent = true)
+    private final TaskScheduler scheduler = new TaskScheduler();
     
     public KnownMap currentMap = KnownMap.AURORA;
     public static EMCWrapper emcw = new EMCWrapper()
         .registerSquaremap(KnownMap.AURORA);
 
-    @Getter @Setter private JsonObject clientPlayer = null; // From the OAPI
+    //@Getter @Setter private JsonObject clientPlayer = null; // From the OAPI
     @Setter private boolean shouldRender = false;
 
     private Set<String> townlessNames = new HashSet<>();

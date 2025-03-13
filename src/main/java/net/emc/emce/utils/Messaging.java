@@ -71,7 +71,7 @@ public class Messaging {
     public static void sendDebugMessage(String message) {
         if (EMCEssentials.instance().debugEnabled()) {
             send(translatable("debug_format", text(message).color(NamedTextColor.GRAY)));
-            EMCEssentials.logger().info(message);
+            EMCEssentials.LOGGER.info(message);
         }
     }
     

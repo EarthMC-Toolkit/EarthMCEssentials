@@ -1,29 +1,39 @@
 package net.emc.emce.modules;
 
 import com.mojang.brigadier.CommandDispatcher;
+
 import io.github.emcw.KnownMap;
 import me.shedaniel.autoconfig.AutoConfig;
+
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.events.commands.*;
 import net.emc.emce.events.screen.ScreenInit;
 import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
+
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.Identifier;
 
 import java.util.Objects;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.jetbrains.annotations.Nullable;
+
 public class EventRegistry {
     static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    
+    private static final Identifier INFO_OVERLAY_LAYER = Identifier.of(EMCEssentials.MOD_ID, "info-overlay-layer");
     
     public static void RegisterCommands(EMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
         // Register client-sided commands.
@@ -64,10 +74,12 @@ public class EventRegistry {
         // We can maybe use HudLayerRegistrationCallback instead - not exactly sure how yet.
         //
         // Relevant: https://github.com/FabricMC/fabric/pull/4119
-        HudRenderCallback.EVENT.register((drawCtx, renderTickCounter) -> {
+        HudLayerRegistrationCallback.EVENT.register(layeredDrawer ->
+            layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, INFO_OVERLAY_LAYER, OverlayRenderer::RenderAllOverlays)
+            
             // Renders every overlay (townless, nearby etc) if allowed.
-            OverlayRenderer.RenderAllOverlays(drawCtx);
-        });
+            //OverlayRenderer.RenderAllOverlays(drawCtx);
+        );
     }
     
     public static void RegisterConnection(EMCEssentials instance) {

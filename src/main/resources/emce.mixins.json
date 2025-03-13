@@ -2,9 +2,7 @@
   "required": true,
   "package": "net.emc.emce.mixins",
   "compatibilityLevel": "JAVA_21",
-  "client": [
-    "MinecraftClientMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

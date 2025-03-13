@@ -13,6 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +75,7 @@ public class OverlayRenderer {
         if (updateNearby) UpdateNearbyState();
     }
 
-    public static void RenderAllOverlays(DrawContext ctx) {
+    public static void RenderAllOverlays(DrawContext ctx, RenderTickCounter tickCounter) {
         if (!EMCEssentials.instance().shouldRender()) return;
 
         drawCtx = ctx;

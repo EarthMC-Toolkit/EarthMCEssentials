@@ -22,7 +22,7 @@ public class AllianceDataCache extends SimpleCache<Map<String, JsonObject>> {
                 this.updating = true;
                 this.cachedData = new HashMap<>();
 
-                JsonArray alliances = CustomAPI.getAlliances().join();
+                JsonArray alliances = CustomAPI.getAlliances();
                 for (JsonElement alliance : alliances) {
                     JsonObject object = alliance.getAsJsonObject();
                     this.cachedData.put(object.get("allianceName").getAsString().toLowerCase(Locale.ROOT), object);
