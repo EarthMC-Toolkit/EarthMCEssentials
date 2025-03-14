@@ -64,12 +64,12 @@ public class EventRegistry {
         }
     }
     
-    public static void RegisterScreen() {
+    public static void RegisterScreenEvents() {
         ScreenEvents.BEFORE_INIT.register(ScreenInit::before);
         ScreenEvents.AFTER_INIT.register(ScreenInit::after);
     }
 
-    public static void RegisterHud() {
+    public static void RegisterHudEvents() {
         // We are using the new hud rendering method to put the overlay info before the vanilla chat layer,
         // though this is experimental and we could just go back to simple HudRenderCallback if need be.
         HudLayerRegistrationCallback.EVENT.register(layeredDrawer ->
@@ -93,13 +93,10 @@ public class EventRegistry {
                 //#endregion
 
                 //#region Run regardless of map
-                instance.setShouldRender(instance.config().general.enableMod);
-                instance.setDebugEnabled(instance.config().general.debugLog);
-
-                OverlayRenderer.Init();
-
-                RegisterScreen();
-                RegisterHud();
+                ScreenInit.Refresh(); // First refresh (update overlay pos, offsets, shouldRender & debug)
+                
+                RegisterScreenEvents(); // Events for screen related things - like refreshing on config exit.
+                RegisterHudEvents(); // Events for HUD rendering - like overlays that draw text to the screen.
                 //#endregion
 
                 if (!isMapQueue(clientMapName)) instance.scheduler().initMap();

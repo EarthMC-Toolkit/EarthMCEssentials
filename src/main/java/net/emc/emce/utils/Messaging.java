@@ -15,6 +15,11 @@ import static net.minecraft.client.MinecraftClient.getInstance;
 
 public class Messaging {
     //#region Helper Methods
+    @Contract("_, _, -> new")
+    public static @NotNull Component create(String key, NamedTextColor keyColour) {
+        return translatable().key(key).color(keyColour).build();
+    }
+    
     @Contract("_, _, _ -> new")
     public static @NotNull Component create(String key, NamedTextColor keyColour, Component... args) {
         return translatable().key(key).color(keyColour).arguments(args).build();

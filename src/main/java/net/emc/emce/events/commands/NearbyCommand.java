@@ -13,6 +13,7 @@ import net.emc.emce.utils.Messaging;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -25,6 +26,8 @@ import static net.emc.emce.EMCEssentials.squaremapPlayerToResident;
 import static net.emc.emce.modules.OverlayRenderer.distFromClientPlayer;
 
 public record NearbyCommand(EMCEssentials instance) {
+    TextComponent whiteText(int size) { return Component.text(size).color(NamedTextColor.WHITE); }
+    
     public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
         var nearbyCmd = ClientCommandManager.literal("nearby").executes(ctx -> execNearby())
             .then(ClientCommandManager.literal("refresh").executes(c -> execNearbyRefresh()))
@@ -42,7 +45,12 @@ public record NearbyCommand(EMCEssentials instance) {
         NamedTextColor textColour = nearbyConfig.playerTextColour.named();
         
         Map<String, SquaremapOnlinePlayer> nearby = instance.getNearbyPlayers();
-        Messaging.send(Component.text("text_nearby_header", headingColour));
+        if (nearby.isEmpty()) {
+            instance.updateNearbyPlayers();
+        }
+        
+        int size = nearby.size();
+        Messaging.send(Messaging.create("text_nearby_header", headingColour, whiteText(size)));
         
         for (SquaremapOnlinePlayer curOp : nearby.values()) {
             Integer x = curOp.getLocation().getX();

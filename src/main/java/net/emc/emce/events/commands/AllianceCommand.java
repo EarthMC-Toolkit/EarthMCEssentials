@@ -16,6 +16,8 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -58,37 +60,39 @@ public record AllianceCommand(EMCEssentials instance) {
     }
 
     private void sendAllianceInfo(JsonObject allianceObj, NamedTextColor colour) {
-        Audience client = MinecraftClientAudiences.of().audience();
-
-        client.sendMessage(createText("text_alliance_header", allianceObj, "allianceName", colour, "rank"));
-        client.sendMessage(createText("text_alliance_leader", allianceObj, "leaderName", colour));
-        client.sendMessage(createText("text_alliance_type", allianceObj, "type", colour));
-        client.sendMessage(createText("text_shared_area", allianceObj, "area", colour));
-        client.sendMessage(createText("text_alliance_towns", allianceObj, "towns", colour));
-        client.sendMessage(createText("text_alliance_nations", allianceObj, "nations", colour));
-        client.sendMessage(createText("text_shared_residents", allianceObj, "residents", colour));
-        client.sendMessage(createText("text_alliance_discord", allianceObj, "discordInvite", colour, true));
+        Audience pAud = MinecraftClientAudiences.of().audience();
+        
+        pAud.sendMessage(createText("text_alliance_header", allianceObj, "allianceName", colour, "rank"));
+        pAud.sendMessage(createText("text_alliance_leader", allianceObj, "leaderName", colour));
+        pAud.sendMessage(createText("text_alliance_type", allianceObj, "type", colour));
+        pAud.sendMessage(createText("text_shared_area", allianceObj, "area", colour));
+        pAud.sendMessage(createText("text_alliance_towns", allianceObj, "towns", colour));
+        pAud.sendMessage(createText("text_alliance_nations", allianceObj, "nations", colour));
+        pAud.sendMessage(createText("text_shared_residents", allianceObj, "residents", colour));
+        pAud.sendMessage(createText("text_alliance_discord", allianceObj, "discordInvite", colour, true));
     }
 
-    private Component createText(String langKey, JsonObject obj, String key, TextColor color) {
+    private TranslatableComponent createText(String langKey, JsonObject obj, String key, TextColor color) {
         return Component.translatable(langKey, Component.text(formatElement(obj.get(key)))).color(color);
     }
 
     @SuppressWarnings("SameParameterValue")
-    private Component createText(String langKey, JsonObject obj, String key, TextColor color, String option) {
+    private TranslatableComponent createText(String langKey, JsonObject obj, String key, TextColor color, String option) {
         return Component.translatable(langKey, Component.text(formatElement(obj.get(key))),
                Component.text(obj.get(option).getAsString())).color(color);
     }
     
     @SuppressWarnings("SameParameterValue")
-    private Component createText(String langKey, JsonObject obj, String key, TextColor color, boolean isLink) {
+    private TranslatableComponent createText(String langKey, JsonObject obj, String key, TextColor color, boolean isLink) {
         if (!isLink) return createText(langKey, obj, key, color);
 
+        // Create style for link text.
         String text = formatElement(obj.get(key));
         Style linkStyle = Style.style(ClickEvent.openUrl(text), NamedTextColor.AQUA, TextDecoration.UNDERLINED);
-
-        Component comp = Component.translatable(langKey).color(color);
-        return comp.append(Component.text(text).style(linkStyle));
+        TextComponent textComp = Component.text(text).style(linkStyle);
+        
+        // Create new component and append text with link style.
+        return Component.translatable(langKey).color(color).append(textComp);
     }
 
     private static String formatElement(JsonElement element) {

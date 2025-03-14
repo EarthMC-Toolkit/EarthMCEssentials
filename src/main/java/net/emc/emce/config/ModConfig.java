@@ -17,8 +17,7 @@ import net.emc.emce.utils.ModUtils.State;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN;
 
-@SuppressWarnings("CanBeFinal")
-@Config(name = "emc-essentials")
+@Config(name = EMCEssentials.MOD_ID)
 @Background(value = "cloth-config2:transparent")
 public class ModConfig implements ConfigData {
     @Category("General")
@@ -52,9 +51,11 @@ public class ModConfig implements ConfigData {
     public static class Townless {
         @Comment("Toggles townless players on or off.")
         public boolean enabled = true;
+        
         @Comment("The maximum amount of players shown before wrapping.")
         @BoundedDiscrete(min = 3, max = 24)
         public int maxLength = 12; // < 1 = No limit
+        
         @Comment("Toggles the use of preset positions, uses sliders if off.")
         public boolean presetPositions = true;
 
@@ -70,6 +71,7 @@ public class ModConfig implements ConfigData {
         @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the 'Townless Players' text.")
         public Colors headingTextColour = Colors.DARK_PURPLE;
+        
         @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the townless player names.")
         public Colors playerTextColour = Colors.DARK_PURPLE;
@@ -78,8 +80,10 @@ public class ModConfig implements ConfigData {
     public static class Nearby {
         @Comment("Toggle nearby overlay on or off.")
         public boolean enabled = true;
+        
         @Comment("Toggle if players' ranks should show before their name.")
         public boolean showRank = false;
+        
         @Comment("Toggle between a preset or custom position.")
         public boolean presetPositions = true;
 
@@ -115,27 +119,27 @@ public class ModConfig implements ConfigData {
         @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the townless players text.")
         public Colors townlessTextColour = Colors.LIGHT_PURPLE;
-
-        @EnumHandler(option = DROPDOWN)
-        @Comment("The colour of the town info text.")
-        public Colors townInfoTextColour = Colors.GREEN;
-
-        @EnumHandler(option = DROPDOWN)
-        @Comment("The colour of the nation info text.")
-        public Colors nationInfoTextColour = Colors.AQUA;
-
+        
         @EnumHandler(option = DROPDOWN)
         @Comment("The colour of the alliance info text.")
-        public Colors allianceInfoTextColour = Colors.GOLD;
+        public Colors allianceInfoTextColour = Colors.DARK_AQUA;
+        
+//        @EnumHandler(option = DROPDOWN)
+//        @Comment("The colour of the town info text.")
+//        public Colors townInfoTextColour = Colors.GREEN;
+//
+//        @EnumHandler(option = DROPDOWN)
+//        @Comment("The colour of the nation info text.")
+//        public Colors nationInfoTextColour = Colors.AQUA;
     }
 
     public static class Intervals {
         @Comment("Fairly harmless on performance, can be lowered without much overhead.")
-        @BoundedDiscrete(min = 10, max = 200)
+        @BoundedDiscrete(min = 5, max = 200)
         public int townless = 30;
 
         @Comment("Small but frequent payload, if you don't rely on it much, turn it up.")
-        @BoundedDiscrete(min = 2, max = 30)
+        @BoundedDiscrete(min = 2, max = 60)
         public int nearby = 5;
     }
 

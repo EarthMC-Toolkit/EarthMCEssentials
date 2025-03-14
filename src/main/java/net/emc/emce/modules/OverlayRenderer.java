@@ -35,28 +35,22 @@ import static net.minecraft.text.Text.translatable;
 
 @SuppressWarnings("UnusedReturnValue")
 public class OverlayRenderer {
-    private static MinecraftClient client;
-    private static TextRenderer renderer;
-    private static DrawContext drawCtx;
-
-    private static ModConfig config;
-    private static State townlessState, nearbyState;
+    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static final ModConfig config = ModConfig.instance();
+    
+    private static final State townlessState = config.townless.positionState;
+    private static final State nearbyState = config.nearby.positionState;
+    
     private static List<String> townless = new CopyOnWriteArrayList<>();
-
+    
     // #FFFFFF (White)
     private static final int color = 16777215;
-
-    public static void Init() {
-        config = ModConfig.instance();
-        client = MinecraftClient.getInstance();
-        renderer = client.textRenderer;
-
-        townlessState = config.townless.positionState;
-        nearbyState = config.nearby.positionState;
-
-        UpdateStates(true, true);
+    private static DrawContext drawCtx;
+    
+    public static TextRenderer renderer() {
+        return client.textRenderer;
     }
-
+    
     public static void Clear() {
         EMCEssentials.instance().setNearbyPlayers(Map.of());
         townless = new CopyOnWriteArrayList<>();
@@ -66,6 +60,10 @@ public class OverlayRenderer {
         townless = new CopyOnWriteArrayList<>(townlessNames);
     }
 
+    public static void UpdateStates() {
+        UpdateStates(true, true);
+    }
+    
     public static void UpdateStates(boolean updateTownless, boolean updateNearby) {
         // Fail-safe
         var nearby = EMCEssentials.instance().getNearbyPlayers();
@@ -169,11 +167,11 @@ public class OverlayRenderer {
     }
 
     public static int drawWithoutShadow(Text text, int x, int y, int colour) {
-        return drawCtx.drawText(renderer, text, x, y, colour, false);
+        return drawCtx.drawText(renderer(), text, x, y, colour, false);
     }
 
     public static int drawWithShadow(Text text, int x, int y, int colour) {
-        return drawCtx.drawTextWithShadow(renderer, text, x, y, colour);
+        return drawCtx.drawTextWithShadow(renderer(), text, x, y, colour);
     }
 
     private static void RenderTownless(boolean usingPreset) {

@@ -45,7 +45,7 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class EMCEssentials implements ClientModInitializer {
-    public static final String MOD_ID = EMCEssentials.class.getName();
+    public static final String MOD_ID = "emc-essentials";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     
     @Getter @Accessors(fluent = true)
@@ -165,7 +165,7 @@ public class EMCEssentials implements ClientModInitializer {
         setTownless(fetchTownless());
     }
     
-    void setTownless(@NotNull Map<String, SquaremapOnlinePlayer> map) {
+    public void setTownless(@NotNull Map<String, SquaremapOnlinePlayer> map) {
         // Make sure there is data to add.
         if (map.isEmpty()) return;
 

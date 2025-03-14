@@ -50,10 +50,12 @@ public record TownlessCommand(EMCEssentials instance) {
     
     public int execTownless() {
         Set<String> townless = instance.getTownless();
-        int size = townless.size();
-        
-        Messaging.send(createMsg("text_townless_header", size));
-        if (size > 0) Messaging.send(Component.text(String.join(", ", townless), townlessTextColour));
+        if (townless.isEmpty()) {
+            townless = instance.getCurrentMap().Players.getByResidency(false).keySet();
+        }
+
+        Messaging.send(createMsg("text_townless_header", townless.size()));
+        Messaging.send(Component.text(String.join(", ", townless), townlessTextColour));
         
         return 1;
     }
