@@ -38,10 +38,14 @@ public class EventRegistry {
     public static void RegisterCommands(EMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
         // Register client-sided commands.
         //new InfoCommands(instance).register(dispatcher);
+        
+        new NetherCommand().register(dispatcher);
+        
         new NearbyCommand(instance).register(dispatcher);
         new TownlessCommand(instance).register(dispatcher);
+        
         new AllianceCommand(instance).register(dispatcher);
-        new NetherCommand().register(dispatcher);
+        new NewsCommand(instance).register(dispatcher);
     }
 
     public static void RegisterClientTick() {

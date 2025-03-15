@@ -16,20 +16,20 @@ public class CustomAPI {
     public static final String DOMAIN = "https://emctoolkit.vercel.app/api/";
     
     @Getter
-    public enum Route {
+    public enum EndpointType {
         ALLIANCES("/alliances"),
         NEWS("/news");
         
-        private final String endpoint;
+        private final String value;
         
-        Route(String endpoint) {
-            this.endpoint = endpoint;
+        EndpointType(String endpoint) {
+            this.value = endpoint;
         }
     }
     
     @Contract(" -> new")
     public static @NotNull JsonArray getAlliances() {
-        JsonElement alliancesRes = sendAsyncGet(Route.ALLIANCES);
+        JsonElement alliancesRes = sendAsyncGet(EndpointType.ALLIANCES);
         if (alliancesRes == null) {
             Messaging.sendDebugMessage("An error occurred fetching alliances, check the console to see the request details.");
             return new JsonArray();
@@ -40,26 +40,20 @@ public class CustomAPI {
     
     @Contract(" -> new")
     public static @NotNull JsonArray getNews() {
-        JsonElement newsRes = sendAsyncGet(Route.NEWS);
+        JsonElement newsRes = sendAsyncGet(EndpointType.NEWS);
         if (newsRes == null) {
             Messaging.sendDebugMessage("An error occurred fetching news, check the console to see the request details.");
             return new JsonArray();
         }
-        
-        JsonArray news = newsRes.getAsJsonObject().getAsJsonArray("all");
-        if (news == null) {
-            Messaging.sendDebugMessage("An error occurred fetching news, key 'all' may be missing from the object.");
-            return new JsonArray();
-        }
-        
-        return news;
+   
+        return newsRes.getAsJsonArray();
     }
     
     @SuppressWarnings("all")
-    private static @Nullable JsonElement sendAsyncGet(@NotNull Route route) throws IllegalStateException {
-        String endpoint = EMCEssentials.instance().currentMap.getName() + route.getEndpoint();
+    private static @Nullable JsonElement sendAsyncGet(@NotNull EndpointType endpoint) throws IllegalStateException {
+        String route = EMCEssentials.instance().currentMap.getName() + endpoint.getValue();
         //Messaging.sendDebugMessage("Requesting endpoint -> " + endpoint);
         
-        return JSONRequest.ASYNC.sendGet(DOMAIN + endpoint);
+        return JSONRequest.ASYNC.sendGet(DOMAIN + route);
     }
 }

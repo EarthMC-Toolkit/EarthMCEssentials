@@ -1,26 +1,43 @@
 package net.emc.emce.caches;
 
 import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
 
 public abstract class SimpleCache<T> {
-    final int CACHE_SECONDS = 600;
+    private T cachedData;
+    
+    private boolean updating = false;
     private Instant lastUpdate = Instant.now();
-    public boolean updating = false;
-    public T cachedData;
-
-    public boolean cacheNeedsUpdate() {
-        return !this.updating && this.lastUpdate.plusSeconds(CACHE_SECONDS).isBefore(Instant.now());
-    }
-
-    public void updateCache() {
-        this.lastUpdate = Instant.now();
-        this.updating = false;
-    }
-
-    public abstract CompletableFuture<T> getCache();
-
-    public void clearCache() {
+    
+    public final void clearCache() {
         this.cachedData = null;
     }
+    
+    public final boolean cacheNeedsUpdate() {
+        if (updating) return false;
+        
+        Instant diff = this.lastUpdate.plusSeconds(secondsUntilExpiry());
+        return diff.isBefore(Instant.now());
+    }
+    
+    public final T getCache() {
+        if (this.cachedData != null && !this.cacheNeedsUpdate()) {
+            return this.cachedData;
+        }
+        
+        this.updating = true;
+        
+        T data = fetchCacheData();
+        if (data == null) {
+            return this.cachedData;
+        }
+        
+        this.lastUpdate = Instant.now();
+        this.updating = false;
+        
+        this.cachedData = data;
+        return data;
+    }
+    
+    public abstract T fetchCacheData();
+    public abstract int secondsUntilExpiry();
 }

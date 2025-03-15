@@ -2,6 +2,7 @@ package net.emc.emce.events.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
 
 import io.github.emcw.squaremap.entities.SquaremapResident;
@@ -17,7 +18,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,15 +25,13 @@ import java.util.Map;
 import static net.emc.emce.EMCEssentials.squaremapPlayerToResident;
 import static net.emc.emce.modules.OverlayRenderer.distFromClientPlayer;
 
-public record NearbyCommand(EMCEssentials instance) {
+public record NearbyCommand(EMCEssentials instance) implements ICommand {
     TextComponent whiteText(int size) { return Component.text(size).color(NamedTextColor.WHITE); }
     
-    public void register(@NotNull CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        var nearbyCmd = ClientCommandManager.literal("nearby").executes(ctx -> execNearby())
+    public LiteralArgumentBuilder<FabricClientCommandSource> build() {
+        return ClientCommandManager.literal("nearby").executes(ctx -> execNearby())
             .then(ClientCommandManager.literal("refresh").executes(c -> execNearbyRefresh()))
             .then(ClientCommandManager.literal("clear").executes(c -> execNearbyClear()));
-        
-        dispatcher.register(nearbyCmd);
     }
     
     public int execNearby() {

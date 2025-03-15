@@ -1,7 +1,6 @@
 package net.emc.emce.events.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
-
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.modules.OverlayRenderer;
 
@@ -18,7 +17,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 @SuppressWarnings("SameParameterValue")
-public record TownlessCommand(EMCEssentials instance) {
+public record TownlessCommand(EMCEssentials instance) implements ICommand {
     static NamedTextColor townlessTextColour;
     
     boolean lengthLimited(String str) { return lengthLimited(str, 256); }
@@ -38,14 +37,12 @@ public record TownlessCommand(EMCEssentials instance) {
         return Messaging.create(key, getTextColour(), whiteText(size));
     }
     
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        var townlessCmd = ClientCommandManager.literal("townless").executes(c -> execTownless())
+    public LiteralArgumentBuilder<FabricClientCommandSource> build() {
+        return ClientCommandManager.literal("townless").executes(c -> execTownless())
             .then(ClientCommandManager.literal("inviteAll").executes(c -> execInviteAll()))
             .then(ClientCommandManager.literal("revokeAll").executes(c -> execRevokeAll()))
             .then(ClientCommandManager.literal("refresh").executes(c -> execRefresh()))
             .then(ClientCommandManager.literal("clear").executes(c -> execClear()));
-    
-        dispatcher.register(townlessCmd);
     }
     
     public int execTownless() {

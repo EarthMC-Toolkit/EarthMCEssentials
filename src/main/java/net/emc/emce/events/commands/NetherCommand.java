@@ -1,8 +1,8 @@
 package net.emc.emce.events.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.emc.emce.utils.Translation;
 import net.emc.emce.utils.Messaging;
@@ -11,17 +11,15 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-public class NetherCommand {
-    public void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        var netherCmd = ClientCommandManager.literal("nether").executes(ctx -> execNetherCurPos())
+public class NetherCommand implements ICommand {
+    public LiteralArgumentBuilder<FabricClientCommandSource> build() {
+        return ClientCommandManager.literal("nether").executes(ctx -> execNetherCurPos())
             .then(ClientCommandManager.argument("x", IntegerArgumentType.integer())
             .then(ClientCommandManager.argument("z", IntegerArgumentType.integer()).executes(this::execNetherArgs))
             .executes(ctx -> {
                 Messaging.send("msg_nether_err_args");
                 return 1;
             }));
-        
-        dispatcher.register(netherCmd);
     }
     
     // Uses the players current position when converting to nether coords.
