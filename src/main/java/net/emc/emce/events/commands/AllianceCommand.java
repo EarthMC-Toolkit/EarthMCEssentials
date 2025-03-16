@@ -25,12 +25,11 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.Locale;
-import java.util.Map;
 
 public record AllianceCommand(EMCEssentials instance) implements ICommand {
     public LiteralArgumentBuilder<FabricClientCommandSource> build() {
         return ClientCommandManager.literal("alliance")
-            .then(ClientCommandManager.literal("list").executes(ctx -> execAllianceList()))
+            .then(ClientCommandManager.literal("list")).executes(ctx -> execAllianceList())
             .then(ClientCommandManager.argument("allianceName", StringArgumentType.string())
                 .executes(this::execAllianceNameArg)
             );
@@ -41,15 +40,15 @@ public record AllianceCommand(EMCEssentials instance) implements ICommand {
     }
     
     public int execAllianceNameArg(CommandContext<FabricClientCommandSource> ctx) {
-        String allianceName = StringArgumentType.getString(ctx, "allianceName");
+        String nameArg = StringArgumentType.getString(ctx, "allianceName");
         NamedTextColor colour = instance.config().commands.allianceInfoTextColour.named();
-
-        Map<String, JsonObject> alliances = AllianceDataCache.INSTANCE.getCache();
-        JsonObject allianceObj = alliances.get(allianceName.toLowerCase(Locale.ROOT));
+        
+        JsonObject allianceObj = AllianceDataCache.INSTANCE.getCache()
+            .get(nameArg.toLowerCase(Locale.ROOT)); // TODO: Do we need Locale.ROOT here?
         
         if (allianceObj == null) {
-            Component arg = Component.text(allianceName).color(colour);
-            Messaging.send(Messaging.create("text_alliance_err", NamedTextColor.RED, arg));
+            Component arg = Component.text(nameArg).color(colour);
+            Messaging.createAndSend("text_alliance_err", NamedTextColor.RED, arg);
         }
         else sendAllianceInfo(allianceObj, colour);
         
@@ -57,16 +56,15 @@ public record AllianceCommand(EMCEssentials instance) implements ICommand {
     }
 
     private void sendAllianceInfo(JsonObject allianceObj, NamedTextColor colour) {
-        Audience pAud = MinecraftClientAudiences.of().audience();
-        
-        pAud.sendMessage(createText("text_alliance_header", allianceObj, "allianceName", colour, "rank"));
-        pAud.sendMessage(createText("text_alliance_leader", allianceObj, "leaderName", colour));
-        pAud.sendMessage(createText("text_alliance_type", allianceObj, "type", colour));
-        pAud.sendMessage(createText("text_shared_area", allianceObj, "area", colour));
-        pAud.sendMessage(createText("text_alliance_towns", allianceObj, "towns", colour));
-        pAud.sendMessage(createText("text_alliance_nations", allianceObj, "nations", colour));
-        pAud.sendMessage(createText("text_shared_residents", allianceObj, "residents", colour));
-        pAud.sendMessage(createText("text_alliance_discord", allianceObj, "discordInvite", colour, true));
+        Audience clientAud = MinecraftClientAudiences.of().audience();
+        clientAud.sendMessage(createText("text_alliance_header", allianceObj, "allianceName", colour, "rank"));
+        clientAud.sendMessage(createText("text_alliance_leader", allianceObj, "leaderName", colour));
+        clientAud.sendMessage(createText("text_alliance_type", allianceObj, "type", colour));
+        clientAud.sendMessage(createText("text_shared_area", allianceObj, "area", colour));
+        clientAud.sendMessage(createText("text_alliance_towns", allianceObj, "towns", colour));
+        clientAud.sendMessage(createText("text_alliance_nations", allianceObj, "nations", colour));
+        clientAud.sendMessage(createText("text_shared_residents", allianceObj, "residents", colour));
+        clientAud.sendMessage(createText("text_alliance_discord", allianceObj, "discordInvite", colour, true));
     }
 
     private TranslatableComponent createText(String langKey, JsonObject obj, String key, TextColor color) {

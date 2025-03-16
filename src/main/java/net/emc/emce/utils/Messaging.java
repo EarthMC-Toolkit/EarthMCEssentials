@@ -13,8 +13,13 @@ import static net.kyori.adventure.text.Component.*;
 
 import static net.minecraft.client.MinecraftClient.getInstance;
 
+@SuppressWarnings("unused")
 public class Messaging {
     //#region Helper Methods
+    static Audience clientAudience() {
+        return MinecraftClientAudiences.of().audience();
+    }
+    
     @Contract("_, _, -> new")
     public static @NotNull Component create(String key, NamedTextColor keyColour) {
         return translatable().key(key).color(keyColour).build();
@@ -24,9 +29,13 @@ public class Messaging {
     public static @NotNull Component create(String key, NamedTextColor keyColour, Component... args) {
         return translatable().key(key).color(keyColour).arguments(args).build();
     }
-
-    static Audience getAudience() {
-        return MinecraftClientAudiences.of().audience();
+    
+    public void createAndSend(String key, NamedTextColor keyColour) {
+        send(create(key, keyColour));
+    }
+    
+    public static void createAndSend(String key, NamedTextColor keyColour, Component... args) {
+        send(create(key, keyColour, args));
     }
     //#endregion
 
@@ -41,7 +50,7 @@ public class Messaging {
     }
 
     public static void send(Component text) {
-        getAudience().sendMessage(text);
+        clientAudience().sendMessage(text);
     }
     //#endregion
 
@@ -57,11 +66,11 @@ public class Messaging {
 
     //#region Action Bar
     public static void sendActionBar(Component text) {
-        getAudience().sendActionBar(text);
+        clientAudience().sendActionBar(text);
     }
 
     public static void sendPrefixedActionBar(Component text) {
-        getAudience().sendActionBar(empty().append(prefix()).append(text));
+        clientAudience().sendActionBar(empty().append(prefix()).append(text));
     }
     //#endregion
 

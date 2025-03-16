@@ -38,6 +38,6 @@ public abstract class SimpleCache<T> {
         return data;
     }
     
-    public abstract T fetchCacheData();
-    public abstract int secondsUntilExpiry();
+    protected abstract T fetchCacheData();
+    protected abstract int secondsUntilExpiry();
 }

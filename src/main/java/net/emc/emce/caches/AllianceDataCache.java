@@ -20,7 +20,7 @@ public class AllianceDataCache extends SimpleCache<Map<String, JsonObject>> {
     }
     
     @Override
-    public Map<String, JsonObject> fetchCacheData() {
+    protected Map<String, JsonObject> fetchCacheData() {
         JsonArray alliances = CustomAPI.getAlliances();
         if (alliances.isEmpty()) {
             return null; // No alliances, no update. Continue using stale data.
