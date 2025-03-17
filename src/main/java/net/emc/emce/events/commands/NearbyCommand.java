@@ -30,8 +30,8 @@ public record NearbyCommand(EMCEssentials instance) implements ICommand {
     
     public LiteralArgumentBuilder<FabricClientCommandSource> build() {
         return ClientCommandManager.literal("nearby").executes(ctx -> execNearby())
-            .then(ClientCommandManager.literal("refresh").executes(c -> execNearbyRefresh()))
-            .then(ClientCommandManager.literal("clear").executes(c -> execNearbyClear()));
+            .then(ClientCommandManager.literal("refresh").executes(ctx -> execNearbyRefresh()))
+            .then(ClientCommandManager.literal("clear").executes(ctx -> execNearbyClear()));
     }
     
     public int execNearby() {

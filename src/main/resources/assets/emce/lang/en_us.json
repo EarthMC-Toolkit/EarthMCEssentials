@@ -43,6 +43,9 @@
     "text_nationinfo_err": "§cNation %s §cis not registered.",
     "text_nationinfo_not_registered": "§cYour nation is not registered.",
 
+    "text_news_header": "\nLast %d headline(s):",
+    "text_news_headline": "(%s) %s %s",
+
     "text_alliance_header": "Alliance Information - %s - #%s",
     "text_alliance_leader": "Leader(s): %s",
     "text_alliance_type": "Type: %s",

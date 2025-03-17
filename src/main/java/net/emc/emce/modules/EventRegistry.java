@@ -36,16 +36,16 @@ public class EventRegistry {
     private static final Identifier INFO_OVERLAY_LAYER = Identifier.of(EMCEssentials.MOD_ID, "info-overlay-layer");
     
     public static void RegisterCommands(EMCEssentials instance, CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        // Register client-sided commands.
-        //new InfoCommands(instance).register(dispatcher);
+        // Overlay
+        new NearbyCommand(instance).registerSelf(dispatcher);
+        new TownlessCommand(instance).registerSelf(dispatcher);
         
-        new NetherCommand().register(dispatcher);
+        // Custom API
+        new AllianceCommand(instance).registerSelf(dispatcher);
+        new NewsCommand(instance).registerSelf(dispatcher);
         
-        new NearbyCommand(instance).register(dispatcher);
-        new TownlessCommand(instance).register(dispatcher);
-        
-        new AllianceCommand(instance).register(dispatcher);
-        new NewsCommand(instance).register(dispatcher);
+        // Util
+        new NetherCommand().registerSelf(dispatcher);
     }
 
     public static void RegisterClientTick() {

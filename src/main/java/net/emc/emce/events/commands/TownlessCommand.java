@@ -38,11 +38,11 @@ public record TownlessCommand(EMCEssentials instance) implements ICommand {
     }
     
     public LiteralArgumentBuilder<FabricClientCommandSource> build() {
-        return ClientCommandManager.literal("townless").executes(c -> execTownless())
-            .then(ClientCommandManager.literal("inviteAll").executes(c -> execInviteAll()))
-            .then(ClientCommandManager.literal("revokeAll").executes(c -> execRevokeAll()))
-            .then(ClientCommandManager.literal("refresh").executes(c -> execRefresh()))
-            .then(ClientCommandManager.literal("clear").executes(c -> execClear()));
+        return ClientCommandManager.literal("townless").executes(ctx -> execTownless())
+            .then(ClientCommandManager.literal("inviteAll").executes(ctx -> execInviteAll()))
+            .then(ClientCommandManager.literal("revokeAll").executes(ctx -> execRevokeAll()))
+            .then(ClientCommandManager.literal("refresh").executes(ctx -> execRefresh()))
+            .then(ClientCommandManager.literal("clear").executes(ctx -> execClear()));
     }
     
     public int execTownless() {

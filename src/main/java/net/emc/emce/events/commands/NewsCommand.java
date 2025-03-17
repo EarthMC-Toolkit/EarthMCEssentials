@@ -2,13 +2,16 @@ package net.emc.emce.events.commands;
 
 import com.google.gson.JsonObject;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.caches.NewsDataCache;
 import net.emc.emce.utils.Messaging;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.text.Component;
+
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.time.Instant;
@@ -16,32 +19,30 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public record NewsCommand(EMCEssentials instance) implements ICommand {
     public LiteralArgumentBuilder<FabricClientCommandSource> build() {
         return ClientCommandManager.literal("news")
-            .then(ClientCommandManager.literal("latest").executes(c -> execNewsLatest()))
-            .then(ClientCommandManager.literal("summary").executes(c -> execNewsSummary()));
+            .then(ClientCommandManager.literal("summary").executes(ctx -> execNews(20)))
+            .then(ClientCommandManager.literal("latest").executes(ctx -> execNews(1)))
+            .then(ClientCommandManager.argument("amount", IntegerArgumentType.integer(1)).executes(ctx ->
+                execNews(ctx.getArgument("amount", int.class))
+            ));
     }
     
-    // Prints the latest headline and the date it was reported at.
-    public int execNewsLatest() {
+    // Prints last X headlines with their respective date.
+    public int execNews(int count) {
         try {
-            execNewsAmt(1);
+            Messaging.createAndSend(
+                "text_news_header", NamedTextColor.BLUE,
+                Component.text(count, NamedTextColor.WHITE)
+            );
+            
+            sendHeadlines(count);
         } catch (Exception e) {
-            System.err.println("Error getting the latest headline from news.\n" + e);
-        }
-        
-        return 1;
-    }
-    
-    // Prints last 10 headlines with their respective date.
-    public int execNewsSummary() {
-        try {
-            execNewsAmt(10);
-        } catch (Exception e) {
-            System.err.println("Error getting the last 10 headlines from news.\n" + e);
+            String err = String.format("Error getting the last %d headline(s) from news.", count);
+            System.err.println(err + "\n" + e);
+            Messaging.sendDebugMessage(err, e);
         }
         
         return 1;
@@ -50,56 +51,74 @@ public record NewsCommand(EMCEssentials instance) implements ICommand {
     /**
      * Sends news messages to the chat in the following format:<br>
      * <code>
-     * <b>X nation has done something in response to Y nation.</b> (Reported: 16/3/2025)
+     * <b>(16/3/2025) - Example bogus news headline.</b>
      * </code>
      * @param count The max amount of headlines to send.
      */
-    public void execNewsAmt(int count) throws Exception {
+    public void sendHeadlines(int count) throws Exception {
         Map<Long, String> newsMsgs = parseNewsMessages(count);
         if (newsMsgs.isEmpty()) {
             throw new Exception("Failed to parse news messages! Returned empty map.");
         }
         
-        List<String> headlines = formatNewsMessages(newsMsgs);
+        // TODO: Reduce complexity, just do this in single loop via parseNewsMessages.
+        List<Component> headlines = formatNewsMessages(newsMsgs);
         if (headlines.isEmpty()) {
             throw new Exception("Failed to format news messages! Returned empty list.");
         }
         
-        String output = String.join("\n", headlines);
-        Messaging.send(Component.text(output, NamedTextColor.AQUA));
+        // Send a message for every headline.
+        for (Component headline : headlines) {
+            Messaging.send(headline);
+        }
     }
     
     // Key is timestamp, Value is headline.
     Map<Long, String> parseNewsMessages(int count) {
-        Set<JsonObject> news = NewsDataCache.INSTANCE.getCache().values()
+        // We don't need TreeMap here since NewsDataCache should be in order already.
+        Map<Long, String> headlines = new LinkedHashMap<>();
+        
+        // When count > size, limit will do nothing and just include every msg.
+        NewsDataCache.INSTANCE.getCache()
             .stream().limit(count)
-            .collect(Collectors.toSet());
-
-        Map<Long, String> headlines = new HashMap<>();
-        for (JsonObject newsMsg : news) {
-            String headline = newsMsg.get("headline").getAsString();
-            long timestamp = newsMsg.get("timestamp").getAsLong();
-            
-            headlines.put(timestamp, headline);
-        }
+            .forEach(el -> {
+                JsonObject newsMsg = el.getAsJsonObject();
+                String headline = newsMsg.get("headline").getAsString();
+                long timestamp = newsMsg.get("timestamp").getAsLong();
+                
+                headlines.put(timestamp, headline);
+            });
         
         return headlines;
     }
     
-    // Convert timestamp/headline pairs into single strings.
-    public List<String> formatNewsMessages(Map<Long, String> msgs) {
-        List<String> formattedMessages = new ArrayList<>();
-        msgs.forEach((timestamp, headline) -> {
-            String formattedDate = formatDateFromTimestamp(timestamp);
-            String formattedMessage = String.format("%s (Reported: %s)", headline, formattedDate);
-            
-            formattedMessages.add(formattedMessage);
-        });
+    // Convert timestamp/headline pairs into text components with styling.
+    public List<Component> formatNewsMessages(Map<Long, String> msgs) {
+        List<Component> textComponents = new ArrayList<>();
         
-        return formattedMessages;
+        for (Map.Entry<Long, String> msg : msgs.entrySet()) {
+            String formattedDate = timestampToDate(msg.getKey());
+            String headline = msg.getValue();
+            
+            Component comp = Messaging.create(
+                "text_news_headline", NamedTextColor.GOLD,
+                Component.text(formattedDate),
+                Component.text("-").color(NamedTextColor.WHITE),
+                Component.text(headline).color(NamedTextColor.AQUA)
+            );
+            
+            textComponents.add(comp);
+        }
+        
+        return textComponents;
     }
     
-    public static String formatDateFromTimestamp(long timestamp) {
+    /**
+     * Turns a timestamp into a date in the format: <code>16/3/25</code>
+     * @param timestamp Sec/ms elapsed since Unix epoch (same as Discord).
+     * @return The formatted date as a string.
+     */
+    public static String timestampToDate(long timestamp) {
         ZonedDateTime zdt = Instant.ofEpochMilli(timestamp)
             .atZone(ZoneId.systemDefault());
 

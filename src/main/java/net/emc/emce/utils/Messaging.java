@@ -21,21 +21,21 @@ public class Messaging {
     }
     
     @Contract("_, _, -> new")
-    public static @NotNull Component create(String key, NamedTextColor keyColour) {
-        return translatable().key(key).color(keyColour).build();
+    public static @NotNull Component create(String translationKey, NamedTextColor keyColour) {
+        return translatable().key(translationKey).color(keyColour).build();
     }
     
     @Contract("_, _, _ -> new")
-    public static @NotNull Component create(String key, NamedTextColor keyColour, Component... args) {
-        return translatable().key(key).color(keyColour).arguments(args).build();
+    public static @NotNull Component create(String translationKey, NamedTextColor keyColour, Component... args) {
+        return translatable().key(translationKey).color(keyColour).arguments(args).build();
     }
     
-    public void createAndSend(String key, NamedTextColor keyColour) {
-        send(create(key, keyColour));
+    public void createAndSend(String translationKey, NamedTextColor keyColour) {
+        send(create(translationKey, keyColour));
     }
     
-    public static void createAndSend(String key, NamedTextColor keyColour, Component... args) {
-        send(create(key, keyColour, args));
+    public static void createAndSend(String translationKey, NamedTextColor keyColour, Component... args) {
+        send(create(translationKey, keyColour, args));
     }
     //#endregion
 
@@ -51,6 +51,14 @@ public class Messaging {
 
     public static void send(Component text) {
         clientAudience().sendMessage(text);
+    }
+    
+    public static void sendRegular(String text) {
+        send(Component.text(text));
+    }
+    
+    public static void sendRegular(String text, NamedTextColor colour) {
+        send(Component.text(text).color(colour));
     }
     //#endregion
 
@@ -84,7 +92,7 @@ public class Messaging {
     //#region Debug Methods
     public static void sendDebugMessage(String message) {
         if (EMCEssentials.instance().debugEnabled()) {
-            send(translatable("debug_format", text(message).color(NamedTextColor.GRAY)));
+            send(translatable("debug_format", Component.text(message).color(NamedTextColor.GRAY)));
             EMCEssentials.LOGGER.info(message);
         }
     }
