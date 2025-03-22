@@ -45,7 +45,8 @@ public class EventRegistry {
             
             // Util
             new NetherCommand(),
-            new RouteCommand()
+            new RouteCommand(),
+            new QuartersCommand()
         ).forEach(cmd -> cmd.registerSelf(dispatcher));
     }
 
