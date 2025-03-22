@@ -2,6 +2,9 @@
     "mod_prefix": "§6EMCE §7> ",
     "debug_format": "§6[§bDEBUG§6] §6EMCE §7> §7%s",
 
+    "msg_debug_enabled": "§bDebug mode §2enabled§b.",
+    "msg_debug_disabled": "§bDebug mode §4disabled§b.",
+
     "text_townless_header": "Townless Players [%d]",
     "text_townless_remaining": "And %d more...",
     "msg_townless_none": "§cNo townless players found.",
@@ -18,30 +21,14 @@
     "msg_nearby_clear": "§bClearing nearby players...",
     "msg_nearby_none": "§cNo nearby players detected at the moment, try again later.",
 
-    "msg_nether_err_args": "§cNot enough arguments! (x + z)",
     "msg_nether_success": "§bNether coordinates: %d, %d",
-    "msg_nether_err_null": "§cUnable to use your own coordinates! This is rare.",
     "msg_nether_owncoords": "§7No coordinates specified, using your own instead.",
+    "msg_nether_err_args": "§cNot enough arguments! Required: x, z",
+    "msg_nether_err_null": "§cUnable to use your own coordinates! This is rare.",
 
-    "msg_debug_enabled": "§bDebug mode §2enabled§b.",
-    "msg_debug_disabled": "§bDebug mode §4disabled§b.",
-
-    "msg_queue_err": "§cError fetching queue.",
-    "msg_queue_success": "§bCurrent queue size: %d",
-
-    "text_towninfo_header": "Town Information - %s",
-    "text_towninfo_mayor": "Mayor: %s",
-    "text_towninfo_location": "Location: %s, %s",
-    "text_towninfo_err": "§cTown %s is not registered.",
-    "text_towninfo_not_registered": "§cYour town is not registered.",
-
-    "text_nationinfo_header": "Nation Information - %s",
-    "text_nationinfo_king": "King: %s",
-    "text_nationinfo_capital": "Capital: %s",
-    "text_nationinfo_area": "Area: %s",
-    "text_nationinfo_towns": "Towns: %s",
-    "text_nationinfo_err": "§cNation %s §cis not registered.",
-    "text_nationinfo_not_registered": "§cYour nation is not registered.",
+    "msg_route_err_args": "§cNot enough arguments! Required: x, z",
+    "msg_route_err_subcmds": "§cNo subcommand specified!",
+    "msg_route_err_null": "§cUnable to use your own coordinates! This is rare.",
 
     "text_news_header": "\nLast %d headline(s):",
     "text_news_headline": "(%s) %s %s",
@@ -57,6 +44,20 @@
     "text_shared_area": "Area: %s",
     "text_shared_residents": "Residents: %d",
     "text_shared_notregistered": "§cPlayer %s §cis not a resident!",
+
+    "text_towninfo_header": "Town Information - %s",
+    "text_towninfo_mayor": "Mayor: %s",
+    "text_towninfo_location": "Location: %s, %s",
+    "text_towninfo_err": "§cTown %s is not registered.",
+    "text_towninfo_not_registered": "§cYour town is not registered.",
+
+    "text_nationinfo_header": "Nation Information - %s",
+    "text_nationinfo_king": "King: %s",
+    "text_nationinfo_capital": "Capital: %s",
+    "text_nationinfo_area": "Area: %s",
+    "text_nationinfo_towns": "Towns: %s",
+    "text_nationinfo_err": "§cNation %s §cis not registered.",
+    "text_nationinfo_not_registered": "§cYour nation is not registered.",
 
     "text.autoconfig.emc-essentials.title": "§n§aEarthMC Essentials Config",
 

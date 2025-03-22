@@ -41,9 +41,12 @@ public class ModConfig implements ConfigData {
     public Intervals intervals = new Intervals();
 
     public static class General {
-        @Comment("Toggles the mod on or off.")
+        @Comment("Toggles the mod on or off (global override).")
         public boolean enableMod = true;
-
+        
+        @Comment("Enable the mod in singleplayer (usually for debugging).")
+        public boolean enableInSingleplayer = false;
+        
         @Comment("Toggles logging debug messages in chat.")
         public boolean debugLog = false;
     }

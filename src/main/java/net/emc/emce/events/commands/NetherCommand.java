@@ -41,8 +41,8 @@ public class NetherCommand implements ICommand {
     
     // Use the X and Z arguments given by the user when running the command.
     public int execNetherArgs(CommandContext<FabricClientCommandSource> ctx) {
-        int x = IntegerArgumentType.getInteger(ctx, "x");
-        int z = IntegerArgumentType.getInteger(ctx, "z");
+        int x = ctx.getArgument("x", int.class);
+        int z = ctx.getArgument("z", int.class);
         
         Messaging.send(Translation.of("msg_nether_success", x/8, z/8));
         

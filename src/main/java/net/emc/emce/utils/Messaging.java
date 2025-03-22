@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.event.Level;
 
 import static net.kyori.adventure.text.Component.*;
 
@@ -90,20 +91,57 @@ public class Messaging {
     //endregion
 
     //#region Debug Methods
-    public static void sendDebugMessage(String message) {
-        if (EMCEssentials.instance().debugEnabled()) {
-            send(translatable("debug_format", Component.text(message).color(NamedTextColor.GRAY)));
-            EMCEssentials.LOGGER.info(message);
-        }
+    /**
+     * If <code>debugMode</code> is enabled in the mod config, this method will output the
+     * specified error message to both the in-game chat and the logger.
+     * @param message The msg to output.
+     */
+    public static void sendDebugMessage(String message, Level level) {
+        sendDebugMessage(message, null, level);
     }
     
+    /**
+     * This method will output the given message and the exception message with its stack trace to the logger.
+     * Additionally, if <code>debugMode</code> is enabled in the mod config, the message (non-exception) is sent in the chat.
+     *
+     * @param message The msg to output.
+     * @param exception The exception whose msg will be output.
+     */
     public static void sendDebugMessage(String message, Exception exception) {
-        if (EMCEssentials.instance().debugEnabled()) {
-            sendDebugMessage(message);
-            sendDebugMessage(exception.getMessage());
-            
-            // TODO: Replace with something else?
-            exception.printStackTrace(System.err);
+        if (EMCEssentials.instance().debugModeEnabled()) {
+            // Send text to chat.
+            send(translatable("debug_format", Component.text(message).color(NamedTextColor.GRAY)));
+        }
+        
+        EMCEssentials.LOGGER.error(message, exception);
+    }
+    
+    /**
+     * This method will output the given message and the exception message with its stack trace to the logger.
+     * Additionally, if <code>debugMode</code> is enabled in the mod config, the message (non-exception) is sent in the chat.
+     *
+     * @param message The msg to output.
+     * @param exception The exception whose msg will be output at TRACE level.
+     * @param level The level at which to output <code>message</code>.
+     */
+    public static void sendDebugMessage(String message, Exception exception, Level level) {
+        if (EMCEssentials.instance().debugModeEnabled()) {
+            // Send text to chat.
+            send(translatable("debug_format", Component.text(message).color(NamedTextColor.GRAY)));
+        }
+        
+        // Output trace if exception is provided.
+        if (exception != null) {
+            EMCEssentials.LOGGER.trace(message, exception);
+        } else {
+            // Always output non-exception message.
+            switch (level) {
+                case TRACE -> EMCEssentials.LOGGER.trace(message);
+                case DEBUG -> EMCEssentials.LOGGER.debug(message);
+                case WARN -> EMCEssentials.LOGGER.warn(message);
+                case ERROR -> EMCEssentials.LOGGER.error(message);
+                default -> EMCEssentials.LOGGER.info(message);
+            }
         }
     }
     //#endregion

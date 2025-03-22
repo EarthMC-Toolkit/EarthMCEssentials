@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 
 import net.emc.emce.utils.CustomAPI;
 import net.emc.emce.utils.Messaging;
+import org.slf4j.event.Level;
 
 import java.util.*;
 
@@ -22,16 +23,8 @@ public class NewsDataCache extends SimpleCache<List<JsonElement>> {
         if (news.isEmpty()) {
             return null; // No alliances, no update. Continue using stale data.
         }
-        
-//        Map<Long, JsonObject> data = new LinkedHashMap<>();
-//        for (JsonElement newsMsg : news) {
-//            JsonObject newsObj = newsMsg.getAsJsonObject();
-//
-//            long newsMsgId = newsObj.get("id").getAsLong();
-//            data.put(newsMsgId, newsObj);
-//        }
-        
-        Messaging.sendDebugMessage("Updated news. Count: " + news.size());
+
+        Messaging.sendDebugMessage("Updated news. Count: " + news.size(), Level.INFO);
         return news.asList();
     }
 }

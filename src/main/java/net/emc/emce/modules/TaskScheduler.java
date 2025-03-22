@@ -7,7 +7,9 @@ import net.emc.emce.caches.SimpleCache;
 import net.emc.emce.config.ModConfig;
 
 import net.emc.emce.utils.Messaging;
+import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
+import org.slf4j.event.Level;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -40,7 +42,7 @@ public class TaskScheduler {
         nearbyRunning = false;
         cacheCheckRunning = false;
 
-        Messaging.sendDebugMessage("Stopping scheduled tasks...");
+        Messaging.sendDebugMessage("Stopping scheduled tasks...", Level.DEBUG);
     }
 
     public void initMap() {
@@ -54,8 +56,9 @@ public class TaskScheduler {
      */
     void checkMap() {
         if (hasMap) return;
+        if (ModUtils.isInSinglePlayer() && ModConfig.instance().general.enableInSingleplayer) return;
 
-        Messaging.sendDebugMessage("Checking which map client player is on...");
+        Messaging.sendDebugMessage("Checking which map client player is on...", Level.DEBUG);
         
         boolean online = false;
         for (KnownMap map : KnownMap.values()) {
@@ -83,13 +86,13 @@ public class TaskScheduler {
             //EMCEssentials.instance().currentMap = KnownMap.AURORA;
 
             stop();
-            Messaging.sendDebugMessage("Player not found on any map!");
+            Messaging.sendDebugMessage("Player not found on any map!", Level.DEBUG);
         } else {
             hasMap = true;
             EMCEssentials.instance().currentMap = map;
             
             start();
-            Messaging.sendDebugMessage("Player found on: " + map);
+            Messaging.sendDebugMessage("Player found on: " + map, Level.DEBUG);
         }
     }
 
@@ -100,7 +103,7 @@ public class TaskScheduler {
         service.scheduleAtFixedRate(() -> {
             if (townlessRunning && config.townless.enabled && shouldRun()) {
                 EMCEssentials.instance().updateTownless();
-                Messaging.sendDebugMessage("Updating townless...");
+                Messaging.sendDebugMessage("Updating townless...", Level.INFO);
             }
         }, 5, Math.min(config.intervals.townless, 200), TimeUnit.SECONDS);
     }
@@ -112,7 +115,7 @@ public class TaskScheduler {
         service.scheduleAtFixedRate(() -> {
             if (nearbyRunning && config.nearby.enabled && shouldRun()) {
                 EMCEssentials.instance().updateNearbyPlayers();
-                Messaging.sendDebugMessage("Updating nearby...");
+                Messaging.sendDebugMessage("Updating nearby...", Level.INFO);
             }
         }, 5, Math.min(config.intervals.nearby, 30), TimeUnit.SECONDS);
     }

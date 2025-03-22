@@ -1,5 +1,11 @@
 package net.emc.emce.events.commands;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 import com.google.gson.JsonObject;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -8,24 +14,19 @@ import net.emc.emce.EMCEssentials;
 import net.emc.emce.caches.NewsDataCache;
 import net.emc.emce.utils.Messaging;
 
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.text.Component;
-
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
 public record NewsCommand(EMCEssentials instance) implements ICommand {
     public LiteralArgumentBuilder<FabricClientCommandSource> build() {
-        return ClientCommandManager.literal("news")
-            .then(ClientCommandManager.literal("summary").executes(ctx -> execNews(20)))
-            .then(ClientCommandManager.literal("latest").executes(ctx -> execNews(1)))
-            .then(ClientCommandManager.argument("amount", IntegerArgumentType.integer(1)).executes(ctx ->
+        return literal("news")
+            .then(literal("summary").executes(ctx -> execNews(15)))
+            .then(literal("latest").executes(ctx -> execNews(1)))
+            .then(argument("amount", IntegerArgumentType.integer(1)).executes(ctx ->
                 execNews(ctx.getArgument("amount", int.class))
             ));
     }

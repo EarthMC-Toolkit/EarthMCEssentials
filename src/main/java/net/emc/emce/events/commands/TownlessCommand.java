@@ -45,6 +45,7 @@ public record TownlessCommand(EMCEssentials instance) implements ICommand {
             .then(ClientCommandManager.literal("clear").executes(ctx -> execClear()));
     }
     
+    // WORKS ANYWHERE
     public int execTownless() {
         Set<String> townless = instance.getTownless();
         if (townless.isEmpty()) {
@@ -57,6 +58,7 @@ public record TownlessCommand(EMCEssentials instance) implements ICommand {
         return 1;
     }
     
+    // ONLY WORKS ON EMC
     public int execInviteAll() {
         if (MinecraftClient.getInstance().player == null) return -1;
         
@@ -76,6 +78,7 @@ public record TownlessCommand(EMCEssentials instance) implements ICommand {
         return 1;
     }
     
+    // ONLY WORKS ON EMC
     public int execRevokeAll() {
         if (MinecraftClient.getInstance().player == null) return -1;
         

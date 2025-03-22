@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import net.emc.emce.utils.CustomAPI;
 import net.emc.emce.utils.Messaging;
+import org.slf4j.event.Level;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -34,7 +35,7 @@ public class AllianceDataCache extends SimpleCache<Map<String, JsonObject>> {
             data.put(allianceName, allianceObj);
         }
         
-        Messaging.sendDebugMessage("Updated alliances. Count: " + data.size());
+        Messaging.sendDebugMessage("Updated alliances. Count: " + data.size(), Level.INFO);
         return data;
     }
 }

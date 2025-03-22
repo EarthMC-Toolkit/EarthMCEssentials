@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import com.google.gson.JsonElement;
 import io.github.emcw.utils.http.JSONRequest;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.event.Level;
+
+import java.util.concurrent.CompletableFuture;
 
 public class CustomAPI {
     public static final String DOMAIN = "https://emctoolkit.vercel.app/api/";
@@ -29,31 +32,35 @@ public class CustomAPI {
     
     @Contract(" -> new")
     public static @NotNull JsonArray getAlliances() {
-        JsonElement alliancesRes = sendAsyncGet(EndpointType.ALLIANCES);
+        CompletableFuture<JsonElement> alliancesRes = sendAsyncGet(EndpointType.ALLIANCES);
         if (alliancesRes == null) {
-            Messaging.sendDebugMessage("An error occurred fetching alliances, check the console to see the request details.");
+            Messaging.sendDebugMessage("An error occurred fetching alliances, check the console to see the request details.", Level.ERROR);
             return new JsonArray();
         }
         
-        return alliancesRes.getAsJsonArray();
+        return alliancesRes.thenApplyAsync(JsonElement::getAsJsonArray).join();
     }
     
     @Contract(" -> new")
     public static @NotNull JsonArray getNews() {
-        JsonElement newsRes = sendAsyncGet(EndpointType.NEWS);
+        CompletableFuture<JsonElement> newsRes = sendAsyncGet(EndpointType.NEWS);
         if (newsRes == null) {
-            Messaging.sendDebugMessage("An error occurred fetching news, check the console to see the request details.");
+            Messaging.sendDebugMessage("An error occurred fetching news, check the console to see the request details.", Level.ERROR);
             return new JsonArray();
         }
    
-        return newsRes.getAsJsonArray();
+        return newsRes.thenApplyAsync(JsonElement::getAsJsonArray).join();
     }
     
     @SuppressWarnings("all")
-    private static @Nullable JsonElement sendAsyncGet(@NotNull EndpointType endpoint) throws IllegalStateException {
-        String route = EMCEssentials.instance().currentMap.getName() + endpoint.getValue();
-        //Messaging.sendDebugMessage("Requesting endpoint -> " + endpoint);
-        
-        return JSONRequest.ASYNC.sendGet(DOMAIN + route);
+    private static @Nullable CompletableFuture<JsonElement> sendAsyncGet(
+        @NotNull EndpointType endpoint
+    ) throws IllegalStateException {
+        return CompletableFuture.supplyAsync(() -> {
+            String route = EMCEssentials.instance().currentMap.getName() + endpoint.getValue();
+            //Messaging.sendDebugMessage("Requesting endpoint -> " + endpoint);
+            
+            return JSONRequest.sendGet(DOMAIN + route);
+        });
     }
 }

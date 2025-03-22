@@ -1,9 +1,8 @@
 package net.emc.emce;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,19 +53,18 @@ public class EMCEssentials implements ClientModInitializer {
     @Getter @Accessors(fluent = true)
     private final TaskScheduler scheduler = new TaskScheduler();
     
+    @Getter @Accessors(fluent = true)
+    private boolean debugModeEnabled = false;
+    
+    private ModConfig config = null;
+    public static KeyBinding configKeybinding;
+    
     public KnownMap currentMap = KnownMap.AURORA;
     public static EMCWrapper emcw = new EMCWrapper()
         .registerSquaremap(KnownMap.AURORA);
 
-    //@Getter @Setter private JsonObject clientPlayer = null; // From the OAPI
-    @Setter private boolean shouldRender = false;
-
     private Set<String> townlessNames = new HashSet<>();
     private Map<String, SquaremapOnlinePlayer> nearbyPlayers = new ConcurrentHashMap<>();
-    
-    public static KeyBinding configKeybinding;
-    private ModConfig config = null;
-    private boolean debugModeEnabled = false;
 
     @Override
     public void onInitializeClient() {
@@ -80,7 +78,7 @@ public class EMCEssentials implements ClientModInitializer {
         ));
 
         EventRegistry.RegisterClientTick();
-        EventRegistry.RegisterConnection(this);
+        EventRegistry.RegisterConnection();
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
             EventRegistry.RegisterCommands(this, dispatcher)
@@ -97,20 +95,19 @@ public class EMCEssentials implements ClientModInitializer {
         if (client.player == null) return false;
 
         boolean f3DebugOpen = client.getDebugHud().shouldShowDebugHud();
-        if (f3DebugOpen) return false;
-
-        return shouldRender;
+        return !f3DebugOpen;
     }
 
-    public void setDebugEnabled(boolean enabled) {
+    public void updateDebugEnabled() {
+        boolean enabled = ModConfig.instance().general.debugLog;
+        
+        // Detect if changed.
+        if (enabled != this.debugModeEnabled) {
+            if (enabled) Messaging.sendPrefixed("msg_debug_enabled");
+            else Messaging.sendPrefixed("msg_debug_disabled");
+        }
+        
         this.debugModeEnabled = enabled;
-
-        if (enabled) Messaging.sendPrefixed("msg_debug_enabled");
-        else Messaging.sendPrefixed("msg_debug_disabled");
-    }
-
-    public boolean debugEnabled() {
-        return this.debugModeEnabled;
     }
 
     //#region Nearby

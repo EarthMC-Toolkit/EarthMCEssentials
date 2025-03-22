@@ -8,6 +8,7 @@ import io.github.emcw.squaremap.entities.SquaremapResident;
 
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.config.ModConfig;
+import net.emc.emce.utils.Messaging;
 import net.emc.emce.utils.ModUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -16,8 +17,10 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.event.Level;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -66,11 +69,29 @@ public class OverlayRenderer {
     
     public static void UpdateStates(boolean updateTownless, boolean updateNearby) {
         // Fail-safe
-        var nearby = EMCEssentials.instance().getNearbyPlayers();
-        if (client.player == null || townless == null || nearby == null) return;
+        if (client.player == null) {
+            Messaging.sendDebugMessage("Cannot update overlay states. Client player is null!?", Level.WARN);
+            return;
+        }
 
-        if (updateTownless) UpdateTownlessState();
-        if (updateNearby) UpdateNearbyState();
+        if (updateTownless) {
+            if (townless == null) {
+                Messaging.sendDebugMessage("Cannot update townless overlay state. Data is null.", Level.WARN);
+                return;
+            }
+            
+            UpdateTownlessState();
+        }
+        
+        if (updateNearby) {
+            var nearby = EMCEssentials.instance().getNearbyPlayers();
+            if (nearby == null) {
+                Messaging.sendDebugMessage("Cannot update nearby overlay state. Data is null.", Level.WARN);
+                return;
+            }
+            
+            UpdateNearbyState();
+        }
     }
 
     public static void RenderAllOverlays(DrawContext ctx, RenderTickCounter tickCounter) {

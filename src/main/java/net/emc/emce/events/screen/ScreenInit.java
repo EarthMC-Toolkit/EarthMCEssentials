@@ -2,7 +2,7 @@ package net.emc.emce.events.screen;
 
 import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.emc.emce.EMCEssentials;
-import net.emc.emce.config.ModConfig;
+
 import net.emc.emce.modules.OverlayRenderer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
@@ -22,19 +22,12 @@ public class ScreenInit {
         // Check initialized screen is one from ClothConfig lib.
         if (newScreen instanceof ClothConfigScreen) {
             // Add listener to its remove event so `Refresh` is called every time we exit the screen.
-            ScreenEvents.remove(newScreen).register(ScreenInit::OnScreenRemove);
+            ScreenEvents.remove(newScreen).register(screen -> Refresh());
         }
     }
     
-    static void OnScreenRemove(Screen screen) {
-        Refresh();
-    }
-    
     public static void Refresh() {
-        ModConfig.General gen = EMCEssentials.instance().config().general;
-        
-        EMCEssentials.instance().setShouldRender(gen.enableMod);
-        EMCEssentials.instance().setDebugEnabled(gen.debugLog);
+        EMCEssentials.instance().updateDebugEnabled();
         
         // TODO: Do we rly need to update states if shouldRender is false?
         OverlayRenderer.UpdateStates();

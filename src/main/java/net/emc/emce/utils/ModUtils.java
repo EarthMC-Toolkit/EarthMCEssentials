@@ -1,6 +1,7 @@
 package net.emc.emce.utils;
 
 import lombok.Setter;
+import net.emc.emce.config.ModConfig;
 import net.minecraft.entity.effect.StatusEffect;
 
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,6 @@ import io.github.emcw.exceptions.MissingEntryException;
 
 import me.shedaniel.clothconfig2.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -189,18 +189,38 @@ public class ModUtils {
     }
 
     public static boolean configOpen() {
-        Screen screen = MinecraftClient.getInstance().currentScreen;
-        return screen instanceof ClothConfigScreen;
+        return getInstance().currentScreen instanceof ClothConfigScreen;
     }
-
+    
+    /**
+     * Whether we have a server and the client's config settings allow the mod to run.<br><br>
+     *
+     * In LAN or Singleplayer, {@code enableInSingleplayer} must be toggled on.
+     * On EarthMC, {@code enableMod} must be toggled on.<br><br>
+     *
+     * For Realms and other multiplayer servers, the mod will never be enabled.
+     * @return
+     */
+    public static boolean enabledOnCurrentServer() {
+        if (serverName == null) return false;
+        
+        ModConfig config = ModConfig.instance();
+        if (!config.general.enableMod) return false;
+        
+        String serverNameLower = serverName.toLowerCase();
+        return switch (serverNameLower) {
+            case "lan", "singleplayer" -> config.general.enableInSingleplayer;
+            default -> serverNameLower.endsWith("earthmc.net");
+        };
+    }
+    
     public static boolean isConnectedToEMC() {
         return serverName.toLowerCase().endsWith("earthmc.net");
     }
-
-//    public static void updateServerName() {
-//        String curServer = currentServer();
-//        if (curServer != null) setServerName(curServer);
-//    }
+    
+    public static boolean isInSinglePlayer() {
+        return serverName.equalsIgnoreCase("singleplayer");
+    }
     
     /**
      * Attempts to get the name of the current <b>multiplayer</b> server if we are on one.
@@ -210,12 +230,13 @@ public class ModUtils {
     public static String currentServer() {
         try {
             MinecraftClient instance = getInstance();
-            if (instance.isInSingleplayer()) return null;
+            if (instance.isInSingleplayer()) return "singleplayer";
             
             ServerInfo serverInfo = instance.getCurrentServerEntry();
             if (serverInfo == null) return null;
-            if (serverInfo.isRealm()) return null;
-            if (serverInfo.isLocal()) return null;
+            
+            if (serverInfo.isRealm()) return "realm";
+            if (serverInfo.isLocal()) return "lan";
             
             // Otherwise, return the address of the external server.
             return serverInfo.address;
@@ -224,4 +245,9 @@ public class ModUtils {
             return null;
         }
     }
+    
+    //    public static void updateServerName() {
+    //        String curServer = currentServer();
+    //        if (curServer != null) setServerName(curServer);
+    //    }
 }
