@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+import net.emc.emce.utils.ModUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,8 +59,9 @@ public class EMCEssentials implements ClientModInitializer {
     
     private ModConfig config = null;
     public static KeyBinding configKeybinding;
-    
+
     public KnownMap currentMap = KnownMap.AURORA;
+    
     public static EMCWrapper emcw = new EMCWrapper()
         .registerSquaremap(KnownMap.AURORA);
 
@@ -115,9 +117,16 @@ public class EMCEssentials implements ClientModInitializer {
         return nearbyPlayers;
     }
     
-    public void updateNearbyPlayers() {
+    public boolean updateNearbyPlayers() {
+        // Would be no point doing pointless fetches when server/world is different.
+        if (!ModUtils.isConnectedToEMC()) {
+            return false;
+        }
+        
         ModConfig config = ModConfig.instance();
         setNearbyPlayers(fetchNearbyPlayers(config.nearby.xBlocks, config.nearby.zBlocks));
+        
+        return true;
     }
     
     public void setNearbyPlayers(Map<String, SquaremapOnlinePlayer> nearbyPlayers) {
@@ -138,7 +147,7 @@ public class EMCEssentials implements ClientModInitializer {
             int playerX = (int) player.getX();
             int playerZ = (int) player.getZ();
 
-            result = getCurrentMap().Players.getNearby(playerX, playerZ, xBlocks, zBlocks);
+            result = getCurrentMapEMCW().Players.getNearby(playerX, playerZ, xBlocks, zBlocks);
             result.remove(clientName());
         } catch (Exception e) {
             Messaging.sendDebugMessage("Error fetching nearby!", e);
@@ -173,7 +182,7 @@ public class EMCEssentials implements ClientModInitializer {
     }
 
     public Map<String, SquaremapOnlinePlayer> fetchTownless() {
-        return getCurrentMap().Players.getByResidency(false);
+        return getCurrentMapEMCW().Players.getByResidency(false);
     }
     //#endregion
     
@@ -193,7 +202,7 @@ public class EMCEssentials implements ClientModInitializer {
     //#endregion
     
     // This assumes squaremap will be used for all known maps.
-    public Squaremap getCurrentMap() {
+    public Squaremap getCurrentMapEMCW() {
         return emcw.getSquaremap(currentMap);
     }
     

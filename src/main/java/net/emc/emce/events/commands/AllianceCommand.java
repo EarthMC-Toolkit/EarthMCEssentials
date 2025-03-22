@@ -50,13 +50,23 @@ public record AllianceCommand(EMCEssentials instance) implements ICommand {
             Component arg = Component.text(nameArg).color(colour);
             Messaging.createAndSend("text_alliance_err", NamedTextColor.RED, arg);
         }
-        else sendAllianceInfo(allianceObj, colour);
+        else try {
+            if (allianceObj.get("rank") == null) {
+                throw new Exception("Invalid/corrupt object. The rank key seems to be missing or null.");
+            }
+            
+            sendAllianceInfo(allianceObj, colour);
+        } catch (Exception e) {
+            Messaging.sendRegular("Nothing to display! Alliance was found but an error occurred:", NamedTextColor.GOLD);
+            Messaging.sendRegular(e.getMessage(), NamedTextColor.RED);
+        }
         
         return 1;
     }
 
     private void sendAllianceInfo(JsonObject allianceObj, NamedTextColor colour) {
         Audience clientAud = MinecraftClientAudiences.of().audience();
+        
         clientAud.sendMessage(createText("text_alliance_header", allianceObj, "allianceName", colour, "rank"));
         clientAud.sendMessage(createText("text_alliance_leader", allianceObj, "leaderName", colour));
         clientAud.sendMessage(createText("text_alliance_type", allianceObj, "type", colour));

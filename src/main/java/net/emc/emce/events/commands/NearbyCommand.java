@@ -59,7 +59,7 @@ public record NearbyCommand(EMCEssentials instance) implements ICommand {
             Component prefix = Component.empty();
             
             if (nearbyConfig.showRank) {
-                SquaremapResident res = squaremapPlayerToResident(instance.getCurrentMap(), curOp);
+                SquaremapResident res = squaremapPlayerToResident(instance.getCurrentMapEMCW(), curOp);
                 if (res != null) {
                     String rankText = String.format("(%s) ", res.getRank());
                     prefix = Component.text(rankText);

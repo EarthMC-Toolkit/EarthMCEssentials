@@ -3,6 +3,7 @@ package net.emc.emce.modules;
 import io.github.emcw.KnownMap;
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
+import net.emc.emce.caches.NewsDataCache;
 import net.emc.emce.caches.SimpleCache;
 import net.emc.emce.config.ModConfig;
 
@@ -20,7 +21,7 @@ public class TaskScheduler {
     public boolean townlessRunning, nearbyRunning, cacheCheckRunning;
     public boolean hasMap = false;
 
-    private static final List<SimpleCache<?>> CACHES = List.of(AllianceDataCache.INSTANCE);
+    //private static final List<SimpleCache<?>> CACHES = List.of(AllianceDataCache.INSTANCE, NewsDataCache.INSTANCE);
     private ScheduledExecutorService service;
 
     public void start() {
@@ -32,7 +33,7 @@ public class TaskScheduler {
             if (config.nearby.enabled) EMCEssentials.instance().updateNearbyPlayers();
         }
 
-        startCacheCheck();
+        //startCacheCheck();
         startTownless();
         startNearby();
     }
@@ -56,23 +57,23 @@ public class TaskScheduler {
      */
     void checkMap() {
         if (hasMap) return;
-        if (ModUtils.isInSinglePlayer() && ModConfig.instance().general.enableInSingleplayer) return;
+        
+        // In singleplayer, no need to check, just use current one (likely default).
+        if (ModUtils.isInSinglePlayer() && ModConfig.instance().general.enableInSingleplayer) {
+            setHasMap(EMCEssentials.instance().currentMap);
+            return;
+        }
 
         Messaging.sendDebugMessage("Checking which map client player is on...", Level.DEBUG);
         
-        boolean online = false;
         for (KnownMap map : KnownMap.values()) {
             if (EMCEssentials.instance().clientOnlineInSquaremap(map)) {
                 setHasMap(map);
-                online = true;
-                
-                break;
+                return;
             }
         }
         
-        if (!online) {
-            setHasMap(null);
-        }
+        setHasMap(null);
     }
 
     public void reset() {
@@ -81,19 +82,21 @@ public class TaskScheduler {
     }
 
     public void setHasMap(KnownMap map) {
+        hasMap = map != null;
+        
         if (map == null) {
-            hasMap = false;
-            //EMCEssentials.instance().currentMap = KnownMap.AURORA;
-
-            stop();
             Messaging.sendDebugMessage("Player not found on any map!", Level.DEBUG);
-        } else {
-            hasMap = true;
-            EMCEssentials.instance().currentMap = map;
+            stop();
             
-            start();
+            return;
+        }
+        
+        if (ModUtils.isConnectedToEMC()) {
+            EMCEssentials.instance().currentMap = map;
             Messaging.sendDebugMessage("Player found on: " + map, Level.DEBUG);
         }
+        
+        start();
     }
 
     private void startTownless() {
@@ -103,7 +106,7 @@ public class TaskScheduler {
         service.scheduleAtFixedRate(() -> {
             if (townlessRunning && config.townless.enabled && shouldRun()) {
                 EMCEssentials.instance().updateTownless();
-                Messaging.sendDebugMessage("Updating townless...", Level.INFO);
+                Messaging.sendDebugMessage("Updated townless", Level.INFO);
             }
         }, 5, Math.min(config.intervals.townless, 200), TimeUnit.SECONDS);
     }
@@ -114,25 +117,27 @@ public class TaskScheduler {
 
         service.scheduleAtFixedRate(() -> {
             if (nearbyRunning && config.nearby.enabled && shouldRun()) {
-                EMCEssentials.instance().updateNearbyPlayers();
-                Messaging.sendDebugMessage("Updating nearby...", Level.INFO);
+                boolean updated = EMCEssentials.instance().updateNearbyPlayers();
+                if (updated) Messaging.sendDebugMessage("Updated nearby", Level.INFO);
             }
         }, 5, Math.min(config.intervals.nearby, 30), TimeUnit.SECONDS);
     }
 
-    private void startCacheCheck() {
-        cacheCheckRunning = true;
-
-        service.scheduleAtFixedRate(() -> {
-            if (!cacheCheckRunning) return;
-
-            for (SimpleCache<?> cache : CACHES) {
-                if (cache.cacheNeedsUpdate()) {
-                    cache.clearCache();
-                }
-            }
-        }, 0, 5, TimeUnit.MINUTES);
-    }
+//    private void startCacheCheck() {
+//        cacheCheckRunning = true;
+//
+//        // TODO: Caches will usually have different expiry times.
+//        //       This means checking on a set schedule is pretty dumb, replace with events or something betta.
+//        service.scheduleAtFixedRate(() -> {
+//            if (!cacheCheckRunning) return;
+//
+//            for (SimpleCache<?> cache : CACHES) {
+//                if (cache.cacheNeedsUpdate()) {
+//                    cache.clearCache();
+//                }
+//            }
+//        }, 0, 3, TimeUnit.MINUTES);
+//    }
 
     boolean shouldRun() {
         boolean modEnabled = ModConfig.instance().general.enableMod;

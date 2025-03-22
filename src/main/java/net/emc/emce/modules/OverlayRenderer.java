@@ -107,7 +107,7 @@ public class OverlayRenderer {
         String prefix = "(Townless) ";
         
         if (config.nearby.showRank) {
-            Squaremap curMap = EMCEssentials.instance().getCurrentMap();
+            Squaremap curMap = EMCEssentials.instance().getCurrentMapEMCW();
             SquaremapResident opRes = squaremapPlayerToResident(curMap, op);
             if (opRes != null) {
                 prefix = String.format("(%s) ", opRes.getRank());
@@ -187,6 +187,7 @@ public class OverlayRenderer {
         return collectSorted(sorted);
     }
 
+    @SuppressWarnings("unused")
     public static int drawWithoutShadow(Text text, int x, int y, int colour) {
         return drawCtx.drawText(renderer(), text, x, y, colour, false);
     }

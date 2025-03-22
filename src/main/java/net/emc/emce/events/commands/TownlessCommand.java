@@ -49,7 +49,7 @@ public record TownlessCommand(EMCEssentials instance) implements ICommand {
     public int execTownless() {
         Set<String> townless = instance.getTownless();
         if (townless.isEmpty()) {
-            townless = instance.getCurrentMap().Players.getByResidency(false).keySet();
+            townless = instance.getCurrentMapEMCW().Players.getByResidency(false).keySet();
         }
 
         Messaging.send(createMsg("text_townless_header", townless.size()));
