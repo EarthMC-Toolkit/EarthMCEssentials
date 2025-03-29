@@ -10,8 +10,6 @@ import com.mojang.brigadier.context.CommandContext;
 import net.emc.emce.EMCEssentials;
 import net.emc.emce.caches.AllianceDataCache;
 import net.emc.emce.utils.Messaging;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
@@ -26,16 +24,20 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.Locale;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.*;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+
 public record AllianceCommand(EMCEssentials instance) implements ICommand {
     public LiteralArgumentBuilder<FabricClientCommandSource> build() {
-        return ClientCommandManager.literal("alliance")
-            .then(ClientCommandManager.literal("list")).executes(ctx -> execAllianceList())
-            .then(ClientCommandManager.argument("allianceName", StringArgumentType.string())
+        return literal("alliance")
+            .then(literal("list").executes(ctx -> execAllianceList()))
+            .then(argument("allianceName", StringArgumentType.string())
                 .executes(this::execAllianceNameArg)
             );
     }
     
     public int execAllianceList() {
+        Messaging.sendRegular("[alliance list] Not implemented yet!", NamedTextColor.GOLD);
         return 1;
     }
     

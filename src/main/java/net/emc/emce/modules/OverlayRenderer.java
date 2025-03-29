@@ -70,7 +70,7 @@ public class OverlayRenderer {
     public static void UpdateStates(boolean updateTownless, boolean updateNearby) {
         // Fail-safe
         if (client.player == null) {
-            Messaging.sendDebugMessage("Cannot update overlay states. Client player is null!?", Level.WARN);
+            //Messaging.sendDebugMessage("Cannot update overlay states. Client player is null!?", Level.WARN);
             return;
         }
 

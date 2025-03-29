@@ -199,7 +199,6 @@ public class ModUtils {
      * On EarthMC, {@code enableMod} must be toggled on.<br><br>
      *
      * For Realms and other multiplayer servers, the mod will never be enabled.
-     * @return
      */
     public static boolean enabledOnCurrentServer() {
         if (serverName == null) return false;

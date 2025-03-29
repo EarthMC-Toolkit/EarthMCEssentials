@@ -106,7 +106,10 @@ public class TaskScheduler {
         service.scheduleAtFixedRate(() -> {
             if (townlessRunning && config.townless.enabled && shouldRun()) {
                 EMCEssentials.instance().updateTownless();
-                Messaging.sendDebugMessage("Updated townless", Level.INFO);
+                Messaging.sendDebugMessage(
+                    "Updated townless data. Count: " + EMCEssentials.instance().getTownless().size(),
+                    Level.INFO
+                );
             }
         }, 5, Math.min(config.intervals.townless, 200), TimeUnit.SECONDS);
     }
@@ -118,7 +121,12 @@ public class TaskScheduler {
         service.scheduleAtFixedRate(() -> {
             if (nearbyRunning && config.nearby.enabled && shouldRun()) {
                 boolean updated = EMCEssentials.instance().updateNearbyPlayers();
-                if (updated) Messaging.sendDebugMessage("Updated nearby", Level.INFO);
+                if (updated) {
+                    Messaging.sendDebugMessage(
+                        "Updated nearby data. Count: " + EMCEssentials.instance().getNearbyPlayers().size(),
+                        Level.INFO
+                    );
+                }
             }
         }, 5, Math.min(config.intervals.nearby, 30), TimeUnit.SECONDS);
     }

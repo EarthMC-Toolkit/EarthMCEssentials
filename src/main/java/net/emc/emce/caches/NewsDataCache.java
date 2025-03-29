@@ -3,7 +3,7 @@ package net.emc.emce.caches;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import net.emc.emce.utils.CustomAPI;
+import net.emc.emce.utils.api.CustomAPI;
 import net.emc.emce.utils.Messaging;
 import org.slf4j.event.Level;
 

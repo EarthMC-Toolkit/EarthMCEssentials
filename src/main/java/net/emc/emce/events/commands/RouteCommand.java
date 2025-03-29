@@ -6,6 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import net.emc.emce.utils.Messaging;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -31,19 +33,25 @@ public class RouteCommand implements ICommand {
     }
     
     public int execRouteSafest(CommandContext<FabricClientCommandSource> ctx) {
-        return 1;
+        return execRouteArgs(ctx);
     }
     
     public int execRouteFastest(CommandContext<FabricClientCommandSource> ctx) {
-        return 1;
+        return execRouteArgs(ctx);
     }
     
     public int execRouteArgs(CommandContext<FabricClientCommandSource> ctx) {
         int x = ctx.getArgument("x", int.class);
         int z = ctx.getArgument("z", int.class);
         
-        Messaging.send(String.format("X: %d Z: %d", x, z));
-  
+        Messaging.sendRegular(String.format("X: %d Z: %d", x, z));
+        
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player == null) {
+            Messaging.send("msg_route_err_null");
+            return 1;
+        }
+        
         return 1;
     }
 }

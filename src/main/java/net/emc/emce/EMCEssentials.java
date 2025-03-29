@@ -24,7 +24,7 @@ import io.github.emcw.Squaremap;
 import io.github.emcw.squaremap.entities.SquaremapResident;
 import io.github.emcw.squaremap.entities.SquaremapOnlinePlayer;
 
-import net.emc.emce.utils.OAPIV3;
+import net.emc.emce.utils.api.OAPIV3;
 import net.emc.emce.config.ModConfig;
 import net.emc.emce.modules.EventRegistry;
 import net.emc.emce.modules.OverlayRenderer;

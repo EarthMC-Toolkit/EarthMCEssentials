@@ -54,6 +54,10 @@ public class Messaging {
         clientAudience().sendMessage(text);
     }
     
+    public static void send(Component text, NamedTextColor color) {
+        clientAudience().sendMessage(text.color(color));
+    }
+    
     public static void sendRegular(String text) {
         send(Component.text(text));
     }

@@ -1,10 +1,11 @@
-package net.emc.emce.utils;
+package net.emc.emce.utils.api;
 
 import com.google.gson.JsonArray;
 
 import lombok.Getter;
 import net.emc.emce.EMCEssentials;
 
+import net.emc.emce.utils.Messaging;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
